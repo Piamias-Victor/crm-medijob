@@ -3,89 +3,89 @@
 > **Epic parente** : [#19 — PRD V2](https://github.com/Piamias-Victor/crm-medijob/issues/19)  
 > **Statut** : découpage validé (31 slices, `ready-for-agent`)  
 > **Sources** : `docs/PRD.md`, `SPEC_V2.md`, `CONTEXT.md`, ADRs 0001–0010  
-> **IDs internes** : V2-01 → V2-31 (numéros GitHub assignés à la publication)
+> **Mapping GitHub** : V2-01 → [#50](https://github.com/Piamias-Victor/crm-medijob/issues/50) … V2-31 → [#80](https://github.com/Piamias-Victor/crm-medijob/issues/80)
 
 ---
 
 ## Vue d'ensemble des 31 issues
 
-| ID | Milestone | Titre |
-|----|-----------|-------|
-| V2-01 | Bloc 0 — Fondations | `[FONDATIONS] Bootstrap Next.js + tokens Medijob + atoms UI` |
-| V2-02 | Bloc 0 — Fondations | `[FONDATIONS] Page /design-system — 12 sections charte Medijob` |
-| V2-03 | Bloc 0 — Fondations | `[FONDATIONS] Schéma Prisma V2 + seeds + repositories + Testcontainers` |
-| V2-04 | Bloc 0 — Fondations | `[FONDATIONS] Auth NextAuth v5 — login Argon2id + middleware + rôles` |
-| V2-05 | Bloc 1 — Candidats | `[CANDIDATS] CVthèque liste + kanban PipelineStage + inbox Applications` |
-| V2-06 | Bloc 1 — Candidats | `[CANDIDATS] Fiche Candidate — profil, contract preferences, bandeau incomplet` |
-| V2-07 | Bloc 1 — Candidats | `[CANDIDATS] Upload CV — extraction IA + revue humaine obligatoire` |
-| V2-08 | Bloc 1 — Candidats | `[CANDIDATS] cvSummary IA + dossier anonymisé + export PDF Medijob` |
-| V2-09 | Bloc 1 — Candidats | `[CANDIDATS] ActivityLog Candidate — timeline filtrable` |
-| V2-10 | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Portefeuille Pharmacy — liste, CRUD, lookup SIRET + TVA` |
-| V2-11 | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Fiche Pharmacy — Contacts, Besoins en cours, création Mission` |
-| V2-12 | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Documents Pharmacy — upload Vercel Blob` |
-| V2-13 | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Module Contact — liste + fiche (1 Pharmacy obligatoire)` |
-| V2-14 | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] ActivityLog Pharmacy & Contact` |
-| V2-15 | Bloc 3 — Missions | `[MISSIONS] Liste + kanban Mission status` |
-| V2-16 | Bloc 3 — Missions | `[MISSIONS] Fiche Mission — CRUD + transitions POURVU/ANNULEE` |
-| V2-17 | Bloc 3 — Missions | `[MISSIONS] MissionCandidate — positionner + kanban + drag` |
-| V2-18 | Bloc 3 — Missions | `[MISSIONS] ActivityLog & Documents Mission` |
-| V2-19 | Bloc 4 — Offres d'emploi | `[OFFRES] Génération JobOffer IA depuis Mission` |
-| V2-20 | Bloc 4 — Offres d'emploi | `[OFFRES] Module /offres — liste + fiche + statuts` |
-| V2-21 | Bloc 4 — Offres d'emploi | `[OFFRES] Publication Webflow CMS — publier / dépublier` |
-| V2-22 | Bloc 5 — Candidatures | `[CANDIDATURES] Webhook Webflow — réception Application + HMAC` |
-| V2-23 | Bloc 5 — Candidatures | `[CANDIDATURES] Traitement inbox — dédup, fusion diff, accept/refuse` |
-| V2-24 | Bloc 6 — IA avancée | `[IA] Matching Mission → Candidates — pré-filtre + Gemini` |
-| V2-25 | Bloc 6 — IA avancée | `[IA] Matching inversé Candidate → Missions` |
-| V2-26 | Bloc 6 — IA avancée | `[IA] Contact depuis matching — email Resend + tel/WhatsApp` |
-| V2-27 | Bloc 6 — IA avancée | `[IA] Assistant IA — chat contextuel + 6 raccourcis` |
-| V2-28 | Bloc 7 — Admin & finitions | `[ADMIN] Référentiels — Pipeline, Software, Groupement, JobTitle + matrice` |
-| V2-29 | Bloc 7 — Admin & finitions | `[ADMIN] Utilisateurs — CRUD + rôles RECRUTEUR/ADMIN` |
-| V2-30 | Bloc 7 — Admin & finitions | `[ADMIN] Recherche globale cross-entités` |
-| V2-31 | Bloc 7 — Admin & finitions | `[ADMIN] Soft delete UI + rapport semaine assistant` |
+| ID | GitHub | Milestone | Titre |
+|----|--------|-----------|-------|
+| V2-01 | [#50](https://github.com/Piamias-Victor/crm-medijob/issues/50) | Bloc 0 — Fondations | `[FONDATIONS] Bootstrap Next.js + tokens Medijob + atoms UI` |
+| V2-02 | [#51](https://github.com/Piamias-Victor/crm-medijob/issues/51) | Bloc 0 — Fondations | `[FONDATIONS] Page /design-system — 12 sections charte Medijob` |
+| V2-03 | [#52](https://github.com/Piamias-Victor/crm-medijob/issues/52) | Bloc 0 — Fondations | `[FONDATIONS] Schéma Prisma V2 + seeds + repositories + Testcontainers` |
+| V2-04 | [#53](https://github.com/Piamias-Victor/crm-medijob/issues/53) | Bloc 0 — Fondations | `[FONDATIONS] Auth NextAuth v5 — login Argon2id + middleware + rôles` |
+| V2-05 | [#54](https://github.com/Piamias-Victor/crm-medijob/issues/54) | Bloc 1 — Candidats | `[CANDIDATS] CVthèque liste + kanban PipelineStage + inbox Applications` |
+| V2-06 | [#55](https://github.com/Piamias-Victor/crm-medijob/issues/55) | Bloc 1 — Candidats | `[CANDIDATS] Fiche Candidate — profil, contract preferences, bandeau incomplet` |
+| V2-07 | [#56](https://github.com/Piamias-Victor/crm-medijob/issues/56) | Bloc 1 — Candidats | `[CANDIDATS] Upload CV — extraction IA + revue humaine obligatoire` |
+| V2-08 | [#57](https://github.com/Piamias-Victor/crm-medijob/issues/57) | Bloc 1 — Candidats | `[CANDIDATS] cvSummary IA + dossier anonymisé + export PDF Medijob` |
+| V2-09 | [#58](https://github.com/Piamias-Victor/crm-medijob/issues/58) | Bloc 1 — Candidats | `[CANDIDATS] ActivityLog Candidate — timeline filtrable` |
+| V2-10 | [#59](https://github.com/Piamias-Victor/crm-medijob/issues/59) | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Portefeuille Pharmacy — liste, CRUD, lookup SIRET + TVA` |
+| V2-11 | [#60](https://github.com/Piamias-Victor/crm-medijob/issues/60) | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Fiche Pharmacy — Contacts, Besoins en cours, création Mission` |
+| V2-12 | [#61](https://github.com/Piamias-Victor/crm-medijob/issues/61) | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Documents Pharmacy — upload Vercel Blob` |
+| V2-13 | [#62](https://github.com/Piamias-Victor/crm-medijob/issues/62) | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] Module Contact — liste + fiche (1 Pharmacy obligatoire)` |
+| V2-14 | [#63](https://github.com/Piamias-Victor/crm-medijob/issues/63) | Bloc 2 — Pharmacies & Contacts | `[PHARMACIES] ActivityLog Pharmacy & Contact` |
+| V2-15 | [#64](https://github.com/Piamias-Victor/crm-medijob/issues/64) | Bloc 3 — Missions | `[MISSIONS] Liste + kanban Mission status` |
+| V2-16 | [#65](https://github.com/Piamias-Victor/crm-medijob/issues/65) | Bloc 3 — Missions | `[MISSIONS] Fiche Mission — CRUD + transitions POURVU/ANNULEE` |
+| V2-17 | [#66](https://github.com/Piamias-Victor/crm-medijob/issues/66) | Bloc 3 — Missions | `[MISSIONS] MissionCandidate — positionner + kanban + drag` |
+| V2-18 | [#67](https://github.com/Piamias-Victor/crm-medijob/issues/67) | Bloc 3 — Missions | `[MISSIONS] ActivityLog & Documents Mission` |
+| V2-19 | [#68](https://github.com/Piamias-Victor/crm-medijob/issues/68) | Bloc 4 — Offres d'emploi | `[OFFRES] Génération JobOffer IA depuis Mission` |
+| V2-20 | [#69](https://github.com/Piamias-Victor/crm-medijob/issues/69) | Bloc 4 — Offres d'emploi | `[OFFRES] Module /offres — liste + fiche + statuts` |
+| V2-21 | [#70](https://github.com/Piamias-Victor/crm-medijob/issues/70) | Bloc 4 — Offres d'emploi | `[OFFRES] Publication Webflow CMS — publier / dépublier` |
+| V2-22 | [#71](https://github.com/Piamias-Victor/crm-medijob/issues/71) | Bloc 5 — Candidatures | `[CANDIDATURES] Webhook Webflow — réception Application + HMAC` |
+| V2-23 | [#72](https://github.com/Piamias-Victor/crm-medijob/issues/72) | Bloc 5 — Candidatures | `[CANDIDATURES] Traitement inbox — dédup, fusion diff, accept/refuse` |
+| V2-24 | [#73](https://github.com/Piamias-Victor/crm-medijob/issues/73) | Bloc 6 — IA avancée | `[IA] Matching Mission → Candidates — pré-filtre + Gemini` |
+| V2-25 | [#74](https://github.com/Piamias-Victor/crm-medijob/issues/74) | Bloc 6 — IA avancée | `[IA] Matching inversé Candidate → Missions` |
+| V2-26 | [#75](https://github.com/Piamias-Victor/crm-medijob/issues/75) | Bloc 6 — IA avancée | `[IA] Contact depuis matching — email Resend + tel/WhatsApp` |
+| V2-27 | [#76](https://github.com/Piamias-Victor/crm-medijob/issues/76) | Bloc 6 — IA avancée | `[IA] Assistant IA — chat contextuel + 6 raccourcis` |
+| V2-28 | [#77](https://github.com/Piamias-Victor/crm-medijob/issues/77) | Bloc 7 — Admin & finitions | `[ADMIN] Référentiels — Pipeline, Software, Groupement, JobTitle + matrice` |
+| V2-29 | [#78](https://github.com/Piamias-Victor/crm-medijob/issues/78) | Bloc 7 — Admin & finitions | `[ADMIN] Utilisateurs — CRUD + rôles RECRUTEUR/ADMIN` |
+| V2-30 | [#79](https://github.com/Piamias-Victor/crm-medijob/issues/79) | Bloc 7 — Admin & finitions | `[ADMIN] Recherche globale cross-entités` |
+| V2-31 | [#80](https://github.com/Piamias-Victor/crm-medijob/issues/80) | Bloc 7 — Admin & finitions | `[ADMIN] Soft delete UI + rapport semaine assistant` |
 
 ---
 
 ## Dépendances (Blocked by)
 
 ```
-V2-01  →  (aucun)
-V2-02  →  V2-01
-V2-03  →  V2-01
-V2-04  →  V2-03
+#50  →  (aucun)
+#51  →  #50
+#52  →  #50
+#53  →  #52
 
-V2-05  →  V2-04
-V2-06  →  V2-05
-V2-07  →  V2-06
-V2-08  →  V2-07
-V2-09  →  V2-06
+#54  →  #53
+#55  →  #54
+#56  →  #55
+#57  →  #56
+#58  →  #55
 
-V2-10  →  V2-04
-V2-11  →  V2-10
-V2-12  →  V2-11
-V2-13  →  V2-10
-V2-14  →  V2-11, V2-13
+#59  →  #53
+#60  →  #59
+#61  →  #60
+#62  →  #59
+#63  →  #60, #62
 
-V2-15  →  V2-05, V2-10
-V2-16  →  V2-15
-V2-17  →  V2-16, V2-05
-V2-18  →  V2-16
+#64  →  #54, #59
+#65  →  #64
+#66  →  #65, #54
+#67  →  #65
 
-V2-19  →  V2-16
-V2-20  →  V2-19
-V2-21  →  V2-20
+#68  →  #65
+#69  →  #68
+#70  →  #69
 
-V2-22  →  V2-21, V2-05
-V2-23  →  V2-22, V2-05
+#71  →  #70, #54
+#72  →  #71, #54
 
-V2-24  →  V2-17, V2-03
-V2-25  →  V2-24
-V2-26  →  V2-24
-V2-27  →  V2-04
+#73  →  #66, #52
+#74  →  #73
+#75  →  #73
+#76  →  #53
 
-V2-28  →  V2-04
-V2-29  →  V2-28
-V2-30  →  V2-05, V2-10, V2-15
-V2-31  →  V2-30, V2-27
+#77  →  #53
+#78  →  #77
+#79  →  #54, #59, #64
+#80  →  #79, #76
 ```
 
 ---
