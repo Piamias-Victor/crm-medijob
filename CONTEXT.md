@@ -8,12 +8,36 @@ Medijob est une agence de recrutement spécialisée en pharmacie d'officine. Ce 
 A person qualified and actively tracked in the CVthèque — created directly (CV upload + human review) or converted from an accepted Application.
 _Avoid_: Applicant, postulant, profil (when meaning an inbound application), candidature
 
+**Profile completeness**:
+Matching-critical fields on a Candidate (`city`, `postalCode`, mobility radius, availability). Missing fields trigger an informational banner on the candidate profile — they do not block CRM actions, but the candidate is excluded from distance-based matching until completed.
+_Avoid_: Profil incomplet (as entity name), validation, alerte bloquante
+
+**Preferred contract types**:
+The contract types a Candidate is willing to accept (CDI, CDD, intérim, vacation). Empty means no contract-type filter in matching.
+_Avoid_: Préférences (without qualifier), type de contrat recherché, souhait
+
+**Mobility radius**:
+The maximum distance in km a Candidate is willing to travel from their location. When unset, matching assumes 30 km.
+_Avoid_: Rayon (without qualifier), distance, zone de chalandise
+
+**Availability**:
+The date from which a Candidate can start a Mission. When unset, the Candidate is assumed immediately available for matching.
+_Avoid_: Disponibilité (as free text), date de début, planning
+
 **Application**:
-An inbound candidacy received via the public website (Webflow), tied to a specific JobOffer. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate.
+An inbound candidacy received via the public website (Webflow), tied to a specific JobOffer. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters.
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead
 
+**JobTitle**:
+An administrable job role in the pharmacy staffing domain (e.g. Pharmacien, Préparateur). Referenced by Candidate and Mission — replaces the former fixed enum.
+_Avoid_: Métier (as free text), fonction, enum JobTitle
+
+**Job title compatibility**:
+An admin-defined rule that a Candidate with a given JobTitle can match a Mission with another JobTitle. Stored in the compatibility matrix (`JobTitleCompatibility`).
+_Avoid_: Correspondance métier, matching métier (as entity name)
+
 **Mission**:
-A staffing need at a Pharmacy — any contract type (CDI, CDD, intérim, vacation). Tracked operationally from identification through placement or cancellation.
+A staffing need at a Pharmacy — any contract type (CDI, CDD, intérim, vacation), with a structured JobTitle. Tracked operationally from identification through placement or cancellation.
 _Avoid_: Poste, besoin, vacation (as entity name), annonce
 
 **JobOffer**:
@@ -21,7 +45,7 @@ The optional public-facing job posting derived from a Mission, published on the 
 _Avoid_: Annonce (as entity name), offre (without qualifier), posting, publication
 
 **PipelineStage**:
-An administrable step in the candidate progression on a Mission (e.g. Nouveau → Contacté → Entretien → Proposition → Placé). Distinct from the Mission's own lifecycle status.
+An administrable step in the candidate progression on a Mission (e.g. Nouveau → Contacté → Entretien → Proposition → Placé → Pas retenu). Distinct from the Mission's own lifecycle status. « Pas retenu » is the terminal stage for candidates not selected when a Mission is filled.
 _Avoid_: Pipeline (alone), étape (without qualifier), statut candidat, phase
 
 **Mission status**:
@@ -29,7 +53,7 @@ The lifecycle of a staffing need itself (A_POURVOIR → EN_RECHERCHE → … →
 _Avoid_: Pipeline stage, phase candidat, étape
 
 **MissionCandidate**:
-The positioning of a Candidate on a Mission at a given PipelineStage. A Candidate may be positioned on multiple Missions in parallel, each with its own stage.
+The positioning of a Candidate on a Mission at a given PipelineStage. A Candidate may be positioned on multiple Missions in parallel, each with its own stage. Only non-terminal positionings appear on the active CVthèque kanban card.
 _Avoid_: Matching, placement, affectation, liaison
 
 **Pharmacy**:
@@ -41,7 +65,7 @@ A person at a Pharmacy — the human interlocutor for staffing needs and commerc
 _Avoid_: Client, interlocuteur (as entity name), personne, utilisateur
 
 **Referent**:
-The Medijob recruiter (User) responsible for follow-up on a Candidate or Mission. Informational and for reporting — all recruiters have full visibility and may act on any record.
+The Medijob recruiter (User) responsible for follow-up on a Candidate or Mission. Informational and for reporting — all recruiters have full visibility and may act on any record. Any RECRUTEUR may reassign `referentId`.
 _Avoid_: Owner, propriétaire, assigné (implies exclusivity), gestionnaire
 
 **Groupement**:
@@ -65,7 +89,7 @@ _Avoid_: Fichier, pièce jointe, CV (as Document — use `cvUrl` on Candidate)
 Single-app monolith — contexts are logical boundaries, not separate deployables.
 
 **Candidates** — CVthèque and candidate lifecycle.
-Owns: Candidate, `cvUrl`, `cvSummary`, `anonymizedProfile`, CandidateSoftware skills.
+Owns: Candidate, JobTitle reference, `cvUrl`, `cvSummary`, `anonymizedProfile`, CandidateSoftware skills, preferred contract types.
 Inbound: Application conversion (from Applications), CV extraction (from AI).
 Outbound: referenced by Pipeline (MissionCandidate), Missions (matching).
 
@@ -79,7 +103,7 @@ Inbound: always belongs to one Pharmacy.
 Outbound: optional Mission interlocutor, ActivityLog, Document.
 
 **Missions** — staffing needs and mission lifecycle.
-Owns: Mission, Mission status, Mission referent, salary/planning/contract fields.
+Owns: Mission, JobTitle reference, Mission status, Mission referent, salary/planning/contract fields.
 Outbound: references Pharmacy and optional Contact; optional JobOffer child; matching requests to AI.
 
 **Pipeline** — candidate progression on missions.
@@ -103,8 +127,12 @@ Cross-cutting: reads Candidates, Pharmacies, Missions; writes derived fields (cv
 
 **Auth** — internal users and access.
 Owns: User, UserRole (RECRUTEUR | ADMIN), sessions.
-Provides: Referent identity for Candidates and Missions. All recruiters see all records — role gates admin config only.
+Provides: Referent identity for Candidates and Missions. Admin config includes JobTitle referential and compatibility matrix. All recruiters see all records — role gates admin config only.
 
 ### Cross-cutting
+
+**Soft delete**:
+Marking a record as deleted without physical removal. The only deletion mechanism in the CRM UI. Soft-deleted records are hidden from all users — no restore UI in V2 (script only).
+_Avoid_: Suppression définitive, purge (in UI context), archivage, corbeille
 
 **ActivityLog** and **Document** are polymorphic records spanning Candidates, Pharmacies, Contacts, and Missions — not standalone contexts. Each entry belongs to exactly one entity in one of those four contexts.

@@ -104,14 +104,6 @@ enum UserRole {
   ADMIN
 }
 
-enum JobTitle {
-  PHARMACIEN
-  PREPARATEUR
-  ETUDIANT_PHARMA
-  RAYONNISTE
-  AUTRE
-}
-
 enum PharmacyType {
   INDEPENDANTE
   CLINIQUE
@@ -145,14 +137,6 @@ enum MissionStatus {
   ENTRETIEN_EN_COURS
   POURVU
   ANNULEE
-}
-
-enum PipelineStageType {
-  NOUVEAU
-  CONTACTE
-  ENTRETIEN
-  PROPOSITION
-  PLACE
 }
 
 enum ActivityType {
@@ -288,6 +272,28 @@ model PipelineStage {
   missionCandidates MissionCandidate[]
 }
 
+model JobTitle {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  candidates   Candidate[]
+  missions     Mission[]
+  applications Application[]
+  missionCompatibilities JobTitleCompatibility[] @relation("MissionJobTitle")
+  acceptedInCompatibilities JobTitleCompatibility[] @relation("AcceptedCandidateJobTitle")
+}
+
+model JobTitleCompatibility {
+  missionJobTitleId   String
+  candidateJobTitleId String
+
+  missionJobTitle   JobTitle @relation("MissionJobTitle", fields: [missionJobTitleId], references: [id], onDelete: Cascade)
+  candidateJobTitle JobTitle @relation("AcceptedCandidateJobTitle", fields: [candidateJobTitleId], references: [id], onDelete: Cascade)
+
+  @@id([missionJobTitleId, candidateJobTitleId])
+}
+
 // ─── Candidates ───────────────────────────────────────────────
 
 model Candidate {
@@ -299,7 +305,7 @@ model Candidate {
   address           String?
   city              String?
   postalCode        String?
-  jobTitle          JobTitle
+  jobTitleId        String
   mobilityRadiusKm  Int?
   mobilityNotes     String?
   availableFrom     DateTime?
@@ -312,10 +318,21 @@ model Candidate {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  referent   User               @relation("ReferentCandidates", fields: [referentId], references: [id])
+  referent   User                        @relation("ReferentCandidates", fields: [referentId], references: [id])
+  jobTitle   JobTitle                    @relation(fields: [jobTitleId], references: [id])
   softwares  CandidateSoftware[]
+  contractPreferences CandidateContractPreference[]
   missions   MissionCandidate[]
   activities ActivityLog[]      @relation("CandidateActivities")
+}
+
+model CandidateContractPreference {
+  candidateId  String
+  contractType ContractType
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@id([candidateId, contractType])
 }
 
 model CandidateSoftware {
@@ -388,6 +405,7 @@ model Mission {
   pharmacyId       String
   contactId        String?
   referentId       String
+  jobTitleId       String
   title            String
   description      String?
   contractType     ContractType
@@ -408,6 +426,7 @@ model Mission {
   pharmacy   Pharmacy           @relation(fields: [pharmacyId], references: [id])
   contact    Contact?           @relation(fields: [contactId], references: [id])
   referent   User               @relation("ReferentMissions", fields: [referentId], references: [id])
+  jobTitle   JobTitle           @relation(fields: [jobTitleId], references: [id])
   candidates MissionCandidate[]
   jobOffer   JobOffer?
   activities ActivityLog[]      @relation("MissionActivities")
@@ -456,15 +475,17 @@ model Application {
   email       String
   phone       String?
   city        String?
-  jobTitle    JobTitle?
+  jobTitleId  String?
   cvUrl       String?
   message     String?
   status      ApplicationStatus @default(EN_ATTENTE)
   candidateId String?           // lié si acceptée et converti
+  deletedAt   DateTime?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
   jobOffer  JobOffer   @relation(fields: [jobOfferId], references: [id])
+  jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
   candidate Candidate? @relation(fields: [candidateId], references: [id])
 }
 
@@ -528,7 +549,9 @@ User (RECRUTEUR | ADMIN)
   └── auteur de N ActivityLog
 
 Candidate
+  ├── 1 JobTitle (référentiel administrable)
   ├── N CandidateSoftware → Software
+  ├── N CandidateContractPreference → ContractType (préférences matching)
   ├── N MissionCandidate (stageId) → Mission
   ├── N ActivityLog (historique)
   ├── N Document
@@ -550,6 +573,7 @@ Contact
 
 Mission
   ├── 1 Pharmacy
+  ├── 1 JobTitle (référentiel administrable)
   ├── 1? Contact (interlocuteur)
   ├── 1 User (référent)
   ├── N MissionCandidate → Candidate (avec PipelineStage)
@@ -568,6 +592,12 @@ Application (candidature site)
 PipelineStage (administrable)
   └── N MissionCandidate
 
+JobTitle (administrable)
+  ├── N Candidate
+  ├── N Mission
+  ├── N Application
+  └── N JobTitleCompatibility (matrice mission → candidats acceptés)
+
 ActivityLog (polymorphe)
   └── lié à 1 entité parmi : Candidate | Pharmacy | Contact | Mission
 
@@ -581,9 +611,10 @@ Document (polymorphe)
 
 - Stratégie : email/password (Argon2id), sessions DB
 - `RECRUTEUR` — CRUD candidats/pharmacies/contacts/missions + visibilité globale
-- `ADMIN` — tout RECRUTEUR + gestion utilisateurs + config pipeline + config logiciels + config groupements
-- Soft delete : `deletedAt` sur `User`, `Candidate`, `Pharmacy`, `Contact`, `Mission`, `JobOffer`
+- `ADMIN` — tout RECRUTEUR + gestion utilisateurs + config pipeline + config logiciels + config groupements + config métiers (matrice compatibilité)
+- Soft delete : `deletedAt` sur `User`, `Candidate`, `Pharmacy`, `Contact`, `Mission`, `JobOffer`, `Application`
 - Visibilité : tous les recruteurs voient tout — `referentId` = responsabilité, pas restriction
+- Réassignation : tout RECRUTEUR peut modifier `referentId` sur Candidate et Mission
 
 ---
 
@@ -609,7 +640,7 @@ Admin          (icon: Settings)     — ADMIN uniquement
 - Onglet **Candidatures reçues** (icon: Inbox) — candidatures webhook Webflow en attente
 
 #### `/candidats/[id]`
-1. **Profil** — coordonnées, métier, logiciels, mobilité, disponibilité
+1. **Profil** — coordonnées, métier, logiciels, mobilité, disponibilité ; **bandeau profil incomplet** si champs matching manquants (`city`, `postalCode`, `mobilityRadiusKm`, `availableFrom`) — informatif, ne bloque pas les actions
 2. **Historique** — timeline ActivityLog filtrables par ActivityType
 3. **Missions** — missions sur lesquelles le candidat est positionné + étape + matching inversé
 4. **Documents** — CV · résumé IA · dossier anonymisé · documents divers
@@ -660,6 +691,7 @@ Admin          (icon: Settings)     — ADMIN uniquement
 - `/admin/pipeline` — CRUD PipelineStage + drag-and-drop
 - `/admin/logiciels` — CRUD Software
 - `/admin/groupements` — CRUD Groupement
+- `/admin/metiers` — CRUD JobTitle + matrice de compatibilité (métiers mission → métiers candidats acceptés)
 - `/admin/utilisateurs` — CRUD User + rôles
 
 ---
@@ -684,9 +716,10 @@ const CvExtractionSchema = z.object({
   email:           z.string().email().optional(),
   phone:           z.string().optional(),
   city:            z.string().optional(),
-  jobTitle:        z.nativeEnum(JobTitle).optional(),
-  softwares:       z.array(z.string()).optional(),
-  availableFrom:   z.string().datetime().optional(),
+  jobTitle:                z.string().optional(), // résolu vers JobTitle référentiel à la revue
+  softwares:             z.array(z.string()).optional(),
+  preferredContractTypes: z.array(z.nativeEnum(ContractType)).optional(),
+  availableFrom:           z.string().datetime().optional(),
   mobilityNotes:   z.string().optional(),
   experienceNotes: z.string().optional(),
 })
@@ -712,10 +745,11 @@ const CvExtractionSchema = z.object({
 
 ```
 Phase 1 — Pré-filtrage déterministe (zéro IA) :
-  - jobTitle compatible
-  - mobilityRadiusKm couvre la distance Candidate ↔ Pharmacy
-  - availableFrom ≤ mission.startDate
-  - contractType dans les préférences candidat
+  - jobTitle compatible via `JobTitleCompatibility` (mission.jobTitleId → candidate.jobTitleId)
+  - mobilityRadiusKm couvre la distance Candidate ↔ Pharmacy (`mobilityRadiusKm` null → défaut 30 km)
+  - distance : exige `city` + `postalCode` sur Candidate **et** Pharmacy — si manquant, paire exclue du pré-filtrage
+  - availableFrom ≤ mission.startDate (`availableFrom` null → disponible immédiatement)
+  - contractType ∈ preferredContractTypes du candidat (vide = aucun filtre contractType)
 
 Phase 2 — Scoring Gemini Flash-Lite :
   - Input : fiche mission + liste candidats pré-filtrés (max 20)
@@ -782,8 +816,11 @@ Candidat soumet formulaire site Webflow
 → validation signature Webflow (HMAC)
 → création Application { status: EN_ATTENTE }
 → dédoublonnage : matching email OU (prénom + nom + téléphone)
-  → si match trouvé : alerte recruteur "Candidat existant détecté"
+  → si match Candidate existant : alerte « Candidat existant détecté »
     → recruteur choisit : fusionner | créer quand même
+    → **fusionner** : écran de revue diff (champs Candidate vs Application, comme extraction CV) → validation → `Application.candidateId` lié, pas d'écrasement sans revue
+    → **créer quand même** : nouvelle Application indépendante ; à l'acceptation, nouveau Candidate créé même si doublon
+  → si match autre Application EN_ATTENTE : alerte informative seulement — **pas de regroupement**, chaque soumission reste une Application distincte
   → si pas de match : Application créée sans candidateId
 
 Acceptation :
@@ -792,7 +829,7 @@ Acceptation :
 → Application.status = ACCEPTEE
 
 Refus :
-→ Application.status = REFUSEE (soft, gardé pour stats)
+→ Application.status = REFUSEE (conservée pour stats, supprimable via soft delete)
 ```
 
 ---
@@ -801,17 +838,44 @@ Refus :
 
 ### Config admin (`/admin/pipeline`)
 - CRUD PipelineStage + drag-and-drop (`position: Int`)
-- Étapes par défaut : `Nouveau | Contacté | Entretien | Proposition | Placé`
+- Étapes par défaut : `Nouveau | Contacté | Entretien | Proposition | Placé | Pas retenu`
+
+### Seeds JobTitle + matrice compatibilité (défaut)
+
+| JobTitle | Candidats acceptés |
+|----------|-------------------|
+| Pharmacien | Pharmacien |
+| Préparateur | Préparateur, Étudiant pharma |
+| Étudiant pharma | Étudiant pharma |
+| Rayoniste | Rayoniste |
+| Autre | Pharmacien, Préparateur, Étudiant pharma, Rayoniste, Autre |
 
 ### Kanban CVthèque (`/candidats` onglet CVthèque vue Kanban)
 - Colonnes = PipelineStage ordonnés
-- Carte = candidat + **toutes les missions actives** (liste des MissionCandidate en cours, sans notion de « mission courante »)
-- Drag = mutation `MissionCandidate.stageId` (si plusieurs missions actives : sélecteur de mission dans la carte avant drag, ou drag contextuel par mission affichée)
+- Carte = candidat + **missions actives** uniquement :
+  - `Mission.status` ∉ {POURVU, ANNULEE}
+  - `MissionCandidate.stage` ∉ {Placé, Pas retenu}
+- Drag = mutation `MissionCandidate.stageId` — **drag par mission** : chaque mission listée sur la carte a son propre handle draggable ; le drop ne met à jour que cette MissionCandidate
 
 ### Kanban Mission (`/missions/[id]` onglet Pipeline)
 - Colonnes = PipelineStage ordonnés
 - Cartes = candidats positionnés sur cette mission
 - Drag = mutation `MissionCandidate.stageId`
+
+### Passage Mission → `POURVU` ou `ANNULEE`
+
+```
+POURVU :
+  Recruteur passe Mission.status = POURVU et désigne le candidat placé
+  → candidat placé : MissionCandidate.stageId = stage « Placé »
+  → tous les autres MissionCandidate : stageId = stage « Pas retenu »
+
+ANNULEE :
+  Recruteur passe Mission.status = ANNULEE
+  → tous les MissionCandidate : stageId = stage « Pas retenu »
+
+Dans les deux cas : mission sort des kanbans actifs (liste + CVthèque) — historique pipeline conservé en lecture
+```
 
 ### Kanban Missions (`/missions` onglet Kanban)
 - Colonnes = MissionStatus (6 colonnes fixes)
@@ -899,8 +963,9 @@ Logo · Palette · Typographie · Boutons · Badges · Inputs · Sidebar · Kanb
 
 - Base légale : intérêt légitime (candidats ayant fourni volontairement leurs données)
 - **⚠️ Relecture juridique obligatoire avant mise en production**
-- Soft delete sur toutes les entités sensibles
-- Purge physique scriptable séparément si juriste l'exige
+- **Soft delete** (`deletedAt`) = seul mécanisme de suppression dans l'app V2
+- Enregistrements soft-deleted **masqués pour tous** en UI — pas de filtre ni restauration V2 ; restauration éventuelle via script CLI uniquement
+- **Purge physique** (droit à l'oubli, cascade DB + Vercel Blob) = script CLI hors produit — pas d'UI V2
 
 ---
 
@@ -910,7 +975,7 @@ Logo · Palette · Typographie · Boutons · Badges · Inputs · Sidebar · Kanb
 1. **Design System** — tokens Tailwind v4 + atoms/molecules Medijob
 2. **Page `/design-system`** — validation visuelle 12 sections
 3. **Auth** — NextAuth v5 email/password + middleware
-4. **Schema Prisma** — migrations + seeds (PipelineStage × 5, Software × 8)
+4. **Schema Prisma** — migrations + seeds (PipelineStage × 6, Software × 8, JobTitle × 5 + matrice compatibilité)
 
 ### Bloc 1 — Module Candidats (issues 5-9)
 5. Candidats — liste + kanban
@@ -945,7 +1010,7 @@ Logo · Palette · Typographie · Boutons · Badges · Inputs · Sidebar · Kanb
 26. Assistant IA — chat + raccourcis
 
 ### Bloc 6 — Admin & finitions (issues 27-30)
-27. Admin pipeline + logiciels + groupements
+27. Admin pipeline + logiciels + groupements + métiers (matrice)
 28. Admin utilisateurs
 29. Recherche globale
 30. Soft delete UI + rapports assistant
