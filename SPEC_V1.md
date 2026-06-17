@@ -1,10 +1,26 @@
 # SPEC_V1.md — CRM Recrutement Pharma (Module Opérationnel)
 
-> **Statut** : Validé par interview — prêt pour handoff Cursor  
+> **Statut** : Validé par interview + `/grill-with-docs` (2026-06-17) — prêt pour handoff Cursor  
 > **Client** : Medijob (agence de recrutement pharmacie)  
 > **Périmètre** : Module Opérationnel uniquement (Candidats, Pharmacies, Contacts, Missions)  
 > **Modules futurs** : Facturation/Devis, Dashboard, Planning — specs séparées  
-> **Usage** : Mono-instance, interne agence, quelques recruteurs
+> **Usage** : Mono-instance, interne agence, quelques recruteurs  
+> **Glossaire domaine** : `CONTEXT.md` — **ADRs** : `docs/adr/0001` à `0004`
+
+### Changements `/grill-with-docs` (2026-06-17)
+
+| Sujet | Avant | Après |
+|-------|-------|-------|
+| Contact ↔ Pharmacie | 1-N (`pharmacyId`) | N-N via `ContactPharmacy` (ADR 0001) |
+| `ContractType` | CDI, CDD, REMPLACEMENT, VACATION | CDI, CDD, REMPLACEMENT (ADR 0002) |
+| Disponibilité candidat | `availableFrom` seul | + `CandidateStatus` enum (ADR 0003) |
+| Kanban candidats | Global sur `/candidats` | Supprimé — kanban par mission et par fiche candidat |
+| Mission tarification | Absente | `candidateRate`, `clientRate`, `plannedHours`, marge calculée |
+| Mission référent | Absent | `referentId` obligatoire |
+| `MissionStatus` | `EN_COURS` par défaut | `OUVERTE` par défaut, `EN_COURS` au placement (ADR 0004) |
+| Resend | Optionnel | Obligatoire (dossier anonymisé + reset password) |
+| Recherche | Globale | Filtre local par liste |
+| Soft delete | Non précisé | Irréversible UI, cascade missions si pharmacie supprimée |
 
 ---
 
@@ -23,6 +39,7 @@
 | PDF export | `@react-pdf/renderer` |
 | IA extraction | Gemini Flash-Lite (provider abstrait `EXTRACTION_PROVIDER`) |
 | Enrichissement SIRET | `recherche-entreprises.api.gouv.fr` (gratuit, sans clé) |
+| Emails transactionnels | Resend (obligatoire V1) |
 | Icons | `lucide-react` |
 
 ---
@@ -36,8 +53,8 @@ apps/web/src/
 │   ├── (auth)/                 # login
 │   ├── (dashboard)/
 │   │   ├── candidats/
-│   │   │   ├── page.tsx        # liste + vue kanban
-│   │   │   └── [id]/page.tsx   # fiche détail
+│   │   │   ├── page.tsx        # liste uniquement (pas de kanban global)
+│   │   │   └── [id]/page.tsx   # fiche détail + kanban missions
 │   │   ├── pharmacies/
 │   │   │   ├── page.tsx
 │   │   │   └── [id]/page.tsx
@@ -97,6 +114,13 @@ enum JobTitle {
   AUTRE
 }
 
+enum CandidateStatus {
+  DISPONIBLE
+  EN_MISSION
+  SOUS_PREAVIS
+  INACTIF
+}
+
 enum PharmacyType {
   INDEPENDANTE
   GROUPE
@@ -120,10 +144,10 @@ enum ContractType {
   CDI
   CDD
   REMPLACEMENT
-  VACATION
 }
 
 enum MissionStatus {
+  OUVERTE
   EN_COURS
   TERMINEE
   ANNULEE
@@ -161,35 +185,37 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  candidates CandidateEvent[]
-  referents  Candidate[]      @relation("ReferentCandidates")
+  candidateEvents  CandidateEvent[]
+  referentCandidates Candidate[] @relation("ReferentCandidates")
+  referentMissions   Mission[]   @relation("ReferentMissions")
   accounts   Account[]
   sessions   Session[]
 }
 
 model Candidate {
-  id               String    @id @default(cuid())
-  firstName        String
-  lastName         String
-  email            String?
-  phone            String?
-  address          String?
-  city             String?
-  postalCode       String?
-  jobTitle         JobTitle
-  mobilityRadiusKm Int?
-  mobilityNotes    String?
-  availableFrom    DateTime?
-  cvUrl            String?
-  cvSummary        String?
+  id                String          @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String?
+  phone             String?
+  address           String?
+  city              String?
+  postalCode        String?
+  jobTitle          JobTitle
+  status            CandidateStatus @default(DISPONIBLE)
+  mobilityRadiusKm  Int?
+  mobilityNotes     String?
+  availableFrom     DateTime?
+  cvUrl             String?
+  cvSummary         String?
   anonymizedProfile String?
-  notes            String?
-  referentId       String
-  deletedAt        DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  notes             String?
+  referentId        String
+  deletedAt         DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
-  referent   User               @relation("ReferentCandidates", fields: [referentId], references: [id])
+  referent   User                @relation("ReferentCandidates", fields: [referentId], references: [id])
   softwares  CandidateSoftware[]
   events     CandidateEvent[]
   missions   MissionCandidate[]
@@ -245,26 +271,35 @@ model Pharmacy {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
-  contacts Contact[]
+  contacts ContactPharmacy[]
   missions Mission[]
 }
 
 model Contact {
-  id         String      @id @default(cuid())
-  pharmacyId String
-  firstName  String
-  lastName   String
-  email      String?
-  phone      String?
-  role       ContactRole @default(AUTRE)
-  isPrimary  Boolean     @default(false)
-  notes      String?
-  deletedAt  DateTime?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id        String      @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String?
+  phone     String?
+  role      ContactRole @default(AUTRE)
+  notes     String?
+  deletedAt DateTime?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
-  pharmacy Pharmacy  @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
-  missions Mission[]
+  pharmacies ContactPharmacy[]
+  missions   Mission[]
+}
+
+model ContactPharmacy {
+  contactId  String
+  pharmacyId String
+  isPrimary  Boolean @default(false)
+
+  contact  Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  pharmacy Pharmacy @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, pharmacyId])
 }
 
 model PipelineStage {
@@ -278,21 +313,26 @@ model PipelineStage {
 }
 
 model Mission {
-  id           String        @id @default(cuid())
-  pharmacyId   String
-  contactId    String?
-  title        String
-  contractType ContractType
-  startDate    DateTime
-  endDate      DateTime?
-  status       MissionStatus @default(EN_COURS)
-  notes        String?
-  deletedAt    DateTime?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id            String        @id @default(cuid())
+  pharmacyId    String
+  contactId     String?
+  referentId    String
+  title         String
+  contractType  ContractType
+  candidateRate Decimal?
+  clientRate    Decimal?
+  plannedHours  Int?
+  startDate     DateTime
+  endDate       DateTime?
+  status        MissionStatus @default(OUVERTE)
+  notes         String?
+  deletedAt     DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   pharmacy   Pharmacy           @relation(fields: [pharmacyId], references: [id])
   contact    Contact?           @relation(fields: [contactId], references: [id])
+  referent   User               @relation("ReferentMissions", fields: [referentId], references: [id])
   candidates MissionCandidate[]
 }
 
@@ -350,29 +390,64 @@ model VerificationToken {
 
 ```
 User (RECRUTEUR | ADMIN)
-  └── référent de N Candidates (referentId)
+  ├── référent de N Candidates (referentId)
+  └── référent de N Missions (referentId)
 
 Candidate
-  ├── N CandidateSoftware → Software (table administrable via admin)
-  ├── N CandidateEvent (historique typé, enum fixe)
+  ├── status: CandidateStatus (géré manuellement)
+  ├── N CandidateSoftware → Software (liste admin uniquement)
+  ├── N CandidateEvent (historique typé, éditable par l'auteur)
   └── N MissionCandidate (stageId) → Mission
 
 Pharmacy
-  ├── N Contacts (1 isPrimary par pharmacie)
+  ├── N ContactPharmacy → Contact (isPrimary par pharmacie)
   └── N Missions
+
+Contact
+  ├── N ContactPharmacy → Pharmacy (many-to-many — ADR 0001)
+  └── N Missions (en tant qu'interlocuteur)
 
 Mission
   ├── 1 Pharmacy
   ├── 1? Contact (interlocuteur)
+  ├── 1 User (referentId — responsabilité, pas restriction)
+  ├── tarification : candidateRate, clientRate, plannedHours
+  │   └── marge agence = clientRate − candidateRate (calculée, non stockée)
   └── N MissionCandidate → Candidate (avec PipelineStage)
 
 PipelineStage (administrable — position ordonnée)
   └── N MissionCandidate
 
 ⚠️  MissionCandidate est la table pivot centrale :
-    elle porte stageId et alimente à la fois
-    le kanban global Candidats ET le kanban par Mission.
+    elle porte stageId. Un candidat peut être sur plusieurs missions
+    simultanément, à des étapes différentes.
+
+⚠️  Pas de kanban global des candidats (/candidats).
+    Pipeline visible sur /missions/[id] et /candidats/[id] onglet Missions.
 ```
+
+### Sémantique des statuts
+
+**PharmacyStatus** — géré manuellement par le recruteur, jamais calculé depuis les missions.
+
+**CandidateStatus** — géré manuellement :
+- `DISPONIBLE` — candidat disponible pour placement
+- `EN_MISSION` — candidat actuellement en poste
+- `SOUS_PREAVIS` — en fin de mission, date future dans `availableFrom`
+- `INACTIF` — hors circuit actif
+
+**MissionStatus** — géré manuellement :
+- `OUVERTE` — mission en cours de recrutement (défaut à la création)
+- `EN_COURS` — candidat activement en poste (passage manuel lors du placement)
+- `TERMINEE` — mission réellement terminée (clôture manuelle)
+- `ANNULEE` — mission n'a pas abouti
+
+### Action « Placer »
+
+Déclenchée manuellement par le recruteur sur une mission. Effets simultanés :
+1. `MissionCandidate.stageId` → étape « Placé » du pipeline
+2. `Candidate.status` → `EN_MISSION`
+3. `Mission.status` → `EN_COURS`
 
 ---
 
@@ -380,9 +455,14 @@ PipelineStage (administrable — position ordonnée)
 
 - Stratégie : email/password (Argon2id), sessions DB
 - `RECRUTEUR` — CRUD candidats/pharmacies/contacts/missions + visibilité globale
-- `ADMIN` — tout RECRUTEUR + gestion utilisateurs + config pipeline + config logiciels
+- `ADMIN` — tout RECRUTEUR + gestion utilisateurs + config pipeline + config logiciels. Plusieurs admins possibles. Un admin peut aussi être référent d'un candidat ou d'une mission.
 - Soft delete : `deletedAt: DateTime?` sur `User`, `Candidate`, `Pharmacy`, `Contact`, `Mission`
-- Visibilité : tous les recruteurs voient tous les candidats — `referentId` = responsabilité, pas restriction
+  - Irréversible depuis l'interface (pas de restauration UI)
+  - Supprimer une `Pharmacy` → soft-delete en cascade de ses `Mission`s associées
+  - Supprimer un `User` référent → ses candidats deviennent orphelins ; un admin doit les réassigner manuellement
+- Visibilité : tous les recruteurs voient toutes les données — `referentId` = responsabilité, pas restriction
+- Référent candidat : tout recruteur peut réassigner `referentId` après création
+- Emails transactionnels (Resend, obligatoire) : réinitialisation mot de passe
 
 ---
 
@@ -401,38 +481,42 @@ Admin        (icon: Settings)  — ADMIN uniquement
 ### Pages & onglets
 
 #### `/candidats`
-- Onglet **Liste** (icon: List) — colonnes : nom, métier, ville, dpt, date ajout, référent, actions
-- Onglet **Kanban** (icon: LayoutGrid) — colonnes = PipelineStage ordonnés, drag-and-drop
+- Vue **Liste** uniquement — colonnes : nom, métier, statut (`CandidateStatus`), ville, dpt, date ajout, référent, actions
+- Barre de recherche locale : nom, ville, métier (filtrage temps réel côté client)
+- Pas d'onglet Kanban global
 
 #### `/candidats/[id]`
-1. **Profil** — coordonnées, métier, logiciels, mobilité, disponibilité
-2. **Historique** — timeline CandidateEvent filtrables par EventType
-3. **Missions** — missions sur lesquelles le candidat est positionné + étape par mission
-4. **Documents** — CV (aperçu/dl) · résumé IA · dossier anonymisé (aperçu + export PDF)
+1. **Profil** — coordonnées, métier, statut, logiciels, mobilité, disponibilité (`availableFrom`)
+2. **Historique** — timeline `CandidateEvent` filtrable par `EventType` (éditable par l'auteur)
+3. **Missions** — kanban des missions du candidat (colonnes = `PipelineStage`, cartes = missions) + drag-and-drop `stageId`
+4. **Documents** — CV (aperçu/dl) · résumé IA (éditable) · dossier anonymisé (aperçu + export PDF + envoi email)
 
 #### `/pharmacies`
 - Vue liste — colonnes : nom, ville, type, statut, contact principal, nb missions
+- Barre de recherche locale : nom, ville, SIRET
 
 #### `/pharmacies/[id]`
-1. **Infos** — tous les champs + lookup SIRET
-2. **Contacts** — liste des contacts de cette pharmacie
+1. **Infos** — tous les champs + lookup SIRET (disponible à tout moment, confirmation champ par champ)
+2. **Contacts** — contacts rattachés via `ContactPharmacy` (gestion `isPrimary`)
 3. **Missions** — missions liées
 4. **Notes** — notes libres
 
 #### `/contacts`
-- Vue liste — colonnes : nom, pharmacie, rôle, téléphone, email
+- Vue liste — colonnes : nom, pharmacie(s), rôle, téléphone, email
+- Barre de recherche locale : nom, pharmacie associée
 
 #### `/contacts/[id]`
-1. **Infos** — tous les champs
+1. **Infos** — tous les champs + pharmacies rattachées (many-to-many)
 2. **Missions** — missions où ce contact est l'interlocuteur
 
 #### `/missions`
-- Onglet **Liste** — colonnes : titre, pharmacie, contrat, dates, statut, nb candidats
-- Onglet **Kanban** — colonnes = MissionStatus
+- Onglet **Liste** — colonnes : titre, pharmacie, contrat, taux client, heures prévues, statut, nb candidats, référent
+- Onglet **Kanban** — colonnes = `MissionStatus` (`OUVERTE` / `EN_COURS` / `TERMINEE` / `ANNULEE`)
+- Barre de recherche locale : titre, pharmacie
 
 #### `/missions/[id]`
-1. **Infos** — tous les champs
-2. **Pipeline** — kanban des candidats positionnés sur cette mission (colonnes = PipelineStage)
+1. **Infos** — tous les champs + tarification (`candidateRate`, `clientRate`, `plannedHours`, marge calculée)
+2. **Pipeline** — kanban des candidats positionnés sur cette mission (colonnes = `PipelineStage`) + suggestion candidats par mobilité
 3. **Historique** — log des actions
 
 ### Pages Admin (`/admin/*`) — ADMIN uniquement
@@ -451,7 +535,9 @@ Upload PDF → Vercel Blob (temporaire)
 → tRPC mutation → provider abstrait (EXTRACTION_PROVIDER=gemini|mock)
 → Gemini Flash-Lite → JSON brut
 → validation Zod stricte (CvExtractionSchema)
-→ écran de revue humaine (champs pré-remplis éditables)
+→ écran de relecture humaine obligatoire (champs pré-remplis éditables)
+→ si email existant en base : avertissement doublon, le recruteur choisit
+→ logiciels suggérés par l'IA : confirmés depuis la liste admin uniquement
 → confirmation recruteur → création Candidate en base
 ```
 
@@ -485,16 +571,20 @@ interface ExtractionProvider {
 - Déclencheur : bouton "Générer le résumé" — onglet Documents
 - Input : notes + expérience brute CV + métier + logiciels
 - Output : markdown sauvegardé dans `candidate.cvSummary`
+- Éditable manuellement par le recruteur après génération
+- Prérequis obligatoire avant génération du dossier anonymisé
 - Validation : `z.object({ summary: z.string().min(1) })`
 - Modèle : Gemini Flash-Lite
 
 ### 7.3 Dossier anonymisé
 
-- Déclencheur : bouton "Générer le dossier" — onglet Documents
+- Déclencheur : bouton "Générer le dossier" — onglet Documents (requiert `cvSummary` existant)
 - Input : cvSummary + métier + logiciels + mobilité + disponibilité (zéro PII)
 - Output : markdown sauvegardé dans `candidate.anonymizedProfile`
+- Re-génération manuelle si le profil change après génération (pas d'auto-update)
 - Aperçu : modale dans l'UI
 - Export : PDF via `@react-pdf/renderer` (logo Medijob + mise en page sobre)
+- Envoi : email direct à la pharmacie via Resend (depuis l'app)
 - Modèle : Gemini Flash-Lite
 
 ---
@@ -503,12 +593,15 @@ interface ExtractionProvider {
 
 API : `https://recherche-entreprises.api.gouv.fr/search` — gratuite, sans clé, données publiques
 
+Disponible à tout moment depuis la fiche pharmacie (création et édition).
+
 ```
 Recruteur saisit nom OU SIRET
 → tRPC query server-side → API Sirene
 → liste de suggestions
-→ sélection → pré-remplissage : nom, adresse, ville, CP, forme juridique
+→ sélection → pré-remplissage proposé : nom, adresse, ville, CP, forme juridique
 → TVA calculée : clé = (12 + 3 × (SIREN % 97)) % 97
+→ si champs déjà remplis : confirmation champ par champ avant écrasement
 → validation recruteur → sauvegarde
 ```
 
@@ -517,18 +610,24 @@ Recruteur saisit nom OU SIRET
 ## 9. Pipeline Kanban
 
 ### Config admin (`/admin/pipeline`)
-- CRUD PipelineStage avec drag-and-drop (`position: Int`)
+- CRUD `PipelineStage` avec drag-and-drop (`position: Int`)
 - Étapes par défaut à l'init : `Nouveau | Contacté | Entretien | Proposition | Placé`
 
-### Kanban global (`/candidats` onglet Kanban)
-- Colonnes = PipelineStage ordonnés par `position`
-- Carte = candidat + mission active courante
-- Drag = mutation `MissionCandidate.stageId`
-
 ### Kanban mission (`/missions/[id]` onglet Pipeline)
-- Colonnes = PipelineStage ordonnés
+- Colonnes = `PipelineStage` ordonnés par `position`
 - Cartes = candidats positionnés sur cette mission
 - Drag = mutation `MissionCandidate.stageId`
+- Suggestion candidats : filtrage par mobilité (`mobilityRadiusKm` couvre la pharmacie)
+
+### Kanban candidat (`/candidats/[id]` onglet Missions)
+- Colonnes = `PipelineStage` ordonnés par `position`
+- Cartes = missions sur lesquelles le candidat est positionné
+- Drag = mutation `MissionCandidate.stageId`
+
+### Règles
+- Un candidat peut être sur plusieurs missions simultanément, à des étapes différentes
+- Les événements `CandidateEvent` de type `MISSION` sont créés manuellement (pas auto-générés au positionnement)
+- Pas de kanban global sur `/candidats`
 
 ---
 
@@ -618,12 +717,20 @@ className="bg-(--color-surface) text-(--color-fg) border border-(--color-border)
 
 **Badges statuts** :
 ```tsx
-Disponible    → bg-(--color-accent-muted)  text-[#00503f]
-En cours      → bg-(--color-primary-muted) text-(--color-primary)
-Placé         → bg-green-100               text-green-800
-Inactif       → bg-red-100                 text-red-800
-Sous préavis  → bg-amber-100               text-amber-800
+// CandidateStatus
+DISPONIBLE    → bg-(--color-accent-muted)  text-[#00503f]
+EN_MISSION    → bg-(--color-primary-muted) text-(--color-primary)
+SOUS_PREAVIS  → bg-amber-100               text-amber-800
+INACTIF       → bg-red-100                 text-red-800
+
+// MissionStatus / PharmacyStatus
+OUVERTE       → bg-(--color-surface)       text-(--color-fg-muted) border border-(--color-border)
+EN_COURS      → bg-(--color-primary-muted) text-(--color-primary)
+TERMINEE      → bg-green-100               text-green-800
+ANNULEE       → bg-red-100                 text-red-800
 PROSPECT      → bg-(--color-surface)       text-(--color-fg-muted) border border-(--color-border)
+ACTIF         → bg-(--color-accent-muted)  text-[#00503f]
+INACTIF       → bg-red-100                 text-red-800
 ```
 
 **Cards** :
@@ -730,17 +837,17 @@ Doit afficher dans l'ordre, sur fond `--color-surface` :
 2. **Page `/design-system`** — démo visuelle complète (12 sections) avant toute page fonctionnelle
 
 ### Issues suivantes (ordre suggéré)
-3. Auth — NextAuth v5 email/password + middleware protection routes
-4. Schema Prisma complet + migrations + seeds (PipelineStage par défaut × 5)
-5. Module Candidats — liste + fiche + CRUD
-6. Upload CV + pipeline extraction IA (provider Gemini + écran revue)
-7. Module Pharmacies — liste + fiche + enrichissement SIRET
-8. Module Contacts — liste + fiche
-9. Module Missions — liste + fiche + MissionCandidate
-10. Kanban Pipeline (Candidats + Mission) + drag-and-drop
-11. Fonctions IA résumé + dossier anonymisé + export PDF
-12. Admin — pipeline config + logiciels + utilisateurs
-13. Soft delete UI + recherche globale
+3. Auth — NextAuth v5 email/password + middleware protection routes + reset password (Resend)
+4. Schema Prisma complet + migrations + seeds (`PipelineStage` par défaut × 5)
+5. Module Candidats — liste + fiche + CRUD + `CandidateStatus`
+6. Upload CV + pipeline extraction IA (provider Gemini + écran relecture obligatoire + détection doublon)
+7. Module Pharmacies — liste + fiche + enrichissement SIRET (lookup à tout moment)
+8. Module Contacts — liste + fiche + `ContactPharmacy` (many-to-many)
+9. Module Missions — liste + fiche + `MissionCandidate` + tarification + `referentId`
+10. Kanban Pipeline (mission + fiche candidat) + drag-and-drop + suggestion mobilité
+11. Fonctions IA résumé + dossier anonymisé + export PDF + envoi email Resend
+12. Admin — pipeline config + logiciels + utilisateurs + réassignation candidats orphelins
+13. Soft delete UI + recherche locale par liste
 
 ---
 
@@ -760,11 +867,12 @@ GEMINI_API_KEY=
 # Storage (CV upload)
 BLOB_READ_WRITE_TOKEN=
 
-# Email (optionnel V1)
+# Email (obligatoire V1)
 RESEND_API_KEY=
 ```
 
 ---
 
-*SPEC_V1.md — interview 20 questions validées + charte Medijob (couleurs inspectées).*  
-*Prêt pour : `/caveman` → `/grill-with-docs` → `/to-prd` → `/triage` → `/to-issues`*
+*SPEC_V1.md — interview initiale + `/grill-with-docs` (2026-06-17) + charte Medijob.*  
+*Glossaire : `CONTEXT.md` — ADRs : `docs/adr/0001` à `0004`*  
+*Prêt pour : `/caveman` → `/to-prd` → `/triage` → `/to-issues`*
