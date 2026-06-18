@@ -49,4 +49,10 @@ describe('missionRepository', () => {
     expect(await repo.findById(m.id)).toBeNull()
     expect((await repo.list()).some((x) => x.id === m.id)).toBe(false)
   })
+
+  it('searches missions by title, case-insensitive', async () => {
+    const created = await repo.create(newMission('Remplacement Titulaire'))
+    const results = await repo.search('titulaire')
+    expect(results.some((x) => x.id === created.id)).toBe(true)
+  })
 })

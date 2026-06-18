@@ -27,4 +27,10 @@ describe('pharmacyRepository', () => {
     expect(await repo.findById(p.id)).toBeNull()
     expect((await repo.list()).some((x) => x.id === p.id)).toBe(false)
   })
+
+  it('searches pharmacies by name, case-insensitive', async () => {
+    const created = await repo.create({ name: 'Grande Pharmacie Bellecour' })
+    const results = await repo.search('bellecour')
+    expect(results.some((x) => x.id === created.id)).toBe(true)
+  })
 })

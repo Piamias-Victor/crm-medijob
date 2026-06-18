@@ -9,6 +9,12 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
       db.mission.findFirst({ where: { id, ...NOT_DELETED } }),
     list: () =>
       db.mission.findMany({ where: NOT_DELETED, orderBy: { createdAt: 'desc' } }),
+    search: (term: string, limit = 8) =>
+      db.mission.findMany({
+        where: { ...NOT_DELETED, title: { contains: term, mode: 'insensitive' } },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+      }),
     softDelete: (id: string) =>
       db.mission.update({ where: { id }, data: { deletedAt: new Date() } }),
   }
