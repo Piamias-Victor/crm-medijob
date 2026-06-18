@@ -87,6 +87,24 @@ Voir `CLAUDE.md` — rappel : Prisma hors repositories interdit, RSC + `createCa
 
 Ne pas merger sans validation. Pas de handoff ni PR sans instruction explicite.
 
+**En fin de message** (travail prêt à tester) : donner à l'utilisateur le bloc « Commande de test » ci-dessous, copiable tel quel.
+
+---
+
+## Commande de test
+
+```bash
+cd /Users/victorpiamias/Desktop/Dev/ia/crm-medijob-issue-50
+pnpm install   # première fois uniquement
+pnpm dev
+```
+
+Puis ouvrir http://localhost:3000 — vérifier sidebar, nav, tokens Medijob.
+
+```bash
+pnpm test && pnpm lint && pnpm typecheck
+```
+
 ---
 
 ## Tests manuels

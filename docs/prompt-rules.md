@@ -92,7 +92,27 @@ Section **obligatoire** listant les étapes exactes pour valider le bon fonction
 
 Chaque étape doit être actionnable (navigation, clic, saisie, résultat attendu). Pas de formulations vagues.
 
-## Référence aux fichiers impactés
+### 8. Commande de test pour l'utilisateur
+
+Chaque prompt inclut une section **Commande de test** avec le bloc shell exact à copier-coller.
+
+L'agent **doit** fournir ce même bloc à l'utilisateur en fin de message quand le travail est prêt à tester (ou à chaque point de validation intermédiaire).
+
+Format :
+
+```markdown
+## Commande de test
+
+\`\`\`bash
+cd /Users/victorpiamias/Desktop/Dev/ia/crm-medijob-issue-{N}
+pnpm install   # première fois uniquement
+pnpm dev
+\`\`\`
+```
+
+- Chemin worktree : `/Users/victorpiamias/Desktop/Dev/ia/crm-medijob-issue-{N}`
+- Adapter `{N}` au numéro d'issue
+- Ajouter d'autres commandes si pertinent (`pnpm test`, URL à ouvrir, etc.)
 
 Le prompt référence **toujours** les fichiers impactés listés par `/grill` (ou par exploration ciblée si `/grill` n'a pas été lancé). Format :
 
