@@ -1,12 +1,19 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { makeCandidateProfileRepository } from './candidate-profile.repo'
+
+export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
 export function makeCandidateRepository(db: PrismaClient = defaultDb) {
+  const profile = makeCandidateProfileRepository(db)
+
   return {
     create: (data: Prisma.CandidateCreateInput) => db.candidate.create({ data }),
     findById: (id: string) =>
       db.candidate.findFirst({ where: { id, ...NOT_DELETED } }),
+    findProfileById: profile.findProfileById,
+    updateProfile: profile.updateProfile,
     list: () =>
       db.candidate.findMany({
         where: NOT_DELETED,
