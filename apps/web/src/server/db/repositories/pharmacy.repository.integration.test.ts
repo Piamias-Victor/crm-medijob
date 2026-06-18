@@ -41,6 +41,8 @@ describe('pharmacyRepository', () => {
     const [row] = (await repo.list()).filter((x) => x.id === p.id)
     expect(row).toMatchObject({ contacts: [], _count: { missions: 0 } })
     expect(row.groupement).toBeNull()
+  })
+
   it('searches pharmacies by name, case-insensitive', async () => {
     const created = await repo.create({ name: 'Grande Pharmacie Bellecour' })
     const results = await repo.search('bellecour')

@@ -23,6 +23,7 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         },
         orderBy: { lastName: 'asc' },
         take: limit,
+      }),
     listForKanban: () =>
       db.candidate.findMany({
         where: NOT_DELETED,
