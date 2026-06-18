@@ -21,7 +21,8 @@ Lire **uniquement** : ce prompt, `SPEC_V2.md` §2 + §12, issue #50. Pas le repo
 ## Setup Git
 
 1. Lire `docs/prompt-rules.md` et `docs/github-rules.md`
-2. Créer le worktree (travailler **exclusivement** dedans) :
+2. Handoffs bloquants : aucun (#50 = première issue)
+3. Créer le worktree (travailler **exclusivement** dedans) :
 
 ```bash
 git fetch origin
@@ -80,11 +81,11 @@ Voir `CLAUDE.md` — rappel : Prisma hors repositories interdit, RSC + `createCa
 
 **Uniquement quand l'utilisateur le demande** :
 
-1. Push : `git push -u origin feat/issue-50-bootstrap-nextjs-tokens-atoms`
-2. PR vers `dev` avec `Closes #50` dans le body
-3. **Pas de handoff** sauf instruction explicite de l'utilisateur (`/handoff`)
+1. Si `/handoff` : rédiger `docs/handoffs/HANDOFF_ISSUE_050.md` et committer **avec le code**
+2. Push : `git push -u origin feat/issue-50-bootstrap-nextjs-tokens-atoms`
+3. PR vers `dev` avec `Closes #50` — code + handoff dans la même PR
 
-Ne pas merger sans validation.
+Ne pas merger sans validation. Pas de handoff ni PR sans instruction explicite.
 
 ---
 

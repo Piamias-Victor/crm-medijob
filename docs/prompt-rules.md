@@ -46,9 +46,10 @@ Boucle Red → Green → Refactor. Écrire le test qui échoue, implémenter le 
 Instructions explicites de :
 
 1. Lire `docs/prompt-rules.md` et `docs/github-rules.md`
-2. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}`
-3. Créer le worktree Git (un seul worktree par issue)
-4. Travailler exclusivement dans le worktree
+2. **Lire les handoffs des issues bloquantes** — pour chaque issue dans `Blocked by`, consulter `docs/handoffs/HANDOFF_ISSUE_{NNN}.md` s'il existe (contexte, dette, points d'attention)
+3. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}`
+4. Créer le worktree Git (un seul worktree par issue)
+5. Travailler exclusivement dans le worktree
 
 ### 4. Contexte & périmètre
 
@@ -73,9 +74,9 @@ Rappel des règles non négociables (sans dupliquer `CLAUDE.md` en entier) :
 
 Quand demandé :
 
-1. Pusher sur la branche de feature (`origin`)
-2. Ouvrir une PR vers `dev` avec `Closes #{N}` dans le body
-3. Handoff (`docs/handoffs/HANDOFF_ISSUE_{NNN}.md`) — **seulement si l'utilisateur le demande**
+1. Si `/handoff` : rédiger `docs/handoffs/HANDOFF_ISSUE_{NNN}.md` et **committer avec le code** (même PR, jamais en local seul)
+2. Pusher sur la branche de feature (`origin`)
+3. Ouvrir une PR vers `dev` avec `Closes #{N}` dans le body — la PR doit inclure code + handoff
 
 ### 7. Tests manuels
 
@@ -105,11 +106,26 @@ Si la liste évolue en cours de session, mettre à jour le prompt avant le commi
 
 ## Handoffs
 
-Sur demande explicite de l'utilisateur uniquement — pas en fin de session automatique.
+### Lecture (début de session)
+
+Avant d'implémenter, l'agent **doit** lire les handoffs des issues listées dans `Blocked by` :
 
 ```
 docs/handoffs/HANDOFF_ISSUE_{NNN}.md
 ```
+
+S'il n'existe pas encore (première issue ou handoff pas déposé), continuer sans bloquer.
+
+### Rédaction (sur demande utilisateur)
+
+Sur instruction explicite (`/handoff`) — **pas automatique en fin de session**.
+
+```
+docs/handoffs/HANDOFF_ISSUE_{NNN}.md
+```
+
+- Committer et pusher **avec le code** dans la même PR pour assurer le suivi sur `dev`
+- L'agent suivant s'appuie sur ce fichier pour comprendre ce qui a été livré
 
 Contenu minimal :
 
