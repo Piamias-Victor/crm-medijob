@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Users } from 'lucide-react'
 import { Card } from '@/components/atoms/Card'
 import { Badge } from '@/components/atoms/Badge'
@@ -19,9 +20,13 @@ export function CvthequeList({ candidates }: { candidates: RawCandidate[] }) {
   }
 
   return (
-    <Card className="divide-y divide-border p-0">
+    <Card className="overflow-hidden p-0">
       {items.map((candidate) => (
-        <div key={candidate.id} className="flex items-center gap-3 p-3">
+        <Link
+          key={candidate.id}
+          href={`/candidats/${candidate.id}`}
+          className="flex items-center gap-3 border-b border-border px-4 py-3 transition-colors last:border-b-0 hover:bg-accent-muted/50"
+        >
           <Avatar name={candidate.name} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-fg">{candidate.name}</p>
@@ -33,7 +38,7 @@ export function CvthequeList({ candidates }: { candidates: RawCandidate[] }) {
             {candidate.referent ?? '—'}
           </span>
           <Badge variant="accent">{candidate.activeMissionCount} mission(s)</Badge>
-        </div>
+        </Link>
       ))}
     </Card>
   )

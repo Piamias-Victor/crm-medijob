@@ -18,6 +18,13 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
     findByEmailAny: (email: string) =>
       db.user.findUnique({ where: { email }, select: { id: true } }),
     findById: (id: string) =>
+      db.user.findFirst({ where: { id, ...NOT_DELETED } }),
+    listRecruiters: () =>
+      db.user.findMany({
+        where: { ...NOT_DELETED, role: { in: ['RECRUTEUR', 'ADMIN'] } },
+        orderBy: { name: 'asc' },
+        select: { id: true, name: true },
+      }),
       db.user.findFirst({
         where: { id, ...NOT_DELETED },
         select: { id: true, role: true },
