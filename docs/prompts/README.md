@@ -9,15 +9,17 @@ docs/prompts/
 
 ## Workflow
 
-1. **Créer** → `pending/PROMPT_ISSUE_{NNN}.md` (commit sur `dev` avant de lancer l'agent)
+1. **Créer** → `pending/PROMPT_ISSUE_{NNN}.md` (commit + push direct sur `dev`)
 2. **Lancer** → `Lis et exécute docs/prompts/pending/PROMPT_ISSUE_{NNN}.md`
-3. **Merger la PR** → déplacer `pending/` → `done/` (même nom de fichier)
+3. **Merger la PR issue** → déplacer `pending/` → `done/`
 
 ## État actuel
 
 | Dossier | Issues |
 |---------|--------|
-| `done/` | #50 · #51 · #52 · #53 · #54 · #59 · #76 · #77 |
-| `pending/` | #55 · #60 · #62 · #64 · #78 |
+| `done/` | #50–#55 · #59–#62 · #64 · #76–#78 |
+| `pending/` | #56 · #58 · #61 · #63 · #65 |
+
+> **Note** : #60 prompt en `done/` — code fiche pharmacy pas encore sur `dev` ; #61/#63 peuvent nécessiter shell `/pharmacies/[id]`.
 
 Voir : `docs/ISSUE_DEPENDENCIES.md`
