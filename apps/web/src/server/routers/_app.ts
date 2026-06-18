@@ -6,6 +6,7 @@ import { assistantRouter } from '@/server/routers/assistant'
 import { candidateRouter } from '@/server/routers/candidate'
 import { missionCandidateRouter } from '@/server/routers/mission-candidate'
 import { applicationRouter } from '@/server/routers/application'
+import { missionRouter } from '@/server/routers/mission'
 
 export const appRouter = router({
   health: healthRouter,
@@ -13,6 +14,7 @@ export const appRouter = router({
   pharmacy: pharmacyRouter,
   assistant: assistantRouter,
   candidate: candidateRouter,
+  mission: missionRouter,
   missionCandidate: missionCandidateRouter,
   application: applicationRouter,
 })
