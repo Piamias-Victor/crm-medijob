@@ -13,6 +13,21 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
       }),
+    listInbox: () =>
+      db.application.findMany({
+        where: { status: 'EN_ATTENTE', ...NOT_DELETED },
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          city: true,
+          createdAt: true,
+          jobTitle: { select: { name: true } },
+          jobOffer: { select: { title: true } },
+        },
+      }),
     softDelete: (id: string) =>
       db.application.update({ where: { id }, data: { deletedAt: new Date() } }),
   }
