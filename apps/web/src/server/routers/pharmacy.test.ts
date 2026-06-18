@@ -37,7 +37,9 @@ function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
 const recruteurSession = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
 const adminSession = { user: { id: 'u2', role: 'ADMIN' as const }, expires: '2999-01-01' }
 
-function caller(deps: PharmacyDeps, session = recruteurSession) {
+type TestSession = typeof recruteurSession | typeof adminSession
+
+function caller(deps: PharmacyDeps, session: TestSession = recruteurSession) {
   return createCallerFactory(makePharmacyRouter(deps))({ session })
 }
 
