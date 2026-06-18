@@ -42,6 +42,7 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
     city: watch('city') ?? null,
     postalCode: watch('postalCode') ?? null,
     mobilityRadiusKm: watch('mobilityRadiusKm') ?? null,
+    availableFrom: watch('availableFrom') ? new Date(watch('availableFrom')!) : null,
   })
 
   return (

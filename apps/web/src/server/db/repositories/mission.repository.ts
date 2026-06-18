@@ -17,6 +17,18 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
     create: (data: Prisma.MissionCreateInput) => db.mission.create({ data }),
     findById: (id: string) =>
       db.mission.findFirst({ where: { id, ...NOT_DELETED } }),
+    findForContext: (id: string) =>
+      db.mission.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: {
+          title: true,
+          contractType: true,
+          startDate: true,
+          salaireMin: true,
+          salaireMax: true,
+          notes: true,
+        },
+      }),
     list: () =>
       db.mission.findMany({
         where: NOT_DELETED,
@@ -33,6 +45,12 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
       }),
     softDelete: (id: string) =>
       db.mission.update({ where: { id }, data: { deletedAt: new Date() } }),
+    listByContact: (contactId: string) =>
+      db.mission.findMany({
+        where: { contactId, ...NOT_DELETED },
+        select: { id: true, title: true, status: true, pharmacy: { select: { name: true } } },
+        orderBy: { createdAt: 'desc' },
+      }),
   }
 }
 

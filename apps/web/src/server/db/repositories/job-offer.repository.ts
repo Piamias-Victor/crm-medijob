@@ -9,6 +9,19 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
       db.jobOffer.findFirst({ where: { id, ...NOT_DELETED } }),
     list: () =>
       db.jobOffer.findMany({ where: NOT_DELETED, orderBy: { createdAt: 'desc' } }),
+    listForTable: () =>
+      db.jobOffer.findMany({
+        where: NOT_DELETED,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          status: true,
+          publishedAt: true,
+          mission: { select: { id: true, title: true } },
+          _count: { select: { applications: true } },
+        },
+      }),
     softDelete: (id: string) =>
       db.jobOffer.update({ where: { id }, data: { deletedAt: new Date() } }),
   }

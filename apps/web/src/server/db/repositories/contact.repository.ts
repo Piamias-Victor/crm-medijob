@@ -53,12 +53,6 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       ])
       return db.contact.findFirst({ where: { id }, include: detailInclude })
     },
-    listMissions: (contactId: string) =>
-      db.mission.findMany({
-        where: { contactId, ...NOT_DELETED },
-        select: { id: true, title: true, status: true, pharmacy: { select: { name: true } } },
-        orderBy: { createdAt: 'desc' },
-      }),
     softDelete: (id: string) =>
       db.contact.update({ where: { id }, data: { deletedAt: new Date() } }),
   }

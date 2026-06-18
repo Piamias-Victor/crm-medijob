@@ -8,6 +8,7 @@ import { candidateRouter } from '@/server/routers/candidate'
 import { missionCandidateRouter } from '@/server/routers/mission-candidate'
 import { applicationRouter } from '@/server/routers/application'
 import { missionRouter } from '@/server/routers/mission'
+import { jobOfferRouter } from '@/server/routers/job-offer'
 
 export const appRouter = router({
   health: healthRouter,
@@ -19,6 +20,7 @@ export const appRouter = router({
   mission: missionRouter,
   missionCandidate: missionCandidateRouter,
   application: applicationRouter,
+  jobOffer: jobOfferRouter,
 })
 
 export type AppRouter = typeof appRouter

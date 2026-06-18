@@ -6,18 +6,33 @@ import {
 } from '@/view-models/candidate-profile'
 
 describe('isProfileIncompleteForMatching', () => {
-  it('flags missing city and postalCode for geo matching', () => {
+  it('flags ADR 0010 matching-critical fields', () => {
     expect(
-      isProfileIncompleteForMatching({ city: null, postalCode: null, mobilityRadiusKm: 30 }),
+      isProfileIncompleteForMatching({
+        city: null,
+        postalCode: null,
+        mobilityRadiusKm: null,
+        availableFrom: null,
+      }),
     ).toBe(true)
-    expect(getMissingMatchingFields({ city: null, postalCode: '69001', mobilityRadiusKm: 30 })).toEqual([
-      'city',
-    ])
+    expect(
+      getMissingMatchingFields({
+        city: null,
+        postalCode: '69001',
+        mobilityRadiusKm: 30,
+        availableFrom: new Date(),
+      }),
+    ).toEqual(['city'])
   })
 
-  it('is complete when city and postalCode are set', () => {
+  it('is complete when all ADR 0010 fields are set', () => {
     expect(
-      isProfileIncompleteForMatching({ city: 'Lyon', postalCode: '69001', mobilityRadiusKm: null }),
+      isProfileIncompleteForMatching({
+        city: 'Lyon',
+        postalCode: '69001',
+        mobilityRadiusKm: 30,
+        availableFrom: new Date('2026-06-01'),
+      }),
     ).toBe(false)
   })
 })

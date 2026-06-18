@@ -1,6 +1,6 @@
 'use client'
 
-import { SHORTCUTS, type Shortcut } from '@/server/ai/shortcuts'
+import { SHORTCUTS, type Shortcut } from '@/lib/assistant-shortcuts'
 import { Button } from '@/components/atoms/Button'
 
 type Props = {

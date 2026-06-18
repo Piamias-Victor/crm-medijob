@@ -33,9 +33,12 @@ function makeDeps(overrides: Partial<CandidateDeps> = {}): CandidateDeps {
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
     findProfileById: vi.fn().mockResolvedValue(profileFixture),
     updateProfile: vi.fn().mockResolvedValue(profileFixture),
-    listJobTitles: vi.fn().mockResolvedValue([{ id: 'jt1', name: 'Pharmacien' }]),
-    listSoftwares: vi.fn().mockResolvedValue([]),
-    listRecruiters: vi.fn().mockResolvedValue([{ id: 'u1', name: 'Recruteur' }]),
+    referentials: vi.fn().mockResolvedValue({
+      jobTitles: [{ id: 'jt1', name: 'Pharmacien' }],
+      softwares: [],
+      recruiters: [{ id: 'u1', name: 'Recruteur' }],
+      pipelineStages: [{ id: 's1', name: 'Nouveau', position: 0 }],
+    }),
     ...overrides,
   }
 }
@@ -52,10 +55,12 @@ describe('candidateRouter', () => {
     expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
   })
 
-  it('returns profile payload with incomplete matching banner flags', async () => {
+  it('returns profile payload with ADR 0010 incomplete matching flags', async () => {
     const result = await caller(makeDeps()).getById({ id: 'c1' })
     expect(result?.isProfileIncompleteForMatching).toBe(true)
-    expect(result?.missingMatchingFields).toContain('postalCode')
+    expect(result?.missingMatchingFields).toEqual(
+      expect.arrayContaining(['postalCode', 'mobilityRadiusKm', 'availableFrom']),
+    )
   })
 
   it('updates candidate profile via repository', async () => {

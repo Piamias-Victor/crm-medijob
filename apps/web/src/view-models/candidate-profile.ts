@@ -4,6 +4,7 @@ export type MatchingProfileFields = {
   city: string | null
   postalCode: string | null
   mobilityRadiusKm: number | null
+  availableFrom: Date | null
 }
 
 export type CandidateFormSource = MatchingProfileFields & {
@@ -14,7 +15,6 @@ export type CandidateFormSource = MatchingProfileFields & {
   address: string | null
   jobTitleId: string
   mobilityNotes: string | null
-  availableFrom: Date | null
   notes: string | null
   referentId: string
   softwareIds: string[]
@@ -27,6 +27,8 @@ export function getMissingMatchingFields(profile: MatchingProfileFields): string
   const missing: string[] = []
   if (!profile.city?.trim()) missing.push('city')
   if (!profile.postalCode?.trim()) missing.push('postalCode')
+  if (profile.mobilityRadiusKm == null) missing.push('mobilityRadiusKm')
+  if (!profile.availableFrom) missing.push('availableFrom')
   return missing
 }
 

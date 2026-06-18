@@ -2,14 +2,15 @@
 
 import { User } from 'lucide-react'
 import Link from 'next/link'
-import type { ContactDetail } from '@/server/routers/contact'
+import type { ContactDetailPayload } from '@/view-models/contact-detail.types'
+import type { ContactTab } from '@/view-models/contact-tabs'
 import { ROLE_LABELS } from '@/lib/contact-options'
 import { Badge } from '@/components/atoms/Badge'
 import { Button } from '@/components/atoms/Button'
-import { ContactTabs, type ContactTab } from '@/components/molecules/ContactTabs'
+import { ContactTabs } from '@/components/molecules/ContactTabs'
 
 type Props = {
-  contact: ContactDetail
+  contact: ContactDetailPayload
   tab: ContactTab
   onTabChange: (tab: ContactTab) => void
   missionCount: number
@@ -34,9 +35,7 @@ export function ContactDetailHeader({
           </span>
           <div className="flex flex-col gap-3">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-fg">
-                {contact.firstName} {contact.lastName}
-              </h1>
+              <h1 className="text-2xl font-bold tracking-tight text-fg">{contact.fullName}</h1>
               <p className="mt-1 text-sm text-fg-muted">
                 <Link href={`/pharmacies/${contact.pharmacy.id}`} className="hover:text-accent-hover">
                   {contact.pharmacy.name}

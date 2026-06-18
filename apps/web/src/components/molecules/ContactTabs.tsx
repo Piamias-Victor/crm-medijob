@@ -3,15 +3,14 @@
 import { FileText, Briefcase, History, User } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { adminNavLinkClass } from '@/view-models/admin-nav-link'
+import type { ContactTab } from '@/view-models/contact-tabs'
 
-export type ContactTab = 'infos' | 'historique' | 'missions' | 'documents'
-
-const tabs = [
+const tabs: { id: ContactTab; label: string; icon: typeof User }[] = [
   { id: 'infos', label: 'Infos', icon: User },
   { id: 'historique', label: 'Historique', icon: History },
   { id: 'missions', label: 'Missions', icon: Briefcase },
   { id: 'documents', label: 'Documents', icon: FileText },
-] as const
+]
 
 type Props = {
   active: ContactTab

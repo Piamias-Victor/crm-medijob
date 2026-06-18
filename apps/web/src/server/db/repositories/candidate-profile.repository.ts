@@ -1,4 +1,7 @@
-import type { Prisma, ContractType } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
+import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
+
+export type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
 
 export const candidateProfileInclude = {
   jobTitle: { select: { id: true, name: true } },
@@ -13,21 +16,3 @@ export const candidateProfileInclude = {
     orderBy: { mission: { title: 'asc' as const } },
   },
 } satisfies Prisma.CandidateInclude
-
-export type CandidateProfileUpdate = {
-  firstName: string
-  lastName: string
-  email?: string
-  phone?: string
-  address?: string
-  city?: string
-  postalCode?: string
-  jobTitleId: string
-  mobilityRadiusKm: number
-  mobilityNotes?: string
-  availableFrom?: Date | null
-  notes?: string
-  referentId: string
-  softwareIds: string[]
-  contractTypes: ContractType[]
-}

@@ -26,6 +26,7 @@ export function toCandidateProfilePayload(candidate: ProfileRecord) {
     city: candidate.city,
     postalCode: candidate.postalCode,
     mobilityRadiusKm: candidate.mobilityRadiusKm,
+    availableFrom: candidate.availableFrom,
   }
   return {
     id: candidate.id,

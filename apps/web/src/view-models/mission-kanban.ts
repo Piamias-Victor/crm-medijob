@@ -1,6 +1,6 @@
 import type { MissionStatus } from '@prisma/client'
-import { TERMINAL_MISSION_STATUSES } from '@/lib/pipeline-constants'
 import { MISSION_STATUS_ORDER, STATUS_LABELS } from '@/lib/mission-options'
+import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
 import type {
   MissionKanbanCard,
   MissionKanbanColumn,
@@ -10,11 +10,8 @@ import type {
 
 export type * from './mission-kanban.types'
 
-const isTerminal = (status: MissionStatus) =>
-  (TERMINAL_MISSION_STATUSES as readonly MissionStatus[]).includes(status)
-
 const activeStatuses = () =>
-  MISSION_STATUS_ORDER.filter((status) => !isTerminal(status))
+  MISSION_STATUS_ORDER.filter((status) => !isTerminalMissionStatus(status))
 
 function toKanbanCard(mission: RawMission): MissionKanbanCard {
   return {
@@ -29,7 +26,7 @@ function toKanbanCard(mission: RawMission): MissionKanbanCard {
 }
 
 export function buildMissionKanbanColumns(missions: RawMission[]): MissionKanbanColumn[] {
-  const active = missions.filter((m) => !isTerminal(m.status))
+  const active = missions.filter((m) => !isTerminalMissionStatus(m.status))
   return activeStatuses().map((status) => ({
     status,
     label: STATUS_LABELS[status],

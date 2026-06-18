@@ -2,14 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
-import type { MissionStatus } from '@prisma/client'
-
-export type ContactMissionRow = {
-  id: string
-  title: string
-  status: MissionStatus
-  pharmacy: { name: string }
-}
+import type { ContactMissionRow } from '@/view-models/contact-detail.types'
 
 export function ContactMissionsTab({ missions }: { missions: ContactMissionRow[] }) {
   const router = useRouter()

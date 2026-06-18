@@ -11,8 +11,9 @@ import { createAssistantProvider } from '@/server/ai/provider'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
+import { assistantContextRepos } from '@/server/ai/context-repos.adapter'
 
-const repos = {
+const searchRepos = {
   candidate: candidateRepository,
   pharmacy: pharmacyRepository,
   mission: missionRepository,
@@ -40,6 +41,6 @@ export function makeAssistantRouter(deps: AssistantRouterDeps) {
 
 export const assistantRouter = makeAssistantRouter({
   runChat: (input) =>
-    runAssistantChat(input, { provider: createAssistantProvider(), repos }),
-  searchEntities: (entityType, term) => searchEntities(entityType, term, repos),
+    runAssistantChat(input, { provider: createAssistantProvider(), repos: assistantContextRepos }),
+  searchEntities: (entityType, term) => searchEntities(entityType, term, searchRepos),
 })
