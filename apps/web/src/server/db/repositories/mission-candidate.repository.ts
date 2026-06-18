@@ -1,0 +1,20 @@
+import type { PrismaClient } from '@prisma/client'
+import { prisma as defaultDb } from './client'
+
+type UpdateStageInput = {
+  missionId: string
+  candidateId: string
+  stageId: string
+}
+
+export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
+  return {
+    updateStage: ({ missionId, candidateId, stageId }: UpdateStageInput) =>
+      db.missionCandidate.update({
+        where: { missionId_candidateId: { missionId, candidateId } },
+        data: { stageId },
+      }),
+  }
+}
+
+export const missionCandidateRepository = makeMissionCandidateRepository()

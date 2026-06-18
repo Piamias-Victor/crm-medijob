@@ -23,6 +23,25 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         },
         orderBy: { lastName: 'asc' },
         take: limit,
+    listForKanban: () =>
+      db.candidate.findMany({
+        where: NOT_DELETED,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          city: true,
+          jobTitle: { select: { name: true } },
+          referent: { select: { name: true } },
+          missions: {
+            select: {
+              stageId: true,
+              stage: { select: { id: true, name: true, position: true } },
+              mission: { select: { id: true, title: true, status: true } },
+            },
+          },
+        },
       }),
     softDelete: (id: string) =>
       db.candidate.update({ where: { id }, data: { deletedAt: new Date() } }),
