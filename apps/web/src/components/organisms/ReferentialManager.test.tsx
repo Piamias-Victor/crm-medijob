@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import { ReferentialManager } from '@/components/organisms/ReferentialManager'
 
 const items = [
@@ -42,9 +42,12 @@ describe('ReferentialManager', () => {
     await waitFor(() => expect(props.onAdd).not.toHaveBeenCalled())
   })
 
-  it('deletes an item through onDelete', () => {
+  it('confirms before deleting an item', () => {
     const props = setup()
     fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(props.onDelete).not.toHaveBeenCalled()
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Supprimer' }))
     expect(props.onDelete).toHaveBeenCalledWith('1')
   })
 })

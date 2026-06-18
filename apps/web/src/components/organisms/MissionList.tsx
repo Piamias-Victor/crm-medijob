@@ -1,19 +1,22 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import { Briefcase } from 'lucide-react'
-import { cn } from '@/lib/cn'
 import { EmptyState } from '@/components/atoms/EmptyState'
-import { MissionStatusBadge } from '@/components/molecules/MissionStatusBadge'
+import { MissionListCard } from '@/components/molecules/MissionListCard'
+import { shouldAnimateList } from '@/lib/motion/list-motion'
 import { toMissionListItems, type RawMission } from '@/view-models/mission-kanban'
 
-const HEADERS = ['Titre', 'Métier', 'Pharmacie', 'Ville', 'Statut', 'Référent', 'Date début']
-
-function formatDate(value: Date) {
-  return new Intl.DateTimeFormat('fr-FR').format(value)
+const cardMotion = {
+  initial: { opacity: 0, y: 10, scale: 0.99 },
+  animate: { opacity: 1, y: 0, scale: 1 },
 }
 
-type Props = { missions: RawMission[]; embedded?: boolean }
+type Props = { missions: RawMission[] }
 
-export function MissionList({ missions, embedded = false }: Props) {
+export function MissionList({ missions }: Props) {
   const rows = toMissionListItems(missions)
+  const animateCards = shouldAnimateList(rows.length)
 
   if (rows.length === 0) {
     return (
@@ -26,38 +29,20 @@ export function MissionList({ missions, embedded = false }: Props) {
   }
 
   return (
-    <div
-      className={cn(
-        'overflow-x-auto',
-        embedded ? '-mx-1' : 'rounded-lg border border-border bg-white',
-      )}
-    >
-      <table className="w-full text-sm">
-        <thead className="border-b border-border bg-gradient-to-r from-accent-muted/40 via-surface to-surface text-left text-fg-muted">
-          <tr>
-            {HEADERS.map((header) => (
-              <th key={header} className="px-4 py-3 font-medium">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id} className="border-b border-border last:border-0">
-              <td className="px-4 py-3 font-medium text-fg">{row.title}</td>
-              <td className="px-4 py-3 text-fg-muted">{row.jobTitle ?? '—'}</td>
-              <td className="px-4 py-3 text-fg-muted">{row.pharmacyName}</td>
-              <td className="px-4 py-3 text-fg-muted">{row.city ?? '—'}</td>
-              <td className="px-4 py-3">
-                <MissionStatusBadge status={row.status} />
-              </td>
-              <td className="px-4 py-3 text-fg-muted">{row.referent ?? '—'}</td>
-              <td className="px-4 py-3 text-fg-muted">{formatDate(row.startDate)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {rows.map((row, index) => {
+        if (!animateCards) return <MissionListCard key={row.id} row={row} />
+        return (
+          <motion.div
+            key={row.id}
+            className="h-full"
+            {...cardMotion}
+            transition={{ duration: 0.22, delay: index * 0.03 }}
+          >
+            <MissionListCard row={row} />
+          </motion.div>
+        )
+      })}
     </div>
   )
 }

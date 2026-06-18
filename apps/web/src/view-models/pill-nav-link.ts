@@ -1,6 +1,6 @@
 import { cn } from '@/lib/cn'
 
-export function adminNavLinkClass(active: boolean): string {
+export function pillNavLinkClass(active: boolean): string {
   return cn(
     'rounded-full border px-4 py-2 text-sm font-medium transition-all',
     active

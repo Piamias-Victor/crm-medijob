@@ -2,6 +2,7 @@
 
 import { type ReactNode } from 'react'
 import { Menu } from 'lucide-react'
+import { AppAtmosphere } from '@/components/molecules/AppAtmosphere'
 import { AppSidebar } from '@/components/organisms/AppSidebar'
 import { Button } from '@/components/atoms/Button'
 import type { AccessRole } from '@/server/auth/access'
@@ -11,10 +12,10 @@ export function DashboardShell({ children, role }: { children: ReactNode; role: 
   const toggle = useSidebarStore((state) => state.toggle)
 
   return (
-    <div className="flex min-h-dvh bg-surface">
+    <div className="flex min-h-dvh">
       <AppSidebar role={role} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center gap-3 border-b border-border bg-white px-4 md:hidden">
+      <div className="flex min-w-0 flex-1 flex-col md:pl-16">
+        <header className="relative z-10 flex h-14 items-center gap-3 border-b border-border/70 bg-white/90 px-4 backdrop-blur-md md:hidden">
           <Button
             variant="ghost"
             onClick={toggle}
@@ -25,7 +26,9 @@ export function DashboardShell({ children, role }: { children: ReactNode; role: 
           </Button>
           <span className="font-bold tracking-tight">MEDIJOB</span>
         </header>
-        <main className="flex-1 p-6">{children}</main>
+    <AppAtmosphere className="flex flex-1 flex-col">
+          <main className="relative flex-1 p-6">{children}</main>
+        </AppAtmosphere>
       </div>
     </div>
   )

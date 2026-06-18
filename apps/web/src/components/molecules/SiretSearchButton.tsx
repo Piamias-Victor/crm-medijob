@@ -9,7 +9,7 @@ export function SiretSearchButton({ loading, onClick }: { loading: boolean; onCl
       onClick={onClick}
       disabled={loading}
       aria-label="Rechercher"
-      className="shrink-0"
+      className="h-11 shrink-0 px-4"
     >
       {loading ? <Spinner className="size-4 border-accent-fg/40 border-t-accent-fg" /> : 'Rechercher'}
     </Button>

@@ -4,53 +4,53 @@ type BadgeVariant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | '
 
 export type MissionStatusTheme = {
   badge: BadgeVariant
-  header: string
   dot: string
-  columnRing: string
-  cardAccent: string
+  columnBorder: string
+  columnBg: string
+  countBadge: string
 }
 
 export const MISSION_STATUS_THEME: Record<MissionStatus, MissionStatusTheme> = {
   A_POURVOIR: {
     badge: 'warning',
-    header: 'bg-gradient-to-r from-warning/20 via-warning/5 to-white',
-    dot: 'bg-warning',
-    columnRing: 'ring-warning/25',
-    cardAccent: 'border-l-warning from-warning/8 to-white',
+    dot: 'bg-warning/45',
+    columnBorder: 'border-warning/15',
+    columnBg: 'bg-warning/5',
+    countBadge: 'bg-warning/10 text-warning/90',
   },
   EN_RECHERCHE: {
     badge: 'accent',
-    header: 'bg-gradient-to-r from-accent-muted via-white to-white',
-    dot: 'bg-accent',
-    columnRing: 'ring-accent/25',
-    cardAccent: 'border-l-accent from-accent-muted/60 to-white',
+    dot: 'bg-accent/50',
+    columnBorder: 'border-accent/18',
+    columnBg: 'bg-accent-muted/30',
+    countBadge: 'bg-accent-muted/80 text-accent-hover/90',
   },
   CANDIDATS_PRESENTES: {
     badge: 'primary',
-    header: 'bg-gradient-to-r from-primary-muted via-white to-white',
-    dot: 'bg-primary',
-    columnRing: 'ring-primary/20',
-    cardAccent: 'border-l-primary from-primary-muted/80 to-white',
+    dot: 'bg-primary/45',
+    columnBorder: 'border-primary/15',
+    columnBg: 'bg-primary-muted/25',
+    countBadge: 'bg-primary-muted/70 text-primary/80',
   },
   ENTRETIEN_EN_COURS: {
     badge: 'success',
-    header: 'bg-gradient-to-r from-success/20 via-success/5 to-white',
-    dot: 'bg-success',
-    columnRing: 'ring-success/25',
-    cardAccent: 'border-l-success from-success/8 to-white',
+    dot: 'bg-success/45',
+    columnBorder: 'border-success/15',
+    columnBg: 'bg-success/5',
+    countBadge: 'bg-success/10 text-success/90',
   },
   POURVU: {
     badge: 'success',
-    header: 'bg-gradient-to-r from-success/15 via-white to-white',
-    dot: 'bg-success',
-    columnRing: 'ring-success/20',
-    cardAccent: 'border-l-success from-success/5 to-white',
+    dot: 'bg-success/40',
+    columnBorder: 'border-success/12',
+    columnBg: 'bg-success/4',
+    countBadge: 'bg-success/10 text-success/85',
   },
   ANNULEE: {
     badge: 'error',
-    header: 'bg-gradient-to-r from-error/15 via-white to-white',
-    dot: 'bg-error',
-    columnRing: 'ring-error/20',
-    cardAccent: 'border-l-error from-error/5 to-white',
+    dot: 'bg-error/40',
+    columnBorder: 'border-error/12',
+    columnBg: 'bg-error/4',
+    countBadge: 'bg-error/10 text-error/85',
   },
 }

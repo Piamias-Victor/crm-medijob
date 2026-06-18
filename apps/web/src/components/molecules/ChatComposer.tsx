@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Send } from 'lucide-react'
 import { z } from 'zod'
 import { Input } from '@/components/atoms/Input'
 import { Button } from '@/components/atoms/Button'
@@ -32,9 +33,11 @@ export function ChatComposer({ onSend, disabled }: Props) {
         aria-invalid={Boolean(formState.errors.message)}
         placeholder="Pose ta question à l’assistant…"
         disabled={disabled}
+        className="h-11 flex-1 rounded-lg bg-white/90"
       />
-      <Button type="submit" disabled={disabled}>
-        Envoyer
+      <Button type="submit" variant="accent" disabled={disabled} className="h-11 px-4 shadow-md shadow-accent/20">
+        <Send className="size-4" />
+        <span className="sr-only">Envoyer</span>
       </Button>
     </form>
   )

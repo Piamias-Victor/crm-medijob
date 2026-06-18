@@ -24,7 +24,7 @@ export function CandidateMissionCard({ mission, candidateId }: Props) {
     <div
       draggable
       onDragStart={handleDragStart}
-      className="flex cursor-grab items-center gap-2 rounded-lg border border-border bg-white px-3 py-2 shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing"
+      className="flex cursor-grab items-center gap-2 rounded-xl border border-border/55 bg-white/92 px-3 py-2.5 shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-accent/45 hover:shadow-md hover:shadow-accent/8 active:cursor-grabbing"
     >
       <GripVertical aria-hidden className="size-4 shrink-0 text-fg-muted" />
       <span className="flex-1 truncate text-sm font-medium text-fg">{mission.missionTitle}</span>

@@ -1,6 +1,6 @@
 'use client'
 
-import { type DragEvent, useState } from 'react'
+import { type DragEvent } from 'react'
 import type { MissionStatus } from '@prisma/client'
 import { cn } from '@/lib/cn'
 import { MissionKanbanCardView } from '@/components/molecules/MissionKanbanCard'
@@ -14,12 +14,10 @@ type Props = {
 }
 
 export function MissionKanbanColumnView({ column, onDrop }: Props) {
-  const [over, setOver] = useState(false)
   const theme = MISSION_STATUS_THEME[column.status]
 
   function handleDrop(event: DragEvent<HTMLDivElement>) {
     event.preventDefault()
-    setOver(false)
     const payload = readMissionDragPayload(event.dataTransfer.getData('application/json'))
     if (!payload || payload.fromStatus === column.status) return
     onDrop(payload.missionId, column.status)
@@ -27,42 +25,29 @@ export function MissionKanbanColumnView({ column, onDrop }: Props) {
 
   return (
     <div
+      onDragOver={(event) => event.preventDefault()}
+      onDrop={handleDrop}
       className={cn(
-        'flex w-80 shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm ring-1',
-        theme.columnRing,
-        over && 'ring-2',
+        'flex w-72 shrink-0 flex-col gap-2.5 rounded-xl border p-3 shadow-sm backdrop-blur-sm',
+        theme.columnBorder,
+        theme.columnBg,
       )}
     >
-      <header className={cn('border-b border-border px-4 py-3', theme.header)}>
-        <div className="flex items-center gap-2">
-          <span className={cn('size-2.5 shrink-0 rounded-full shadow-sm', theme.dot)} />
-          <span className="text-sm font-semibold tracking-tight text-fg">{column.label}</span>
-          <span className="ml-auto rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-fg-muted shadow-sm">
-            {column.cards.length}
-          </span>
-        </div>
-      </header>
-      <div
-        onDragOver={(event) => {
-          event.preventDefault()
-          setOver(true)
-        }}
-        onDragLeave={() => setOver(false)}
-        onDrop={handleDrop}
-        className={cn(
-          'flex min-h-48 flex-1 flex-col gap-2 p-3 transition-colors',
-          over && 'bg-surface/80',
-        )}
-      >
-        {column.cards.map((card) => (
-          <MissionKanbanCardView key={card.missionId} card={card} />
-        ))}
-        {column.cards.length === 0 ? (
-          <p className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-border/80 px-3 py-6 text-center text-xs text-fg-muted">
-            Glissez une mission ici
-          </p>
-        ) : null}
+      <div className="flex items-center gap-2 px-1">
+        <span className={cn('size-2 shrink-0 rounded-full', theme.dot)} aria-hidden />
+        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-fg">{column.label}</span>
+        <span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums', theme.countBadge)}>
+          {column.cards.length}
+        </span>
       </div>
+      {column.cards.map((card) => (
+        <MissionKanbanCardView key={card.missionId} card={card} />
+      ))}
+      {column.cards.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-border/60 px-3 py-5 text-center text-xs text-fg-muted">
+          Glissez une mission ici
+        </p>
+      ) : null}
     </div>
   )
 }

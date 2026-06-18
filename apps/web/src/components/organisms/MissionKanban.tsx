@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import type { MissionStatus } from '@prisma/client'
 import { LayoutGrid } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
-import { AdminSectionCard } from '@/components/molecules/AdminSectionCard'
 import { MissionKanbanColumnView } from '@/components/molecules/MissionKanbanColumn'
 import { countActiveMissions } from '@/lib/kanban-terminal'
 import { trpc } from '@/lib/trpc/client'
@@ -21,6 +20,7 @@ export function MissionKanban({ missions }: Props) {
   const router = useRouter()
   const [rows, setRows] = useState(missions)
   const columns = useMemo(() => buildMissionKanbanColumns(rows), [rows])
+  const activeCount = countActiveMissions(rows)
   const mutation = trpc.mission.updateStatus.useMutation({
     onSettled: () => router.refresh(),
   })
@@ -36,16 +36,13 @@ export function MissionKanban({ missions }: Props) {
   }
 
   return (
-    <AdminSectionCard
-      title="Pipeline missions"
-      description={`${countActiveMissions(rows)} mission(s) active(s) — glissez une carte pour changer le statut.`}
-      className="bg-transparent shadow-none"
-    >
-      <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
+    <div className="space-y-3">
+      <p className="text-xs text-fg-muted">{activeCount} mission(s) active(s) dans le pipeline.</p>
+      <div className="flex gap-3 overflow-x-auto pb-2">
         {columns.map((column) => (
           <MissionKanbanColumnView key={column.status} column={column} onDrop={move} />
         ))}
       </div>
-    </AdminSectionCard>
+    </div>
   )
 }

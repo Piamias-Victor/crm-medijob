@@ -3,13 +3,14 @@
 import { useState, type InputHTMLAttributes } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { Input } from '@/components/atoms/Input'
+import { cn } from '@/lib/cn'
 
-export function PasswordInput(props: InputHTMLAttributes<HTMLInputElement>) {
+export function PasswordInput({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   const [visible, setVisible] = useState(false)
 
   return (
     <div className="relative">
-      <Input type={visible ? 'text' : 'password'} className="pr-10" {...props} />
+      <Input type={visible ? 'text' : 'password'} className={cn('pr-10', className)} {...props} />
       <button
         type="button"
         onClick={() => setVisible((value) => !value)}

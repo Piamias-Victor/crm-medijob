@@ -1,13 +1,20 @@
-import Link from 'next/link'
+'use client'
+
+import { motion } from 'framer-motion'
 import { Users } from 'lucide-react'
-import { Card } from '@/components/atoms/Card'
-import { Badge } from '@/components/atoms/Badge'
-import { Avatar } from '@/components/atoms/Avatar'
 import { EmptyState } from '@/components/atoms/EmptyState'
+import { CvthequeListCard } from '@/components/molecules/CvthequeListCard'
+import { shouldAnimateList } from '@/lib/motion/list-motion'
 import { toListItems, type RawCandidate } from '@/view-models/candidate-kanban'
+
+const cardMotion = {
+  initial: { opacity: 0, y: 10, scale: 0.99 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+}
 
 export function CvthequeList({ candidates }: { candidates: RawCandidate[] }) {
   const items = toListItems(candidates)
+  const animateCards = shouldAnimateList(items.length)
 
   if (items.length === 0) {
     return (
@@ -20,26 +27,21 @@ export function CvthequeList({ candidates }: { candidates: RawCandidate[] }) {
   }
 
   return (
-    <Card className="overflow-hidden p-0">
-      {items.map((candidate) => (
-        <Link
-          key={candidate.id}
-          href={`/candidats/${candidate.id}`}
-          className="flex items-center gap-3 border-b border-border px-4 py-3 transition-colors last:border-b-0 hover:bg-accent-muted/50"
-        >
-          <Avatar name={candidate.name} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-fg">{candidate.name}</p>
-            <p className="truncate text-xs text-fg-muted">
-              {[candidate.jobTitle, candidate.city].filter(Boolean).join(' · ') || '—'}
-            </p>
-          </div>
-          <span className="hidden text-xs text-fg-muted sm:block">
-            {candidate.referent ?? '—'}
-          </span>
-          <Badge variant="accent">{candidate.activeMissionCount} mission(s)</Badge>
-        </Link>
-      ))}
-    </Card>
+    <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {items.map((candidate, index) => {
+        if (!animateCards) return <CvthequeListCard key={candidate.id} candidate={candidate} />
+
+        return (
+          <motion.div
+            key={candidate.id}
+            className="h-full"
+            {...cardMotion}
+            transition={{ duration: 0.22, delay: index * 0.03 }}
+          >
+            <CvthequeListCard candidate={candidate} />
+          </motion.div>
+        )
+      })}
+    </div>
   )
 }

@@ -25,15 +25,26 @@ describe('isProfileIncompleteForMatching', () => {
     ).toEqual(['city'])
   })
 
-  it('is complete when all ADR 0010 fields are set', () => {
+  it('is complete when geo and mobility fields are set (null availability = immediate)', () => {
     expect(
       isProfileIncompleteForMatching({
         city: 'Lyon',
         postalCode: '69001',
         mobilityRadiusKm: 30,
-        availableFrom: new Date('2026-06-01'),
+        availableFrom: null,
       }),
     ).toBe(false)
+  })
+
+  it('does not flag missing availability — null means immediate', () => {
+    expect(
+      getMissingMatchingFields({
+        city: 'Lyon',
+        postalCode: '69001',
+        mobilityRadiusKm: 30,
+        availableFrom: null,
+      }),
+    ).toEqual([])
   })
 })
 

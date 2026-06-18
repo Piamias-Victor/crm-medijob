@@ -31,12 +31,15 @@ export function CompatibilityScoreCell({
   return (
     <div
       className={cn(
-        'flex min-w-[5.5rem] flex-col items-center gap-1.5 rounded-lg p-2 transition-colors',
+        'flex flex-col gap-2 rounded-lg border border-border/50 p-3 transition-colors',
         compatibilityScoreStyle(local),
       )}
     >
-      <span className="text-sm font-semibold tabular-nums">{local} %</span>
-      <div className="h-1 w-full overflow-hidden rounded-full bg-white/60">
+      <div className="flex items-center justify-between gap-2">
+        <span className="truncate text-xs font-medium text-fg">{candidateName}</span>
+        <span className="shrink-0 text-sm font-semibold tabular-nums">{local} %</span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/60">
         <div
           className={cn('h-full rounded-full transition-all', compatibilityScoreBarStyle(local))}
           style={{ width: `${local}%` }}

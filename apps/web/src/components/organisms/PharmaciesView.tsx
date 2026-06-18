@@ -1,82 +1,66 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Building2, Plus } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
 import type { PharmacyListRow } from '@/view-models/pharmacy-list'
-import { toPharmacyFormValues } from '@/view-models/pharmacy-form'
-import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
 import { Button } from '@/components/atoms/Button'
-import { EmptyState } from '@/components/atoms/EmptyState'
-import { Modal } from '@/components/atoms/Modal'
-import { PharmacyForm } from '@/components/molecules/PharmacyForm'
-import { PharmacyTable } from '@/components/organisms/PharmacyTable'
+import { DashboardPage } from '@/components/molecules/DashboardPage'
+import { SectionCard } from '@/components/molecules/SectionCard'
+import { PharmacyFormModal } from '@/components/molecules/PharmacyFormModal'
+import { PharmacyList } from '@/components/organisms/PharmacyList'
 
 type Ref = { id: string; name: string }
-type FormState = { open: boolean; id?: string; values?: Partial<PharmacyInput> }
 
-export function PharmaciesView({ rows, groupements, softwares }: { rows: PharmacyListRow[]; groupements: Ref[]; softwares: Ref[] }) {
+type Props = {
+  rows: PharmacyListRow[]
+  groupements: Ref[]
+  softwares: Ref[]
+}
+
+export function PharmaciesView({ rows, groupements, softwares }: Props) {
   const router = useRouter()
   const utils = trpc.useUtils()
-  const [form, setForm] = useState<FormState>({ open: false })
+  const [open, setOpen] = useState(false)
 
+  const description = useMemo(() => `${rows.length} officine(s) au portefeuille`, [rows.length])
   const refresh = () => {
-    setForm({ open: false })
+    setOpen(false)
     router.refresh()
   }
+
   const create = trpc.pharmacy.create.useMutation({ onSuccess: refresh })
-  const update = trpc.pharmacy.update.useMutation({ onSuccess: refresh })
-  const remove = trpc.pharmacy.softDelete.useMutation({ onSuccess: () => router.refresh() })
   const newGroupement = trpc.pharmacy.createGroupement.useMutation()
   const newSoftware = trpc.pharmacy.createSoftware.useMutation()
 
-  const openEdit = async (id: string) => {
-    const pharmacy = await utils.pharmacy.getById.fetch({ id })
-    if (pharmacy) setForm({ open: true, id, values: toPharmacyFormValues(pharmacy) })
-  }
-  const onDelete = (id: string) => {
-    if (window.confirm('Supprimer cette pharmacie ?')) remove.mutate({ id })
-  }
-  const onSubmit = (data: PharmacyInput) =>
-    form.id ? update.mutate({ id: form.id, data }) : create.mutate(data)
-
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight text-fg">Pharmacies</h1>
-        <Button onClick={() => setForm({ open: true, values: {} })}>
-          <Plus className="size-4" /> Nouvelle pharmacie
-        </Button>
-      </div>
-
-      {rows.length === 0 ? (
-        <EmptyState
-          icon={Building2}
-          title="Aucune pharmacie"
-          description="Ajoutez votre première pharmacie au portefeuille."
-        />
-      ) : (
-        <PharmacyTable rows={rows} onEdit={openEdit} onDelete={onDelete} />
-      )}
-
-      <Modal
-        open={form.open}
-        onClose={() => setForm({ open: false })}
-        title={form.id ? 'Modifier la pharmacie' : 'Nouvelle pharmacie'}
+    <DashboardPage icon={<Building2 className="size-5" />} title="Pharmacies" description={description}>
+      <SectionCard
+        variant="glass"
+        title="Portefeuille client"
+        description="Officines, groupements, contacts et missions en cours."
+        bodyClassName="p-4 sm:p-5"
+        actions={
+          <Button variant="accent" className="shadow-md shadow-accent/20" onClick={() => setOpen(true)}>
+            <Plus className="size-4" />
+            Nouvelle pharmacie
+          </Button>
+        }
       >
-        <PharmacyForm
-          key={form.id ?? 'new'}
-          defaultValues={form.values}
-          groupements={groupements}
-          softwares={softwares}
-          submitting={create.isPending || update.isPending}
-          onSubmit={onSubmit}
-          onSearchSiret={(query) => utils.pharmacy.searchSiret.fetch({ query })}
-          onCreateGroupement={(name) => newGroupement.mutateAsync({ name })}
-          onCreateSoftware={(name) => newSoftware.mutateAsync({ name })}
-        />
-      </Modal>
-    </div>
+        <PharmacyList rows={rows} />
+      </SectionCard>
+      <PharmacyFormModal
+        open={open}
+        groupements={groupements}
+        softwares={softwares}
+        submitting={create.isPending}
+        onClose={() => setOpen(false)}
+        onSubmit={(data) => create.mutate(data)}
+        onSearchSiret={(query) => utils.pharmacy.searchSiret.fetch({ query })}
+        onCreateGroupement={(name) => newGroupement.mutateAsync({ name })}
+        onCreateSoftware={(name) => newSoftware.mutateAsync({ name })}
+      />
+    </DashboardPage>
   )
 }

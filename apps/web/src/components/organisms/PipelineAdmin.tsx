@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { Reorder } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
-import { AdminSectionCard } from '@/components/molecules/AdminSectionCard'
+import { SectionCard } from '@/components/molecules/SectionCard'
+import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
 import { ReferentialAddForm } from '@/components/molecules/ReferentialAddForm'
 import { PipelineStageRow } from '@/components/molecules/PipelineStageRow'
 import type { RefItem } from '@/view-models/referential'
@@ -12,6 +13,7 @@ import type { RefItem } from '@/view-models/referential'
 export function PipelineAdmin({ items }: { items: RefItem[] }) {
   const router = useRouter()
   const [order, setOrder] = useState(items)
+  const [pendingDelete, setPendingDelete] = useState<RefItem | null>(null)
   useEffect(() => setOrder(items), [items])
 
   const onSuccess = () => router.refresh()
@@ -25,30 +27,47 @@ export function PipelineAdmin({ items }: { items: RefItem[] }) {
     reorder.mutate({ orderedIds: next.map((s) => s.id) })
 
   return (
-    <AdminSectionCard
-      title="Étapes du pipeline"
-      description="Glissez pour réordonner les colonnes kanban candidats et missions."
-    >
-      <ReferentialAddForm
-        label="étape"
-        onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
-      />
-      <Reorder.Group
-        axis="y"
-        values={order}
-        onReorder={setOrder}
-        className="mt-4 flex flex-col gap-2"
+    <>
+      <SectionCard
+        variant="glass"
+        title="Étapes du pipeline"
+        description="Glissez pour réordonner les colonnes kanban candidats et missions."
+        bodyClassName="space-y-4 p-4 sm:p-5"
       >
-        {order.map((stage) => (
-          <PipelineStageRow
-            key={stage.id}
-            item={stage}
-            onRename={(name) => update.mutateAsync({ id: stage.id, name }).then(() => undefined)}
-            onDelete={() => remove.mutate({ id: stage.id })}
-            onDragEnd={() => persistOrder(order)}
-          />
-        ))}
-      </Reorder.Group>
-    </AdminSectionCard>
+        <ReferentialAddForm label="étape" onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)} />
+        <Reorder.Group
+          axis="y"
+          values={order}
+          onReorder={setOrder}
+          className="flex flex-col gap-2"
+        >
+          {order.map((stage) => (
+            <PipelineStageRow
+              key={stage.id}
+              item={stage}
+              onRename={(name) => update.mutateAsync({ id: stage.id, name }).then(() => undefined)}
+              onDelete={() => setPendingDelete(stage)}
+              onDragEnd={() => persistOrder(order)}
+            />
+          ))}
+        </Reorder.Group>
+      </SectionCard>
+      <ConfirmDialog
+        open={Boolean(pendingDelete)}
+        onClose={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (!pendingDelete) return
+          remove.mutate({ id: pendingDelete.id })
+          setPendingDelete(null)
+        }}
+        title="Supprimer cette étape ?"
+        description={
+          pendingDelete
+            ? `« ${pendingDelete.name} » sera retirée du pipeline.`
+            : ''
+        }
+        loading={remove.isPending}
+      />
+    </>
   )
 }

@@ -7,6 +7,7 @@ import { Button } from '@/components/atoms/Button'
 import { CandidateProfileFields } from '@/components/molecules/CandidateProfileFields'
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
+import { FormSection } from '@/components/molecules/FormSection'
 import { trpc } from '@/lib/trpc/client'
 import { getMissingMatchingFields } from '@/view-models/candidate-profile'
 import {
@@ -46,32 +47,42 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
   })
 
   return (
-    <form onSubmit={handleSubmit((data) => update.mutate({ id: candidateId, data }))} className="flex flex-col gap-6" noValidate>
+    <form
+      onSubmit={handleSubmit((data) => update.mutate({ id: candidateId, data }))}
+      className="flex flex-col gap-8"
+      noValidate
+    >
       <CandidateProfileBanner missingFields={missingFields} />
-      <CandidateProfileFields
-        register={register}
-        errors={formState.errors}
-        setValue={setValue}
-        getValues={getValues}
-        availableFrom={watch('availableFrom')}
-        onAvailableFrom={(v) => setValue('availableFrom', v)}
-      />
-      <CandidateProfileSelects
-        jobTitleId={watch('jobTitleId')}
-        onJobTitle={(v) => setValue('jobTitleId', v)}
-        jobTitles={toOptions(referentials.jobTitles)}
-        softwareIds={watch('softwareIds') ?? []}
-        onSoftwareIds={(v) => setValue('softwareIds', v)}
-        softwares={toOptions(referentials.softwares)}
-        contractTypes={watch('contractTypes') ?? []}
-        onContractTypes={(v) => setValue('contractTypes', v as CandidateProfileInput['contractTypes'])}
-        referentId={watch('referentId')}
-        onReferent={(v) => setValue('referentId', v)}
-        recruiters={toOptions(referentials.recruiters)}
-      />
-      <Button type="submit" disabled={update.isPending} className="self-end">
-        {update.isPending ? 'Enregistrement…' : 'Enregistrer'}
-      </Button>
+      <FormSection title="Coordonnées & mobilité">
+        <CandidateProfileFields
+          register={register}
+          errors={formState.errors}
+          setValue={setValue}
+          getValues={getValues}
+          availableFrom={watch('availableFrom')}
+          onAvailableFrom={(v) => setValue('availableFrom', v)}
+        />
+      </FormSection>
+      <FormSection title="Référentiels & préférences">
+        <CandidateProfileSelects
+          jobTitleId={watch('jobTitleId')}
+          onJobTitle={(v) => setValue('jobTitleId', v)}
+          jobTitles={toOptions(referentials.jobTitles)}
+          softwareIds={watch('softwareIds') ?? []}
+          onSoftwareIds={(v) => setValue('softwareIds', v)}
+          softwares={toOptions(referentials.softwares)}
+          contractTypes={watch('contractTypes') ?? []}
+          onContractTypes={(v) => setValue('contractTypes', v as CandidateProfileInput['contractTypes'])}
+          referentId={watch('referentId')}
+          onReferent={(v) => setValue('referentId', v)}
+          recruiters={toOptions(referentials.recruiters)}
+        />
+      </FormSection>
+      <div className="flex justify-end border-t border-border/60 pt-4">
+        <Button type="submit" variant="accent" disabled={update.isPending} className="shadow-md shadow-accent/20">
+          {update.isPending ? 'Enregistrement…' : 'Enregistrer'}
+        </Button>
+      </div>
     </form>
   )
 }

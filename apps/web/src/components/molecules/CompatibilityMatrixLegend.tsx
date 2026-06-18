@@ -10,23 +10,17 @@ const LEGEND = [
 
 export function CompatibilityMatrixLegend() {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border/80 bg-surface/80 p-4">
+    <div className="rounded-lg border border-border/50 bg-white/60 p-4 backdrop-blur-sm">
       <p className="text-sm leading-relaxed text-fg-muted">
-        Pour chaque <strong className="font-medium text-fg">métier de mission</strong> (ligne),
-        définissez le taux de compatibilité avec chaque{' '}
-        <strong className="font-medium text-fg">métier candidat</strong> (colonne).{' '}
-        <span className="text-fg">0 % exclut</span> le couple du pré-filtrage ;{' '}
-        <span className="text-fg">100 %</span> correspond à une adéquation parfaite pour le
-        matching.
+        Pour chaque métier de mission, réglez la compatibilité avec chaque métier candidat.
+        <span className="text-fg"> 0 %</span> exclut le couple du matching ;
+        <span className="text-fg"> 100 %</span> indique une adéquation parfaite.
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-2">
         {LEGEND.map(({ score, label }) => (
           <span
             key={label}
-            className={cn(
-              'rounded-full px-2.5 py-0.5 text-xs font-medium',
-              compatibilityScoreStyle(score),
-            )}
+            className={cn('rounded-full px-2.5 py-0.5 text-xs font-medium', compatibilityScoreStyle(score))}
           >
             {label} · {score} %
           </span>

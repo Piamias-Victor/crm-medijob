@@ -28,7 +28,6 @@ export function getMissingMatchingFields(profile: MatchingProfileFields): string
   if (!profile.city?.trim()) missing.push('city')
   if (!profile.postalCode?.trim()) missing.push('postalCode')
   if (profile.mobilityRadiusKm == null) missing.push('mobilityRadiusKm')
-  if (!profile.availableFrom) missing.push('availableFrom')
   return missing
 }
 
