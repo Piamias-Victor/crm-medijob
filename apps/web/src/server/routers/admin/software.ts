@@ -6,17 +6,33 @@ import {
   idSchema,
 } from '@/server/admin/schema'
 
-export const softwareRouter = router({
-  list: adminProcedure.query(() => softwareRepository.list()),
-  create: adminProcedure
-    .input(referentialSchema)
-    .mutation(({ input }) => softwareRepository.create({ name: input.name })),
-  update: adminProcedure
-    .input(updateReferentialSchema)
-    .mutation(({ input }) =>
-      softwareRepository.update(input.id, { name: input.name }),
-    ),
-  remove: adminProcedure
-    .input(idSchema)
-    .mutation(({ input }) => softwareRepository.remove(input.id)),
+type Ref = { id: string; name: string }
+
+export type SoftwareDeps = {
+  list: () => Promise<Ref[]>
+  create: (name: string) => Promise<Ref>
+  update: (id: string, name: string) => Promise<Ref>
+  remove: (id: string) => Promise<unknown>
+}
+
+export function makeSoftwareRouter(deps: SoftwareDeps) {
+  return router({
+    list: adminProcedure.query(() => deps.list()),
+    create: adminProcedure
+      .input(referentialSchema)
+      .mutation(({ input }) => deps.create(input.name)),
+    update: adminProcedure
+      .input(updateReferentialSchema)
+      .mutation(({ input }) => deps.update(input.id, input.name)),
+    remove: adminProcedure
+      .input(idSchema)
+      .mutation(({ input }) => deps.remove(input.id)),
+  })
+}
+
+export const softwareRouter = makeSoftwareRouter({
+  list: () => softwareRepository.list(),
+  create: (name) => softwareRepository.create({ name }),
+  update: (id, name) => softwareRepository.update(id, { name }),
+  remove: (id) => softwareRepository.remove(id),
 })

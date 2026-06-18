@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const PHARMACY_STATUSES = ['PROSPECT', 'ACTIF', 'INACTIF'] as const
+export type PharmacyStatus = (typeof PHARMACY_STATUSES)[number]
 
 const optionalText = z
   .string()
@@ -33,3 +34,11 @@ export const updatePharmacySchema = z.object({
 })
 
 export const searchSiretSchema = z.object({ query: z.string().trim().min(3) })
+
+export type PharmacySiretLookup = {
+  siret: string
+  name: string
+  address: string
+  city: string
+  postalCode: string
+}

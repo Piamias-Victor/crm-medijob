@@ -11,7 +11,7 @@ import {
   pharmacyInputSchema,
   updatePharmacySchema,
   searchSiretSchema,
-} from '@/server/routers/pharmacy.schema'
+} from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
 

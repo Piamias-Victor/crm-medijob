@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { Input } from '@/components/atoms/Input'
 import { FormField } from '@/components/molecules/FormField'
-import { type PharmacyInput } from '@/server/routers/pharmacy.schema'
+import { type PharmacyInput } from '@/view-models/pharmacy-form.schema'
 
 type Props = {
   register: UseFormRegister<PharmacyInput>

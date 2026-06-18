@@ -1,6 +1,6 @@
 import { FormField } from '@/components/molecules/FormField'
 import { Combobox, type ComboboxOption } from '@/components/molecules/Combobox'
-import { PHARMACY_STATUSES } from '@/server/routers/pharmacy.schema'
+import { PHARMACY_STATUSES } from '@/view-models/pharmacy-form.schema'
 import { STATUS_LABELS } from '@/lib/pharmacy-options'
 
 const STATUS_OPTIONS: ComboboxOption[] = PHARMACY_STATUSES.map((s) => ({

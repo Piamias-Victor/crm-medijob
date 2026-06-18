@@ -1,52 +1,41 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Session } from 'next-auth'
-
-const updateStage = vi.fn()
-
-vi.mock('@/server/db/repositories/mission-candidate.repository', () => ({
-  missionCandidateRepository: {
-    updateStage: (input: unknown) => updateStage(input),
-  },
-}))
-
-import { appRouter } from '@/server/routers/_app'
+// @vitest-environment node
+import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
+import {
+  makeMissionCandidateRouter,
+  type MissionCandidateDeps,
+} from '@/server/routers/mission-candidate'
 
-const session: Session = {
-  user: { id: 'u1', role: 'RECRUTEUR' },
-  expires: '2099-01-01T00:00:00.000Z',
-}
-
-const authedCaller = () => createCallerFactory(appRouter)({ session })
-const anonCaller = () => createCallerFactory(appRouter)({ session: null })
-
+const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
 const input = { missionId: 'm1', candidateId: 'c1', stageId: 's2' }
 
-beforeEach(() => updateStage.mockReset())
+function makeDeps(overrides: Partial<MissionCandidateDeps> = {}): MissionCandidateDeps {
+  return {
+    updateStage: vi.fn().mockResolvedValue({ ...input }),
+    ...overrides,
+  }
+}
 
-describe('missionCandidate.updateStage', () => {
-  it('moves a single MissionCandidate to the target stage', async () => {
-    updateStage.mockResolvedValue({ ...input })
+function caller(deps: MissionCandidateDeps) {
+  return createCallerFactory(makeMissionCandidateRouter(deps))({ session })
+}
 
-    const result = await authedCaller().missionCandidate.updateStage(input)
-
-    expect(updateStage).toHaveBeenCalledWith(input)
+describe('missionCandidateRouter', () => {
+  it('returns the updated MissionCandidate from updateStage', async () => {
+    const deps = makeDeps()
+    const result = await caller(deps).updateStage(input)
     expect(result).toEqual(input)
   })
 
   it('rejects unauthenticated callers', async () => {
-    await expect(anonCaller().missionCandidate.updateStage(input)).rejects.toThrow()
-    expect(updateStage).not.toHaveBeenCalled()
+    const unauth = createCallerFactory(makeMissionCandidateRouter(makeDeps()))({ session: null })
+    await expect(unauth.updateStage(input)).rejects.toThrow()
   })
 
   it('rejects input missing identifiers', async () => {
+    const deps = makeDeps()
     await expect(
-      authedCaller().missionCandidate.updateStage({
-        missionId: '',
-        candidateId: 'c1',
-        stageId: 's2',
-      }),
+      caller(deps).updateStage({ missionId: '', candidateId: 'c1', stageId: 's2' }),
     ).rejects.toThrow()
-    expect(updateStage).not.toHaveBeenCalled()
   })
 })

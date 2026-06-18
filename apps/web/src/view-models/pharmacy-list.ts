@@ -1,4 +1,4 @@
-import type { PharmacyStatus } from '@prisma/client'
+import type { PharmacyStatus } from '@/view-models/pharmacy-form.schema'
 
 // View-model : pont entre l'entité Pharmacy et les colonnes liste (SPEC_V2 §6.649).
 

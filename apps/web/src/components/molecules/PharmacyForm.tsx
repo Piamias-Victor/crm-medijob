@@ -3,9 +3,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { pharmacyInputSchema, type PharmacyInput } from '@/server/routers/pharmacy.schema'
+import {
+  pharmacyInputSchema,
+  type PharmacyInput,
+  type PharmacySiretLookup,
+} from '@/view-models/pharmacy-form.schema'
 import { computeNumeroTVA } from '@/lib/tva'
-import type { SiretResult } from '@/server/services/siret'
 import { Button } from '@/components/atoms/Button'
 import { PharmacyFormFields } from '@/components/molecules/PharmacyFormFields'
 import { SiretSearchButton } from '@/components/molecules/SiretSearchButton'
@@ -20,7 +23,7 @@ type Props = {
   softwares: Ref[]
   submitting: boolean
   onSubmit: (data: PharmacyInput) => void
-  onSearchSiret: (query: string) => Promise<SiretResult[]>
+  onSearchSiret: (query: string) => Promise<PharmacySiretLookup[]>
   onCreateGroupement: (name: string) => Promise<Ref>
   onCreateSoftware: (name: string) => Promise<Ref>
 }

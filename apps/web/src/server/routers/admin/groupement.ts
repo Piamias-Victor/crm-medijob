@@ -6,17 +6,33 @@ import {
   idSchema,
 } from '@/server/admin/schema'
 
-export const groupementRouter = router({
-  list: adminProcedure.query(() => groupementRepository.list()),
-  create: adminProcedure
-    .input(referentialSchema)
-    .mutation(({ input }) => groupementRepository.create({ name: input.name })),
-  update: adminProcedure
-    .input(updateReferentialSchema)
-    .mutation(({ input }) =>
-      groupementRepository.update(input.id, { name: input.name }),
-    ),
-  remove: adminProcedure
-    .input(idSchema)
-    .mutation(({ input }) => groupementRepository.remove(input.id)),
+type Ref = { id: string; name: string }
+
+export type GroupementDeps = {
+  list: () => Promise<Ref[]>
+  create: (name: string) => Promise<Ref>
+  update: (id: string, name: string) => Promise<Ref>
+  remove: (id: string) => Promise<unknown>
+}
+
+export function makeGroupementRouter(deps: GroupementDeps) {
+  return router({
+    list: adminProcedure.query(() => deps.list()),
+    create: adminProcedure
+      .input(referentialSchema)
+      .mutation(({ input }) => deps.create(input.name)),
+    update: adminProcedure
+      .input(updateReferentialSchema)
+      .mutation(({ input }) => deps.update(input.id, input.name)),
+    remove: adminProcedure
+      .input(idSchema)
+      .mutation(({ input }) => deps.remove(input.id)),
+  })
+}
+
+export const groupementRouter = makeGroupementRouter({
+  list: () => groupementRepository.list(),
+  create: (name) => groupementRepository.create({ name }),
+  update: (id, name) => groupementRepository.update(id, { name }),
+  remove: (id) => groupementRepository.remove(id),
 })

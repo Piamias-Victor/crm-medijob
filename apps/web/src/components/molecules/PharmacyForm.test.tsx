@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import type { SiretResult } from '@/server/services/siret'
+import type { PharmacySiretLookup } from '@/view-models/pharmacy-form.schema'
 import { PharmacyForm } from '@/components/molecules/PharmacyForm'
 
-function setup(onSearchSiret: () => Promise<SiretResult[]>) {
+function setup(onSearchSiret: () => Promise<PharmacySiretLookup[]>) {
   render(
     <PharmacyForm
       groupements={[]}
@@ -21,8 +21,8 @@ function setup(onSearchSiret: () => Promise<SiretResult[]>) {
 
 describe('PharmacyForm SIRET search', () => {
   it('shows a spinner while the lookup is pending', async () => {
-    let resolve: (v: SiretResult[]) => void = () => {}
-    setup(() => new Promise<SiretResult[]>((r) => (resolve = r)))
+    let resolve: (v: PharmacySiretLookup[]) => void = () => {}
+    setup(() => new Promise<PharmacySiretLookup[]>((r) => (resolve = r)))
 
     expect(await screen.findByRole('status')).toBeInTheDocument()
 

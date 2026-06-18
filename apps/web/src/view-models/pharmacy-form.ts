@@ -1,8 +1,21 @@
-import type { Pharmacy } from '@prisma/client'
-import type { PharmacyInput } from '@/server/routers/pharmacy.schema'
+import type { PharmacyInput, PharmacyStatus } from '@/view-models/pharmacy-form.schema'
 
-// View-model : entité Pharmacy → valeurs par défaut du formulaire d'édition.
-export function toPharmacyFormValues(p: Pharmacy): Partial<PharmacyInput> {
+export type PharmacyFormSource = {
+  name: string
+  siret: string | null
+  numeroTVA: string | null
+  address: string | null
+  city: string | null
+  postalCode: string | null
+  phone: string | null
+  email: string | null
+  website: string | null
+  status: PharmacyStatus
+  groupementId: string | null
+  softwareId: string | null
+}
+
+export function toPharmacyFormValues(p: PharmacyFormSource): Partial<PharmacyInput> {
   return {
     name: p.name,
     siret: p.siret ?? undefined,
