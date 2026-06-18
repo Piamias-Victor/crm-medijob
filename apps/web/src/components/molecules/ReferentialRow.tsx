@@ -6,6 +6,9 @@ import { Button } from '@/components/atoms/Button'
 import { useInlineEdit } from '@/lib/use-inline-edit'
 import type { RefItem } from '@/view-models/referential'
 
+const rowClass =
+  'flex items-center justify-between gap-2 rounded-lg border border-border/50 bg-white/90 px-3 py-2.5 shadow-sm transition-colors hover:border-accent/30'
+
 type Props = {
   item: RefItem
   onRename: (id: string, name: string) => Promise<void>
@@ -17,11 +20,12 @@ export function ReferentialRow({ item, onRename, onDelete }: Props) {
 
   if (edit.editing) {
     return (
-      <li className="flex items-center gap-2 py-2">
+      <li className={rowClass}>
         <Input
           aria-label={`Renommer ${item.name}`}
           value={edit.value}
           onChange={(e) => edit.setValue(e.target.value)}
+          className="h-10 flex-1 rounded-lg bg-white/80"
         />
         <Button variant="ghost" aria-label="Enregistrer" onClick={edit.save}>
           <Check className="size-4" />
@@ -34,13 +38,13 @@ export function ReferentialRow({ item, onRename, onDelete }: Props) {
   }
 
   return (
-    <li className="flex items-center justify-between gap-2 rounded-lg px-2 py-2 transition-colors hover:bg-surface/80">
-      <span className="text-sm text-fg">{item.name}</span>
-      <div className="flex gap-1">
-        <Button variant="ghost" aria-label="Renommer" onClick={() => edit.setEditing(true)}>
+    <li className={rowClass}>
+      <span className="truncate text-sm font-medium text-fg">{item.name}</span>
+      <div className="flex shrink-0 gap-1">
+        <Button variant="ghost" className="px-2" aria-label="Renommer" onClick={() => edit.setEditing(true)}>
           <Pencil className="size-4" />
         </Button>
-        <Button variant="ghost" aria-label="Supprimer" onClick={() => onDelete(item.id)}>
+        <Button variant="ghost" className="px-2" aria-label="Supprimer" onClick={() => onDelete(item.id)}>
           <Trash2 className="size-4 text-error" />
         </Button>
       </div>

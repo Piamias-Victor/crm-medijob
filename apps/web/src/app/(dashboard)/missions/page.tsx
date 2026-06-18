@@ -1,10 +1,9 @@
-import { PagePlaceholder } from '@/components/molecules/PagePlaceholder'
+import { createServerCaller } from '@/lib/trpc/server'
+import { MissionsPage } from '@/components/organisms/MissionsPage'
 
-export default function MissionsPage() {
-  return (
-    <PagePlaceholder
-      title="Missions"
-      description="Le suivi des besoins de staffing arrivera dans un prochain lot."
-    />
-  )
+export default async function Page() {
+  const caller = await createServerCaller()
+  const missions = await caller.mission.list()
+
+  return <MissionsPage missions={missions} />
 }

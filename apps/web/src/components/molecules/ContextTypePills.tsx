@@ -1,5 +1,6 @@
 'use client'
 
+import { pillNavLinkClass } from '@/view-models/pill-nav-link'
 import { cn } from '@/lib/cn'
 import { CONTEXT_OPTIONS } from '@/lib/assistant/context'
 import type { ShortcutEntityType } from '@/server/ai/shortcuts'
@@ -9,16 +10,14 @@ type Props = {
   onChange: (value?: ShortcutEntityType) => void
 }
 
-const pill = 'rounded-full px-3 py-1.5 text-xs font-medium transition-colors'
-
 export function ContextTypePills({ value, onChange }: Props) {
   return (
-    <div className="flex flex-wrap gap-1.5" role="group" aria-label="Type de contexte">
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Type de contexte">
       <button
         type="button"
         onClick={() => onChange(undefined)}
         aria-pressed={!value}
-        className={cn(pill, !value ? 'bg-fg text-primary-fg' : 'text-fg-muted hover:bg-surface')}
+        className={cn(pillNavLinkClass(!value), 'px-3 py-1.5 text-xs')}
       >
         Aucun
       </button>
@@ -30,12 +29,7 @@ export function ContextTypePills({ value, onChange }: Props) {
             type="button"
             onClick={() => onChange(option.value)}
             aria-pressed={active}
-            className={cn(
-              pill,
-              active
-                ? 'bg-primary text-primary-fg shadow-sm'
-                : 'border border-border text-fg hover:bg-surface',
-            )}
+            className={cn(pillNavLinkClass(active), 'px-3 py-1.5 text-xs')}
           >
             {option.label}
           </button>

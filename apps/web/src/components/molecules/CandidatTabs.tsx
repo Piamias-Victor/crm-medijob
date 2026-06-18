@@ -1,14 +1,14 @@
 'use client'
 
-import { List, Inbox } from 'lucide-react'
-import { cn } from '@/lib/cn'
+import { Inbox, List } from 'lucide-react'
+import { PillTabs } from '@/components/molecules/PillTabs'
 
 export type CandidatsTab = 'cvtheque' | 'inbox'
 
 const tabs = [
-  { id: 'cvtheque', label: 'CVthèque', icon: List },
-  { id: 'inbox', label: 'Candidatures reçues', icon: Inbox },
-] as const
+  { id: 'cvtheque' as const, label: 'CVthèque', icon: List },
+  { id: 'inbox' as const, label: 'Candidatures reçues', icon: Inbox },
+]
 
 type Props = {
   active: CandidatsTab
@@ -18,30 +18,14 @@ type Props = {
 
 export function CandidatTabs({ active, onChange, inboxCount }: Props) {
   return (
-    <div role="tablist" className="flex gap-1 border-b border-border">
-      {tabs.map(({ id, label, icon: Icon }) => (
-        <button
-          key={id}
-          type="button"
-          role="tab"
-          aria-selected={active === id}
-          onClick={() => onChange(id)}
-          className={cn(
-            'flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-medium transition-colors',
-            active === id
-              ? 'border-accent text-accent-hover'
-              : 'border-transparent text-fg-muted hover:text-fg',
-          )}
-        >
-          <Icon className="size-4" />
-          {label}
-          {id === 'inbox' && inboxCount > 0 ? (
-            <span className="rounded-full bg-accent-muted px-2 text-xs text-accent-hover">
-              {inboxCount}
-            </span>
-          ) : null}
-        </button>
-      ))}
-    </div>
+    <PillTabs
+      aria-label="Sections candidats"
+      active={active}
+      onChange={(id) => onChange(id as CandidatsTab)}
+      items={tabs.map((tab) => ({
+        ...tab,
+        badge: tab.id === 'inbox' ? inboxCount : undefined,
+      }))}
+    />
   )
 }

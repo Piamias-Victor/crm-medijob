@@ -19,7 +19,7 @@ afterAll(async () => {
 })
 
 function newContact(firstName: string) {
-  return { firstName, lastName: 'Doe', pharmacy: { connect: { id: pharmacyId } } }
+  return { firstName, lastName: 'Doe', pharmacyId }
 }
 
 describe('contactRepository', () => {
@@ -34,5 +34,22 @@ describe('contactRepository', () => {
     await repo.softDelete(c.id)
     expect(await repo.findById(c.id)).toBeNull()
     expect((await repo.list()).some((x) => x.id === c.id)).toBe(false)
+  })
+
+  it('unsets previous primary when creating a primary contact', async () => {
+    const first = await repo.create({ ...newContact('Anne'), isPrimary: true })
+    const second = await repo.create({ ...newContact('Bob'), isPrimary: true })
+    const contacts = await repo.listByPharmacy(pharmacyId)
+    expect(contacts.find((c) => c.id === first.id)?.isPrimary).toBe(false)
+    expect(contacts.find((c) => c.id === second.id)?.isPrimary).toBe(true)
+  })
+
+  it('unsets previous primary when setting a new one', async () => {
+    const first = await repo.create({ ...newContact('Anne'), isPrimary: true })
+    const second = await repo.create({ ...newContact('Bob'), isPrimary: false })
+    await repo.setPrimary(second.id)
+    const contacts = await repo.listByPharmacy(pharmacyId)
+    expect(contacts.find((c) => c.id === first.id)?.isPrimary).toBe(false)
+    expect(contacts.find((c) => c.id === second.id)?.isPrimary).toBe(true)
   })
 })

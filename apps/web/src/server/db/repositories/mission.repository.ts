@@ -1,14 +1,63 @@
-import type { PrismaClient, Prisma } from '@prisma/client'
+import type { MissionStatus, PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+
+type StageUpdate = { candidateId: string; stageId: string }
+
+const listSelect = {
+  id: true,
+  title: true,
+  status: true,
+  startDate: true,
+  jobTitle: { select: { name: true } },
+  pharmacy: { select: { name: true, city: true } },
+  referent: { select: { name: true } },
+} as const
 
 export function makeMissionRepository(db: PrismaClient = defaultDb) {
   return {
     create: (data: Prisma.MissionCreateInput) => db.mission.create({ data }),
     findById: (id: string) =>
       db.mission.findFirst({ where: { id, ...NOT_DELETED } }),
-    list: () =>
-      db.mission.findMany({ where: NOT_DELETED, orderBy: { createdAt: 'desc' } }),
+    findForContext: (id: string) =>
+      db.mission.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: {
+          title: true,
+          contractType: true,
+          startDate: true,
+          salaireMin: true,
+          salaireMax: true,
+          notes: true,
+        },
+      }),
+    list: (limit = DEFAULT_LIST_LIMIT) =>
+      db.mission.findMany({
+        where: NOT_DELETED,
+        orderBy: { createdAt: 'desc' },
+        select: listSelect,
+        take: limit,
+      }),
+    updateStatus: (id: string, status: MissionStatus) =>
+      db.mission.update({ where: { id }, data: { status }, select: { id: true, status: true } }),
+    terminalTransition: (missionId: string, status: MissionStatus, stageUpdates: StageUpdate[]) =>
+      db.$transaction(async (tx) => {
+        const result = await tx.mission.update({
+          where: { id: missionId },
+          data: { status },
+          select: { id: true, status: true },
+        })
+        for (const update of stageUpdates) {
+          await tx.missionCandidate.update({
+            where: {
+              missionId_candidateId: { missionId, candidateId: update.candidateId },
+            },
+            data: { stageId: update.stageId },
+          })
+        }
+        return result
+      }),
     search: (term: string, limit = 8) =>
       db.mission.findMany({
         where: { ...NOT_DELETED, title: { contains: term, mode: 'insensitive' } },
@@ -17,6 +66,12 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
       }),
     softDelete: (id: string) =>
       db.mission.update({ where: { id }, data: { deletedAt: new Date() } }),
+    listByContact: (contactId: string) =>
+      db.mission.findMany({
+        where: { contactId, ...NOT_DELETED },
+        select: { id: true, title: true, status: true, pharmacy: { select: { name: true } } },
+        orderBy: { createdAt: 'desc' },
+      }),
   }
 }
 

@@ -18,10 +18,10 @@ describe('AppSidebar hover expand', () => {
     expect(screen.getByRole('link', { name: 'Candidats' })).toBeInTheDocument()
   })
 
-  it('hides labels from assistive tech while collapsed', () => {
+  it('hides labels while collapsed', () => {
     render(<AppSidebar role="RECRUTEUR" />)
 
-    expect(screen.getByText('Candidats')).toHaveAttribute('aria-hidden', 'true')
+    expect(screen.queryByText('Candidats')).not.toBeInTheDocument()
   })
 
   it('reveals labels on hover', () => {
@@ -29,7 +29,7 @@ describe('AppSidebar hover expand', () => {
 
     fireEvent.mouseEnter(screen.getByRole('complementary'))
 
-    expect(screen.getByText('Candidats')).toHaveAttribute('aria-hidden', 'false')
+    expect(screen.getByText('Candidats')).toBeInTheDocument()
   })
 
   it('hides labels again when the mouse leaves', () => {
@@ -39,7 +39,7 @@ describe('AppSidebar hover expand', () => {
     fireEvent.mouseEnter(sidebar)
     fireEvent.mouseLeave(sidebar)
 
-    expect(screen.getByText('Candidats')).toHaveAttribute('aria-hidden', 'true')
+    expect(screen.queryByText('Candidats')).not.toBeInTheDocument()
   })
 })
 

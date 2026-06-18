@@ -1,4 +1,5 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 
@@ -17,13 +18,19 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
       db.pharmacy.create({ data }),
     findById: (id: string) =>
       db.pharmacy.findFirst({ where: { id, ...NOT_DELETED } }),
+    findForContext: (id: string) =>
+      db.pharmacy.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: { name: true, city: true, type: true, status: true, notes: true },
+      }),
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) =>
       db.pharmacy.update({ where: { id }, data }),
-    list: () =>
+    list: (limit = DEFAULT_LIST_LIMIT) =>
       db.pharmacy.findMany({
         where: NOT_DELETED,
         include: listInclude,
         orderBy: { name: 'asc' },
+        take: limit,
       }),
     search: (term: string, limit = 8) =>
       db.pharmacy.findMany({

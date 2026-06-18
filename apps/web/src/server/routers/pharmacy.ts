@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { Prisma, Pharmacy } from '@prisma/client'
-import { router, protectedProcedure } from '@/server/trpc'
+import { router, protectedProcedure, adminProcedure } from '@/server/trpc'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { groupementRepository } from '@/server/db/repositories/groupement.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
@@ -23,8 +23,9 @@ export type PharmacyDeps = {
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) => Promise<unknown>
     softDelete: (id: string) => Promise<unknown>
   }
-  groupements: { list: () => Promise<Ref[]>; create: (name: string) => Promise<Ref> }
-  softwares: { list: () => Promise<Ref[]>; create: (name: string) => Promise<Ref> }
+  referentials: { listGroupements: () => Promise<Ref[]>; listSoftwares: () => Promise<Ref[]> }
+  createGroupement: (name: string) => Promise<Ref>
+  createSoftware: (name: string) => Promise<Ref>
   searchSiret: (query: string) => Promise<SiretResult[]>
 }
 
@@ -49,8 +50,8 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
       .input(idSchema)
       .query(({ input }) => deps.pharmacies.findById(input.id)),
     referentials: protectedProcedure.query(async () => ({
-      groupements: await deps.groupements.list(),
-      softwares: await deps.softwares.list(),
+      groupements: await deps.referentials.listGroupements(),
+      softwares: await deps.referentials.listSoftwares(),
     })),
     create: protectedProcedure
       .input(pharmacyInputSchema)
@@ -64,24 +65,22 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     searchSiret: protectedProcedure
       .input(searchSiretSchema)
       .query(({ input }) => deps.searchSiret(input.query)),
-    createGroupement: protectedProcedure
+    createGroupement: adminProcedure
       .input(nameSchema)
-      .mutation(({ input }) => deps.groupements.create(input.name)),
-    createSoftware: protectedProcedure
+      .mutation(({ input }) => deps.createGroupement(input.name)),
+    createSoftware: adminProcedure
       .input(nameSchema)
-      .mutation(({ input }) => deps.softwares.create(input.name)),
+      .mutation(({ input }) => deps.createSoftware(input.name)),
   })
 }
 
 export const pharmacyRouter = makePharmacyRouter({
   pharmacies: pharmacyRepository,
-  groupements: {
-    list: () => groupementRepository.list(),
-    create: (name) => groupementRepository.create({ name }),
+  referentials: {
+    listGroupements: () => groupementRepository.list(),
+    listSoftwares: () => softwareRepository.list(),
   },
-  softwares: {
-    list: () => softwareRepository.list(),
-    create: (name) => softwareRepository.create({ name }),
-  },
+  createGroupement: (name) => groupementRepository.create({ name }),
+  createSoftware: (name) => softwareRepository.create({ name }),
   searchSiret: (query) => searchSiretService(query),
 })

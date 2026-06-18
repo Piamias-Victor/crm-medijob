@@ -22,13 +22,17 @@ export function ReferentialAddForm({ label, onAdd }: Props) {
   })
 
   return (
-    <form onSubmit={submit} className="flex gap-2 rounded-lg border border-border/80 bg-surface/50 p-2">
+    <form
+      onSubmit={submit}
+      className="flex gap-2 rounded-lg border border-border/50 bg-white/60 p-2 backdrop-blur-sm"
+    >
       <Input
         aria-label={`Nouveau ${label}`}
         placeholder={`Nouveau ${label}`}
+        className="h-10 flex-1 rounded-lg bg-white/90"
         {...register('name')}
       />
-      <Button type="submit" disabled={isSubmitting}>
+      <Button type="submit" variant="accent" disabled={isSubmitting} className="shadow-md shadow-accent/20">
         Ajouter
       </Button>
     </form>

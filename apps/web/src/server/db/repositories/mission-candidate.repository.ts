@@ -9,6 +9,11 @@ type UpdateStageInput = {
 
 export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
   return {
+    listByMission: (missionId: string) =>
+      db.missionCandidate.findMany({
+        where: { missionId },
+        select: { candidateId: true },
+      }),
     updateStage: ({ missionId, candidateId, stageId }: UpdateStageInput) =>
       db.missionCandidate.update({
         where: { missionId_candidateId: { missionId, candidateId } },
