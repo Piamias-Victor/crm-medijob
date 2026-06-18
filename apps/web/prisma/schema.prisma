@@ -1,5 +1,5 @@
-// Prisma stub — generator + datasource only.
-// Le schéma métier (models, enums) est livré dans l'issue #52.
+// Schéma Prisma V2 — CRM Medijob (SPEC_V2 §3).
+// Prisma uniquement consommé via src/server/db/repositories/.
 
 generator client {
   provider = "prisma-client-js"
@@ -8,4 +8,470 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────
+
+enum UserRole {
+  RECRUTEUR
+  ADMIN
+}
+
+enum PharmacyType {
+  INDEPENDANTE
+  CLINIQUE
+}
+
+enum PharmacyStatus {
+  PROSPECT
+  ACTIF
+  INACTIF
+}
+
+enum ContactRole {
+  TITULAIRE
+  ADJOINT
+  PREPARATEUR_REFERENT
+  RESPONSABLE_RH
+  AUTRE
+}
+
+enum ContractType {
+  CDI
+  CDD
+  INTERIM
+  VACATION
+}
+
+enum MissionStatus {
+  A_POURVOIR
+  EN_RECHERCHE
+  CANDIDATS_PRESENTES
+  ENTRETIEN_EN_COURS
+  POURVU
+  ANNULEE
+}
+
+enum ActivityType {
+  APPEL
+  EMAIL
+  ENTRETIEN
+  MISSION
+  NOTE
+  ACTION_COMMERCIALE
+  DEVIS
+  AUTRE
+}
+
+enum DocumentCategory {
+  CONTRAT
+  DEVIS
+  FACTURE
+  CONVENTION
+  AUTRE
+}
+
+enum DocumentEntityType {
+  PHARMACY
+  CONTACT
+  MISSION
+  CANDIDATE
+}
+
+enum ApplicationStatus {
+  EN_ATTENTE
+  ACCEPTEE
+  REFUSEE
+}
+
+enum JobOfferStatus {
+  BROUILLON
+  PUBLIEE
+  DEPUBLIEE
+}
+
+// ─── Auth (NextAuth v5) ───────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Users ────────────────────────────────────────────────────
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  name      String
+  role      UserRole  @default(RECRUTEUR)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  referents   Candidate[]   @relation("ReferentCandidates")
+  missionRefs Mission[]     @relation("ReferentMissions")
+  activities  ActivityLog[]
+  accounts    Account[]
+  sessions    Session[]
+
+  @@index([deletedAt])
+}
+
+// ─── Référentiels administrables ──────────────────────────────
+
+model Software {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  candidates CandidateSoftware[]
+  pharmacies Pharmacy[]
+}
+
+model Groupement {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  pharmacies Pharmacy[]
+}
+
+model PipelineStage {
+  id        String   @id @default(cuid())
+  name      String
+  position  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  missionCandidates MissionCandidate[]
+
+  @@index([position])
+}
+
+model JobTitle {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  candidates                Candidate[]
+  missions                  Mission[]
+  applications              Application[]
+  missionCompatibilities    JobTitleCompatibility[] @relation("MissionJobTitle")
+  acceptedInCompatibilities JobTitleCompatibility[] @relation("AcceptedCandidateJobTitle")
+}
+
+model JobTitleCompatibility {
+  missionJobTitleId   String
+  candidateJobTitleId String
+
+  missionJobTitle   JobTitle @relation("MissionJobTitle", fields: [missionJobTitleId], references: [id], onDelete: Cascade)
+  candidateJobTitle JobTitle @relation("AcceptedCandidateJobTitle", fields: [candidateJobTitleId], references: [id], onDelete: Cascade)
+
+  @@id([missionJobTitleId, candidateJobTitleId])
+}
+
+// ─── Candidates ───────────────────────────────────────────────
+
+model Candidate {
+  id                String    @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String?
+  phone             String?
+  address           String?
+  city              String?
+  postalCode        String?
+  jobTitleId        String
+  mobilityRadiusKm  Int?
+  mobilityNotes     String?
+  availableFrom     DateTime?
+  cvUrl             String?
+  cvSummary         String?
+  anonymizedProfile String?
+  notes             String?
+  referentId        String
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  referent            User                          @relation("ReferentCandidates", fields: [referentId], references: [id])
+  jobTitle            JobTitle                      @relation(fields: [jobTitleId], references: [id])
+  softwares           CandidateSoftware[]
+  contractPreferences CandidateContractPreference[]
+  missions            MissionCandidate[]
+  activities          ActivityLog[]                 @relation("CandidateActivities")
+  documents           Document[]                    @relation("CandidateDocuments")
+  applications        Application[]
+
+  @@index([deletedAt])
+  @@index([jobTitleId])
+  @@index([referentId])
+}
+
+model CandidateContractPreference {
+  candidateId  String
+  contractType ContractType
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@id([candidateId, contractType])
+}
+
+model CandidateSoftware {
+  candidateId String
+  softwareId  String
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  software  Software  @relation(fields: [softwareId], references: [id])
+
+  @@id([candidateId, softwareId])
+}
+
+// ─── Pharmacies ───────────────────────────────────────────────
+
+model Pharmacy {
+  id                String         @id @default(cuid())
+  name              String
+  siret             String?        @unique
+  numeroTVA         String?
+  address           String?
+  city              String?
+  postalCode        String?
+  phone             String?
+  email             String?
+  website           String?
+  type              PharmacyType?
+  status            PharmacyStatus @default(PROSPECT)
+  groupementId      String?
+  softwareId        String?
+  paymentConditions String?
+  notes             String?
+  deletedAt         DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  groupement Groupement?   @relation(fields: [groupementId], references: [id])
+  software   Software?     @relation(fields: [softwareId], references: [id])
+  contacts   Contact[]
+  missions   Mission[]
+  activities ActivityLog[] @relation("PharmacyActivities")
+  documents  Document[]    @relation("PharmacyDocuments")
+
+  @@index([deletedAt])
+  @@index([groupementId])
+}
+
+// ─── Contacts ─────────────────────────────────────────────────
+
+model Contact {
+  id         String      @id @default(cuid())
+  pharmacyId String
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  role       ContactRole @default(AUTRE)
+  isPrimary  Boolean     @default(false)
+  notes      String?
+  deletedAt  DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  pharmacy   Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  missions   Mission[]
+  activities ActivityLog[] @relation("ContactActivities")
+  documents  Document[]    @relation("ContactDocuments")
+
+  @@index([deletedAt])
+  @@index([pharmacyId])
+}
+
+// ─── Missions ─────────────────────────────────────────────────
+
+model Mission {
+  id               String        @id @default(cuid())
+  pharmacyId       String
+  contactId        String?
+  referentId       String
+  jobTitleId       String
+  title            String
+  description      String?
+  contractType     ContractType
+  startDate        DateTime
+  endDate          DateTime?
+  status           MissionStatus @default(A_POURVOIR)
+  salaireMin       Int?
+  salaireMax       Int?
+  salaireNotes     String?
+  heuresParSemaine Float?
+  planning         String?
+  tempsPlein       Boolean       @default(true)
+  notes            String?
+  deletedAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  pharmacy   Pharmacy           @relation(fields: [pharmacyId], references: [id])
+  contact    Contact?           @relation(fields: [contactId], references: [id])
+  referent   User               @relation("ReferentMissions", fields: [referentId], references: [id])
+  jobTitle   JobTitle           @relation(fields: [jobTitleId], references: [id])
+  candidates MissionCandidate[]
+  jobOffer   JobOffer?
+  activities ActivityLog[]      @relation("MissionActivities")
+  documents  Document[]         @relation("MissionDocuments")
+
+  @@index([deletedAt])
+  @@index([pharmacyId])
+  @@index([referentId])
+  @@index([status])
+}
+
+model MissionCandidate {
+  missionId   String
+  candidateId String
+  stageId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  mission   Mission       @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  candidate Candidate     @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  stage     PipelineStage @relation(fields: [stageId], references: [id])
+
+  @@id([missionId, candidateId])
+  @@index([stageId])
+}
+
+// ─── Offres d'emploi ──────────────────────────────────────────
+
+model JobOffer {
+  id            String         @id @default(cuid())
+  missionId     String         @unique
+  title         String
+  content       String
+  status        JobOfferStatus @default(BROUILLON)
+  webflowItemId String?
+  publishedAt   DateTime?
+  deletedAt     DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  mission      Mission       @relation(fields: [missionId], references: [id])
+  applications Application[]
+
+  @@index([deletedAt])
+  @@index([status])
+}
+
+// ─── Candidatures site internet ───────────────────────────────
+
+model Application {
+  id          String            @id @default(cuid())
+  jobOfferId  String
+  firstName   String
+  lastName    String
+  email       String
+  phone       String?
+  city        String?
+  jobTitleId  String?
+  cvUrl       String?
+  message     String?
+  status      ApplicationStatus @default(EN_ATTENTE)
+  candidateId String?
+  deletedAt   DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  jobOffer  JobOffer   @relation(fields: [jobOfferId], references: [id])
+  jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
+  candidate Candidate? @relation(fields: [candidateId], references: [id])
+
+  @@index([deletedAt])
+  @@index([jobOfferId])
+  @@index([status])
+}
+
+// ─── Historique polymorphe ────────────────────────────────────
+
+model ActivityLog {
+  id         String             @id @default(cuid())
+  entityType DocumentEntityType
+  authorId   String
+  type       ActivityType
+  content    String?
+  date       DateTime           @default(now())
+  createdAt  DateTime           @default(now())
+
+  candidateId String?
+  pharmacyId  String?
+  contactId   String?
+  missionId   String?
+
+  author    User       @relation(fields: [authorId], references: [id])
+  candidate Candidate? @relation("CandidateActivities", fields: [candidateId], references: [id])
+  pharmacy  Pharmacy?  @relation("PharmacyActivities", fields: [pharmacyId], references: [id])
+  contact   Contact?   @relation("ContactActivities", fields: [contactId], references: [id])
+  mission   Mission?   @relation("MissionActivities", fields: [missionId], references: [id])
+
+  @@index([candidateId])
+  @@index([pharmacyId])
+  @@index([contactId])
+  @@index([missionId])
+}
+
+// ─── Documents polymorphes ────────────────────────────────────
+
+model Document {
+  id         String           @id @default(cuid())
+  entityType DocumentEntityType
+  category   DocumentCategory @default(AUTRE)
+  name       String
+  url        String
+  size       Int?
+  mimeType   String?
+  createdAt  DateTime         @default(now())
+
+  pharmacyId  String?
+  contactId   String?
+  missionId   String?
+  candidateId String?
+
+  pharmacy  Pharmacy?  @relation("PharmacyDocuments", fields: [pharmacyId], references: [id])
+  contact   Contact?   @relation("ContactDocuments", fields: [contactId], references: [id])
+  mission   Mission?   @relation("MissionDocuments", fields: [missionId], references: [id])
+  candidate Candidate? @relation("CandidateDocuments", fields: [candidateId], references: [id])
+
+  @@index([pharmacyId])
+  @@index([contactId])
+  @@index([missionId])
+  @@index([candidateId])
 }
