@@ -12,7 +12,7 @@ const scores = new Map([[compatibilityKey('a', 'a'), 100]])
 describe('CompatibilityMatrix', () => {
   it('renders the explanatory legend', () => {
     render(<CompatibilityMatrix titles={titles} scores={scores} onChange={vi.fn()} />)
-    expect(screen.getByText(/0 % exclut/i)).toBeInTheDocument()
+    expect(screen.getByText(/exclut le couple du matching/i)).toBeInTheDocument()
   })
 
   it('shows score cells for each mission/candidate pair', () => {
