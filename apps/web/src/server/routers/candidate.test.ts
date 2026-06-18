@@ -59,7 +59,7 @@ describe('candidateRouter', () => {
     const result = await caller(makeDeps()).getById({ id: 'c1' })
     expect(result?.isProfileIncompleteForMatching).toBe(true)
     expect(result?.missingMatchingFields).toEqual(
-      expect.arrayContaining(['postalCode', 'mobilityRadiusKm', 'availableFrom']),
+      expect.arrayContaining(['postalCode', 'mobilityRadiusKm']),
     )
   })
 

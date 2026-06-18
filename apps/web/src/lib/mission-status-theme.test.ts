@@ -7,9 +7,10 @@ describe('MISSION_STATUS_THEME', () => {
     for (const status of MISSION_STATUS_ORDER) {
       const theme = MISSION_STATUS_THEME[status]
       expect(theme.badge).toBeTruthy()
-      expect(theme.header).toContain('gradient')
       expect(theme.dot).toBeTruthy()
-      expect(theme.cardAccent).toBeTruthy()
+      expect(theme.columnBorder).toBeTruthy()
+      expect(theme.columnBg).toBeTruthy()
+      expect(theme.countBadge).toBeTruthy()
     }
   })
 

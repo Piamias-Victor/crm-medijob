@@ -1,37 +1,46 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import { Inbox } from 'lucide-react'
-import { Card } from '@/components/atoms/Card'
-import { Badge } from '@/components/atoms/Badge'
 import { EmptyState } from '@/components/atoms/EmptyState'
+import { ApplicationInboxCard } from '@/components/molecules/ApplicationInboxCard'
+import { shouldAnimateList } from '@/lib/motion/list-motion'
 import type { InboxItem } from '@/view-models/application-inbox'
 
+const cardMotion = {
+  initial: { opacity: 0, y: 12, scale: 0.98 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+}
+
 export function ApplicationInbox({ items }: { items: InboxItem[] }) {
+  const animateCards = shouldAnimateList(items.length)
+
   if (items.length === 0) {
     return (
       <EmptyState
         icon={Inbox}
-        title="Aucune candidature en attente"
-        description="Les candidatures reçues depuis le site apparaîtront ici."
+        title="Boîte de réception vide"
+        description="Les candidatures Webflow apparaîtront ici dès leur réception."
       />
     )
   }
 
   return (
-    <Card className="divide-y divide-border p-0">
-      {items.map((item) => (
-        <div key={item.id} className="flex items-center gap-3 p-3">
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-fg">
-              {item.firstName} {item.lastName}
-            </p>
-            <p className="truncate text-xs text-fg-muted">
-              {item.email}
-              {item.city ? ` · ${item.city}` : ''} — {item.jobOffer.title}
-            </p>
-          </div>
-          {item.jobTitle ? <Badge>{item.jobTitle.name}</Badge> : null}
-          <Badge variant="warning">En attente</Badge>
-        </div>
-      ))}
-    </Card>
+    <div className="grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {items.map((item, index) => {
+        if (!animateCards) return <ApplicationInboxCard key={item.id} item={item} />
+
+        return (
+          <motion.div
+            key={item.id}
+            className="h-full"
+            {...cardMotion}
+            transition={{ duration: 0.24, delay: index * 0.04 }}
+          >
+            <ApplicationInboxCard item={item} />
+          </motion.div>
+        )
+      })}
+    </div>
   )
 }

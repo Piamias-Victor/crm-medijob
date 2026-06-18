@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
-import { ContactDetailView } from '@/components/organisms/ContactDetailView'
+import { ContactDetailPage } from '@/components/organisms/ContactDetailPage'
 
 type Props = { params: Promise<{ id: string }> }
 
-export default async function ContactDetailPage({ params }: Props) {
+export default async function Page({ params }: Props) {
   const { id } = await params
   const caller = await createServerCaller()
   const [contact, missions, pharmacies] = await Promise.all([
@@ -15,5 +15,5 @@ export default async function ContactDetailPage({ params }: Props) {
 
   if (!contact) notFound()
 
-  return <ContactDetailView contact={contact} missions={missions} pharmacies={pharmacies} />
+  return <ContactDetailPage contact={contact} missions={missions} pharmacies={pharmacies} />
 }

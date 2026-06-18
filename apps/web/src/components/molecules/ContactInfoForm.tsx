@@ -22,7 +22,6 @@ export function ContactInfoForm({ contact, pharmacies, submitting, onSubmit }: P
       pharmacies={pharmacies}
       submitting={submitting}
       onSubmit={onSubmit}
-      layout="detail"
     />
   )
 }

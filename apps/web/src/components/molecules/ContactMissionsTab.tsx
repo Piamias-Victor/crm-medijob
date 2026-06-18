@@ -18,7 +18,7 @@ export function ContactMissionsTab({ missions }: { missions: ContactMissionRow[]
           <button
             type="button"
             onClick={() => router.push(`/missions/${m.id}`)}
-            className="flex w-full items-center justify-between gap-3 rounded-lg border border-border bg-white px-4 py-3 text-left text-sm shadow-sm transition-all hover:border-accent/50 hover:bg-accent-muted/30"
+            className="flex w-full items-center justify-between gap-3 rounded-xl border border-border/55 bg-white/88 px-4 py-3 text-left text-sm shadow-sm transition-all hover:border-accent/45 hover:shadow-md hover:shadow-accent/8"
           >
             <div>
               <p className="font-medium text-fg">{m.title}</p>

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
-import { AdminSectionCard } from '@/components/molecules/AdminSectionCard'
+import { SectionCard } from '@/components/molecules/SectionCard'
 import { ReferentialManager } from '@/components/organisms/ReferentialManager'
 import { CompatibilityMatrix } from '@/components/organisms/CompatibilityMatrix'
 import {
@@ -20,10 +20,7 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
   const create = trpc.admin.jobTitle.create.useMutation({ onSuccess })
   const update = trpc.admin.jobTitle.update.useMutation({ onSuccess })
   const remove = trpc.admin.jobTitle.remove.useMutation({ onSuccess, onError })
-  const setScore = trpc.admin.jobTitle.setCompatibilityScore.useMutation({
-    onSuccess,
-    onError,
-  })
+  const setScore = trpc.admin.jobTitle.setCompatibilityScore.useMutation({ onSuccess, onError })
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,9 +33,11 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
         onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}
         onDelete={(id) => remove.mutate({ id })}
       />
-      <AdminSectionCard
+      <SectionCard
+        variant="glass"
         title="Matrice de compatibilité"
         description="Affinez le pré-filtrage matching entre métiers mission et candidats."
+        bodyClassName="p-4 sm:p-5"
       >
         <CompatibilityMatrix
           titles={titles}
@@ -47,7 +46,7 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
             setScore.mutate({ missionJobTitleId, candidateJobTitleId, score })
           }
         />
-      </AdminSectionCard>
+      </SectionCard>
     </div>
   )
 }
