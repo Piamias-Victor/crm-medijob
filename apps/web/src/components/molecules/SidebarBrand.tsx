@@ -1,12 +1,11 @@
 import { cn } from '@/lib/cn'
+import { MedicalCross } from '@/components/atoms/MedicalCross'
 
 export function SidebarBrand({ expanded = true }: { expanded?: boolean }) {
   return (
     <div className="flex items-center gap-2 px-2">
       <span className="grid size-8 shrink-0 place-items-center rounded-md bg-accent text-accent-fg">
-        <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
-          <path d="M10 2h4v6h6v4h-6v6h-4v-6H4V8h6z" />
-        </svg>
+        <MedicalCross className="size-5" />
       </span>
       <span
         aria-hidden={!expanded}
