@@ -12,8 +12,8 @@ docs/prompts/done/PROMPT_ISSUE_{NNN}.md      ← issue mergée sur dev
 ```
 
 - `{NNN}` = numéro d'issue GitHub sur 3 chiffres minimum (ex. `050`, `054`)
-- Nouveau prompt → créer dans **`pending/`**, commité et pushé sur `dev` avant de lancer l'agent
-- **Après merge PR** : `git mv docs/prompts/pending/PROMPT_ISSUE_{NNN}.md docs/prompts/done/` (commit sur `dev`)
+- Nouveau prompt → créer dans **`pending/`**, **commit + push direct sur `dev`** (docs/prompts uniquement — pas de PR)
+- **Après merge PR issue** : `git mv pending/ → done/` puis **commit + push direct sur `dev`**
 - Un prompt = une issue. Pas de prompt partagé entre plusieurs issues.
 
 ## Structure obligatoire d'un prompt
