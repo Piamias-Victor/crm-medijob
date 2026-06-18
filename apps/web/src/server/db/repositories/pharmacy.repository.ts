@@ -24,6 +24,12 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         include: listInclude,
         orderBy: { name: 'asc' },
+      db.pharmacy.findMany({ where: NOT_DELETED, orderBy: { name: 'asc' } }),
+    search: (term: string, limit = 8) =>
+      db.pharmacy.findMany({
+        where: { ...NOT_DELETED, name: { contains: term, mode: 'insensitive' } },
+        orderBy: { name: 'asc' },
+        take: limit,
       }),
     softDelete: (id: string) =>
       db.pharmacy.update({ where: { id }, data: { deletedAt: new Date() } }),
