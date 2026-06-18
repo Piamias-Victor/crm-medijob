@@ -12,6 +12,18 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
       }),
+    search: (term: string, limit = 8) =>
+      db.candidate.findMany({
+        where: {
+          ...NOT_DELETED,
+          OR: [
+            { firstName: { contains: term, mode: 'insensitive' } },
+            { lastName: { contains: term, mode: 'insensitive' } },
+          ],
+        },
+        orderBy: { lastName: 'asc' },
+        take: limit,
+      }),
     softDelete: (id: string) =>
       db.candidate.update({ where: { id }, data: { deletedAt: new Date() } }),
   }
