@@ -1,5 +1,10 @@
 import { router } from '@/server/trpc'
 import { healthRouter } from '@/server/routers/health'
+import { pharmacyRouter } from '@/server/routers/pharmacy'
+
+export const appRouter = router({
+  health: healthRouter,
+  pharmacy: pharmacyRouter,
 import { assistantRouter } from '@/server/routers/assistant'
 
 export const appRouter = router({
