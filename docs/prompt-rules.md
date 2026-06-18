@@ -4,14 +4,16 @@ Règles que tout agent doit respecter pour générer, stocker et exécuter un pr
 
 ## Stockage des prompts
 
-Chaque prompt généré pour une issue est sauvegardé dans :
+Deux dossiers — **ne pas renommer** les fichiers, déplacer entre dossiers :
 
 ```
-docs/prompts/PROMPT_ISSUE_{NNN}.md
+docs/prompts/pending/PROMPT_ISSUE_{NNN}.md   ← à lancer / en cours
+docs/prompts/done/PROMPT_ISSUE_{NNN}.md      ← issue mergée sur dev
 ```
 
-- `{NNN}` = numéro d'issue GitHub sur 3 chiffres minimum (ex. `002`, `008`, `017`)
-- Le fichier est **commité et pushé sur `dev`** avant de commencer le travail sur l'issue
+- `{NNN}` = numéro d'issue GitHub sur 3 chiffres minimum (ex. `050`, `054`)
+- Nouveau prompt → créer dans **`pending/`**, commité et pushé sur `dev` avant de lancer l'agent
+- **Après merge PR** : `git mv docs/prompts/pending/PROMPT_ISSUE_{NNN}.md docs/prompts/done/` (commit sur `dev`)
 - Un prompt = une issue. Pas de prompt partagé entre plusieurs issues.
 
 ## Structure obligatoire d'un prompt
@@ -77,6 +79,7 @@ Quand demandé :
 1. Si `/handoff` : rédiger `docs/handoffs/HANDOFF_ISSUE_{NNN}.md` et **committer avec le code** (même PR, jamais en local seul)
 2. Pusher sur la branche de feature (`origin`)
 3. Ouvrir une PR vers `dev` avec `Closes #{N}` dans le body — la PR doit inclure code + handoff
+4. **Après merge** (sur `dev`) : déplacer le prompt `pending/` → `done/`
 
 ### 7. Tests manuels
 
