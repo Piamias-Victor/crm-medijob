@@ -21,3 +21,10 @@ export const navItems: NavItem[] = [
 ]
 
 export const adminNavItem: NavItem = { label: 'Admin', href: '/admin', icon: Settings }
+
+export const adminSubNav: { label: string; href: string }[] = [
+  { label: 'Pipeline', href: '/admin/pipeline' },
+  { label: 'Logiciels', href: '/admin/logiciels' },
+  { label: 'Groupements', href: '/admin/groupements' },
+  { label: 'Métiers', href: '/admin/metiers' },
+]

@@ -193,6 +193,7 @@ model JobTitle {
 model JobTitleCompatibility {
   missionJobTitleId   String
   candidateJobTitleId String
+  score               Int      @default(100)
 
   missionJobTitle   JobTitle @relation("MissionJobTitle", fields: [missionJobTitleId], references: [id], onDelete: Cascade)
   candidateJobTitle JobTitle @relation("AcceptedCandidateJobTitle", fields: [candidateJobTitleId], references: [id], onDelete: Cascade)
