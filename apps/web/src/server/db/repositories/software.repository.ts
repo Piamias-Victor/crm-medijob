@@ -6,6 +6,9 @@ export function makeSoftwareRepository(db: PrismaClient = defaultDb) {
     create: (data: Prisma.SoftwareCreateInput) => db.software.create({ data }),
     findById: (id: string) => db.software.findUnique({ where: { id } }),
     list: () => db.software.findMany({ orderBy: { name: 'asc' } }),
+    update: (id: string, data: Prisma.SoftwareUpdateInput) =>
+      db.software.update({ where: { id }, data }),
+    remove: (id: string) => db.software.delete({ where: { id } }),
   }
 }
 

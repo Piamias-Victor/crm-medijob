@@ -10,10 +10,12 @@ import { HOME_PATH } from '@/server/auth/access'
 import { Input } from '@/components/atoms/Input'
 import { PasswordInput } from '@/components/molecules/PasswordInput'
 import { Button } from '@/components/atoms/Button'
+import { Spinner } from '@/components/atoms/Spinner'
 
 export function LoginForm() {
   const router = useRouter()
   const [authError, setAuthError] = useState<string | null>(null)
+  const [redirecting, setRedirecting] = useState(false)
   const {
     register,
     handleSubmit,
@@ -27,9 +29,19 @@ export function LoginForm() {
       setAuthError('Identifiants invalides')
       return
     }
+    setRedirecting(true)
     router.push(HOME_PATH)
     router.refresh()
   })
+
+  if (redirecting) {
+    return (
+      <div className="flex flex-col items-center gap-3 py-8" role="status" aria-live="polite">
+        <Spinner />
+        <p className="text-sm text-fg-muted">Redirection…</p>
+      </div>
+    )
+  }
 
   return (
     <form onSubmit={onSubmit} className="flex w-full flex-col gap-4" noValidate>

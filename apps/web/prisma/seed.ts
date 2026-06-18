@@ -39,8 +39,8 @@ async function seedCompatibility() {
             candidateJobTitleId,
           },
         },
-        update: {},
-        create: { missionJobTitleId, candidateJobTitleId },
+        update: { score: 100 },
+        create: { missionJobTitleId, candidateJobTitleId, score: 100 },
       })
     }
   }
