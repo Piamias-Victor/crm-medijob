@@ -1,30 +1,50 @@
+import { TRPCError } from '@trpc/server'
+import { TERMINAL_STAGE_NAMES } from '@/lib/pipeline-constants'
 import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage.repository'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { missionCandidateRepository } from '@/server/db/repositories/mission-candidate.repository'
 import { transitionMissionStatus } from '@/server/mission/transition-status'
-
-const PLACE_STAGE = 'Placé'
-const REJECT_STAGE = 'Pas retenu'
+import { TransitionError } from '@/server/mission/transition-errors'
 
 async function findStageIdsByNames() {
   const stages = await pipelineStageRepository.list()
-  const placé = stages.find((s) => s.name === PLACE_STAGE)?.id
-  const pasRetenu = stages.find((s) => s.name === REJECT_STAGE)?.id
-  if (!placé || !pasRetenu) throw new Error('Pipeline terminal stages missing')
+  const placé = stages.find((s) => s.name === TERMINAL_STAGE_NAMES[0])?.id
+  const pasRetenu = stages.find((s) => s.name === TERMINAL_STAGE_NAMES[1])?.id
+  if (!placé || !pasRetenu) throw new TransitionError('MISSING_TERMINAL_STAGES')
   return { placé, pasRetenu }
 }
 
-export function runMissionStatusTransition(
+function mapTransitionError(error: unknown): never {
+  if (error instanceof TransitionError) {
+    if (error.code === 'INVALID_PLACED_CANDIDATE') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'placedCandidateId must belong to the mission',
+      })
+    }
+    throw new TRPCError({
+      code: 'PRECONDITION_FAILED',
+      message: 'Pipeline terminal stages missing',
+    })
+  }
+  throw error
+}
+
+export async function runMissionStatusTransition(
   input: Parameters<typeof transitionMissionStatus>[0],
 ) {
-  return transitionMissionStatus(input, {
-    findStageIdsByNames,
-    listCandidateIds: async (missionId) => {
-      const rows = await missionCandidateRepository.listByMission(missionId)
-      return rows.map((r) => r.candidateId)
-    },
-    updateMissionStatus: (missionId, status) => missionRepository.updateStatus(missionId, status),
-    updateStage: (missionId, candidateId, stageId) =>
-      missionCandidateRepository.updateStage({ missionId, candidateId, stageId }).then(() => undefined),
-  })
+  try {
+    return await transitionMissionStatus(input, {
+      findStageIdsByNames,
+      listCandidateIds: async (missionId) => {
+        const rows = await missionCandidateRepository.listByMission(missionId)
+        return rows.map((r) => r.candidateId)
+      },
+      updateMissionStatus: (missionId, status) => missionRepository.updateStatus(missionId, status),
+      applyTerminalTransition: (missionId, status, stageUpdates) =>
+        missionRepository.terminalTransition(missionId, status, stageUpdates),
+    })
+  } catch (error) {
+    mapTransitionError(error)
+  }
 }

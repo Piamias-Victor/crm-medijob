@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makePharmacyRouter, type PharmacyDeps } from '@/server/routers/pharmacy'
 import type { PharmacyListEntity } from '@/view-models/pharmacy-list'
-import { createInlineReferential } from '@/server/referentials/inline-create'
 
 const entity: PharmacyListEntity = {
   id: 'p1',
@@ -16,8 +15,6 @@ const entity: PharmacyListEntity = {
 }
 
 function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
-  const createGroupement = vi.fn().mockImplementation((name: string) => Promise.resolve({ id: 'g1', name }))
-  const createSoftware = vi.fn().mockImplementation((name: string) => Promise.resolve({ id: 's1', name }))
   return {
     pharmacies: {
       list: vi.fn().mockResolvedValue([entity]),
@@ -30,15 +27,17 @@ function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
       listGroupements: vi.fn().mockResolvedValue([]),
       listSoftwares: vi.fn().mockResolvedValue([]),
     },
-    inlineReferentials: createInlineReferential({ createGroupement, createSoftware }),
+    createGroupement: vi.fn().mockResolvedValue({ id: 'g1', name: 'Giphar' }),
+    createSoftware: vi.fn().mockResolvedValue({ id: 's1', name: 'Winpharma' }),
     searchSiret: vi.fn().mockResolvedValue([{ siret: '1', name: 'X', address: '', city: '', postalCode: '' }]),
     ...overrides,
   }
 }
 
-const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
+const recruteurSession = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
+const adminSession = { user: { id: 'u2', role: 'ADMIN' as const }, expires: '2999-01-01' }
 
-function caller(deps: PharmacyDeps) {
+function caller(deps: PharmacyDeps, session = recruteurSession) {
   return createCallerFactory(makePharmacyRouter(deps))({ session })
 }
 
@@ -69,16 +68,14 @@ describe('pharmacyRouter', () => {
     expect(deps.pharmacies.softDelete).toHaveBeenCalledWith('p1')
   })
 
-  it('creates a groupement referential inline', async () => {
+  it('creates a groupement referential for admins', async () => {
     const deps = makeDeps()
-    const created = await caller(deps).createGroupement({ name: 'Giphar' })
+    const created = await caller(deps, adminSession).createGroupement({ name: 'Giphar' })
     expect(created).toEqual({ id: 'g1', name: 'Giphar' })
   })
 
-  it('creates a software referential inline', async () => {
-    const deps = makeDeps()
-    const created = await caller(deps).createSoftware({ name: 'Winpharma' })
-    expect(created).toEqual({ id: 's1', name: 'Winpharma' })
+  it('forbids inline groupement creation for recruiters', async () => {
+    await expect(caller(makeDeps()).createGroupement({ name: 'Giphar' })).rejects.toThrow()
   })
 
   it('rejects unauthenticated callers', async () => {

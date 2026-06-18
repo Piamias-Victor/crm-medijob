@@ -1,4 +1,5 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { makeCandidateProfileRepository } from './candidate-profile.repo'
@@ -14,14 +15,25 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
       db.candidate.findFirst({ where: { id, ...NOT_DELETED } }),
     findProfileById: profile.findProfileById,
     updateProfile: profile.updateProfile,
-    list: () =>
+    list: (limit = DEFAULT_LIST_LIMIT) =>
       db.candidate.findMany({
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
-    listIdentities: () =>
-      db.candidate.findMany({
-        where: NOT_DELETED,
+    findIdentityByEmail: (email: string) =>
+      db.candidate.findFirst({
+        where: { ...NOT_DELETED, email: { equals: email.trim(), mode: 'insensitive' } },
+        select: { id: true, email: true, firstName: true, lastName: true, phone: true },
+      }),
+    findIdentityByNamePhone: (firstName: string, lastName: string, phone: string) =>
+      db.candidate.findFirst({
+        where: {
+          ...NOT_DELETED,
+          phone: phone.trim(),
+          firstName: { equals: firstName.trim(), mode: 'insensitive' },
+          lastName: { equals: lastName.trim(), mode: 'insensitive' },
+        },
         select: { id: true, email: true, firstName: true, lastName: true, phone: true },
       }),
     search: (term: string, limit = 8) =>
@@ -36,10 +48,11 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         orderBy: { lastName: 'asc' },
         take: limit,
       }),
-    listForKanban: () =>
+    listForKanban: (limit = DEFAULT_LIST_LIMIT) =>
       db.candidate.findMany({
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
+        take: limit,
         select: {
           id: true,
           firstName: true,

@@ -5,6 +5,7 @@ import {
   makeApplicationRouter,
   type ApplicationDeps,
 } from '@/server/routers/application'
+import { IntakeError } from '@/server/application/intake-errors'
 
 const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
 
@@ -56,5 +57,12 @@ describe('applicationRouter', () => {
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeApplicationRouter(makeDeps()))({ session: null })
     await expect(unauth.listInbox()).rejects.toThrow()
+  })
+
+  it('maps missing Application to NOT_FOUND on refuse', async () => {
+    const deps = makeDeps({
+      refuse: vi.fn().mockRejectedValue(new IntakeError('NOT_FOUND')),
+    })
+    await expect(caller(deps).refuse({ id: 'missing' })).rejects.toMatchObject({ code: 'NOT_FOUND' })
   })
 })

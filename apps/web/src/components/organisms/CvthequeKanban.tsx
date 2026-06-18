@@ -26,8 +26,12 @@ export function CvthequeKanban({ candidates, stages }: Props) {
   function move(missionId: string, candidateId: string, stageId: string) {
     const targetStage = stages.find((stage) => stage.id === stageId)
     if (!targetStage) return
+    const snapshot = rows
     setRows((prev) => moveMissionRow(prev, { missionId, candidateId, targetStage }))
-    mutation.mutate({ missionId, candidateId, stageId })
+    mutation.mutate(
+      { missionId, candidateId, stageId },
+      { onError: () => setRows(snapshot) },
+    )
   }
 
   if (stages.length === 0) {

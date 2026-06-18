@@ -1,3 +1,5 @@
+import { IntakeError } from '@/server/application/intake-errors'
+
 export type ApplicationIdentity = {
   email: string
   firstName: string
@@ -49,6 +51,7 @@ export type IntakeDeps = {
 
 export async function refuseApplication(id: string, deps: IntakeDeps) {
   const application = await deps.findApplication(id)
-  if (!application) throw new Error('Application not found')
+  if (!application) throw new IntakeError('NOT_FOUND')
+  if (application.status !== 'EN_ATTENTE') throw new IntakeError('INVALID_STATUS')
   return deps.markRefused(id)
 }
