@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -34,6 +35,8 @@ const toOptions = (items: RefItem[]) => items.map((i) => ({ value: i.id, label: 
 export function CandidateProfileForm({ candidateId, profile, referentials }: Props) {
   const router = useRouter()
   const update = trpc.candidate.update.useMutation({ onSuccess: () => router.refresh() })
+  const createJobTitle = trpc.mission.createJobTitle.useMutation()
+  const [jobTitles, setJobTitles] = useState(referentials.jobTitles)
   const { register, handleSubmit, setValue, watch, getValues, formState } = useForm<CandidateProfileInput>({
     resolver: zodResolver(candidateProfileInputSchema),
     defaultValues: profile.formValues,
@@ -45,6 +48,12 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
     mobilityRadiusKm: watch('mobilityRadiusKm') ?? null,
     availableFrom: watch('availableFrom') ? new Date(watch('availableFrom')!) : null,
   })
+
+  const onCreateJobTitle = async (name: string) => {
+    const created = await createJobTitle.mutateAsync({ name })
+    setJobTitles((prev) => [...prev, created])
+    return { value: created.id, label: created.name }
+  }
 
   return (
     <form
@@ -67,7 +76,8 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
         <CandidateProfileSelects
           jobTitleId={watch('jobTitleId')}
           onJobTitle={(v) => setValue('jobTitleId', v)}
-          jobTitles={toOptions(referentials.jobTitles)}
+          jobTitles={toOptions(jobTitles)}
+          onCreateJobTitle={onCreateJobTitle}
           softwareIds={watch('softwareIds') ?? []}
           onSoftwareIds={(v) => setValue('softwareIds', v)}
           softwares={toOptions(referentials.softwares)}

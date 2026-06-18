@@ -16,11 +16,12 @@ type Ref = { id: string; name: string }
 type Props = {
   defaultValues?: Partial<ContactInput>
   pharmacies: Ref[]
+  lockedPharmacyId?: string
   submitting: boolean
   onSubmit: (data: ContactInput) => void
 }
 
-export function ContactForm({ defaultValues, pharmacies, submitting, onSubmit }: Props) {
+export function ContactForm({ defaultValues, pharmacies, lockedPharmacyId, submitting, onSubmit }: Props) {
   const { register, handleSubmit, control, formState } = useForm<ContactInput>({
     resolver: zodResolver(contactInputSchema),
     defaultValues: { role: 'AUTRE', isPrimary: false, ...defaultValues },
@@ -29,11 +30,13 @@ export function ContactForm({ defaultValues, pharmacies, submitting, onSubmit }:
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+      {lockedPharmacyId ? <input type="hidden" {...register('pharmacyId')} /> : null}
       <FormSection title="Rattachement">
         <ContactAffiliationFields
           control={control}
           pharmacyOptions={pharmacyOptions}
           pharmacyError={formState.errors.pharmacyId?.message}
+          lockedPharmacyId={lockedPharmacyId}
         />
       </FormSection>
       <FormSection title="Identité">

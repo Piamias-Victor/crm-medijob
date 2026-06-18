@@ -10,11 +10,21 @@ type Props = {
   open: boolean
   submitting: boolean
   pharmacies: Ref[]
+  defaultValues?: Partial<ContactInput>
+  lockedPharmacyId?: string
   onClose: () => void
   onSubmit: (data: ContactInput) => void
 }
 
-export function ContactFormModal({ open, submitting, pharmacies, onClose, onSubmit }: Props) {
+export function ContactFormModal({
+  open,
+  submitting,
+  pharmacies,
+  defaultValues,
+  lockedPharmacyId,
+  onClose,
+  onSubmit,
+}: Props) {
   return (
     <GlassModal
       open={open}
@@ -22,7 +32,14 @@ export function ContactFormModal({ open, submitting, pharmacies, onClose, onSubm
       title="Nouveau contact"
       description="Ajoutez un interlocuteur rattaché à une officine."
     >
-      <ContactForm pharmacies={pharmacies} submitting={submitting} onSubmit={onSubmit} />
+      <ContactForm
+        key={lockedPharmacyId ?? 'new'}
+        defaultValues={defaultValues}
+        pharmacies={pharmacies}
+        lockedPharmacyId={lockedPharmacyId}
+        submitting={submitting}
+        onSubmit={onSubmit}
+      />
     </GlassModal>
   )
 }

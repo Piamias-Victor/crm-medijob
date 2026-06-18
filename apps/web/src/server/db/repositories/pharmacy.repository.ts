@@ -12,12 +12,45 @@ const listInclude = {
   _count: { select: { missions: { where: NOT_DELETED } } },
 } satisfies Prisma.PharmacyInclude
 
+const detailInclude = {
+  groupement: { select: { id: true, name: true } },
+  software: { select: { id: true, name: true } },
+  contacts: {
+    where: NOT_DELETED,
+    orderBy: [{ isPrimary: 'desc' }, { lastName: 'asc' }],
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+      role: true,
+      isPrimary: true,
+    },
+  },
+  missions: {
+    where: NOT_DELETED,
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      status: true,
+      contractType: true,
+      startDate: true,
+      jobTitle: { select: { name: true } },
+      referent: { select: { name: true } },
+    },
+  },
+} satisfies Prisma.PharmacyInclude
+
 export function makePharmacyRepository(db: PrismaClient = defaultDb) {
   return {
     create: (data: Prisma.PharmacyUncheckedCreateInput) =>
       db.pharmacy.create({ data }),
     findById: (id: string) =>
       db.pharmacy.findFirst({ where: { id, ...NOT_DELETED } }),
+    findDetailById: (id: string) =>
+      db.pharmacy.findFirst({ where: { id, ...NOT_DELETED }, include: detailInclude }),
     findForContext: (id: string) =>
       db.pharmacy.findFirst({
         where: { id, ...NOT_DELETED },
