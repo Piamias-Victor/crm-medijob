@@ -67,13 +67,15 @@ Rappel des règles non négociables (sans dupliquer `CLAUDE.md` en entier) :
 - Fichiers < 100 lignes, zéro `any`, React Hook Form + Zod
 - Atomic design, view-models, Zustand = UI state uniquement
 
-### 6. Fin de session (obligatoire)
+### 6. Fin de session
 
-Instructions explicites de :
+**Uniquement sur instruction explicite de l'utilisateur** (ex. « push », « ouvre la PR », `/handoff`).
+
+Quand demandé :
 
 1. Pusher sur la branche de feature (`origin`)
 2. Ouvrir une PR vers `dev` avec `Closes #{N}` dans le body
-3. Déposer `docs/handoffs/HANDOFF_ISSUE_{NNN}.md` (résumé, décisions, dette, tests manuels effectués)
+3. Handoff (`docs/handoffs/HANDOFF_ISSUE_{NNN}.md`) — **seulement si l'utilisateur le demande**
 
 ### 7. Tests manuels
 
@@ -103,7 +105,7 @@ Si la liste évolue en cours de session, mettre à jour le prompt avant le commi
 
 ## Handoffs
 
-En fin de session, chaque agent dépose :
+Sur demande explicite de l'utilisateur uniquement — pas en fin de session automatique.
 
 ```
 docs/handoffs/HANDOFF_ISSUE_{NNN}.md
