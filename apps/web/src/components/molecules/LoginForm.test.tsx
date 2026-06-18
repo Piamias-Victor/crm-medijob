@@ -24,7 +24,7 @@ describe('LoginForm', () => {
   it('shows redirect loading after successful login', async () => {
     render(<LoginForm />)
 
-    fireEvent.change(screen.getByLabelText('Email'), {
+    fireEvent.change(screen.getByLabelText('Email professionnel'), {
       target: { value: 'admin@medijob.fr' },
     })
     fireEvent.change(screen.getByLabelText('Mot de passe'), {
