@@ -15,6 +15,21 @@ export async function seedDemo(prisma: PrismaClient) {
     create: { id: 'demo-pharmacy', name: 'Pharmacie du Centre' },
   })
 
+  const contact = await prisma.contact.upsert({
+    where: { id: 'demo-contact-1' },
+    update: {},
+    create: {
+      id: 'demo-contact-1',
+      pharmacyId: pharmacy.id,
+      firstName: 'Marie',
+      lastName: 'Curie',
+      email: 'marie.curie@example.com',
+      phone: '0102030405',
+      role: 'TITULAIRE',
+      isPrimary: true,
+    },
+  })
+
   const missions = await Promise.all(
     [
       ['demo-mission-1', 'Titulaire CDI', MissionStatus.A_POURVOIR],
@@ -23,7 +38,7 @@ export async function seedDemo(prisma: PrismaClient) {
     ].map(([id, title, status]) =>
       prisma.mission.upsert({
         where: { id: id as string },
-        update: {},
+        update: { contactId: contact.id },
         create: {
           id: id as string,
           title: title as string,
@@ -31,6 +46,7 @@ export async function seedDemo(prisma: PrismaClient) {
           contractType: 'CDI',
           startDate: new Date(),
           pharmacyId: pharmacy.id,
+          contactId: contact.id,
           ...base,
         },
       }),

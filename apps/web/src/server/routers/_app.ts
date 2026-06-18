@@ -2,6 +2,7 @@ import { router } from '@/server/trpc'
 import { healthRouter } from '@/server/routers/health'
 import { adminRouter } from '@/server/routers/admin'
 import { pharmacyRouter } from '@/server/routers/pharmacy'
+import { contactRouter } from '@/server/routers/contact'
 import { assistantRouter } from '@/server/routers/assistant'
 import { candidateRouter } from '@/server/routers/candidate'
 import { missionCandidateRouter } from '@/server/routers/mission-candidate'
@@ -12,6 +13,7 @@ export const appRouter = router({
   health: healthRouter,
   admin: adminRouter,
   pharmacy: pharmacyRouter,
+  contact: contactRouter,
   assistant: assistantRouter,
   candidate: candidateRouter,
   mission: missionRouter,
