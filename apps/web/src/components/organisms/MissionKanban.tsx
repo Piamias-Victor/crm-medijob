@@ -7,6 +7,7 @@ import { LayoutGrid } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { AdminSectionCard } from '@/components/molecules/AdminSectionCard'
 import { MissionKanbanColumnView } from '@/components/molecules/MissionKanbanColumn'
+import { countActiveMissions } from '@/lib/kanban-terminal'
 import { trpc } from '@/lib/trpc/client'
 import {
   buildMissionKanbanColumns,
@@ -20,7 +21,6 @@ export function MissionKanban({ missions }: Props) {
   const router = useRouter()
   const [rows, setRows] = useState(missions)
   const columns = useMemo(() => buildMissionKanbanColumns(rows), [rows])
-  const activeCount = rows.filter((m) => m.status !== 'POURVU' && m.status !== 'ANNULEE').length
   const mutation = trpc.mission.updateStatus.useMutation({
     onSettled: () => router.refresh(),
   })
@@ -37,7 +37,7 @@ export function MissionKanban({ missions }: Props) {
   return (
     <AdminSectionCard
       title="Pipeline missions"
-      description={`${activeCount} mission(s) active(s) — glissez une carte pour changer le statut.`}
+      description={`${countActiveMissions(rows)} mission(s) active(s) — glissez une carte pour changer le statut.`}
       className="bg-transparent shadow-none"
     >
       <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">

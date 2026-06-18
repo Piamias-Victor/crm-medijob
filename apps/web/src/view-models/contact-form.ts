@@ -1,7 +1,7 @@
-import type { Contact } from '@prisma/client'
+import type { ContactDetailPayload } from '@/view-models/contact-detail.types'
 import type { ContactInput } from '@/view-models/contact-form.schema'
 
-export function toContactFormValues(contact: Contact): Partial<ContactInput> {
+export function toContactFormValues(contact: ContactDetailPayload): Partial<ContactInput> {
   return {
     pharmacyId: contact.pharmacyId,
     firstName: contact.firstName,

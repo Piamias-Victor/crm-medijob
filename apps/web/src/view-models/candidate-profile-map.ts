@@ -1,5 +1,5 @@
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
-import type { CandidateProfileUpdate } from '@/server/db/repositories/candidate.repository'
+import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
 
 export function toCandidateUpdateData(data: CandidateProfileInput): CandidateProfileUpdate {
   return {

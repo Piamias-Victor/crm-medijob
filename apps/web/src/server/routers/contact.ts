@@ -3,26 +3,23 @@ import type { ContactRole, Prisma } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
+import { loadContactMissions } from '@/server/read-models/contact-missions.adapter'
 import { toContactListRow, type ContactListEntity } from '@/view-models/contact-list'
+import { toContactDetail, type ContactDetailEntity } from '@/view-models/contact-detail'
 import { contactInputSchema, updateContactSchema } from '@/view-models/contact-form.schema'
-import type { ContactMissionRow } from '@/components/molecules/ContactMissionsTab'
 
 type PharmacyRef = { id: string; name: string }
-
-export type ContactDetail = Prisma.ContactGetPayload<{
-  include: { pharmacy: { select: { id: true; name: true } } }
-}>
 
 export type ContactDeps = {
   contacts: {
     list: () => Promise<ContactListEntity[]>
-    findById: (id: string) => Promise<ContactDetail | null>
+    findById: (id: string) => Promise<ContactDetailEntity | null>
     create: (data: Prisma.ContactUncheckedCreateInput) => Promise<unknown>
     update: (id: string, data: Prisma.ContactUncheckedUpdateInput) => Promise<unknown>
-    setPrimary: (id: string) => Promise<ContactDetail | null>
-    listMissions: (id: string) => Promise<ContactMissionRow[]>
+    setPrimary: (id: string) => Promise<ContactDetailEntity | null>
     softDelete: (id: string) => Promise<unknown>
   }
+  listMissions: (contactId: string) => ReturnType<typeof loadContactMissions>
   pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
 }
 
@@ -46,7 +43,10 @@ export function makeContactRouter(deps: ContactDeps) {
     list: protectedProcedure.query(async () =>
       (await deps.contacts.list()).map(toContactListRow),
     ),
-    getById: protectedProcedure.input(idSchema).query(({ input }) => deps.contacts.findById(input.id)),
+    getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
+      const contact = await deps.contacts.findById(input.id)
+      return contact ? toContactDetail(contact) : null
+    }),
     pharmacyOptions: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
     create: protectedProcedure
       .input(contactInputSchema)
@@ -54,10 +54,11 @@ export function makeContactRouter(deps: ContactDeps) {
     update: protectedProcedure
       .input(updateContactSchema)
       .mutation(({ input }) => deps.contacts.update(input.id, toData(input.data))),
-    setPrimary: protectedProcedure
-      .input(idSchema)
-      .mutation(({ input }) => deps.contacts.setPrimary(input.id)),
-    missions: protectedProcedure.input(idSchema).query(({ input }) => deps.contacts.listMissions(input.id)),
+    setPrimary: protectedProcedure.input(idSchema).mutation(async ({ input }) => {
+      const contact = await deps.contacts.setPrimary(input.id)
+      return contact ? toContactDetail(contact) : null
+    }),
+    missions: protectedProcedure.input(idSchema).query(({ input }) => deps.listMissions(input.id)),
     softDelete: protectedProcedure
       .input(idSchema)
       .mutation(({ input }) => deps.contacts.softDelete(input.id)),
@@ -66,6 +67,7 @@ export function makeContactRouter(deps: ContactDeps) {
 
 export const contactRouter = makeContactRouter({
   contacts: contactRepository,
+  listMissions: loadContactMissions,
   pharmacies: {
     listForPicker: async () => {
       const rows = await pharmacyRepository.list()

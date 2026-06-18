@@ -1,19 +1,28 @@
 import { z } from 'zod'
 import { router, protectedProcedure } from '@/server/trpc'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
+import { runMissionStatusTransition } from '@/server/mission/transition-status.adapter'
 import type { RawMission } from '@/view-models/mission-kanban.types'
 
-const updateStatusInput = z.object({
-  id: z.string().min(1),
-  status: z.enum([
-    'A_POURVOIR',
-    'EN_RECHERCHE',
-    'CANDIDATS_PRESENTES',
-    'ENTRETIEN_EN_COURS',
-    'POURVU',
-    'ANNULEE',
-  ]),
-})
+const missionStatuses = [
+  'A_POURVOIR',
+  'EN_RECHERCHE',
+  'CANDIDATS_PRESENTES',
+  'ENTRETIEN_EN_COURS',
+  'POURVU',
+  'ANNULEE',
+] as const
+
+const updateStatusInput = z
+  .object({
+    id: z.string().min(1),
+    status: z.enum(missionStatuses),
+    placedCandidateId: z.string().min(1).optional(),
+  })
+  .refine((v) => v.status !== 'POURVU' || v.placedCandidateId, {
+    message: 'placedCandidateId required when status is POURVU',
+    path: ['placedCandidateId'],
+  })
 
 export type UpdateMissionStatusInput = z.infer<typeof updateStatusInput>
 
@@ -33,5 +42,10 @@ export function makeMissionRouter(deps: MissionDeps) {
 
 export const missionRouter = makeMissionRouter({
   list: () => missionRepository.list(),
-  updateStatus: (input) => missionRepository.updateStatus(input.id, input.status),
+  updateStatus: (input) =>
+    runMissionStatusTransition({
+      missionId: input.id,
+      status: input.status,
+      placedCandidateId: input.placedCandidateId,
+    }),
 })

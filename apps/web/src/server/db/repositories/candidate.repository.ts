@@ -19,6 +19,11 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
       }),
+    listIdentities: () =>
+      db.candidate.findMany({
+        where: NOT_DELETED,
+        select: { id: true, email: true, firstName: true, lastName: true, phone: true },
+      }),
     search: (term: string, limit = 8) =>
       db.candidate.findMany({
         where: {
@@ -49,6 +54,19 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
               mission: { select: { id: true, title: true, status: true } },
             },
           },
+        },
+      }),
+    findForContext: (id: string) =>
+      db.candidate.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: {
+          firstName: true,
+          lastName: true,
+          city: true,
+          availableFrom: true,
+          mobilityRadiusKm: true,
+          cvSummary: true,
+          notes: true,
         },
       }),
     softDelete: (id: string) =>

@@ -28,6 +28,8 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
           jobOffer: { select: { title: true } },
         },
       }),
+    updateStatus: (id: string, status: 'REFUSEE' | 'ACCEPTEE' | 'EN_ATTENTE') =>
+      db.application.update({ where: { id }, data: { status } }),
     softDelete: (id: string) =>
       db.application.update({ where: { id }, data: { deletedAt: new Date() } }),
   }

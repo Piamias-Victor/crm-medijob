@@ -3,20 +3,20 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Construction } from 'lucide-react'
-import type { ContactDetail } from '@/server/routers/contact'
+import type { ContactDetailPayload, ContactMissionRow } from '@/view-models/contact-detail.types'
+import type { ContactTab } from '@/view-models/contact-tabs'
 import { trpc } from '@/lib/trpc/client'
 import { CONTACT_TAB_META } from '@/view-models/contact-tab-meta'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { AdminSectionCard } from '@/components/molecules/AdminSectionCard'
 import { ContactDetailHeader } from '@/components/molecules/ContactDetailHeader'
 import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
-import type { ContactTab } from '@/components/molecules/ContactTabs'
-import { ContactMissionsTab, type ContactMissionRow } from '@/components/molecules/ContactMissionsTab'
+import { ContactMissionsTab } from '@/components/molecules/ContactMissionsTab'
 
 type Ref = { id: string; name: string }
 
 type Props = {
-  contact: ContactDetail
+  contact: ContactDetailPayload
   missions: ContactMissionRow[]
   pharmacies: Ref[]
 }

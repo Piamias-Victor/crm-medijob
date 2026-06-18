@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
-import type { ContactDetail } from '@/server/routers/contact'
+import type { ContactDetailPayload } from '@/view-models/contact-detail.types'
 
-const contact = {
+const contact: ContactDetailPayload = {
   id: 'c1',
+  fullName: 'Marie Curie',
   pharmacyId: 'p1',
   firstName: 'Marie',
   lastName: 'Curie',
@@ -13,11 +14,10 @@ const contact = {
   role: 'TITULAIRE',
   isPrimary: true,
   notes: null,
-  deletedAt: null,
-  createdAt: new Date(),
   updatedAt: new Date(),
+  pharmacyName: 'Pharmacie du Centre',
   pharmacy: { id: 'p1', name: 'Pharmacie du Centre' },
-} satisfies ContactDetail
+}
 
 describe('ContactInfoForm', () => {
   it('renders editable fields with current contact values', () => {

@@ -17,6 +17,11 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
       db.pharmacy.create({ data }),
     findById: (id: string) =>
       db.pharmacy.findFirst({ where: { id, ...NOT_DELETED } }),
+    findForContext: (id: string) =>
+      db.pharmacy.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: { name: true, city: true, type: true, status: true, notes: true },
+      }),
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) =>
       db.pharmacy.update({ where: { id }, data }),
     list: () =>

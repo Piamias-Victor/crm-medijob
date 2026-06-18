@@ -2,11 +2,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeContactRouter } from '@/server/routers/contact'
-import type { ContactMissionRow } from '@/components/molecules/ContactMissionsTab'
-import {
-  contactCaller,
-  makeContactDeps,
-} from '@/server/routers/contact.test.fixtures'
+import { contactCaller, makeContactDeps } from '@/server/routers/contact.test.fixtures'
 
 describe('contactRouter', () => {
   it('returns list rows mapped to SPEC columns', async () => {
@@ -16,6 +12,12 @@ describe('contactRouter', () => {
       pharmacyName: 'Pharmacie du Centre',
       role: 'TITULAIRE',
     })
+  })
+
+  it('maps getById through contact detail view-model', async () => {
+    const contact = await contactCaller(makeContactDeps()).getById({ id: 'c1' })
+    expect(contact?.fullName).toBe('Marie Curie')
+    expect(contact?.pharmacyName).toBe('Pharmacie du Centre')
   })
 
   it('requires pharmacyId on create', async () => {
@@ -49,18 +51,15 @@ describe('contactRouter', () => {
     expect(deps.contacts.setPrimary).toHaveBeenCalledWith('c1')
   })
 
-  it('lists missions for contact', async () => {
+  it('lists missions via read-model', async () => {
     const deps = makeContactDeps({
-      contacts: {
-        ...makeContactDeps().contacts,
-        listMissions: vi.fn().mockResolvedValue([
-          { id: 'm1', title: 'Titulaire CDI', status: 'A_POURVOIR', pharmacy: { name: 'Pharma' } },
-        ]),
-      },
+      listMissions: vi.fn().mockResolvedValue([
+        { id: 'm1', title: 'Titulaire CDI', status: 'A_POURVOIR', pharmacy: { name: 'Pharma' } },
+      ]),
     })
     const missions = await contactCaller(deps).missions({ id: 'c1' })
-    expect(deps.contacts.listMissions).toHaveBeenCalledWith('c1')
-    expect((missions as ContactMissionRow[])[0].title).toBe('Titulaire CDI')
+    expect(deps.listMissions).toHaveBeenCalledWith('c1')
+    expect(missions[0]?.title).toBe('Titulaire CDI')
   })
 
   it('rejects unauthenticated callers', async () => {

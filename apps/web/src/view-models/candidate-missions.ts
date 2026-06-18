@@ -1,8 +1,5 @@
 import type { MissionStatus } from '@prisma/client'
-import {
-  TERMINAL_MISSION_STATUSES,
-  TERMINAL_STAGE_NAMES,
-} from '@/lib/pipeline-constants'
+import { isTerminalMissionStatus, isTerminalStageName } from '@/lib/kanban-terminal'
 
 export type RawCandidateMissionRow = {
   stage: { id: string; name: string; position: number }
@@ -43,11 +40,8 @@ export function moveCandidateMission(
   )
 }
 
-const isTerminalStatus = (status: MissionStatus) =>
-  (TERMINAL_MISSION_STATUSES as readonly MissionStatus[]).includes(status)
-
-const isTerminalStage = (name: string) =>
-  (TERMINAL_STAGE_NAMES as readonly string[]).includes(name)
+const isTerminalStatus = (status: MissionStatus) => isTerminalMissionStatus(status)
+const isTerminalStage = (name: string) => isTerminalStageName(name)
 
 export function toCandidateMissionRows(rows: RawCandidateMissionRow[]): CandidateMissionRow[] {
   return rows

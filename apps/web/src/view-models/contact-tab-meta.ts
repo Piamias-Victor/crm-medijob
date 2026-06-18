@@ -1,4 +1,4 @@
-import type { ContactTab } from '@/components/molecules/ContactTabs'
+import type { ContactTab } from '@/view-models/contact-tabs'
 
 export const CONTACT_TAB_META: Record<ContactTab, { title: string; description: string }> = {
   infos: {
