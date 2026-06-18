@@ -21,6 +21,7 @@ type Props = {
   referentId?: string
   onReferent: (value: string) => void
   recruiters: ComboboxOption[]
+  onCreateJobTitle?: (name: string) => Promise<ComboboxOption>
 }
 
 export function CandidateProfileSelects(props: Props) {
@@ -32,6 +33,7 @@ export function CandidateProfileSelects(props: Props) {
           onChange={props.onJobTitle}
           options={props.jobTitles}
           placeholder="Choisir un métier"
+          onCreate={props.onCreateJobTitle}
         />
       </FormField>
       <FormField label="Référent">

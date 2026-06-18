@@ -1,12 +1,13 @@
 import { z } from 'zod'
-import type { Prisma, Pharmacy } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { router, protectedProcedure, adminProcedure } from '@/server/trpc'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { groupementRepository } from '@/server/db/repositories/groupement.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
 import { searchSiret as searchSiretService, type SiretResult } from '@/server/services/siret'
-import { computeNumeroTVA } from '@/lib/tva'
 import { toPharmacyListRow, type PharmacyListEntity } from '@/view-models/pharmacy-list'
+import { toPharmacyDetail, type PharmacyDetailEntity } from '@/view-models/pharmacy-detail'
+import { toPharmacyUpdateData } from '@/view-models/pharmacy-update'
 import {
   pharmacyInputSchema,
   updatePharmacySchema,
@@ -18,7 +19,7 @@ type Ref = { id: string; name: string }
 export type PharmacyDeps = {
   pharmacies: {
     list: () => Promise<PharmacyListEntity[]>
-    findById: (id: string) => Promise<Pharmacy | null>
+    findDetailById: (id: string) => Promise<PharmacyDetailEntity | null>
     create: (data: Prisma.PharmacyUncheckedCreateInput) => Promise<unknown>
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) => Promise<unknown>
     softDelete: (id: string) => Promise<unknown>
@@ -29,15 +30,6 @@ export type PharmacyDeps = {
   searchSiret: (query: string) => Promise<SiretResult[]>
 }
 
-type PharmacyData = z.output<typeof pharmacyInputSchema>
-
-function toData(input: PharmacyData): Prisma.PharmacyUncheckedCreateInput {
-  const numeroTVA = input.siret
-    ? (computeNumeroTVA(input.siret) ?? input.numeroTVA)
-    : input.numeroTVA
-  return { ...input, numeroTVA }
-}
-
 const idSchema = z.object({ id: z.string().min(1) })
 const nameSchema = z.object({ name: z.string().trim().min(1) })
 
@@ -46,19 +38,20 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     list: protectedProcedure.query(async () =>
       (await deps.pharmacies.list()).map(toPharmacyListRow),
     ),
-    getById: protectedProcedure
-      .input(idSchema)
-      .query(({ input }) => deps.pharmacies.findById(input.id)),
+    getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
+      const pharmacy = await deps.pharmacies.findDetailById(input.id)
+      return pharmacy ? toPharmacyDetail(pharmacy) : null
+    }),
     referentials: protectedProcedure.query(async () => ({
       groupements: await deps.referentials.listGroupements(),
       softwares: await deps.referentials.listSoftwares(),
     })),
     create: protectedProcedure
       .input(pharmacyInputSchema)
-      .mutation(({ input }) => deps.pharmacies.create(toData(input))),
+      .mutation(({ input }) => deps.pharmacies.create(toPharmacyUpdateData(input))),
     update: protectedProcedure
       .input(updatePharmacySchema)
-      .mutation(({ input }) => deps.pharmacies.update(input.id, toData(input.data))),
+      .mutation(({ input }) => deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))),
     softDelete: protectedProcedure
       .input(idSchema)
       .mutation(({ input }) => deps.pharmacies.softDelete(input.id)),
@@ -75,7 +68,13 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
 }
 
 export const pharmacyRouter = makePharmacyRouter({
-  pharmacies: pharmacyRepository,
+  pharmacies: {
+    list: () => pharmacyRepository.list(),
+    findDetailById: (id) => pharmacyRepository.findDetailById(id),
+    create: (data) => pharmacyRepository.create(data),
+    update: (id, data) => pharmacyRepository.update(id, data),
+    softDelete: (id) => pharmacyRepository.softDelete(id),
+  },
   referentials: {
     listGroupements: () => groupementRepository.list(),
     listSoftwares: () => softwareRepository.list(),

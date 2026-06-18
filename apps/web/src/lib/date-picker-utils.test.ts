@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  ASAP_DATE_LABEL,
   WEEKDAY_LABELS,
   formatDisplayDate,
   formatIsoDate,
@@ -13,8 +14,8 @@ describe('date-picker-utils', () => {
     expect(parseIsoDate('2026-06-18')?.getDate()).toBe(18)
   })
 
-  it('shows immediate availability when empty', () => {
-    expect(formatDisplayDate(undefined)).toBe('Disponible immédiatement')
+  it('shows asap label when empty', () => {
+    expect(formatDisplayDate(undefined)).toBe(ASAP_DATE_LABEL)
   })
 
   it('uses unique weekday labels for calendar headers', () => {

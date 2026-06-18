@@ -2,23 +2,13 @@
 import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makePharmacyRouter, type PharmacyDeps } from '@/server/routers/pharmacy'
-import type { PharmacyListEntity } from '@/view-models/pharmacy-list'
-
-const entity: PharmacyListEntity = {
-  id: 'p1',
-  name: 'Pharmacie du Centre',
-  city: 'Paris',
-  status: 'ACTIF',
-  groupement: { name: 'Giphar' },
-  contacts: [{ firstName: 'Marie', lastName: 'Curie', isPrimary: true }],
-  _count: { missions: 2 },
-}
+import { pharmacyDetailEntity, pharmacyListEntity } from '@/server/routers/pharmacy.test.fixtures'
 
 function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
   return {
     pharmacies: {
-      list: vi.fn().mockResolvedValue([entity]),
-      findById: vi.fn().mockResolvedValue(null),
+      list: vi.fn().mockResolvedValue([pharmacyListEntity]),
+      findDetailById: vi.fn().mockResolvedValue(pharmacyDetailEntity),
       create: vi.fn().mockImplementation((data) => Promise.resolve({ id: 'new', ...data })),
       update: vi.fn().mockResolvedValue({ id: 'p1' }),
       softDelete: vi.fn().mockResolvedValue({ id: 'p1' }),
@@ -47,6 +37,18 @@ describe('pharmacyRouter', () => {
   it('returns list rows mapped to SPEC columns', async () => {
     const rows = await caller(makeDeps()).list()
     expect(rows[0]).toMatchObject({ name: 'Pharmacie du Centre', groupementName: 'Giphar', missionCount: 2 })
+  })
+
+  it('returns enriched pharmacy detail by id', async () => {
+    const detail = await caller(makeDeps()).getById({ id: 'p1' })
+    expect(detail?.primaryContactName).toBe('Marie Curie')
+    expect(detail?.activeMissions).toHaveLength(1)
+  })
+
+  it('persists cleared optional fields as null on update', async () => {
+    const deps = makeDeps()
+    await caller(deps).update({ id: 'p1', data: { name: 'Pharmacie', status: 'ACTIF', phone: '' } })
+    expect(deps.pharmacies.update).toHaveBeenCalledWith('p1', expect.objectContaining({ phone: null }))
   })
 
   it('computes numeroTVA from the SIRET on create', async () => {

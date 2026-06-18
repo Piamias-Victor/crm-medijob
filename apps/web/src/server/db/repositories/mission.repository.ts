@@ -66,6 +66,11 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
       }),
     softDelete: (id: string) =>
       db.mission.update({ where: { id }, data: { deletedAt: new Date() } }),
+    createQuick: (data: Prisma.MissionUncheckedCreateInput) =>
+      db.mission.create({
+        data: { ...data, status: 'A_POURVOIR' },
+        select: { id: true, status: true },
+      }),
     listByContact: (contactId: string) =>
       db.mission.findMany({
         where: { contactId, ...NOT_DELETED },

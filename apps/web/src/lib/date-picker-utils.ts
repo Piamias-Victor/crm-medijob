@@ -34,8 +34,10 @@ export function calendarDays(year: number, month: number): (Date | null)[] {
   return cells
 }
 
+export const ASAP_DATE_LABEL = 'Dès que possible'
+
 export function formatDisplayDate(value?: string): string {
   const date = parseIsoDate(value)
-  if (!date) return 'Disponible immédiatement'
+  if (!date) return ASAP_DATE_LABEL
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }

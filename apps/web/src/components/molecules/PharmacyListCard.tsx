@@ -21,7 +21,7 @@ const badgeClass = 'px-2 py-0 text-[11px]'
 export function PharmacyListCard({ row }: Props) {
   return (
     <motion.div className="h-full" {...cardHover}>
-      <ListCardShell>
+      <ListCardShell href={`/pharmacies/${row.id}`}>
         <ListCardHeader
           media={
             <span
