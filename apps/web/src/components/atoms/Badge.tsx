@@ -1,10 +1,11 @@
 import { type HTMLAttributes } from 'react'
 import { cn } from '@/lib/cn'
 
-type Variant = 'default' | 'accent' | 'success' | 'warning' | 'error'
+type Variant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'error'
 
 const variants: Record<Variant, string> = {
   default: 'bg-surface text-fg-muted',
+  primary: 'bg-primary-muted text-primary',
   accent: 'bg-accent-muted text-accent-hover',
   success: 'bg-success/15 text-success',
   warning: 'bg-warning/15 text-warning',

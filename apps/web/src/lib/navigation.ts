@@ -27,4 +27,5 @@ export const adminSubNav: { label: string; href: string }[] = [
   { label: 'Logiciels', href: '/admin/logiciels' },
   { label: 'Groupements', href: '/admin/groupements' },
   { label: 'Métiers', href: '/admin/metiers' },
+  { label: 'Utilisateurs', href: '/admin/utilisateurs' },
 ]
