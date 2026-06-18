@@ -1,10 +1,12 @@
-import { PagePlaceholder } from '@/components/molecules/PagePlaceholder'
+import { getServerCaller } from '@/lib/trpc/server'
+import { CandidatsPage } from '@/components/organisms/CandidatsPage'
 
-export default function CandidatsPage() {
-  return (
-    <PagePlaceholder
-      title="Candidats"
-      description="La CVthèque et les candidatures reçues arriveront dans un prochain lot."
-    />
-  )
+export default async function Page() {
+  const caller = await getServerCaller()
+  const [cvtheque, inbox] = await Promise.all([
+    caller.candidate.cvtheque(),
+    caller.application.listInbox(),
+  ])
+
+  return <CandidatsPage cvtheque={cvtheque} inbox={inbox} />
 }

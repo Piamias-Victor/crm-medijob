@@ -20,6 +20,17 @@ export const SOFTWARES = [
   'Esope',
 ] as const
 
+export const GROUPEMENTS = [
+  'Giphar',
+  'Alphega',
+  'Pharmabest',
+  'Leadersanté',
+  'Aprium',
+  'Pharmavie',
+  'Welcoop',
+  'Elsie Santé',
+] as const
+
 export const JOB_TITLES = [
   'Pharmacien',
   'Préparateur',

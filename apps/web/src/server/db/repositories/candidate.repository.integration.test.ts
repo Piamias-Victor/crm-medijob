@@ -46,4 +46,15 @@ describe('candidateRepository', () => {
     expect(list.some((x) => x.id === c.id)).toBe(false)
     expect(await repo.findById(c.id)).toBeNull()
   })
+
+  it('searches by name, case-insensitive, excluding deleted', async () => {
+    const keep = await repo.create(newCandidate('Charlotte'))
+    const gone = await repo.create(newCandidate('Charline'))
+    await repo.softDelete(gone.id)
+
+    const results = await repo.search('charl')
+
+    expect(results.some((x) => x.id === keep.id)).toBe(true)
+    expect(results.some((x) => x.id === gone.id)).toBe(false)
+  })
 })
