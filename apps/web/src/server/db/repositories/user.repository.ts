@@ -25,10 +25,6 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
         orderBy: { name: 'asc' },
         select: { id: true, name: true },
       }),
-      db.user.findFirst({
-        where: { id, ...NOT_DELETED },
-        select: { id: true, role: true },
-      }),
     list: (): Promise<UserListItem[]> =>
       db.user.findMany({
         where: NOT_DELETED,

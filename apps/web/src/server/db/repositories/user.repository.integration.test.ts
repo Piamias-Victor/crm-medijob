@@ -54,6 +54,18 @@ describe('userRepository', () => {
     expect(await repo.findByEmail('del@medijob.fr')).toBeNull()
   })
 
+  it('lists recruiters and admins for referent pickers', async () => {
+    await db.prisma.user.create({
+      data: { email: 'rec@medijob.fr', password: 'hash', name: 'Rec', role: 'RECRUTEUR' },
+    })
+    await db.prisma.user.create({
+      data: { email: 'adm2@medijob.fr', password: 'hash', name: 'Admin2', role: 'ADMIN' },
+    })
+    const recruiters = await repo.listRecruiters()
+    expect(recruiters.some((u) => u.name === 'Rec')).toBe(true)
+    expect(recruiters.some((u) => u.name === 'Admin2')).toBe(true)
+  })
+
   it('counts active admins', async () => {
     await db.prisma.user.create({
       data: { email: 'adm@medijob.fr', password: 'hash', name: 'Admin', role: 'ADMIN' },

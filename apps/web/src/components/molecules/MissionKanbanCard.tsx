@@ -1,7 +1,6 @@
 'use client'
 
 import { type DragEvent, useState } from 'react'
-import type { MissionStatus } from '@prisma/client'
 import { Building2, GripVertical, UserRound } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { DND_MIME } from '@/components/molecules/kanban-dnd'
