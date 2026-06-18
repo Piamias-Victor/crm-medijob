@@ -35,4 +35,29 @@ describe('userRepository', () => {
     })
     expect(await repo.findByEmail('gone@medijob.fr')).toBeNull()
   })
+
+  it('lists active users without password', async () => {
+    await db.prisma.user.create({
+      data: { email: 'list@medijob.fr', password: 'hash', name: 'Listed' },
+    })
+    const users = await repo.list()
+    const row = users.find((u) => u.email === 'list@medijob.fr')
+    expect(row?.name).toBe('Listed')
+    expect(row).not.toHaveProperty('password')
+  })
+
+  it('soft-deletes a user', async () => {
+    const user = await db.prisma.user.create({
+      data: { email: 'del@medijob.fr', password: 'hash', name: 'Delete Me' },
+    })
+    await repo.softDelete(user.id)
+    expect(await repo.findByEmail('del@medijob.fr')).toBeNull()
+  })
+
+  it('counts active admins', async () => {
+    await db.prisma.user.create({
+      data: { email: 'adm@medijob.fr', password: 'hash', name: 'Admin', role: 'ADMIN' },
+    })
+    expect(await repo.countAdmins()).toBeGreaterThanOrEqual(1)
+  })
 })
