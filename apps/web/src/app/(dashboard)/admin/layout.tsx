@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-fg">Administration</h1>
               <p className="text-sm text-fg-muted">
-                Référentiels MediJob — pipeline, logiciels, groupements, métiers.
+                Référentiels MediJob — pipeline, logiciels, groupements, métiers, utilisateurs.
               </p>
             </div>
             <AdminNav />
