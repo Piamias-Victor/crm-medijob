@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { PIPELINE_STAGES, SOFTWARES, JOB_TITLES, COMPATIBILITY } from './seed-data'
+import { seedUsers } from './seed-users'
 
 const prisma = new PrismaClient()
 
@@ -46,6 +47,7 @@ async function seedCompatibility() {
 }
 
 async function main() {
+  await seedUsers(prisma)
   await seedStages()
   await seedByName(SOFTWARES, (name) =>
     prisma.software.upsert({ where: { name }, update: {}, create: { name } }),

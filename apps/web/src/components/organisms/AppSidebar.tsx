@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { navItems, adminNavItem } from '@/lib/navigation'
+import type { AccessRole } from '@/server/auth/access'
 import { useSidebarStore } from '@/stores/sidebar-store'
 import { NavLink } from '@/components/molecules/NavLink'
 import { SidebarBrand } from '@/components/molecules/SidebarBrand'
+import { LogoutButton } from '@/components/molecules/LogoutButton'
 import { cn } from '@/lib/cn'
 
-export function AppSidebar() {
+export function AppSidebar({ role }: { role: AccessRole }) {
   const pathname = usePathname()
   const open = useSidebarStore((state) => state.open)
   const [hovered, setHovered] = useState(false)
@@ -32,8 +34,11 @@ export function AppSidebar() {
           <NavLink key={item.href} item={item} active={isActive(item.href)} expanded={expanded} />
         ))}
       </nav>
-      <div className="mt-auto border-t border-border pt-3">
-        <NavLink item={adminNavItem} active={isActive(adminNavItem.href)} gated expanded={expanded} />
+      <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
+        {role === 'ADMIN' ? (
+          <NavLink item={adminNavItem} active={isActive(adminNavItem.href)} expanded={expanded} />
+        ) : null}
+        <LogoutButton expanded={expanded} />
       </div>
     </aside>
   )
