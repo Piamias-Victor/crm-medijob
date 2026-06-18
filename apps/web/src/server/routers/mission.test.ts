@@ -36,4 +36,10 @@ describe('missionRouter', () => {
     const unauth = createCallerFactory(makeMissionRouter(makeDeps()))({ session: null })
     await expect(unauth.updateStatus(statusInput)).rejects.toThrow()
   })
+
+  it('requires placedCandidateId when status is POURVU', async () => {
+    await expect(
+      caller(makeDeps()).updateStatus({ id: 'm1', status: 'POURVU' }),
+    ).rejects.toThrow()
+  })
 })

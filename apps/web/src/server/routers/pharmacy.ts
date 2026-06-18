@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { Prisma, Pharmacy } from '@prisma/client'
-import { router, protectedProcedure } from '@/server/trpc'
+import { router, protectedProcedure, adminProcedure } from '@/server/trpc'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { groupementRepository } from '@/server/db/repositories/groupement.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
@@ -12,7 +12,6 @@ import {
   updatePharmacySchema,
   searchSiretSchema,
 } from '@/view-models/pharmacy-form.schema'
-import { createInlineReferential } from '@/server/referentials/inline-create'
 
 type Ref = { id: string; name: string }
 
@@ -25,7 +24,8 @@ export type PharmacyDeps = {
     softDelete: (id: string) => Promise<unknown>
   }
   referentials: { listGroupements: () => Promise<Ref[]>; listSoftwares: () => Promise<Ref[]> }
-  inlineReferentials: ReturnType<typeof createInlineReferential>
+  createGroupement: (name: string) => Promise<Ref>
+  createSoftware: (name: string) => Promise<Ref>
   searchSiret: (query: string) => Promise<SiretResult[]>
 }
 
@@ -65,19 +65,14 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     searchSiret: protectedProcedure
       .input(searchSiretSchema)
       .query(({ input }) => deps.searchSiret(input.query)),
-    createGroupement: protectedProcedure
+    createGroupement: adminProcedure
       .input(nameSchema)
-      .mutation(({ input }) => deps.inlineReferentials.createGroupement(input.name)),
-    createSoftware: protectedProcedure
+      .mutation(({ input }) => deps.createGroupement(input.name)),
+    createSoftware: adminProcedure
       .input(nameSchema)
-      .mutation(({ input }) => deps.inlineReferentials.createSoftware(input.name)),
+      .mutation(({ input }) => deps.createSoftware(input.name)),
   })
 }
-
-const inlineReferentials = createInlineReferential({
-  createGroupement: (name) => groupementRepository.create({ name }),
-  createSoftware: (name) => softwareRepository.create({ name }),
-})
 
 export const pharmacyRouter = makePharmacyRouter({
   pharmacies: pharmacyRepository,
@@ -85,6 +80,7 @@ export const pharmacyRouter = makePharmacyRouter({
     listGroupements: () => groupementRepository.list(),
     listSoftwares: () => softwareRepository.list(),
   },
-  inlineReferentials,
+  createGroupement: (name) => groupementRepository.create({ name }),
+  createSoftware: (name) => softwareRepository.create({ name }),
   searchSiret: (query) => searchSiretService(query),
 })

@@ -26,8 +26,9 @@ export function MissionKanban({ missions }: Props) {
   })
 
   function move(missionId: string, status: MissionStatus) {
+    const snapshot = rows
     setRows((prev) => moveMissionStatus(prev, missionId, status))
-    mutation.mutate({ id: missionId, status })
+    mutation.mutate({ id: missionId, status }, { onError: () => setRows(snapshot) })
   }
 
   if (missions.length === 0) {

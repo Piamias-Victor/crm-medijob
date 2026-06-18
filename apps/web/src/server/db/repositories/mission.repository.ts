@@ -1,6 +1,9 @@
 import type { MissionStatus, PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+
+type StageUpdate = { candidateId: string; stageId: string }
 
 const listSelect = {
   id: true,
@@ -29,14 +32,32 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
           notes: true,
         },
       }),
-    list: () =>
+    list: (limit = DEFAULT_LIST_LIMIT) =>
       db.mission.findMany({
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
         select: listSelect,
+        take: limit,
       }),
     updateStatus: (id: string, status: MissionStatus) =>
       db.mission.update({ where: { id }, data: { status }, select: { id: true, status: true } }),
+    terminalTransition: (missionId: string, status: MissionStatus, stageUpdates: StageUpdate[]) =>
+      db.$transaction(async (tx) => {
+        const result = await tx.mission.update({
+          where: { id: missionId },
+          data: { status },
+          select: { id: true, status: true },
+        })
+        for (const update of stageUpdates) {
+          await tx.missionCandidate.update({
+            where: {
+              missionId_candidateId: { missionId, candidateId: update.candidateId },
+            },
+            data: { stageId: update.stageId },
+          })
+        }
+        return result
+      }),
     search: (term: string, limit = 8) =>
       db.mission.findMany({
         where: { ...NOT_DELETED, title: { contains: term, mode: 'insensitive' } },
