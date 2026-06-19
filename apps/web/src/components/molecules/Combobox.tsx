@@ -34,11 +34,6 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
     return () => document.removeEventListener('mousedown', onClick)
   }, [open, anchorRef, panelRef])
 
-  const selected = options.find((o) => o.value === value)
-  const q = query.trim().toLowerCase()
-  const filtered = options.filter((o) => o.label.toLowerCase().includes(q))
-  const showCreate = Boolean(onCreate && q && !options.some((o) => o.label.toLowerCase() === q))
-
   const pick = (next: string) => {
     onChange(next)
     setOpen(false)

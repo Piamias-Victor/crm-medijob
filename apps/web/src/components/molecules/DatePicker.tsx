@@ -5,7 +5,10 @@ import { createPortal } from 'react-dom'
 import { Calendar } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { DatePickerPanel } from '@/components/molecules/DatePickerPanel'
+import { FloatingPanel } from '@/components/molecules/FloatingPanel'
+import { useFloatingPanel } from '@/lib/hooks/use-floating-panel'
 import {
+  ASAP_DATE_LABEL,
   calendarDays,
   formatDisplayDate,
   formatIsoDate,
@@ -19,9 +22,17 @@ type Props = {
   value?: string
   onChange: (value: string | undefined) => void
   id?: string
+  emptyLabel?: string
+  clearLabel?: string
 }
 
-export function DatePicker({ value, onChange, id }: Props) {
+export function DatePicker({
+  value,
+  onChange,
+  id,
+  emptyLabel = ASAP_DATE_LABEL,
+  clearLabel = ASAP_DATE_LABEL,
+}: Props) {
   const selected = parseIsoDate(value)
   const today = new Date()
   const [open, setOpen] = useState(false)
@@ -73,7 +84,7 @@ export function DatePicker({ value, onChange, id }: Props) {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm text-fg outline-none transition-colors hover:border-accent focus:border-accent focus:ring-2 focus:ring-accent-muted"
       >
-        <span className={cn(!value && 'text-fg-muted')}>{formatDisplayDate(value)}</span>
+        <span className={cn(!value && 'text-fg-muted')}>{formatDisplayDate(value, emptyLabel)}</span>
         <Calendar className="size-4 text-fg-muted" />
       </button>
       {typeof document !== 'undefined' && panel ? createPortal(panel, document.body) : null}

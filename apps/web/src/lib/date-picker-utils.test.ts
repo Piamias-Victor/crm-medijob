@@ -18,6 +18,10 @@ describe('date-picker-utils', () => {
     expect(formatDisplayDate(undefined)).toBe(ASAP_DATE_LABEL)
   })
 
+  it('uses custom empty label when provided', () => {
+    expect(formatDisplayDate(undefined, 'Sélectionner une date')).toBe('Sélectionner une date')
+  })
+
   it('uses unique weekday labels for calendar headers', () => {
     expect(new Set(WEEKDAY_LABELS).size).toBe(WEEKDAY_LABELS.length)
     expect(WEEKDAY_LABELS).toHaveLength(7)

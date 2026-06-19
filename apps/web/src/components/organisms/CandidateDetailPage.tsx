@@ -7,7 +7,9 @@ import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
+import { CandidateHistoryTab } from '@/components/organisms/CandidateHistoryTab'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
+import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { RefItem } from '@/view-models/referential'
 import type { RawStage } from '@/view-models/candidate-kanban.types'
@@ -22,9 +24,10 @@ type Referentials = {
 type Props = {
   profile: CandidateProfilePayload
   referentials: Referentials
+  activities: ActivityLogRow[]
 }
 
-export function CandidateDetailPage({ profile, referentials }: Props) {
+export function CandidateDetailPage({ profile, referentials, activities }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
   const name = `${profile.firstName} ${profile.lastName}`.trim()
   const missionsDescription = useMemo(
@@ -54,36 +57,25 @@ export function CandidateDetailPage({ profile, referentials }: Props) {
         active={tab}
         onChange={setTab}
         missionCount={profile.missions.length}
+        activityCount={activities.length}
       />
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
           {tab === 'profil' ? (
-            <SectionCard
-              variant="glass"
-              title="Profil candidat"
-              description="Coordonnées, mobilité et préférences pour le matching."
-              bodyClassName="p-5 sm:p-6"
-            >
-              <CandidateProfileForm
-                candidateId={profile.id}
-                profile={profile}
-                referentials={referentials}
-              />
+            <SectionCard variant="glass" title="Profil candidat" description="Coordonnées, mobilité et préférences pour le matching." bodyClassName="p-5 sm:p-6">
+              <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
             </SectionCard>
-          ) : (
-            <SectionCard
-              variant="glass"
-              title="Missions actives"
-              description={missionsDescription}
-              bodyClassName="p-4 sm:p-5"
-            >
-              <CandidateMissionsTab
-                candidateId={profile.id}
-                stages={referentials.pipelineStages}
-                missions={profile.missions}
-              />
+          ) : null}
+          {tab === 'historique' ? (
+            <SectionCard variant="glass" title="Historique" description="Timeline des interactions et notes liées au candidat." bodyClassName="p-5 sm:p-6">
+              <CandidateHistoryTab candidateId={profile.id} activities={activities} />
             </SectionCard>
-          )}
+          ) : null}
+          {tab === 'missions' ? (
+            <SectionCard variant="glass" title="Missions actives" description={missionsDescription} bodyClassName="p-4 sm:p-5">
+              <CandidateMissionsTab candidateId={profile.id} stages={referentials.pipelineStages} missions={profile.missions} />
+            </SectionCard>
+          ) : null}
         </motion.div>
       </AnimatePresence>
     </motion.div>

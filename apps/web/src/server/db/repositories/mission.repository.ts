@@ -2,6 +2,7 @@ import type { MissionStatus, PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { missionDetailSelect } from './mission.repository.selects'
 
 type StageUpdate = { candidateId: string; stageId: string }
 
@@ -20,6 +21,10 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
     create: (data: Prisma.MissionCreateInput) => db.mission.create({ data }),
     findById: (id: string) =>
       db.mission.findFirst({ where: { id, ...NOT_DELETED } }),
+    findDetailById: (id: string) =>
+      db.mission.findFirst({ where: { id, ...NOT_DELETED }, select: missionDetailSelect }),
+    update: (id: string, data: Prisma.MissionUncheckedUpdateInput) =>
+      db.mission.update({ where: { id }, data }),
     findForContext: (id: string) =>
       db.mission.findFirst({
         where: { id, ...NOT_DELETED },
