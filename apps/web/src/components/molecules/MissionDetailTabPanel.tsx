@@ -11,6 +11,7 @@ import { MissionInfoForm } from '@/components/molecules/MissionInfoForm'
 import { MissionStatusActions } from '@/components/molecules/MissionStatusActions'
 
 type Ref = { id: string; name: string }
+type ContactRef = { id: string; label: string }
 
 type Props = {
   tab: MissionTab
@@ -18,9 +19,11 @@ type Props = {
   jobTitles: Ref[]
   pharmacies: Ref[]
   recruiters: Ref[]
+  contactsByPharmacy: Record<string, ContactRef[]>
   submitting: boolean
   onUpdate: (data: MissionFormValues) => void
   onCreateJobTitle: (name: string) => Promise<Ref>
+  onPharmacyChange: () => void
 }
 
 export function MissionDetailTabPanel(props: Props) {
@@ -36,9 +39,11 @@ export function MissionDetailTabPanel(props: Props) {
             jobTitles={props.jobTitles}
             pharmacies={props.pharmacies}
             recruiters={props.recruiters}
+            contactsByPharmacy={props.contactsByPharmacy}
             submitting={props.submitting}
             onSubmit={props.onUpdate}
             onCreateJobTitle={props.onCreateJobTitle}
+            onPharmacyChange={props.onPharmacyChange}
           />
         </div>
       ) : null}

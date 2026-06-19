@@ -26,8 +26,9 @@ export const documentSession = {
 export function makeDocumentDeps(overrides: Partial<DocumentDeps> = {}): DocumentDeps {
   return {
     listByEntity: vi.fn().mockResolvedValue([documentRecord]),
+    findById: vi.fn().mockResolvedValue(documentRecord),
     create: vi.fn().mockResolvedValue(documentRecord),
-    deleteById: vi.fn().mockResolvedValue(undefined),
+    deleteById: vi.fn().mockResolvedValue(documentRecord),
     uploadBlob: vi.fn().mockResolvedValue({ url: 'https://blob.example/contrat.pdf' }),
     deleteBlob: vi.fn().mockResolvedValue(undefined),
     ...overrides,

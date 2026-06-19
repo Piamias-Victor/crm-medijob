@@ -26,7 +26,8 @@ export function isAllowedDocumentUpload(input: { filename: string; mimeType: str
   const allowedMimes = EXTENSION_MIME[ext]
   if (!allowedMimes) return false
   const mime = input.mimeType.trim().toLowerCase()
-  if (!mime || mime === 'application/octet-stream') return true
+  if (!mime) return false
+  if (mime === 'application/octet-stream') return false
   return allowedMimes.includes(mime)
 }
 

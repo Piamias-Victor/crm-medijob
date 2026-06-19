@@ -1,12 +1,26 @@
-import type { Document, DocumentCategory } from '@prisma/client'
+import type { DocumentEntityTypeValue } from '@/view-models/activity-log.types'
+import type { DocumentCategoryValue } from '@/view-models/document.types'
 import { formatBytes } from '@/lib/format-bytes'
 import { DOCUMENT_CATEGORY_LABELS } from '@/lib/document-options'
 
-export type DocumentRecord = Document
+export type DocumentRecord = {
+  id: string
+  entityType: DocumentEntityTypeValue
+  category: DocumentCategoryValue
+  name: string
+  url: string
+  size: number | null
+  mimeType: string | null
+  createdAt: Date
+  pharmacyId: string | null
+  contactId: string | null
+  missionId: string | null
+  candidateId: string | null
+}
 
 export type DocumentListRow = {
   id: string
-  category: DocumentCategory
+  category: DocumentCategoryValue
   categoryLabel: string
   name: string
   url: string

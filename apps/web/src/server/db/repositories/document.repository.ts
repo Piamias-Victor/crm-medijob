@@ -1,19 +1,7 @@
 import type { DocumentEntityType, Prisma, PrismaClient } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
-
-function entityFilter(entityType: DocumentEntityType, entityId: string): Prisma.DocumentWhereInput {
-  switch (entityType) {
-    case 'PHARMACY':
-      return { pharmacyId: entityId }
-    case 'CONTACT':
-      return { contactId: entityId }
-    case 'MISSION':
-      return { missionId: entityId }
-    case 'CANDIDATE':
-      return { candidateId: entityId }
-  }
-}
+import { entityFilter } from './entity-scope'
 
 export function makeDocumentRepository(db: PrismaClient = defaultDb) {
   return {

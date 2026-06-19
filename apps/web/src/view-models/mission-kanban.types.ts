@@ -1,4 +1,6 @@
-import type { MissionStatus } from '@prisma/client'
+import { MISSION_STATUS_ORDER } from '@/lib/mission-options'
+
+export type MissionStatus = (typeof MISSION_STATUS_ORDER)[number]
 
 export type RawMission = {
   id: string

@@ -2,10 +2,13 @@ import type { NextAuthConfig } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { evaluateAccess, HOME_PATH, LOGIN_PATH, type AccessRole } from './access'
 import { applyTokenToSession } from './session-from-token'
+import { getAuthSecret, validateServerEnv } from '@/server/env'
+
+validateServerEnv()
 
 export const authConfig = {
   trustHost: true,
-  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  secret: getAuthSecret(),
   pages: { signIn: LOGIN_PATH },
   providers: [],
   callbacks: {

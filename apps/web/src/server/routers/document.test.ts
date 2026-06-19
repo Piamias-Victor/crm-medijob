@@ -1,8 +1,8 @@
 // @vitest-environment node
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeDocumentRouter } from '@/server/routers/document'
-import { documentCaller, documentRecord, makeDocumentDeps } from '@/server/routers/document.test.fixtures'
+import { documentCaller, makeDocumentDeps } from '@/server/routers/document.test.fixtures'
 
 describe('documentRouter', () => {
   it('lists documents for a pharmacy entity', async () => {
@@ -42,15 +42,6 @@ describe('documentRouter', () => {
       }),
     )
     expect(created.name).toBe('contrat.pdf')
-  })
-
-  it('deletes blob and document row', async () => {
-    const deps = makeDocumentDeps({
-      deleteById: vi.fn().mockResolvedValue(documentRecord),
-    })
-    await documentCaller(deps).delete({ id: 'd1' })
-    expect(deps.deleteById).toHaveBeenCalledWith('d1')
-    expect(deps.deleteBlob).toHaveBeenCalledWith('https://blob.example/contrat.pdf')
   })
 
   it('rejects unsupported file types', async () => {

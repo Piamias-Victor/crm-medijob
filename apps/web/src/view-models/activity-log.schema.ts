@@ -1,17 +1,18 @@
 import { z } from 'zod'
-import { ActivityType, DocumentEntityType } from '@prisma/client'
+import { ACTIVITY_TYPES } from '@/view-models/activity-log-form.schema'
+import { DOCUMENT_ENTITY_TYPES } from '@/view-models/activity-log.types'
 
 export const activityEntitySchema = z.object({
-  entityType: z.nativeEnum(DocumentEntityType),
+  entityType: z.enum(DOCUMENT_ENTITY_TYPES),
   entityId: z.string().min(1),
 })
 
 export const listActivityLogSchema = activityEntitySchema.extend({
-  types: z.array(z.nativeEnum(ActivityType)).optional(),
+  types: z.array(z.enum(ACTIVITY_TYPES)).optional(),
 })
 
 export const createActivityLogSchema = activityEntitySchema.extend({
-  type: z.nativeEnum(ActivityType),
+  type: z.enum(ACTIVITY_TYPES),
   content: z.string().trim().optional(),
   date: z.coerce.date(),
 })

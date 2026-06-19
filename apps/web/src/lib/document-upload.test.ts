@@ -19,7 +19,15 @@ describe('document upload allowlist', () => {
   })
 
   it('rejects unsupported extensions', () => {
-    expect(isAllowedDocumentUpload({ filename: 'virus.exe', mimeType: 'application/octet-stream' })).toBe(false)
+    expect(isAllowedDocumentUpload({ filename: 'virus.exe', mimeType: 'application/octet-stream' })).toBe(
+      false,
+    )
+  })
+
+  it('rejects octet-stream even when extension matches', () => {
+    expect(isAllowedDocumentUpload({ filename: 'evil.pdf', mimeType: 'application/octet-stream' })).toBe(
+      false,
+    )
   })
 
   it('documents accepted formats for the file input', () => {

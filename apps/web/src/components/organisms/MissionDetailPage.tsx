@@ -14,12 +14,14 @@ import { MissionDetailTabPanel } from '@/components/molecules/MissionDetailTabPa
 import { MissionStatusBadge } from '@/components/molecules/MissionStatusBadge'
 
 type Ref = { id: string; name: string }
+type ContactRef = { id: string; label: string }
 
 type Props = {
   mission: MissionDetailPayload
   jobTitles: Ref[]
   pharmacies: Ref[]
   recruiters: Ref[]
+  contactsByPharmacy: Record<string, ContactRef[]>
   activityCount: number
   documentCount: number
 }
@@ -29,6 +31,7 @@ export function MissionDetailPage({
   jobTitles,
   pharmacies,
   recruiters,
+  contactsByPharmacy,
   activityCount,
   documentCount,
 }: Props) {
@@ -80,9 +83,11 @@ export function MissionDetailPage({
         jobTitles={jobTitles}
         pharmacies={pharmacies}
         recruiters={recruiters}
+        contactsByPharmacy={contactsByPharmacy}
         submitting={update.isPending}
         onUpdate={(data) => update.mutate({ id: mission.id, data })}
         onCreateJobTitle={(name) => createJobTitle.mutateAsync({ name })}
+        onPharmacyChange={() => router.refresh()}
       />
     </EntityDetailShell>
   )
