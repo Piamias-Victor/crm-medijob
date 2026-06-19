@@ -7,13 +7,14 @@ type Props = { params: Promise<{ id: string }> }
 export default async function Page({ params }: Props) {
   const { id } = await params
   const caller = await createServerCaller()
-  const [contact, missions, pharmacies] = await Promise.all([
+  const [contact, missions, pharmacies, activities] = await Promise.all([
     caller.contact.getById({ id }),
     caller.contact.missions({ id }),
     caller.contact.pharmacyOptions(),
+    caller.activityLog.list({ contactId: id }),
   ])
 
   if (!contact) notFound()
 
-  return <ContactDetailPage contact={contact} missions={missions} pharmacies={pharmacies} />
+  return <ContactDetailPage contact={contact} missions={missions} pharmacies={pharmacies} activities={activities} />
 }

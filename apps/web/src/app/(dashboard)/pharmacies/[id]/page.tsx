@@ -12,6 +12,11 @@ export default async function Page({ params }: Props) {
     caller.pharmacy.referentials(),
     caller.mission.referentials(),
     caller.document.listByEntity({ entityType: 'PHARMACY', entityId: id }),
+  const [pharmacy, referentials, missionRefs, activities] = await Promise.all([
+    caller.pharmacy.getById({ id }),
+    caller.pharmacy.referentials(),
+    caller.mission.referentials(),
+    caller.activityLog.list({ pharmacyId: id }),
   ])
 
   if (!pharmacy) notFound()
@@ -23,6 +28,7 @@ export default async function Page({ params }: Props) {
       softwares={referentials.softwares}
       missionRefs={missionRefs}
       documents={documents}
+      activities={activities}
     />
   )
 }

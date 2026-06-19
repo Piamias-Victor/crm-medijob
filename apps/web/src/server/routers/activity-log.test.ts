@@ -1,76 +1,58 @@
 // @vitest-environment node
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeActivityLogRouter } from '@/server/routers/activity-log'
 import {
-  activityFixture,
+  activityEntity,
   activityLogCaller,
   makeActivityLogDeps,
 } from '@/server/routers/activity-log.test.fixtures'
 
 describe('activityLogRouter', () => {
-  it('lists candidate activities newest first with labels', async () => {
-    const rows = await activityLogCaller(makeActivityLogDeps()).listByEntity({
-      entityType: 'CANDIDATE',
-      entityId: 'c1',
-    })
+  it('lists contact logs mapped to timeline rows', async () => {
+    const rows = await activityLogCaller(makeActivityLogDeps()).list({ contactId: 'c1' })
     expect(rows[0]).toMatchObject({
-      id: 'a1',
+      id: activityEntity.id,
       type: 'NOTE',
-      typeLabel: 'Note',
       authorName: 'Recruteur Demo',
     })
   })
 
-  it('passes ActivityType filter to repository', async () => {
+  it('passes ActivityType filters to repository', async () => {
     const deps = makeActivityLogDeps()
-    await activityLogCaller(deps).listByEntity({
-      entityType: 'CANDIDATE',
-      entityId: 'c1',
-      type: 'EMAIL',
-    })
-    expect(deps.listByEntity).toHaveBeenCalledWith({
-      entityType: 'CANDIDATE',
-      entityId: 'c1',
-      type: 'EMAIL',
-    })
+    await activityLogCaller(deps).list({ contactId: 'c1', types: ['NOTE'] })
+    expect(deps.repo.list).toHaveBeenCalledWith({ contactId: 'c1', types: ['NOTE'] })
   })
 
-  it('creates manual log with session user as author', async () => {
+  it('creates manual log with session author on contact', async () => {
     const deps = makeActivityLogDeps()
-    const date = new Date('2026-06-12T14:30:00Z')
     await activityLogCaller(deps).create({
-      entityType: 'CANDIDATE',
-      entityId: 'c1',
-      type: 'NOTE',
-      content: 'Relance téléphonique',
-      date,
+      contactId: 'c1',
+      type: 'DEVIS',
+      content: 'Devis titulaire',
     })
-    expect(deps.create).toHaveBeenCalledWith({
-      entityType: 'CANDIDATE',
-      entityId: 'c1',
-      type: 'NOTE',
-      content: 'Relance téléphonique',
-      date,
-      authorId: 'u1',
-    })
+    expect(deps.repo.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        contactId: 'c1',
+        authorId: 'u1',
+        type: 'DEVIS',
+      }),
+    )
   })
 
-  it('maps created row through view-model', async () => {
-    const row = await activityLogCaller(makeActivityLogDeps()).create({
-      entityType: 'CANDIDATE',
-      entityId: 'c1',
-      type: 'NOTE',
-      date: new Date('2026-06-12T14:30:00Z'),
+  it('scopes pharmacy logs by pharmacyId', async () => {
+    const deps = makeActivityLogDeps({
+      repo: {
+        list: vi.fn().mockResolvedValue([]),
+        create: vi.fn().mockResolvedValue(activityEntity),
+      },
     })
-    expect(row.typeLabel).toBe('Note')
-    expect(row.authorName).toBe(activityFixture.author.name)
+    await activityLogCaller(deps).list({ pharmacyId: 'p1' })
+    expect(deps.repo.list).toHaveBeenCalledWith({ pharmacyId: 'p1', types: undefined })
   })
 
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeActivityLogRouter(makeActivityLogDeps()))({ session: null })
-    await expect(
-      unauth.listByEntity({ entityType: 'CANDIDATE', entityId: 'c1' }),
-    ).rejects.toThrow()
+    await expect(unauth.list({ contactId: 'c1' })).rejects.toThrow()
   })
 })

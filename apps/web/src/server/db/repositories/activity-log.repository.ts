@@ -1,64 +1,46 @@
-import type { ActivityType, DocumentEntityType, Prisma, PrismaClient } from '@prisma/client'
+import type { ActivityType, PrismaClient } from '@prisma/client'
 import { prisma as defaultDb } from './client'
 
-const authorSelect = { select: { name: true } } as const
-
-type EntityQuery = {
-  entityType: DocumentEntityType
-  entityId: string
-  type?: ActivityType
+type ListInput = {
+  contactId?: string
+  pharmacyId?: string
+  types?: ActivityType[]
 }
 
-type CreateInput = EntityQuery & {
+type CreateInput = ListInput & {
   authorId: string
   type: ActivityType
   content?: string
-  date: Date
+  date?: Date
 }
 
-const entityField: Record<DocumentEntityType, keyof Prisma.ActivityLogWhereInput> = {
-  CANDIDATE: 'candidateId',
-  PHARMACY: 'pharmacyId',
-  CONTACT: 'contactId',
-  MISSION: 'missionId',
-}
-
-function entityWhere({ entityType, entityId, type }: EntityQuery): Prisma.ActivityLogWhereInput {
-  return {
-    entityType,
-    [entityField[entityType]]: entityId,
-    ...(type ? { type } : {}),
-  }
-}
-
-function entityData({ entityType, entityId }: EntityQuery) {
-  return {
-    entityType,
-    candidateId: entityType === 'CANDIDATE' ? entityId : null,
-    pharmacyId: entityType === 'PHARMACY' ? entityId : null,
-    contactId: entityType === 'CONTACT' ? entityId : null,
-    missionId: entityType === 'MISSION' ? entityId : null,
-  }
-}
+const authorInclude = { author: { select: { name: true } } } as const
 
 export function makeActivityLogRepository(db: PrismaClient = defaultDb) {
   return {
-    listByEntity: (query: EntityQuery) =>
+    list: (input: ListInput) =>
       db.activityLog.findMany({
-        where: entityWhere(query),
-        include: { author: authorSelect },
+        where: {
+          ...(input.contactId
+            ? { contactId: input.contactId, entityType: 'CONTACT' }
+            : { pharmacyId: input.pharmacyId, entityType: 'PHARMACY' }),
+          ...(input.types?.length ? { type: { in: input.types } } : {}),
+        },
+        include: authorInclude,
         orderBy: { date: 'desc' },
       }),
     create: (input: CreateInput) =>
       db.activityLog.create({
         data: {
-          ...entityData(input),
+          entityType: input.contactId ? 'CONTACT' : 'PHARMACY',
+          contactId: input.contactId,
+          pharmacyId: input.pharmacyId,
           authorId: input.authorId,
           type: input.type,
           content: input.content,
-          date: input.date,
+          date: input.date ?? new Date(),
         },
-        include: { author: authorSelect },
+        include: authorInclude,
       }),
   }
 }
