@@ -1,6 +1,7 @@
 import { z } from 'zod'
+import { cvExtractionSchema, cvExtractionAiSchema } from './cv-extraction.schema'
 
-export const RESPONSE_KINDS = ['chat', 'summary', 'email', 'offer', 'report'] as const
+export const RESPONSE_KINDS = ['chat', 'summary', 'email', 'offer', 'report', 'cv'] as const
 
 export type ResponseKind = (typeof RESPONSE_KINDS)[number]
 
@@ -16,12 +17,15 @@ export const offerResponseSchema = z.object({
 })
 export const reportResponseSchema = z.object({ report: z.string().min(1) })
 
+export { cvExtractionAiSchema as cvResponseSchema } from './cv-extraction.schema'
+
 export const responseSchemas = {
   chat: chatResponseSchema,
   summary: summaryResponseSchema,
   email: emailResponseSchema,
   offer: offerResponseSchema,
   report: reportResponseSchema,
+  cv: cvExtractionAiSchema,
 } satisfies Record<ResponseKind, z.ZodType>
 
 export type ChatResponse = z.infer<typeof chatResponseSchema>

@@ -45,6 +45,7 @@ export function toCandidateProfilePayload(candidate: ProfileRecord) {
     notes: candidate.notes,
     referentId: candidate.referentId,
     referentName: candidate.referent.name,
+    cvUrl: candidate.cvUrl,
     softwareIds: candidate.softwares.map((s) => s.softwareId),
     contractTypes: candidate.contractPreferences.map((p) => p.contractType),
     missions: toCandidateMissionRows(candidate.missions),
