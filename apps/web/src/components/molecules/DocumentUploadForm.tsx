@@ -1,34 +1,34 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Upload } from 'lucide-react'
 import type { DocumentCategoryValue } from '@/view-models/document.types'
 import { DOCUMENT_CATEGORIES, DOCUMENT_CATEGORY_LABELS } from '@/lib/document-options'
 import {
   DOCUMENT_UPLOAD_ACCEPT,
   DOCUMENT_UPLOAD_HINT,
-  documentUploadError,
 } from '@/lib/document-upload'
+import {
+  documentUploadFormSchema,
+  type DocumentUploadFormInput,
+} from '@/view-models/document-upload.schema'
 import { Button } from '@/components/atoms/Button'
 import { Combobox } from '@/components/molecules/Combobox'
 
-const ACCEPT = DOCUMENT_UPLOAD_ACCEPT
-
 type Props = {
   submitting: boolean
-  onUpload: (input: {
-    category: DocumentCategoryValue
-    filename: string
-    mimeType: string
-    size: number
-    dataBase64: string
-  }) => void
+  onUpload: (input: DocumentUploadFormInput) => void
 }
 
 export function DocumentUploadForm({ submitting, onUpload }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [category, setCategory] = useState<DocumentCategoryValue>('CONTRAT')
-  const [error, setError] = useState<string | null>(null)
+  const { setValue, watch, handleSubmit, formState, clearErrors } =
+    useForm<DocumentUploadFormInput>({
+      resolver: zodResolver(documentUploadFormSchema),
+      defaultValues: { category: 'CONTRAT', filename: '', mimeType: '', size: 0, dataBase64: '' },
+    })
 
   const options = DOCUMENT_CATEGORIES.map((value) => ({
     value,
@@ -37,35 +37,28 @@ export function DocumentUploadForm({ submitting, onUpload }: Props) {
 
   const onPick = () => inputRef.current?.click()
 
+  const submitUpload = handleSubmit((data) => onUpload(data))
+
   const onFile = (file: File | undefined) => {
     if (!file) return
-    setError(null)
-    if (file.size > 10 * 1024 * 1024) {
-      setError('Fichier trop volumineux (max 10 Mo).')
-      return
-    }
+    clearErrors('filename')
     const mimeType = file.type || 'application/octet-stream'
-    const formatError = documentUploadError({ filename: file.name, mimeType })
-    if (formatError) {
-      setError(formatError)
-      return
-    }
     const reader = new FileReader()
     reader.onload = () => {
       const result = reader.result
       if (typeof result !== 'string') return
       const dataBase64 = result.split(',')[1]
       if (!dataBase64) return
-      onUpload({
-        category,
-        filename: file.name,
-        mimeType,
-        size: file.size,
-        dataBase64,
-      })
+      setValue('filename', file.name, { shouldValidate: true })
+      setValue('mimeType', mimeType, { shouldValidate: true })
+      setValue('size', file.size, { shouldValidate: true })
+      setValue('dataBase64', dataBase64, { shouldValidate: true })
+      void submitUpload()
     }
     reader.readAsDataURL(file)
   }
+
+  const fileError = formState.errors.filename?.message
 
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-dashed border-border/70 bg-surface/40 p-4">
@@ -73,13 +66,19 @@ export function DocumentUploadForm({ submitting, onUpload }: Props) {
         <label className="flex flex-col gap-1 text-sm">
           <span className="font-medium text-fg">Catégorie</span>
           <Combobox
-            value={category}
-            onChange={(v) => setCategory(v as DocumentCategoryValue)}
+            value={watch('category')}
+            onChange={(v) => setValue('category', v as DocumentCategoryValue, { shouldValidate: true })}
             options={options}
           />
         </label>
         <div className="flex flex-wrap items-center gap-2">
-          <input ref={inputRef} type="file" accept={ACCEPT} className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+          <input
+            ref={inputRef}
+            type="file"
+            accept={DOCUMENT_UPLOAD_ACCEPT}
+            className="hidden"
+            onChange={(e) => onFile(e.target.files?.[0])}
+          />
           <Button type="button" variant="accent" disabled={submitting} onClick={onPick}>
             <Upload className="size-4" />
             {submitting ? 'Envoi…' : 'Choisir un fichier'}
@@ -87,7 +86,7 @@ export function DocumentUploadForm({ submitting, onUpload }: Props) {
           <p className="text-xs text-fg-muted">{DOCUMENT_UPLOAD_HINT}</p>
         </div>
       </div>
-      {error ? <p className="text-sm text-error">{error}</p> : null}
+      {fileError ? <p className="text-sm text-error">{fileError}</p> : null}
     </div>
   )
 }

@@ -9,7 +9,7 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
     findById: (id: string) =>
       db.jobOffer.findFirst({ where: { id, ...NOT_DELETED } }),
     list: () =>
-      db.jobOffer.findMany({ where: NOT_DELETED, orderBy: { createdAt: 'desc' } }),
+      db.jobOffer.findMany({ where: NOT_DELETED, orderBy: { createdAt: 'desc' }, take: DEFAULT_LIST_LIMIT }),
     listForTable: (limit = DEFAULT_LIST_LIMIT) =>
       db.jobOffer.findMany({
         where: NOT_DELETED,

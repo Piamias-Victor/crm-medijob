@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { trpc } from '@/lib/trpc/client'
+import { useMemo, useState } from 'react'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { ActivityLogScope } from '@/view-models/activity-log.types'
 import type { ActivityTypeValue } from '@/view-models/activity-log-form.schema'
@@ -17,13 +16,11 @@ type Props = {
 
 export function EntityActivityLogTab({ scope, initialLogs }: Props) {
   const [types, setTypes] = useState<string[]>([])
-  const listInput = {
-    ...scope,
-    ...(types.length ? { types: types as ActivityTypeValue[] } : {}),
-  }
-  const { data: logs = initialLogs } = trpc.activityLog.listByEntity.useQuery(listInput, {
-    initialData: initialLogs,
-  })
+  const logs = useMemo(() => {
+    if (!types.length) return initialLogs
+    const selected = new Set(types as ActivityTypeValue[])
+    return initialLogs.filter((log) => selected.has(log.type))
+  }, [initialLogs, types])
 
   return (
     <div className="flex flex-col gap-6">

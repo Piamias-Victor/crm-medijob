@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { MissionStatus } from '@prisma/client'
+import type { MissionStatus } from '@/view-models/mission-kanban.types'
 import { LayoutGrid } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { MissionKanbanColumnView } from '@/components/molecules/MissionKanbanColumn'

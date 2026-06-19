@@ -12,6 +12,7 @@ import {
 
 export type DocumentDeps = {
   listByEntity: (entityType: DocumentEntityType, entityId: string) => Promise<DocumentRecord[]>
+  findById: (id: string) => Promise<DocumentRecord | null>
   create: (data: Prisma.DocumentUncheckedCreateInput) => Promise<DocumentRecord>
   deleteById: (id: string) => Promise<DocumentRecord | null>
   uploadBlob: (input: { pathname: string; body: Buffer; contentType: string }) => Promise<{ url: string }>
@@ -36,21 +37,27 @@ export function makeDocumentRouter(deps: DocumentDeps) {
       const body = Buffer.from(input.dataBase64, 'base64')
       const pathname = `${input.entityType.toLowerCase()}/${input.entityId}/${Date.now()}-${input.filename}`
       const blob = await deps.uploadBlob({ pathname, body, contentType: input.mimeType })
-      const doc = await deps.create({
-        entityType: input.entityType,
-        category: input.category,
-        name: input.filename,
-        url: blob.url,
-        size: input.size,
-        mimeType: input.mimeType,
-        ...entityLink(input),
-      })
-      return toDocumentListRow(doc)
+      try {
+        const doc = await deps.create({
+          entityType: input.entityType,
+          category: input.category,
+          name: input.filename,
+          url: blob.url,
+          size: input.size,
+          mimeType: input.mimeType,
+          ...entityLink(input),
+        })
+        return toDocumentListRow(doc)
+      } catch (error) {
+        await deps.deleteBlob(blob.url).catch(() => undefined)
+        throw error
+      }
     }),
     delete: protectedProcedure.input(deleteDocumentSchema).mutation(async ({ input }) => {
-      const doc = await deps.deleteById(input.id)
+      const doc = await deps.findById(input.id)
       if (!doc) return { id: input.id }
       await deps.deleteBlob(doc.url)
+      await deps.deleteById(input.id)
       return { id: doc.id }
     }),
   })
@@ -65,6 +72,7 @@ function makeBlobDeps(client: BlobClient): Pick<DocumentDeps, 'uploadBlob' | 'de
 
 export const documentRouter = makeDocumentRouter({
   listByEntity: (entityType, entityId) => documentRepository.listByEntity(entityType, entityId),
+  findById: (id) => documentRepository.findById(id),
   create: (data) => documentRepository.create(data),
   deleteById: (id) => documentRepository.deleteById(id),
   ...makeBlobDeps(vercelBlobClient),

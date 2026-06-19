@@ -1,10 +1,10 @@
-import type { MissionStatus } from '@prisma/client'
 import { MISSION_STATUS_ORDER, STATUS_LABELS } from '@/lib/mission-options'
 import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
 import type {
   MissionKanbanCard,
   MissionKanbanColumn,
   MissionListItem,
+  MissionStatus,
   RawMission,
 } from './mission-kanban.types'
 

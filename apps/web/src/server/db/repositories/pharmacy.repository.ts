@@ -1,5 +1,5 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
-import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { DEFAULT_LIST_LIMIT, DETAIL_MISSIONS_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 
@@ -31,6 +31,7 @@ const detailInclude = {
   missions: {
     where: NOT_DELETED,
     orderBy: { createdAt: 'desc' },
+    take: DETAIL_MISSIONS_LIMIT,
     select: {
       id: true,
       title: true,

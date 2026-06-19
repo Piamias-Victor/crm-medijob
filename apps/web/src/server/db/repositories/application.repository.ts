@@ -9,10 +9,11 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
       db.application.create({ data }),
     findById: (id: string) =>
       db.application.findFirst({ where: { id, ...NOT_DELETED } }),
-    list: () =>
+    list: (limit = DEFAULT_LIST_LIMIT) =>
       db.application.findMany({
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
     listInbox: (limit = DEFAULT_LIST_LIMIT) =>
       db.application.findMany({

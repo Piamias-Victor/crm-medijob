@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { beforeAll, afterAll, describe, expect, it } from 'vitest'
+import { DETAIL_MISSIONS_LIMIT } from '@/lib/list-limits'
 import { startTestDb, type TestDb } from '../../../../test/db'
 import { makePharmacyRepository } from './pharmacy.repository'
 
@@ -47,5 +48,27 @@ describe('pharmacyRepository', () => {
     const created = await repo.create({ name: 'Grande Pharmacie Bellecour' })
     const results = await repo.search('bellecour')
     expect(results.some((x) => x.id === created.id)).toBe(true)
+  })
+
+  it('limits nested missions on pharmacy detail', async () => {
+    const pharmacy = await repo.create({ name: 'Pharmacie Missions' })
+    const referent = await db.prisma.user.create({
+      data: { email: `m${Date.now()}@medijob.fr`, password: 'x', name: 'Réf' },
+    })
+    const jobTitle = await db.prisma.jobTitle.create({ data: { name: 'Pharmacien' } })
+    for (let i = 0; i < DETAIL_MISSIONS_LIMIT + 2; i++) {
+      await db.prisma.mission.create({
+        data: {
+          title: `Mission ${i}`,
+          contractType: 'CDI',
+          startDate: new Date(),
+          pharmacyId: pharmacy.id,
+          referentId: referent.id,
+          jobTitleId: jobTitle.id,
+        },
+      })
+    }
+    const detail = await repo.findDetailById(pharmacy.id)
+    expect(detail?.missions.length).toBe(DETAIL_MISSIONS_LIMIT)
   })
 })
