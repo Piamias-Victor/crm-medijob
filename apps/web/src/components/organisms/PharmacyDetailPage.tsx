@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Building2, Star } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log-list'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
@@ -22,6 +23,10 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   missionRefs: MissionRefs
+  documents: DocumentListRow[]
+}
+
+export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRefs, documents }: Props) {
   activities: ActivityLogRow[]
 }
 
@@ -79,6 +84,7 @@ export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRe
             groupements={groupements}
             softwares={softwares}
             missionRefs={missionRefs}
+            documents={documents}
             submittingInfo={update.isPending}
             submittingMission={createMission.isPending}
             onUpdate={(data) => update.mutate({ id: pharmacy.id, data })}
