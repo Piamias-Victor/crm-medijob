@@ -1,70 +1,69 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest'
+import { makeMissionRouter } from '@/server/routers/mission'
+import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import { createCallerFactory } from '@/server/trpc'
-import { makeMissionRouter, type MissionDeps } from '@/server/routers/mission'
+import { makeMissionDeps, missionCaller } from '@/server/routers/mission.test.fixtures'
 
-const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
 const statusInput = { id: 'm1', status: 'EN_RECHERCHE' as const }
-
-function makeDeps(overrides: Partial<MissionDeps> = {}): MissionDeps {
-  return {
-    list: vi.fn().mockResolvedValue([]),
-    createQuick: vi.fn().mockResolvedValue({ id: 'm1', status: 'A_POURVOIR' }),
-    createJobTitle: vi.fn().mockResolvedValue({ id: 'jt1', name: 'Préparateur' }),
-    referentials: vi.fn().mockResolvedValue({ jobTitles: [], recruiters: [] }),
-    updateStatus: vi.fn().mockResolvedValue({ id: 'm1', status: 'EN_RECHERCHE' }),
-    ...overrides,
-  }
-}
-
-function caller(deps: MissionDeps) {
-  return createCallerFactory(makeMissionRouter(deps))({ session })
-}
 
 describe('missionRouter', () => {
   it('returns missions from list', async () => {
     const rows = [{ id: 'm1', title: 'CDI' }]
-    const deps = makeDeps({ list: vi.fn().mockResolvedValue(rows) })
-    await expect(caller(deps).list()).resolves.toEqual(rows)
+    const deps = makeMissionDeps({ list: vi.fn().mockResolvedValue(rows) })
+    await expect(missionCaller(deps).list()).resolves.toEqual(rows)
   })
 
-  it('creates a mission with A_POURVOIR status', async () => {
-    const deps = makeDeps()
-    const input = {
-      pharmacyId: 'p1',
-      title: 'Adjoint CDD',
-      jobTitleId: 'jt1',
-      contractType: 'CDD' as const,
-      startDate: new Date('2026-03-01'),
-      referentId: 'u1',
-    }
-    const created = await caller(deps).create(input)
-    expect(created).toEqual({ id: 'm1', status: 'A_POURVOIR' })
-    expect(deps.createQuick).toHaveBeenCalledWith(input)
+  it('maps getById through mission detail view-model', async () => {
+    const mission = await missionCaller(makeMissionDeps()).getById({ id: 'm1' })
+    expect((mission as MissionDetailPayload).pharmacyName).toBe('Pharmacie du Centre')
   })
 
-  it('creates a job title referential inline', async () => {
-    const deps = makeDeps()
-    const created = await caller(deps).createJobTitle({ name: 'Préparateur' })
-    expect(deps.createJobTitle).toHaveBeenCalledWith('Préparateur')
-    expect(created).toEqual({ id: 'jt1', name: 'Préparateur' })
+  it('updates mission fields', async () => {
+    const deps = makeMissionDeps()
+    await missionCaller(deps).update({
+      id: 'm1',
+      data: {
+        title: 'Adjoint CDD',
+        jobTitleId: 'jt1',
+        contractType: 'CDD',
+        pharmacyId: 'p1',
+        referentId: 'u1',
+        startDate: new Date('2026-04-01'),
+        tempsPlein: true,
+      },
+    })
+    expect(deps.update).toHaveBeenCalled()
   })
 
-  it('returns updated mission from updateStatus', async () => {
-    const deps = makeDeps()
-    const result = await caller(deps).updateStatus(statusInput)
-    expect(result).toEqual({ id: 'm1', status: 'EN_RECHERCHE' })
-    expect(deps.updateStatus).toHaveBeenCalledWith(statusInput)
+  it('delegates markAnnulee to terminal transition', async () => {
+    const deps = makeMissionDeps({
+      updateStatus: vi.fn().mockResolvedValue({ id: 'm1', status: 'ANNULEE' }),
+    })
+    await missionCaller(deps).markAnnulee({ id: 'm1' })
+    expect(deps.updateStatus).toHaveBeenCalledWith({ id: 'm1', status: 'ANNULEE' })
+  })
+
+  it('keeps markPourvu on router for pipeline issue #66', async () => {
+    const deps = makeMissionDeps({
+      updateStatus: vi.fn().mockResolvedValue({ id: 'm1', status: 'POURVU' }),
+    })
+    await missionCaller(deps).markPourvu({ id: 'm1', placedCandidateId: 'c2' })
+    expect(deps.updateStatus).toHaveBeenCalledWith({
+      id: 'm1',
+      status: 'POURVU',
+      placedCandidateId: 'c2',
+    })
   })
 
   it('rejects unauthenticated callers', async () => {
-    const unauth = createCallerFactory(makeMissionRouter(makeDeps()))({ session: null })
+    const unauth = createCallerFactory(makeMissionRouter(makeMissionDeps()))({ session: null })
     await expect(unauth.updateStatus(statusInput)).rejects.toThrow()
   })
 
   it('requires placedCandidateId when status is POURVU', async () => {
     await expect(
-      caller(makeDeps()).updateStatus({ id: 'm1', status: 'POURVU' }),
+      missionCaller(makeMissionDeps()).updateStatus({ id: 'm1', status: 'POURVU' }),
     ).rejects.toThrow()
   })
 })

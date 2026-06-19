@@ -14,6 +14,7 @@ export type ContactDeps = {
   contacts: {
     list: () => Promise<ContactListEntity[]>
     findById: (id: string) => Promise<ContactDetailEntity | null>
+    listByPharmacy: (pharmacyId: string) => Promise<{ id: string; firstName: string; lastName: string }[]>
     create: (data: Prisma.ContactUncheckedCreateInput) => Promise<unknown>
     update: (id: string, data: Prisma.ContactUncheckedUpdateInput) => Promise<unknown>
     setPrimary: (id: string) => Promise<ContactDetailEntity | null>
@@ -24,6 +25,7 @@ export type ContactDeps = {
 }
 
 const idSchema = z.object({ id: z.string().min(1) })
+const pharmacyIdSchema = z.object({ pharmacyId: z.string().min(1) })
 
 function toData(input: z.output<typeof contactInputSchema>): Prisma.ContactUncheckedCreateInput {
   return {
@@ -48,6 +50,12 @@ export function makeContactRouter(deps: ContactDeps) {
       return contact ? toContactDetail(contact) : null
     }),
     pharmacyOptions: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
+    listByPharmacy: protectedProcedure.input(pharmacyIdSchema).query(async ({ input }) =>
+      (await deps.contacts.listByPharmacy(input.pharmacyId)).map((c) => ({
+        id: c.id,
+        label: `${c.firstName} ${c.lastName}`.trim(),
+      })),
+    ),
     create: protectedProcedure
       .input(contactInputSchema)
       .mutation(({ input }) => deps.contacts.create(toData(input))),
