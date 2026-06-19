@@ -1,10 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { Check, ChevronDown, Plus } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useAnchoredPanel } from '@/lib/use-anchored-panel'
+import { ComboboxDropdown, type ComboboxOption } from '@/components/molecules/ComboboxDropdown'
 
-export type ComboboxOption = { value: string; label: string }
+export type { ComboboxOption }
 
 type Props = {
   value?: string
@@ -17,15 +20,19 @@ type Props = {
 export function Combobox({ value, onChange, options, placeholder = 'Sélectionner', onCreate }: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const root = useRef<HTMLDivElement>(null)
+  const { anchorRef, panelRef, style } = useAnchoredPanel(open)
 
   useEffect(() => {
+    if (!open) return
     const onClick = (e: MouseEvent) => {
-      if (root.current && !root.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (anchorRef.current?.contains(target)) return
+      if (panelRef.current?.contains(target)) return
+      setOpen(false)
     }
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
-  }, [])
+  }, [open, anchorRef, panelRef])
 
   const selected = options.find((o) => o.value === value)
   const q = query.trim().toLowerCase()
@@ -44,8 +51,22 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
     pick(created.value)
   }
 
+  const panel = open ? (
+    <ComboboxDropdown
+      panelRef={panelRef}
+      style={style}
+      value={value}
+      query={query}
+      onQueryChange={setQuery}
+      filtered={filtered}
+      showCreate={showCreate}
+      onPick={pick}
+      onCreate={create}
+    />
+  ) : null
+
   return (
-    <div ref={root} className="relative">
+    <div ref={anchorRef} className="relative">
       <button
         type="button"
         aria-haspopup="listbox"
@@ -56,44 +77,7 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
         <span className={cn(!selected && 'text-fg-muted')}>{selected?.label ?? placeholder}</span>
         <ChevronDown className={cn('size-4 text-fg-muted transition-transform', open && 'rotate-180')} />
       </button>
-      {open ? (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-border bg-white shadow-lg">
-          <input
-            type="search"
-            role="searchbox"
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher…"
-            className="w-full border-b border-border px-3 py-2 text-sm outline-none placeholder:text-fg-muted"
-          />
-          <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
-            {filtered.map((o) => (
-              <li key={o.value}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={o.value === value}
-                  onClick={() => pick(o.value)}
-                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg hover:bg-surface"
-                >
-                  {o.label}
-                  {o.value === value ? <Check className="size-4 text-accent" /> : null}
-                </button>
-              </li>
-            ))}
-          </ul>
-          {showCreate ? (
-            <button
-              type="button"
-              onClick={create}
-              className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent hover:bg-surface"
-            >
-              <Plus className="size-4" /> Créer « {query.trim()} »
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+      {typeof document !== 'undefined' && panel ? createPortal(panel, document.body) : null}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Calendar } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { DatePickerPanel } from '@/components/molecules/DatePickerPanel'
@@ -10,6 +11,9 @@ import {
   formatIsoDate,
   parseIsoDate,
 } from '@/lib/date-picker-utils'
+import { useAnchoredPanel } from '@/lib/use-anchored-panel'
+
+const PANEL_WIDTH = 288
 
 type Props = {
   value?: string
@@ -22,18 +26,47 @@ export function DatePicker({ value, onChange, id }: Props) {
   const today = new Date()
   const [open, setOpen] = useState(false)
   const [view, setView] = useState(() => selected ?? today)
-  const root = useRef<HTMLDivElement>(null)
+  const { anchorRef, panelRef, style } = useAnchoredPanel(open, PANEL_WIDTH)
 
   useEffect(() => {
+    if (!open) return
     const onClick = (e: MouseEvent) => {
-      if (root.current && !root.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (anchorRef.current?.contains(target)) return
+      if (panelRef.current?.contains(target)) return
+      setOpen(false)
     }
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
-  }, [])
+  }, [open, anchorRef, panelRef])
+
+  const panel = open ? (
+    <div
+      ref={panelRef}
+      style={style}
+      className="overflow-auto rounded-xl border border-border bg-white p-3 shadow-lg"
+    >
+      <DatePickerPanel
+        view={view}
+        selected={selected}
+        today={today}
+        days={calendarDays(view.getFullYear(), view.getMonth())}
+        onPrev={() => setView(new Date(view.getFullYear(), view.getMonth() - 1, 1))}
+        onNext={() => setView(new Date(view.getFullYear(), view.getMonth() + 1, 1))}
+        onPick={(date) => {
+          onChange(formatIsoDate(date))
+          setOpen(false)
+        }}
+        onClear={() => {
+          onChange(undefined)
+          setOpen(false)
+        }}
+      />
+    </div>
+  ) : null
 
   return (
-    <div ref={root} className="relative">
+    <div ref={anchorRef} className="relative">
       <button
         id={id}
         type="button"
@@ -43,26 +76,7 @@ export function DatePicker({ value, onChange, id }: Props) {
         <span className={cn(!value && 'text-fg-muted')}>{formatDisplayDate(value)}</span>
         <Calendar className="size-4 text-fg-muted" />
       </button>
-      {open ? (
-        <div className="absolute z-50 mt-1 w-72 overflow-hidden rounded-xl border border-border bg-white p-3 shadow-lg">
-          <DatePickerPanel
-            view={view}
-            selected={selected}
-            today={today}
-            days={calendarDays(view.getFullYear(), view.getMonth())}
-            onPrev={() => setView(new Date(view.getFullYear(), view.getMonth() - 1, 1))}
-            onNext={() => setView(new Date(view.getFullYear(), view.getMonth() + 1, 1))}
-            onPick={(date) => {
-              onChange(formatIsoDate(date))
-              setOpen(false)
-            }}
-            onClear={() => {
-              onChange(undefined)
-              setOpen(false)
-            }}
-          />
-        </div>
-      ) : null}
+      {typeof document !== 'undefined' && panel ? createPortal(panel, document.body) : null}
     </div>
   )
 }

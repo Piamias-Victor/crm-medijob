@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { Construction } from 'lucide-react'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
+import type { ActivityLogRow } from '@/view-models/activity-log-list'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
 import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
@@ -13,6 +14,7 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { PharmacyInfoForm } from '@/components/molecules/PharmacyInfoForm'
 import { PharmacyContactsTab } from '@/components/molecules/PharmacyContactsTab'
 import { PharmacyBesoinsTab } from '@/components/molecules/PharmacyBesoinsTab'
+import { ActivityLogTab } from '@/components/molecules/ActivityLogTab'
 
 type Ref = { id: string; name: string }
 type MissionRefs = { jobTitles: Ref[]; recruiters: Ref[] }
@@ -31,6 +33,7 @@ type Props = {
   onSearchSiret: (query: string) => Promise<{ siret: string; name: string; address: string; city: string; postalCode: string }[]>
   onCreateGroupement: (name: string) => Promise<Ref>
   onCreateSoftware: (name: string) => Promise<Ref>
+  activities: ActivityLogRow[]
 }
 
 export function PharmacyDetailTabPanel(props: Props) {
@@ -82,7 +85,7 @@ export function PharmacyDetailTabPanel(props: Props) {
         />
       ) : null}
       {props.tab === 'historique' ? (
-        <EmptyState icon={Construction} title="Bientôt disponible" description="ActivityLog pharmacie — issue #63." />
+        <ActivityLogTab scope={{ pharmacyId: props.pharmacy.id }} initialLogs={props.activities} />
       ) : null}
       {props.tab === 'documents' ? (
         <EmptyState icon={Construction} title="Bientôt disponible" description="Documents Blob — issue #61." />
