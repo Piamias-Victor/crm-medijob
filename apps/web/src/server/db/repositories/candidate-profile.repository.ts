@@ -1,5 +1,4 @@
 import type { Prisma } from '@prisma/client'
-import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
 
 export type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
 

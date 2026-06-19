@@ -16,15 +16,34 @@ const tabs = [
 type Props = {
   active: MissionTab
   onChange: (tab: MissionTab) => void
+  pipelineCount: number
+  activityCount: number
+  documentCount: number
 }
 
-export function MissionDetailTabs({ active, onChange }: Props) {
+export function MissionDetailTabs({
+  active,
+  onChange,
+  pipelineCount,
+  activityCount,
+  documentCount,
+}: Props) {
   return (
     <EntityDetailTabs
       ariaLabel="Sections fiche mission"
       active={active}
       onChange={onChange}
-      tabs={tabs}
+      tabs={tabs.map((tab) => ({
+        ...tab,
+        badge:
+          tab.id === 'pipeline'
+            ? pipelineCount
+            : tab.id === 'historique'
+              ? activityCount
+              : tab.id === 'documents'
+                ? documentCount
+                : undefined,
+      }))}
     />
   )
 }

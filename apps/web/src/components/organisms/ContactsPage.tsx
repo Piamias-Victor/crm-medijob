@@ -18,7 +18,7 @@ type Props = {
   pharmacies: Ref[]
 }
 
-export function ContactsView({ rows, pharmacies }: Props) {
+export function ContactsPage({ rows, pharmacies }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const description = useMemo(() => `${rows.length} interlocuteur(s) au portefeuille`, [rows.length])

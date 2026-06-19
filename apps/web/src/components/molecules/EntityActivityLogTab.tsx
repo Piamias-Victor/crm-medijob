@@ -5,8 +5,8 @@ import { trpc } from '@/lib/trpc/client'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { ActivityLogScope } from '@/view-models/activity-log.types'
 import type { ActivityTypeValue } from '@/view-models/activity-log-form.schema'
+import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
 import { ACTIVITY_TYPE_OPTIONS } from '@/view-models/activity-log.labels'
-import { ActivityLogFilters } from '@/components/molecules/ActivityLogFilters'
 import { ActivityLogForm } from '@/components/molecules/ActivityLogForm'
 import { ActivityTimeline } from '@/components/molecules/ActivityTimeline'
 
@@ -30,7 +30,7 @@ export function EntityActivityLogTab({ scope, initialLogs }: Props) {
       <ActivityLogForm scope={scope} />
       <div className="flex flex-col gap-3">
         <p className="text-sm font-medium text-fg">Filtrer par type</p>
-        <ActivityLogFilters options={ACTIVITY_TYPE_OPTIONS} values={types} onChange={setTypes} />
+        <CheckboxGroup options={ACTIVITY_TYPE_OPTIONS} values={types} onChange={setTypes} />
       </div>
       <ActivityTimeline items={logs} isFiltered={types.length > 0} />
     </div>

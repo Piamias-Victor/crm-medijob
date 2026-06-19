@@ -1,6 +1,7 @@
 'use client'
 
 import { Info } from 'lucide-react'
+import { Alert } from '@/components/atoms/Alert'
 import { Badge } from '@/components/atoms/Badge'
 import { MATCHING_FIELD_LABELS } from '@/lib/candidate-options'
 
@@ -12,8 +13,8 @@ export function CandidateProfileBanner({ missingFields }: Props) {
   const labels = missingFields.map((f) => MATCHING_FIELD_LABELS[f] ?? f)
 
   return (
-    <div
-      role="status"
+    <Alert
+      variant="warning"
       className="flex gap-3 rounded-xl border border-warning/25 bg-gradient-to-r from-warning/8 via-warning/5 to-transparent p-4"
     >
       <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warning/15 text-warning">
@@ -34,6 +35,6 @@ export function CandidateProfileBanner({ missingFields }: Props) {
           ))}
         </div>
       </div>
-    </div>
+    </Alert>
   )
 }

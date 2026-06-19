@@ -19,7 +19,7 @@ type Props = {
   softwares: Ref[]
 }
 
-export function PharmaciesView({ rows, groupements, softwares }: Props) {
+export function PharmaciesPage({ rows, groupements, softwares }: Props) {
   const router = useRouter()
   const utils = trpc.useUtils()
   const [open, setOpen] = useState(false)

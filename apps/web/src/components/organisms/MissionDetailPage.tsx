@@ -20,9 +20,18 @@ type Props = {
   jobTitles: Ref[]
   pharmacies: Ref[]
   recruiters: Ref[]
+  activityCount: number
+  documentCount: number
 }
 
-export function MissionDetailPage({ mission, jobTitles, pharmacies, recruiters }: Props) {
+export function MissionDetailPage({
+  mission,
+  jobTitles,
+  pharmacies,
+  recruiters,
+  activityCount,
+  documentCount,
+}: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<MissionTab>('infos')
   const mutation = useEntityMutation({
@@ -54,7 +63,15 @@ export function MissionDetailPage({ mission, jobTitles, pharmacies, recruiters }
           <MissionStatusBadge status={mission.status} />
         </div>
       }
-      tabs={<MissionDetailTabs active={tab} onChange={setTab} />}
+      tabs={
+        <MissionDetailTabs
+          active={tab}
+          onChange={setTab}
+          pipelineCount={mission.candidates.length}
+          activityCount={activityCount}
+          documentCount={documentCount}
+        />
+      }
       tabKey={tab}
     >
       <MissionDetailTabPanel

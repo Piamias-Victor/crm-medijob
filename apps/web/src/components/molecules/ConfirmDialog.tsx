@@ -1,5 +1,6 @@
 'use client'
 
+/** Molecule: composes GlassModal + destructive actions — not a leaf atom. */
 import { GlassModal } from '@/components/molecules/GlassModal'
 import { Button } from '@/components/atoms/Button'
 

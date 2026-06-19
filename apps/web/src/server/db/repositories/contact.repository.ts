@@ -36,6 +36,19 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
     },
     findById: (id: string) =>
       db.contact.findFirst({ where: { id, ...NOT_DELETED }, include: detailInclude }),
+    findForContext: (id: string) =>
+      db.contact.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          role: true,
+          isPrimary: true,
+          pharmacy: { select: { name: true } },
+        },
+      }),
     list: (limit = DEFAULT_LIST_LIMIT) =>
       db.contact.findMany({
         where: NOT_DELETED,

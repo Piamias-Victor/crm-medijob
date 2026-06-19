@@ -3,6 +3,7 @@
 import type { FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { Input } from '@/components/atoms/Input'
 import { FormField } from '@/components/molecules/FormField'
+import { ASAP_DATE_LABEL } from '@/lib/date-picker-utils'
 import { DatePicker } from '@/components/molecules/DatePicker'
 import { CandidateGeoFields } from '@/components/molecules/CandidateGeoFields'
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
@@ -54,7 +55,13 @@ export function CandidateProfileFields({
         />
       </FormField>
       <FormField label="Disponible à partir du" htmlFor="availableFrom">
-        <DatePicker id="availableFrom" value={availableFrom} onChange={onAvailableFrom} />
+        <DatePicker
+          id="availableFrom"
+          value={availableFrom}
+          onChange={onAvailableFrom}
+          emptyLabel={ASAP_DATE_LABEL}
+          clearLabel={ASAP_DATE_LABEL}
+        />
       </FormField>
       <div className="sm:col-span-2">
         <FormField label="Notes mobilité" htmlFor="mobilityNotes">

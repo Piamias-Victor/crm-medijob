@@ -10,7 +10,7 @@ function toCandidateRows(entity: MissionDetailEntity) {
 }
 
 export function toMissionDetail(entity: MissionDetailEntity): MissionDetailPayload {
-  const { pharmacy, jobTitle, referent, contact, candidates, ...rest } = entity
+  const { pharmacy, jobTitle, referent, contact, ...rest } = entity
 
   return {
     id: entity.id,
