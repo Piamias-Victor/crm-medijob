@@ -10,16 +10,10 @@ import type { DocumentListRow } from '@/view-models/document-list'
 import type { ContactTab } from '@/view-models/contact-tabs'
 import { ROLE_LABELS } from '@/lib/contact-options'
 import { trpc } from '@/lib/trpc/client'
-import { CONTACT_TAB_META } from '@/view-models/contact-tab-meta'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
-import { Button } from '@/components/atoms/Button'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
-import { SectionCard } from '@/components/molecules/SectionCard'
 import { ContactDetailTabs } from '@/components/molecules/ContactDetailTabs'
-import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
-import { ContactMissionsTab } from '@/components/molecules/ContactMissionsTab'
-import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
-import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
+import { ContactDetailTabPanel } from '@/components/molecules/ContactDetailTabPanel'
 
 type Ref = { id: string; name: string }
 
@@ -34,7 +28,6 @@ type Props = {
 export function ContactDetailPage({ contact, missions, pharmacies, activities, documents }: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<ContactTab>('infos')
-  const meta = CONTACT_TAB_META[tab]
   const update = trpc.contact.update.useMutation({ onSuccess: () => router.refresh() })
   const setPrimary = trpc.contact.setPrimary.useMutation({ onSuccess: () => router.refresh() })
 
@@ -65,43 +58,18 @@ export function ContactDetailPage({ contact, missions, pharmacies, activities, d
       <ContactDetailTabs active={tab} onChange={setTab} missionCount={missions.length} />
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
-          <SectionCard
-            variant="glass"
-            title={meta.title}
-            description={meta.description}
-            bodyClassName="p-5 sm:p-6"
-            actions={
-              tab === 'infos' && !contact.isPrimary ? (
-                <Button variant="ghost" disabled={setPrimary.isPending} onClick={() => setPrimary.mutate({ id: contact.id })}>
-                  Définir titulaire principal
-                </Button>
-              ) : null
-            }
-          >
-            {tab === 'infos' ? (
-              <ContactInfoForm
-                contact={contact}
-                pharmacies={pharmacies}
-                submitting={update.isPending}
-                onSubmit={(data) => update.mutate({ id: contact.id, data })}
-              />
-            ) : null}
-            {tab === 'historique' ? (
-              <EntityActivityLogTab
-                scope={{ entityType: 'CONTACT', entityId: contact.id }}
-                initialLogs={activities}
-              />
-            ) : null}
-            {tab === 'missions' ? <ContactMissionsTab missions={missions} /> : null}
-            {tab === 'documents' ? (
-              <EntityDocumentsTab
-                entityType="CONTACT"
-                entityId={contact.id}
-                documents={documents}
-                emptyLabel="Aucun document pour ce contact."
-              />
-            ) : null}
-          </SectionCard>
+          <ContactDetailTabPanel
+            tab={tab}
+            contact={contact}
+            missions={missions}
+            pharmacies={pharmacies}
+            activities={activities}
+            documents={documents}
+            updating={update.isPending}
+            settingPrimary={setPrimary.isPending}
+            onUpdate={(data) => update.mutate({ id: contact.id, data })}
+            onSetPrimary={() => setPrimary.mutate({ id: contact.id })}
+          />
         </motion.div>
       </AnimatePresence>
     </motion.div>
