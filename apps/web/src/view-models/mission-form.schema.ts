@@ -17,14 +17,14 @@ const optionalFloat = z.preprocess(
   z.number().min(0).optional(),
 )
 
-export const missionInputSchema = z.object({
+export const missionFormFieldsSchema = z.object({
   title: z.string().trim().min(1, 'Titre requis'),
   jobTitleId: z.string().min(1, 'Métier requis'),
   contractType: z.enum(CONTRACT_TYPES),
   pharmacyId: z.string().min(1, 'Pharmacie requise'),
   contactId: optionalText,
   referentId: z.string().min(1, 'Référent requis'),
-  startDate: z.date({ message: 'Date de début requise' }),
+  startDate: z.date({ message: 'Date de début requise' }).optional(),
   endDate: z.date().optional(),
   salaireMin: optionalInt,
   salaireMax: optionalInt,
@@ -36,7 +36,22 @@ export const missionInputSchema = z.object({
   notes: optionalText,
 })
 
-export type MissionInput = z.input<typeof missionInputSchema>
+export const missionInputSchema = missionFormFieldsSchema
+  .superRefine((data, ctx) => {
+    if (!data.startDate) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Date de début requise',
+        path: ['startDate'],
+      })
+    }
+  })
+  .transform((data) => ({
+    ...data,
+    startDate: data.startDate as Date,
+  }))
+
+export type MissionInput = z.input<typeof missionFormFieldsSchema>
 export type MissionFormValues = z.output<typeof missionInputSchema>
 
 export const updateMissionSchema = z.object({
