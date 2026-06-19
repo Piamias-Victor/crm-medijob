@@ -4,16 +4,19 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import type { DocumentListRow } from '@/view-models/document-list'
+import type { DocumentEntityTypeValue } from '@/view-models/activity-log.types'
 import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
 import { DocumentUploadForm } from '@/components/molecules/DocumentUploadForm'
-import { PharmacyDocumentsList } from '@/components/molecules/PharmacyDocumentsList'
+import { EntityDocumentsList } from '@/components/molecules/EntityDocumentsList'
 
 type Props = {
-  pharmacyId: string
+  entityType: DocumentEntityTypeValue
+  entityId: string
   documents: DocumentListRow[]
+  emptyLabel: string
 }
 
-export function PharmacyDocumentsTab({ pharmacyId, documents }: Props) {
+export function EntityDocumentsTab({ entityType, entityId, documents, emptyLabel }: Props) {
   const router = useRouter()
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
   const upload = trpc.document.upload.useMutation({ onSuccess: () => router.refresh() })
@@ -34,14 +37,15 @@ export function PharmacyDocumentsTab({ pharmacyId, documents }: Props) {
         submitting={upload.isPending}
         onUpload={(file) =>
           upload.mutate({
-            entityType: 'PHARMACY',
-            entityId: pharmacyId,
+            entityType,
+            entityId,
             ...file,
           })
         }
       />
-      <PharmacyDocumentsList
+      <EntityDocumentsList
         documents={documents}
+        emptyLabel={emptyLabel}
         deletingId={remove.isPending ? (remove.variables?.id ?? pendingDeleteId ?? undefined) : undefined}
         onDownload={onDownload}
         onDelete={setPendingDeleteId}
@@ -49,7 +53,7 @@ export function PharmacyDocumentsTab({ pharmacyId, documents }: Props) {
       <ConfirmDialog
         open={pendingDeleteId !== null}
         title="Supprimer le document"
-        description="Ce document sera retiré de la pharmacie. Cette action est irréversible."
+        description="Ce document sera retiré définitivement. Cette action est irréversible."
         loading={remove.isPending}
         onClose={() => setPendingDeleteId(null)}
         onConfirm={() => pendingDeleteId && remove.mutate({ id: pendingDeleteId })}

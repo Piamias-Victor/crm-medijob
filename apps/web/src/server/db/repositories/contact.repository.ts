@@ -1,4 +1,5 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 
@@ -35,11 +36,12 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
     },
     findById: (id: string) =>
       db.contact.findFirst({ where: { id, ...NOT_DELETED }, include: detailInclude }),
-    list: () =>
+    list: (limit = DEFAULT_LIST_LIMIT) =>
       db.contact.findMany({
         where: NOT_DELETED,
         include: listInclude,
         orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
     listByPharmacy: (pharmacyId: string) =>
       db.contact.findMany({ where: { pharmacyId, ...NOT_DELETED } }),

@@ -1,4 +1,5 @@
 import type { ActivityType, DocumentEntityType, Prisma, PrismaClient } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 
 type ListByEntityInput = {
@@ -53,7 +54,7 @@ function entityData(
 
 export function makeActivityLogRepository(db: PrismaClient = defaultDb) {
   return {
-    listByEntity: (input: ListByEntityInput) =>
+    listByEntity: (input: ListByEntityInput, limit = DEFAULT_LIST_LIMIT) =>
       db.activityLog.findMany({
         where: {
           ...entityFilter(input.entityType, input.entityId),
@@ -61,6 +62,7 @@ export function makeActivityLogRepository(db: PrismaClient = defaultDb) {
         },
         include: authorInclude,
         orderBy: { date: 'desc' },
+        take: limit,
       }),
     create: (input: CreateInput) =>
       db.activityLog.create({

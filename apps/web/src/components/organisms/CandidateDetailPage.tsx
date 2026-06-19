@@ -7,7 +7,7 @@ import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
-import { CandidateHistoryTab } from '@/components/organisms/CandidateHistoryTab'
+import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
@@ -68,7 +68,10 @@ export function CandidateDetailPage({ profile, referentials, activities }: Props
           ) : null}
           {tab === 'historique' ? (
             <SectionCard variant="glass" title="Historique" description="Timeline des interactions et notes liées au candidat." bodyClassName="p-5 sm:p-6">
-              <CandidateHistoryTab candidateId={profile.id} activities={activities} />
+              <EntityActivityLogTab
+                scope={{ entityType: 'CANDIDATE', entityId: profile.id }}
+                initialLogs={activities}
+              />
             </SectionCard>
           ) : null}
           {tab === 'missions' ? (

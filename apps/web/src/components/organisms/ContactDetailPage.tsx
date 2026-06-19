@@ -3,22 +3,17 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Building2, Briefcase, Construction, Star } from 'lucide-react'
+import { Building2, Briefcase, Star } from 'lucide-react'
 import type { ContactDetailPayload, ContactMissionRow } from '@/view-models/contact-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { ContactTab } from '@/view-models/contact-tabs'
 import { ROLE_LABELS } from '@/lib/contact-options'
 import { trpc } from '@/lib/trpc/client'
-import { CONTACT_TAB_META } from '@/view-models/contact-tab-meta'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
-import { Button } from '@/components/atoms/Button'
-import { EmptyState } from '@/components/atoms/EmptyState'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
-import { SectionCard } from '@/components/molecules/SectionCard'
 import { ContactDetailTabs } from '@/components/molecules/ContactDetailTabs'
-import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
-import { ContactMissionsTab } from '@/components/molecules/ContactMissionsTab'
-import { ActivityLogTab } from '@/components/molecules/ActivityLogTab'
+import { ContactDetailTabPanel } from '@/components/molecules/ContactDetailTabPanel'
 
 type Ref = { id: string; name: string }
 
@@ -27,12 +22,12 @@ type Props = {
   missions: ContactMissionRow[]
   pharmacies: Ref[]
   activities: ActivityLogRow[]
+  documents: DocumentListRow[]
 }
 
-export function ContactDetailPage({ contact, missions, pharmacies, activities }: Props) {
+export function ContactDetailPage({ contact, missions, pharmacies, activities, documents }: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<ContactTab>('infos')
-  const meta = CONTACT_TAB_META[tab]
   const update = trpc.contact.update.useMutation({ onSuccess: () => router.refresh() })
   const setPrimary = trpc.contact.setPrimary.useMutation({ onSuccess: () => router.refresh() })
 
@@ -63,35 +58,18 @@ export function ContactDetailPage({ contact, missions, pharmacies, activities }:
       <ContactDetailTabs active={tab} onChange={setTab} missionCount={missions.length} />
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
-          <SectionCard
-            variant="glass"
-            title={meta.title}
-            description={meta.description}
-            bodyClassName="p-5 sm:p-6"
-            actions={
-              tab === 'infos' && !contact.isPrimary ? (
-                <Button variant="ghost" disabled={setPrimary.isPending} onClick={() => setPrimary.mutate({ id: contact.id })}>
-                  Définir titulaire principal
-                </Button>
-              ) : null
-            }
-          >
-            {tab === 'infos' ? (
-              <ContactInfoForm
-                contact={contact}
-                pharmacies={pharmacies}
-                submitting={update.isPending}
-                onSubmit={(data) => update.mutate({ id: contact.id, data })}
-              />
-            ) : null}
-            {tab === 'historique' ? (
-              <ActivityLogTab scope={{ entityType: 'CONTACT', entityId: contact.id }} initialLogs={activities} />
-            ) : null}
-            {tab === 'missions' ? <ContactMissionsTab missions={missions} /> : null}
-            {tab === 'documents' ? (
-              <EmptyState icon={Construction} title="Bientôt disponible" description="Documents liés — prochain lot." />
-            ) : null}
-          </SectionCard>
+          <ContactDetailTabPanel
+            tab={tab}
+            contact={contact}
+            missions={missions}
+            pharmacies={pharmacies}
+            activities={activities}
+            documents={documents}
+            updating={update.isPending}
+            settingPrimary={setPrimary.isPending}
+            onUpdate={(data) => update.mutate({ id: contact.id, data })}
+            onSetPrimary={() => setPrimary.mutate({ id: contact.id })}
+          />
         </motion.div>
       </AnimatePresence>
     </motion.div>

@@ -52,4 +52,9 @@ describe('contactRepository', () => {
     expect(contacts.find((c) => c.id === first.id)?.isPrimary).toBe(false)
     expect(contacts.find((c) => c.id === second.id)?.isPrimary).toBe(true)
   })
+
+  it('list respects take limit', async () => {
+    for (let i = 0; i < 3; i++) await repo.create(newContact(`Limit${i}`))
+    expect((await repo.list(2)).length).toBe(2)
+  })
 })

@@ -7,14 +7,15 @@ import { Button } from '@/components/atoms/Button'
 
 type Props = {
   documents: DocumentListRow[]
+  emptyLabel: string
   deletingId?: string
   onDownload: (id: string) => void
   onDelete: (id: string) => void
 }
 
-export function PharmacyDocumentsList({ documents, deletingId, onDownload, onDelete }: Props) {
+export function EntityDocumentsList({ documents, emptyLabel, deletingId, onDownload, onDelete }: Props) {
   if (documents.length === 0) {
-    return <p className="text-sm text-fg-muted">Aucun document pour cette pharmacie.</p>
+    return <p className="text-sm text-fg-muted">{emptyLabel}</p>
   }
 
   return (

@@ -1,6 +1,6 @@
-import type { ActivityType } from '@prisma/client'
+import type { ActivityTypeValue } from '@/view-models/activity-log-form.schema'
 
-export const ACTIVITY_TYPE_LABELS: Record<ActivityType, string> = {
+export const ACTIVITY_TYPE_LABELS: Record<ActivityTypeValue, string> = {
   APPEL: 'Appel',
   EMAIL: 'Email',
   ENTRETIEN: 'Entretien',
@@ -12,5 +12,5 @@ export const ACTIVITY_TYPE_LABELS: Record<ActivityType, string> = {
 }
 
 export const ACTIVITY_TYPE_OPTIONS = (
-  Object.entries(ACTIVITY_TYPE_LABELS) as [ActivityType, string][]
+  Object.entries(ACTIVITY_TYPE_LABELS) as [ActivityTypeValue, string][]
 ).map(([value, label]) => ({ value, label }))

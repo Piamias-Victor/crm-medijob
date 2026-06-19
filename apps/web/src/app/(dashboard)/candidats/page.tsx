@@ -3,10 +3,10 @@ import { CandidatsPage } from '@/components/organisms/CandidatsPage'
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const [cvtheque, inbox] = await Promise.all([
-    caller.candidate.cvtheque(),
+  const [list, inbox] = await Promise.all([
+    caller.candidate.list(),
     caller.application.listInbox(),
   ])
 
-  return <CandidatsPage cvtheque={cvtheque} inbox={inbox} />
+  return <CandidatsPage list={list} inbox={inbox} />
 }

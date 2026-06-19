@@ -50,9 +50,15 @@ function caller(deps: CandidateDeps) {
 describe('candidateRouter', () => {
   it('returns candidates and pipeline stages for the CVthèque', async () => {
     const deps = makeDeps()
-    const result = await caller(deps).cvtheque()
+    const result = await caller(deps).list()
     expect(result.candidates).toEqual([{ id: 'c1' }])
     expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
+  })
+
+  it('keeps cvtheque as alias of list', async () => {
+    const deps = makeDeps()
+    const result = await caller(deps).cvtheque()
+    expect(result).toEqual(await caller(deps).list())
   })
 
   it('returns profile payload with ADR 0010 incomplete matching flags', async () => {

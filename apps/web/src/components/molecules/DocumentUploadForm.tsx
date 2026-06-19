@@ -1,8 +1,8 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import type { DocumentCategory } from '@prisma/client'
 import { Upload } from 'lucide-react'
+import type { DocumentCategoryValue } from '@/view-models/document.types'
 import { DOCUMENT_CATEGORIES, DOCUMENT_CATEGORY_LABELS } from '@/lib/document-options'
 import {
   DOCUMENT_UPLOAD_ACCEPT,
@@ -17,7 +17,7 @@ const ACCEPT = DOCUMENT_UPLOAD_ACCEPT
 type Props = {
   submitting: boolean
   onUpload: (input: {
-    category: DocumentCategory
+    category: DocumentCategoryValue
     filename: string
     mimeType: string
     size: number
@@ -27,7 +27,7 @@ type Props = {
 
 export function DocumentUploadForm({ submitting, onUpload }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [category, setCategory] = useState<DocumentCategory>('CONTRAT')
+  const [category, setCategory] = useState<DocumentCategoryValue>('CONTRAT')
   const [error, setError] = useState<string | null>(null)
 
   const options = DOCUMENT_CATEGORIES.map((value) => ({
@@ -72,7 +72,11 @@ export function DocumentUploadForm({ submitting, onUpload }: Props) {
       <div className="grid gap-3 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-end">
         <label className="flex flex-col gap-1 text-sm">
           <span className="font-medium text-fg">Catégorie</span>
-          <Combobox value={category} onChange={(v) => setCategory(v as DocumentCategory)} options={options} />
+          <Combobox
+            value={category}
+            onChange={(v) => setCategory(v as DocumentCategoryValue)}
+            options={options}
+          />
         </label>
         <div className="flex flex-wrap items-center gap-2">
           <input ref={inputRef} type="file" accept={ACCEPT} className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />

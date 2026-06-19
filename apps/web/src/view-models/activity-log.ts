@@ -1,9 +1,9 @@
-import type { ActivityType } from '@prisma/client'
+import type { ActivityTypeValue } from '@/view-models/activity-log-form.schema'
 import { ACTIVITY_TYPE_LABELS } from '@/view-models/activity-log.labels'
 
 export type ActivityLogEntity = {
   id: string
-  type: ActivityType
+  type: ActivityTypeValue
   content: string | null
   date: Date
   createdAt: Date
@@ -12,7 +12,7 @@ export type ActivityLogEntity = {
 
 export type ActivityLogRow = {
   id: string
-  type: ActivityType
+  type: ActivityTypeValue
   typeLabel: string
   content: string | null
   date: Date
