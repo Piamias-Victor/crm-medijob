@@ -1,10 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Check, ChevronDown, Plus } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { ComboboxDropdown, type ComboboxOption } from '@/components/molecules/ComboboxDropdown'
+import { FloatingPanel } from '@/components/molecules/FloatingPanel'
+import { useFloatingPanel } from '@/lib/hooks/use-floating-panel'
 
-export type ComboboxOption = { value: string; label: string }
+export type { ComboboxOption }
 
 type Props = {
   value?: string
@@ -18,30 +21,24 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const root = useRef<HTMLDivElement>(null)
+  const panelStyle = useFloatingPanel(open, root)
+  const selected = options.find((o) => o.value === value)
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (root.current && !root.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (root.current?.contains(target)) return
+      if (target instanceof Element && target.closest('[data-floating-panel]')) return
+      setOpen(false)
     }
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
-  const selected = options.find((o) => o.value === value)
-  const q = query.trim().toLowerCase()
-  const filtered = options.filter((o) => o.label.toLowerCase().includes(q))
-  const showCreate = Boolean(onCreate && q && !options.some((o) => o.label.toLowerCase() === q))
-
   const pick = (next: string) => {
     onChange(next)
     setOpen(false)
     setQuery('')
-  }
-
-  const create = async () => {
-    if (!onCreate) return
-    const created = await onCreate(query.trim())
-    pick(created.value)
   }
 
   return (
@@ -56,44 +53,19 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
         <span className={cn(!selected && 'text-fg-muted')}>{selected?.label ?? placeholder}</span>
         <ChevronDown className={cn('size-4 text-fg-muted transition-transform', open && 'rotate-180')} />
       </button>
-      {open ? (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-border bg-white shadow-lg">
-          <input
-            type="search"
-            role="searchbox"
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Rechercher…"
-            className="w-full border-b border-border px-3 py-2 text-sm outline-none placeholder:text-fg-muted"
-          />
-          <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
-            {filtered.map((o) => (
-              <li key={o.value}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={o.value === value}
-                  onClick={() => pick(o.value)}
-                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg hover:bg-surface"
-                >
-                  {o.label}
-                  {o.value === value ? <Check className="size-4 text-accent" /> : null}
-                </button>
-              </li>
-            ))}
-          </ul>
-          {showCreate ? (
-            <button
-              type="button"
-              onClick={create}
-              className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent hover:bg-surface"
-            >
-              <Plus className="size-4" /> Créer « {query.trim()} »
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+      <FloatingPanel
+        style={panelStyle}
+        className="overflow-hidden rounded-md border border-border bg-white shadow-lg"
+      >
+        <ComboboxDropdown
+          value={value}
+          query={query}
+          onQuery={setQuery}
+          options={options}
+          onPick={pick}
+          onCreate={onCreate}
+        />
+      </FloatingPanel>
     </div>
   )
 }
