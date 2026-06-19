@@ -7,7 +7,7 @@ export const activityEntitySchema = z.object({
 })
 
 export const listActivityLogSchema = activityEntitySchema.extend({
-  type: z.nativeEnum(ActivityType).optional(),
+  types: z.array(z.nativeEnum(ActivityType)).optional(),
 })
 
 export const createActivityLogSchema = activityEntitySchema.extend({

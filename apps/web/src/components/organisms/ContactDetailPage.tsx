@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Building2, Briefcase, Construction, Star } from 'lucide-react'
 import type { ContactDetailPayload, ContactMissionRow } from '@/view-models/contact-detail.types'
-import type { ActivityLogRow } from '@/view-models/activity-log-list'
+import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { ContactTab } from '@/view-models/contact-tabs'
 import { ROLE_LABELS } from '@/lib/contact-options'
 import { trpc } from '@/lib/trpc/client'
@@ -85,7 +85,7 @@ export function ContactDetailPage({ contact, missions, pharmacies, activities }:
               />
             ) : null}
             {tab === 'historique' ? (
-              <ActivityLogTab scope={{ contactId: contact.id }} initialLogs={activities} />
+              <ActivityLogTab scope={{ entityType: 'CONTACT', entityId: contact.id }} initialLogs={activities} />
             ) : null}
             {tab === 'missions' ? <ContactMissionsTab missions={missions} /> : null}
             {tab === 'documents' ? (

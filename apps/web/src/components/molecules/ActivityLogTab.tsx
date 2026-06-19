@@ -2,16 +2,16 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { ActivityType } from '@prisma/client'
+import type { ActivityType, DocumentEntityType } from '@prisma/client'
 import { trpc } from '@/lib/trpc/client'
-import type { ActivityLogRow } from '@/view-models/activity-log-list'
+import type { ActivityLogRow } from '@/view-models/activity-log'
 import { ACTIVITY_TYPE_OPTIONS } from '@/lib/activity-log-options'
 import { ActivityLogFilters } from '@/components/molecules/ActivityLogFilters'
 import { ActivityLogTimeline } from '@/components/molecules/ActivityLogTimeline'
 import { ActivityLogCreateForm } from '@/components/molecules/ActivityLogCreateForm'
 import { FormSection } from '@/components/molecules/FormSection'
 
-type Scope = { contactId: string } | { pharmacyId: string }
+type Scope = { entityType: DocumentEntityType; entityId: string }
 
 type Props = {
   scope: Scope
@@ -26,10 +26,12 @@ export function ActivityLogTab({ scope, initialLogs }: Props) {
     ...scope,
     ...(types.length ? { types: types as ActivityType[] } : {}),
   }
-  const { data: logs = initialLogs } = trpc.activityLog.list.useQuery(listInput, { initialData: initialLogs })
+  const { data: logs = initialLogs } = trpc.activityLog.listByEntity.useQuery(listInput, {
+    initialData: initialLogs,
+  })
   const create = trpc.activityLog.create.useMutation({
     onSuccess: async () => {
-      await utils.activityLog.list.invalidate()
+      await utils.activityLog.listByEntity.invalidate()
       router.refresh()
     },
   })

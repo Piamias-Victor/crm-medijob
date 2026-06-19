@@ -11,7 +11,7 @@ export default async function Page({ params }: Props) {
     caller.contact.getById({ id }),
     caller.contact.missions({ id }),
     caller.contact.pharmacyOptions(),
-    caller.activityLog.list({ contactId: id }),
+    caller.activityLog.listByEntity({ entityType: 'CONTACT', entityId: id }),
   ])
 
   if (!contact) notFound()

@@ -46,6 +46,15 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
     pick(created.value)
   }
 
+  const selected = options.find((o) => o.value === value)
+  const lower = query.toLowerCase()
+  const filtered = options.filter((o) => o.label.toLowerCase().includes(lower))
+  const showCreate = Boolean(
+    onCreate &&
+      query.trim() &&
+      !options.some((o) => o.label.toLowerCase() === query.trim().toLowerCase()),
+  )
+
   const panel = open ? (
     <ComboboxDropdown
       panelRef={panelRef}

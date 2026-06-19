@@ -7,16 +7,12 @@ type Props = { params: Promise<{ id: string }> }
 export default async function Page({ params }: Props) {
   const { id } = await params
   const caller = await createServerCaller()
-  const [pharmacy, referentials, missionRefs, documents] = await Promise.all([
+  const [pharmacy, referentials, missionRefs, documents, activities] = await Promise.all([
     caller.pharmacy.getById({ id }),
     caller.pharmacy.referentials(),
     caller.mission.referentials(),
     caller.document.listByEntity({ entityType: 'PHARMACY', entityId: id }),
-  const [pharmacy, referentials, missionRefs, activities] = await Promise.all([
-    caller.pharmacy.getById({ id }),
-    caller.pharmacy.referentials(),
-    caller.mission.referentials(),
-    caller.activityLog.list({ pharmacyId: id }),
+    caller.activityLog.listByEntity({ entityType: 'PHARMACY', entityId: id }),
   ])
 
   if (!pharmacy) notFound()
