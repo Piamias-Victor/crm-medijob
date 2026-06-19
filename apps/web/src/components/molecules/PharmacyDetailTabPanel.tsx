@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { Construction } from 'lucide-react'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
 import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
@@ -9,6 +10,7 @@ import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create
 import { PHARMACY_TAB_META } from '@/view-models/pharmacy-tab-meta'
 import { Button } from '@/components/atoms/Button'
 import { EmptyState } from '@/components/atoms/EmptyState'
+import { PharmacyDocumentsTab } from '@/components/molecules/PharmacyDocumentsTab'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { PharmacyInfoForm } from '@/components/molecules/PharmacyInfoForm'
 import { PharmacyContactsTab } from '@/components/molecules/PharmacyContactsTab'
@@ -23,6 +25,7 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   missionRefs: MissionRefs
+  documents: DocumentListRow[]
   submittingInfo: boolean
   submittingMission: boolean
   onUpdate: (data: PharmacyInput) => void
@@ -85,7 +88,7 @@ export function PharmacyDetailTabPanel(props: Props) {
         <EmptyState icon={Construction} title="Bientôt disponible" description="ActivityLog pharmacie — issue #63." />
       ) : null}
       {props.tab === 'documents' ? (
-        <EmptyState icon={Construction} title="Bientôt disponible" description="Documents Blob — issue #61." />
+        <PharmacyDocumentsTab pharmacyId={props.pharmacy.id} documents={props.documents} />
       ) : null}
     </SectionCard>
   )
