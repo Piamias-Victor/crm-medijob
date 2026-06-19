@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/atoms/Button'
@@ -9,7 +8,7 @@ import { CandidateProfileFields } from '@/components/molecules/CandidateProfileF
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
 import { FormSection } from '@/components/molecules/FormSection'
-import { trpc } from '@/lib/trpc/client'
+import { useCandidateProfileMutations } from '@/lib/hooks/use-candidate-profile-mutations'
 import { getMissingMatchingFields } from '@/view-models/candidate-profile'
 import {
   candidateProfileInputSchema,
@@ -33,9 +32,7 @@ type Props = {
 const toOptions = (items: RefItem[]) => items.map((i) => ({ value: i.id, label: i.name }))
 
 export function CandidateProfileForm({ candidateId, profile, referentials }: Props) {
-  const router = useRouter()
-  const update = trpc.candidate.update.useMutation({ onSuccess: () => router.refresh() })
-  const createJobTitle = trpc.mission.createJobTitle.useMutation()
+  const { update, createJobTitle } = useCandidateProfileMutations()
   const [jobTitles, setJobTitles] = useState(referentials.jobTitles)
   const { register, handleSubmit, setValue, watch, getValues, formState } = useForm<CandidateProfileInput>({
     resolver: zodResolver(candidateProfileInputSchema),

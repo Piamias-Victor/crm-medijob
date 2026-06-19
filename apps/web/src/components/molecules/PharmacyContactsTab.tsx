@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { PharmacyContactRow } from '@/view-models/pharmacy-detail.types'
 import { Button } from '@/components/atoms/Button'
 import { ContactFormModal } from '@/components/molecules/ContactFormModal'
@@ -18,12 +19,14 @@ type Props = {
 export function PharmacyContactsTab({ pharmacyId, pharmacyName, contacts }: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
-  const create = trpc.contact.create.useMutation({
+  const mutation = useEntityMutation({
     onSuccess: () => {
       setOpen(false)
       router.refresh()
     },
+    successMessage: 'Contact créé',
   })
+  const create = trpc.contact.create.useMutation(mutation)
 
   return (
     <div className="flex flex-col gap-4">

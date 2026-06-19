@@ -3,7 +3,7 @@ import { router, protectedProcedure } from '@/server/trpc'
 import { jobOfferRepository } from '@/server/db/repositories/job-offer.repository'
 import { toJobOfferListRow, type JobOfferListEntity } from '@/view-models/job-offer-list'
 
-const idSchema = z.object({ id: z.string().min(1) })
+import { idSchema } from '@/lib/schemas/entity-id'
 
 export type JobOfferDeps = {
   list: () => Promise<JobOfferListEntity[]>

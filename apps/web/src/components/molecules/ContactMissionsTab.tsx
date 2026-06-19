@@ -1,14 +1,21 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { ChevronRight } from 'lucide-react'
+import { Briefcase, ChevronRight } from 'lucide-react'
+import { EmptyState } from '@/components/atoms/EmptyState'
 import type { ContactMissionRow } from '@/view-models/contact-detail.types'
 
 export function ContactMissionsTab({ missions }: { missions: ContactMissionRow[] }) {
   const router = useRouter()
 
   if (missions.length === 0) {
-    return <p className="text-sm text-fg-muted">Aucune mission liée à ce contact.</p>
+    return (
+      <EmptyState
+        icon={Briefcase}
+        title="Aucune mission liée"
+        description="Les besoins associés à ce contact apparaîtront ici."
+      />
+    )
   }
 
   return (

@@ -10,6 +10,7 @@ import { DatePicker } from '@/components/molecules/DatePicker'
 import { FormField } from '@/components/molecules/FormField'
 import { FormSection } from '@/components/molecules/FormSection'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import {
   ACTIVITY_TYPE_OPTIONS,
 } from '@/view-models/activity-log.labels'
@@ -34,13 +35,15 @@ export function ActivityLogForm({ scope }: Props) {
       date: formatIsoDate(new Date()),
     },
   })
-  const create = trpc.activityLog.create.useMutation({
+  const mutation = useEntityMutation({
     onSuccess: async () => {
       reset({ type: 'NOTE', content: '', date: formatIsoDate(new Date()) })
       await utils.activityLog.listByEntity.invalidate()
       router.refresh()
     },
+    successMessage: 'Activité enregistrée',
   })
+  const create = trpc.activityLog.create.useMutation(mutation)
 
   const onSubmit = handleSubmit((data) => {
     const date = parseIsoDate(data.date)
