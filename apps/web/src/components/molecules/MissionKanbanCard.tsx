@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { type DragEvent, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Briefcase, Building2, GripVertical, UserRound } from 'lucide-react'
@@ -37,8 +38,10 @@ export function MissionKanbanCardView({ card }: { card: MissionKanbanCard }) {
             <Briefcase className="size-3.5" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-fg">{card.title}</p>
-            {subtitle ? <p className="truncate text-xs text-fg-muted">{subtitle}</p> : null}
+            <Link href={`/missions/${card.missionId}`} className="block min-w-0 hover:text-accent-hover">
+              <p className="truncate text-sm font-semibold text-fg">{card.title}</p>
+              {subtitle ? <p className="truncate text-xs text-fg-muted">{subtitle}</p> : null}
+            </Link>
           </div>
         </div>
         <div className="flex gap-2 rounded-md border border-border bg-surface px-2 py-1.5">

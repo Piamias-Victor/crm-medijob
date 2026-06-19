@@ -22,7 +22,7 @@ export function MissionListCard({ row }: { row: MissionListItem }) {
 
   return (
     <motion.div className="h-full" {...cardHover}>
-      <ListCardShell>
+      <ListCardShell href={`/missions/${row.id}`}>
         <ListCardHeader
           media={
             <span
