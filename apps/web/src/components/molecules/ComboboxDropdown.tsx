@@ -2,8 +2,8 @@
 
 import { type RefObject } from 'react'
 import { Check, Plus } from 'lucide-react'
-
-export type ComboboxOption = { value: string; label: string }
+import { Input } from '@/components/atoms/Input'
+import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
 
 type Props = {
   panelRef: RefObject<HTMLDivElement | null>
@@ -34,14 +34,15 @@ export function ComboboxDropdown({
       style={style}
       className="overflow-hidden rounded-md border border-border bg-white shadow-lg"
     >
-      <input
+      <Input
         type="search"
         role="searchbox"
         autoFocus
+        variant="search"
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="Rechercher…"
-        className="w-full border-b border-border px-3 py-2 text-sm outline-none placeholder:text-fg-muted"
+        className="rounded-none border-x-0 border-t-0"
       />
       <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
         {filtered.map((o) => (

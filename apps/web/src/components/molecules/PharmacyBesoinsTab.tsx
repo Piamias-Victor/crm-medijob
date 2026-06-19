@@ -1,5 +1,7 @@
 'use client'
 
+import { Briefcase } from 'lucide-react'
+import { EmptyState } from '@/components/atoms/EmptyState'
 import type { PharmacyMissionRow } from '@/view-models/pharmacy-detail.types'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
 import { STATUS_LABELS } from '@/lib/mission-options'
@@ -42,7 +44,11 @@ export function PharmacyBesoinsTab({
         onCreateJobTitle={onCreateJobTitle}
       />
       {missions.length === 0 ? (
-        <p className="text-sm text-fg-muted">Aucune mission active pour cette pharmacie.</p>
+        <EmptyState
+          icon={Briefcase}
+          title="Aucune mission active"
+          description="Créez un besoin via le formulaire ci-dessus."
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {missions.map((mission) => (

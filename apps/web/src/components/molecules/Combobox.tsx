@@ -5,7 +5,8 @@ import { createPortal } from 'react-dom'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useAnchoredPanel } from '@/lib/use-anchored-panel'
-import { ComboboxDropdown, type ComboboxOption } from '@/components/molecules/ComboboxDropdown'
+import { ComboboxDropdown } from '@/components/molecules/ComboboxDropdown'
+import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
 
 export type { ComboboxOption }
 

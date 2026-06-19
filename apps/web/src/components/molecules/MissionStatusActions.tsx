@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import { Button } from '@/components/atoms/Button'
@@ -10,7 +11,11 @@ type Props = { mission: MissionDetailPayload }
 
 export function MissionStatusActions({ mission }: Props) {
   const router = useRouter()
-  const markAnnulee = trpc.mission.markAnnulee.useMutation({ onSuccess: () => router.refresh() })
+  const mutation = useEntityMutation({
+    onSuccess: () => router.refresh(),
+    successMessage: 'Mission annulée',
+  })
+  const markAnnulee = trpc.mission.markAnnulee.useMutation(mutation)
 
   if (isTerminalMissionStatus(mission.status)) return null
 

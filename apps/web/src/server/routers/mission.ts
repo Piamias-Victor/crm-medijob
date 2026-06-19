@@ -39,6 +39,7 @@ export function makeMissionRouter(deps: MissionDeps) {
       return mission ? toMissionDetail(mission) : null
     }),
     referentials: protectedProcedure.query(() => deps.referentials()),
+    /** Quick-create from pharmacy fiche — delegates to missionRepository.createQuick. */
     create: protectedProcedure
       .input(missionQuickCreateSchema)
       .mutation(({ input }) => deps.createQuick(input)),

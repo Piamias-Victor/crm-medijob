@@ -1,8 +1,7 @@
 'use client'
 
 import type { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form'
-import { CONTRACT_TYPE_LABELS } from '@/lib/candidate-options'
-import { CONTRACT_TYPES } from '@/view-models/candidate-profile.schema'
+import { contractOptions } from '@/lib/contract-options'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
 import { Input } from '@/components/atoms/Input'
 import { Combobox } from '@/components/molecules/Combobox'
@@ -11,10 +10,6 @@ import { FormField } from '@/components/molecules/FormField'
 import { CLEAR_DATE_LABEL, formatIsoDate, SELECT_DATE_LABEL } from '@/lib/date-picker-utils'
 
 type Ref = { id: string; name: string }
-const contractOptions = CONTRACT_TYPES.map((value) => ({
-  value,
-  label: CONTRACT_TYPE_LABELS[value],
-}))
 
 type Props = {
   register: UseFormRegister<MissionQuickCreateInput>

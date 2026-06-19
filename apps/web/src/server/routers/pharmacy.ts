@@ -30,7 +30,7 @@ export type PharmacyDeps = {
   searchSiret: (query: string) => Promise<SiretResult[]>
 }
 
-const idSchema = z.object({ id: z.string().min(1) })
+import { idSchema } from '@/lib/schemas/entity-id'
 const nameSchema = z.object({ name: z.string().trim().min(1) })
 
 export function makePharmacyRouter(deps: PharmacyDeps) {

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { DocumentEntityTypeValue } from '@/view-models/activity-log.types'
 import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
@@ -19,13 +20,19 @@ type Props = {
 export function EntityDocumentsTab({ entityType, entityId, documents, emptyLabel }: Props) {
   const router = useRouter()
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
-  const upload = trpc.document.upload.useMutation({ onSuccess: () => router.refresh() })
-  const remove = trpc.document.delete.useMutation({
+  const uploadMutation = useEntityMutation({
+    onSuccess: () => router.refresh(),
+    successMessage: 'Document téléversé',
+  })
+  const removeMutation = useEntityMutation({
     onSuccess: () => {
       setPendingDeleteId(null)
       router.refresh()
     },
+    successMessage: 'Document supprimé',
   })
+  const upload = trpc.document.upload.useMutation(uploadMutation)
+  const remove = trpc.document.delete.useMutation(removeMutation)
 
   const onDownload = (id: string) => {
     window.open(`/api/documents/${id}/download`, '_blank', 'noopener,noreferrer')

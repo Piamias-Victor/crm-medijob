@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/atoms/EmptyState'
 import { MissionKanbanColumnView } from '@/components/molecules/MissionKanbanColumn'
 import { countActiveMissions } from '@/lib/kanban-terminal'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import {
   buildMissionKanbanColumns,
   moveMissionStatus,
@@ -21,14 +22,21 @@ export function MissionKanban({ missions }: Props) {
   const [rows, setRows] = useState(missions)
   const columns = useMemo(() => buildMissionKanbanColumns(rows), [rows])
   const activeCount = countActiveMissions(rows)
-  const mutation = trpc.mission.updateStatus.useMutation({
-    onSettled: () => router.refresh(),
-  })
+  const toast = useEntityMutation()
+  const mutation = trpc.mission.updateStatus.useMutation({ onSettled: () => router.refresh() })
 
   function move(missionId: string, status: MissionStatus) {
     const snapshot = rows
     setRows((prev) => moveMissionStatus(prev, missionId, status))
-    mutation.mutate({ id: missionId, status }, { onError: () => setRows(snapshot) })
+    mutation.mutate(
+      { id: missionId, status },
+      {
+        onError: (error) => {
+          toast.onError(error)
+          setRows(snapshot)
+        },
+      },
+    )
   }
 
   if (missions.length === 0) {

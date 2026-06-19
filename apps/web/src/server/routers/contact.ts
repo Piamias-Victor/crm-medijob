@@ -24,7 +24,7 @@ export type ContactDeps = {
   pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
 }
 
-const idSchema = z.object({ id: z.string().min(1) })
+import { idSchema } from '@/lib/schemas/entity-id'
 const pharmacyIdSchema = z.object({ pharmacyId: z.string().min(1) })
 
 function toData(input: z.output<typeof contactInputSchema>): Prisma.ContactUncheckedCreateInput {

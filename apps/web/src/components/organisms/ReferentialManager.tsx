@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+import { FolderOpen } from 'lucide-react'
+import { EmptyState } from '@/components/atoms/EmptyState'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
 import { ReferentialAddForm } from '@/components/molecules/ReferentialAddForm'
 import { ReferentialRow } from '@/components/molecules/ReferentialRow'
 import type { RefItem, ReferentialActions } from '@/view-models/referential'
 
+/** Admin referentials use hard delete — see ADR 0007 exception for lookup tables. */
 type Props = ReferentialActions & {
   title: string
   description?: string
@@ -41,7 +44,11 @@ export function ReferentialManager({
       >
         <ReferentialAddForm label={itemLabel ?? title} onAdd={onAdd} />
         {items.length === 0 ? (
-          <p className="text-sm text-fg-muted">Aucun élément pour l’instant.</p>
+          <EmptyState
+            icon={FolderOpen}
+            title="Aucun élément pour l’instant"
+            description="Ajoutez une entrée via le formulaire ci-dessus."
+          />
         ) : (
           <ul className="flex flex-col gap-2">
             {items.map((item) => (
@@ -50,8 +57,8 @@ export function ReferentialManager({
                 item={item}
                 onRename={onRename}
                 onDelete={(id) => {
-                  const item = items.find((row) => row.id === id)
-                  if (item) setPendingDelete(item)
+                  const row = items.find((entry) => entry.id === id)
+                  if (row) setPendingDelete(row)
                 }}
               />
             ))}

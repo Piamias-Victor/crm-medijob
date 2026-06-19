@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/cn'
+import { Slider } from '@/components/atoms/Slider'
 import {
   compatibilityScoreBarStyle,
   compatibilityScoreStyle,
@@ -45,18 +46,14 @@ export function CompatibilityScoreCell({
           style={{ width: `${local}%` }}
         />
       </div>
-      <input
-        type="range"
+      <Slider
+        value={local}
         min={0}
         max={100}
         step={5}
-        value={local}
-        aria-label={label}
-        className="w-full accent-accent"
-        onChange={(e) => setLocal(Number(e.target.value))}
-        onMouseUp={commit}
-        onTouchEnd={commit}
-        onKeyUp={commit}
+        label={label}
+        onChange={setLocal}
+        onCommit={commit}
       />
     </div>
   )

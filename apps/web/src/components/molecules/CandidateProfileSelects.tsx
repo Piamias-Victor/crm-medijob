@@ -1,13 +1,7 @@
 import { FormField } from '@/components/molecules/FormField'
 import { Combobox, type ComboboxOption } from '@/components/molecules/Combobox'
 import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
-import { CONTRACT_TYPE_LABELS } from '@/lib/candidate-options'
-import { CONTRACT_TYPES } from '@/view-models/candidate-profile.schema'
-
-const contractOptions = CONTRACT_TYPES.map((value) => ({
-  value,
-  label: CONTRACT_TYPE_LABELS[value],
-}))
+import { contractOptions } from '@/lib/contract-options'
 
 type Props = {
   jobTitleId?: string

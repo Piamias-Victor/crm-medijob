@@ -1,4 +1,7 @@
 import { z } from 'zod'
+import { idSchema } from '@/lib/schemas/entity-id'
+
+export { idSchema }
 
 export const referentialSchema = z.object({
   name: z.string().trim().min(1, 'Nom requis'),
@@ -7,8 +10,6 @@ export const referentialSchema = z.object({
 export const updateReferentialSchema = referentialSchema.extend({
   id: z.string().min(1),
 })
-
-export const idSchema = z.object({ id: z.string().min(1) })
 
 export const reorderSchema = z.object({
   orderedIds: z.array(z.string().min(1)).min(1),

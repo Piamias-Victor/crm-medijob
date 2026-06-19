@@ -6,6 +6,7 @@ import { LayoutGrid } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { KanbanColumn } from '@/components/molecules/KanbanColumn'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import {
   buildKanbanColumns,
   moveMissionRow,
@@ -19,6 +20,7 @@ export function CvthequeKanban({ candidates, stages }: Props) {
   const router = useRouter()
   const [rows, setRows] = useState(candidates)
   const columns = useMemo(() => buildKanbanColumns(stages, rows), [stages, rows])
+  const toast = useEntityMutation()
   const mutation = trpc.missionCandidate.updateStage.useMutation({
     onSettled: () => router.refresh(),
   })
@@ -30,7 +32,12 @@ export function CvthequeKanban({ candidates, stages }: Props) {
     setRows((prev) => moveMissionRow(prev, { missionId, candidateId, targetStage }))
     mutation.mutate(
       { missionId, candidateId, stageId },
-      { onError: () => setRows(snapshot) },
+      {
+        onError: (error) => {
+          toast.onError(error)
+          setRows(snapshot)
+        },
+      },
     )
   }
 

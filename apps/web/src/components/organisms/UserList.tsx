@@ -1,5 +1,7 @@
 'use client'
 
+import { Users } from 'lucide-react'
+import { EmptyState } from '@/components/atoms/EmptyState'
 import type { UserListItem } from '@/view-models/user-admin'
 import { UserListCard } from '@/components/molecules/UserListCard'
 
@@ -11,7 +13,13 @@ type Props = {
 
 export function UserList({ users, onEdit, onDelete }: Props) {
   if (users.length === 0) {
-    return <p className="text-sm text-fg-muted">Aucun utilisateur pour l’instant.</p>
+    return (
+      <EmptyState
+        icon={Users}
+        title="Aucun utilisateur pour l’instant"
+        description="Créez le premier compte recruteur ou administrateur."
+      />
+    )
   }
 
   return (

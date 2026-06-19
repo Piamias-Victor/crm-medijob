@@ -1,7 +1,7 @@
 'use client'
 
 import { Briefcase, FileText, History, Info, Users } from 'lucide-react'
-import { PillTabs } from '@/components/molecules/PillTabs'
+import { EntityDetailTabs } from '@/components/molecules/EntityDetailTabs'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
 
 const tabs = [
@@ -21,11 +21,11 @@ type Props = {
 
 export function PharmacyDetailTabs({ active, onChange, contactCount, missionCount }: Props) {
   return (
-    <PillTabs
-      aria-label="Sections fiche pharmacie"
+    <EntityDetailTabs
+      ariaLabel="Sections fiche pharmacie"
       active={active}
-      onChange={(id) => onChange(id as PharmacyTab)}
-      items={tabs.map((tab) => ({
+      onChange={onChange}
+      tabs={tabs.map((tab) => ({
         ...tab,
         badge:
           tab.id === 'contacts' ? contactCount : tab.id === 'besoins' ? missionCount : undefined,

@@ -1,7 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { ChevronRight, Mail, Phone, Star } from 'lucide-react'
+import { ChevronRight, Mail, Phone, Star, Users } from 'lucide-react'
+import { EmptyState } from '@/components/atoms/EmptyState'
 import type { PharmacyContactRow } from '@/view-models/pharmacy-detail.types'
 import { ROLE_LABELS } from '@/lib/contact-options'
 
@@ -9,7 +10,13 @@ export function PharmacyContactsList({ contacts }: { contacts: PharmacyContactRo
   const router = useRouter()
 
   if (contacts.length === 0) {
-    return <p className="text-sm text-fg-muted">Aucun contact rattaché à cette pharmacie.</p>
+    return (
+      <EmptyState
+        icon={Users}
+        title="Aucun contact rattaché"
+        description="Les interlocuteurs de cette officine apparaîtront ici."
+      />
+    )
   }
 
   return (

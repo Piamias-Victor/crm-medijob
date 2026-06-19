@@ -1,9 +1,12 @@
 import { z } from 'zod'
+import { idSchema } from '@/lib/schemas/entity-id'
 import {
   markAnnuleeSchema,
   markPourvuSchema,
   updateMissionSchema,
 } from '@/view-models/mission-form.schema'
+
+export { idSchema }
 
 export const missionStatuses = [
   'A_POURVOIR',
@@ -14,7 +17,6 @@ export const missionStatuses = [
   'ANNULEE',
 ] as const
 
-export const idSchema = z.object({ id: z.string().min(1) })
 export const pharmacyIdSchema = z.object({ pharmacyId: z.string().min(1) })
 
 export const updateStatusInput = z

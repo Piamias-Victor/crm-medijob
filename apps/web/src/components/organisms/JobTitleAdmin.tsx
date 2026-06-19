@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ReferentialManager } from '@/components/organisms/ReferentialManager'
 import { CompatibilityMatrix } from '@/components/organisms/CompatibilityMatrix'
@@ -15,12 +16,11 @@ type Props = { titles: RefItem[]; compatibilities: CompatibilityPair[] }
 
 export function JobTitleAdmin({ titles, compatibilities }: Props) {
   const router = useRouter()
-  const onSuccess = () => router.refresh()
-  const onError = (e: { message: string }) => window.alert(e.message)
-  const create = trpc.admin.jobTitle.create.useMutation({ onSuccess })
-  const update = trpc.admin.jobTitle.update.useMutation({ onSuccess })
-  const remove = trpc.admin.jobTitle.remove.useMutation({ onSuccess, onError })
-  const setScore = trpc.admin.jobTitle.setCompatibilityScore.useMutation({ onSuccess, onError })
+  const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
+  const create = trpc.admin.jobTitle.create.useMutation(mutation)
+  const update = trpc.admin.jobTitle.update.useMutation(mutation)
+  const remove = trpc.admin.jobTitle.remove.useMutation(mutation)
+  const setScore = trpc.admin.jobTitle.setCompatibilityScore.useMutation(mutation)
 
   return (
     <div className="flex flex-col gap-6">
