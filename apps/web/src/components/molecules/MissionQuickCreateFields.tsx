@@ -8,7 +8,7 @@ import { Input } from '@/components/atoms/Input'
 import { Combobox } from '@/components/molecules/Combobox'
 import { DatePicker } from '@/components/molecules/DatePicker'
 import { FormField } from '@/components/molecules/FormField'
-import { formatIsoDate } from '@/lib/date-picker-utils'
+import { CLEAR_DATE_LABEL, formatIsoDate, SELECT_DATE_LABEL } from '@/lib/date-picker-utils'
 
 type Ref = { id: string; name: string }
 const contractOptions = CONTRACT_TYPES.map((value) => ({
@@ -63,6 +63,8 @@ export function MissionQuickCreateFields({
       <FormField label="Date de début" error={errors.startDate?.message}>
         <DatePicker
           value={startDate ? formatIsoDate(startDate) : undefined}
+          emptyLabel={SELECT_DATE_LABEL}
+          clearLabel={CLEAR_DATE_LABEL}
           onChange={(value) =>
             setValue('startDate', value ? new Date(value) : undefined, { shouldValidate: true })
           }

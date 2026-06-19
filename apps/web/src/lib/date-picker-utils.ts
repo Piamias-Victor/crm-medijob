@@ -35,6 +35,8 @@ export function calendarDays(year: number, month: number): (Date | null)[] {
 }
 
 export const ASAP_DATE_LABEL = 'Dès que possible'
+export const SELECT_DATE_LABEL = 'Sélectionner une date'
+export const CLEAR_DATE_LABEL = 'Effacer la date'
 
 export function formatDisplayDate(value?: string, emptyLabel = ASAP_DATE_LABEL): string {
   const date = parseIsoDate(value)

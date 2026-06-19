@@ -3,22 +3,23 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Building2, Briefcase, Construction, Star } from 'lucide-react'
+import { Building2, Briefcase, Star } from 'lucide-react'
 import type { ContactDetailPayload, ContactMissionRow } from '@/view-models/contact-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { ContactTab } from '@/view-models/contact-tabs'
 import { ROLE_LABELS } from '@/lib/contact-options'
 import { trpc } from '@/lib/trpc/client'
 import { CONTACT_TAB_META } from '@/view-models/contact-tab-meta'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
 import { Button } from '@/components/atoms/Button'
-import { EmptyState } from '@/components/atoms/EmptyState'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ContactDetailTabs } from '@/components/molecules/ContactDetailTabs'
 import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
 import { ContactMissionsTab } from '@/components/molecules/ContactMissionsTab'
-import { ActivityLogTab } from '@/components/molecules/ActivityLogTab'
+import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
+import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
 
 type Ref = { id: string; name: string }
 
@@ -27,9 +28,10 @@ type Props = {
   missions: ContactMissionRow[]
   pharmacies: Ref[]
   activities: ActivityLogRow[]
+  documents: DocumentListRow[]
 }
 
-export function ContactDetailPage({ contact, missions, pharmacies, activities }: Props) {
+export function ContactDetailPage({ contact, missions, pharmacies, activities, documents }: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<ContactTab>('infos')
   const meta = CONTACT_TAB_META[tab]
@@ -85,11 +87,19 @@ export function ContactDetailPage({ contact, missions, pharmacies, activities }:
               />
             ) : null}
             {tab === 'historique' ? (
-              <ActivityLogTab scope={{ entityType: 'CONTACT', entityId: contact.id }} initialLogs={activities} />
+              <EntityActivityLogTab
+                scope={{ entityType: 'CONTACT', entityId: contact.id }}
+                initialLogs={activities}
+              />
             ) : null}
             {tab === 'missions' ? <ContactMissionsTab missions={missions} /> : null}
             {tab === 'documents' ? (
-              <EmptyState icon={Construction} title="Bientôt disponible" description="Documents liés — prochain lot." />
+              <EntityDocumentsTab
+                entityType="CONTACT"
+                entityId={contact.id}
+                documents={documents}
+                emptyLabel="Aucun document pour ce contact."
+              />
             ) : null}
           </SectionCard>
         </motion.div>

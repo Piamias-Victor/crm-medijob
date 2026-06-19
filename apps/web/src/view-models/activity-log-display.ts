@@ -1,8 +1,8 @@
-import type { ActivityType } from '@prisma/client'
+import type { ActivityTypeValue } from '@/view-models/activity-log-form.schema'
 
 type BadgeVariant = 'default' | 'primary' | 'accent' | 'success' | 'warning'
 
-export const ACTIVITY_TYPE_BADGE: Record<ActivityType, BadgeVariant> = {
+export const ACTIVITY_TYPE_BADGE: Record<ActivityTypeValue, BadgeVariant> = {
   APPEL: 'primary',
   EMAIL: 'accent',
   ENTRETIEN: 'success',

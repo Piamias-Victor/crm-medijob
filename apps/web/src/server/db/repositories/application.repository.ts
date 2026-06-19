@@ -1,4 +1,5 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 
@@ -13,10 +14,11 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         orderBy: { createdAt: 'desc' },
       }),
-    listInbox: () =>
+    listInbox: (limit = DEFAULT_LIST_LIMIT) =>
       db.application.findMany({
         where: { status: 'EN_ATTENTE', ...NOT_DELETED },
         orderBy: { createdAt: 'desc' },
+        take: limit,
         select: {
           id: true,
           firstName: true,

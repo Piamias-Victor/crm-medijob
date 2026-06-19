@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { ActivityType } from '@prisma/client'
 
 export const ACTIVITY_TYPES = [
   'APPEL',
@@ -15,7 +14,7 @@ export const ACTIVITY_TYPES = [
 export type ActivityTypeValue = (typeof ACTIVITY_TYPES)[number]
 
 export const activityLogFormSchema = z.object({
-  type: z.nativeEnum(ActivityType),
+  type: z.enum(ACTIVITY_TYPES),
   content: z.string().trim().optional(),
   date: z.string().min(1, 'Date requise'),
 })

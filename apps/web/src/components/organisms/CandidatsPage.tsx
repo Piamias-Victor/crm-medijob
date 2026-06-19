@@ -13,16 +13,16 @@ import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban'
 import type { InboxItem } from '@/view-models/application-inbox'
 
 type Props = {
-  cvtheque: { candidates: RawCandidate[]; stages: RawStage[] }
+  list: { candidates: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
 }
 
-export function CandidatsPage({ cvtheque, inbox }: Props) {
+export function CandidatsPage({ list, inbox }: Props) {
   const [tab, setTab] = useState<CandidatsTab>('cvtheque')
   const description = useMemo(
     () =>
-      `${cvtheque.candidates.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
-    [cvtheque.candidates.length, inbox.length],
+      `${list.candidates.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
+    [list.candidates.length, inbox.length],
   )
 
   return (
@@ -35,7 +35,7 @@ export function CandidatsPage({ cvtheque, inbox }: Props) {
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
           {tab === 'cvtheque' ? (
-            <CvthequeSection candidates={cvtheque.candidates} stages={cvtheque.stages} />
+            <CvthequeSection candidates={list.candidates} stages={list.stages} />
           ) : (
             <SectionCard
               variant="glass"

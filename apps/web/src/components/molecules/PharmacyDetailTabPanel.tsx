@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Construction } from 'lucide-react'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
@@ -10,13 +9,12 @@ import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
 import { PHARMACY_TAB_META } from '@/view-models/pharmacy-tab-meta'
 import { Button } from '@/components/atoms/Button'
-import { EmptyState } from '@/components/atoms/EmptyState'
-import { PharmacyDocumentsTab } from '@/components/molecules/PharmacyDocumentsTab'
+import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { PharmacyInfoForm } from '@/components/molecules/PharmacyInfoForm'
 import { PharmacyContactsTab } from '@/components/molecules/PharmacyContactsTab'
 import { PharmacyBesoinsTab } from '@/components/molecules/PharmacyBesoinsTab'
-import { ActivityLogTab } from '@/components/molecules/ActivityLogTab'
+import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
 
 type Ref = { id: string; name: string }
 type MissionRefs = { jobTitles: Ref[]; recruiters: Ref[] }
@@ -88,10 +86,18 @@ export function PharmacyDetailTabPanel(props: Props) {
         />
       ) : null}
       {props.tab === 'historique' ? (
-        <ActivityLogTab scope={{ entityType: 'PHARMACY', entityId: props.pharmacy.id }} initialLogs={props.activities} />
+        <EntityActivityLogTab
+          scope={{ entityType: 'PHARMACY', entityId: props.pharmacy.id }}
+          initialLogs={props.activities}
+        />
       ) : null}
       {props.tab === 'documents' ? (
-        <PharmacyDocumentsTab pharmacyId={props.pharmacy.id} documents={props.documents} />
+        <EntityDocumentsTab
+          entityType="PHARMACY"
+          entityId={props.pharmacy.id}
+          documents={props.documents}
+          emptyLabel="Aucun document pour cette pharmacie."
+        />
       ) : null}
     </SectionCard>
   )

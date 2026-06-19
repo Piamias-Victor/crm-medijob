@@ -76,11 +76,12 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
         data: { ...data, status: 'A_POURVOIR' },
         select: { id: true, status: true },
       }),
-    listByContact: (contactId: string) =>
+    listByContact: (contactId: string, limit = DEFAULT_LIST_LIMIT) =>
       db.mission.findMany({
         where: { contactId, ...NOT_DELETED },
         select: { id: true, title: true, status: true, pharmacy: { select: { name: true } } },
         orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
   }
 }

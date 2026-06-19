@@ -21,15 +21,15 @@ export type CandidateDeps = {
   referentials: () => ReturnType<typeof fetchCandidateReferentials>
 }
 
+async function listKanban(deps: CandidateDeps) {
+  const [candidates, stages] = await Promise.all([deps.listForKanban(), deps.listStages()])
+  return { candidates, stages }
+}
+
 export function makeCandidateRouter(deps: CandidateDeps) {
   return router({
-    cvtheque: protectedProcedure.query(async () => {
-      const [candidates, stages] = await Promise.all([
-        deps.listForKanban(),
-        deps.listStages(),
-      ])
-      return { candidates, stages }
-    }),
+    list: protectedProcedure.query(() => listKanban(deps)),
+    cvtheque: protectedProcedure.query(() => listKanban(deps)),
     getById: protectedProcedure.input(candidateIdSchema).query(async ({ input }) => {
       const candidate = await deps.findProfileById(input.id)
       if (!candidate) return null
