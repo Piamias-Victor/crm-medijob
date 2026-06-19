@@ -1,5 +1,6 @@
 'use client'
 
+/** Single exclusive choice (e.g. titulaire) — use CheckboxGroup for multi-select filters. */
 import { Star } from 'lucide-react'
 import { cn } from '@/lib/cn'
 

@@ -1,7 +1,7 @@
 import { createServerCaller } from '@/lib/trpc/server'
-import { PharmaciesView } from '@/components/organisms/PharmaciesView'
+import { PharmaciesPage } from '@/components/organisms/PharmaciesPage'
 
-export default async function PharmaciesPage() {
+export default async function Page() {
   const caller = await createServerCaller()
   const [rows, referentials] = await Promise.all([
     caller.pharmacy.list(),
@@ -9,7 +9,7 @@ export default async function PharmaciesPage() {
   ])
 
   return (
-    <PharmaciesView
+    <PharmaciesPage
       rows={rows}
       groupements={referentials.groupements}
       softwares={referentials.softwares}

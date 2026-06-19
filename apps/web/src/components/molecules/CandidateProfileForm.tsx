@@ -23,13 +23,13 @@ type Referentials = {
   recruiters: RefItem[]
 }
 
+import { toSelectOptions } from '@/lib/form-options'
+
 type Props = {
   candidateId: string
   profile: CandidateProfilePayload
   referentials: Referentials
 }
-
-const toOptions = (items: RefItem[]) => items.map((i) => ({ value: i.id, label: i.name }))
 
 export function CandidateProfileForm({ candidateId, profile, referentials }: Props) {
   const { update, createJobTitle } = useCandidateProfileMutations()
@@ -73,16 +73,16 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
         <CandidateProfileSelects
           jobTitleId={watch('jobTitleId')}
           onJobTitle={(v) => setValue('jobTitleId', v)}
-          jobTitles={toOptions(jobTitles)}
+          jobTitles={toSelectOptions(jobTitles)}
           onCreateJobTitle={onCreateJobTitle}
           softwareIds={watch('softwareIds') ?? []}
           onSoftwareIds={(v) => setValue('softwareIds', v)}
-          softwares={toOptions(referentials.softwares)}
+          softwares={toSelectOptions(referentials.softwares)}
           contractTypes={watch('contractTypes') ?? []}
           onContractTypes={(v) => setValue('contractTypes', v as CandidateProfileInput['contractTypes'])}
           referentId={watch('referentId')}
           onReferent={(v) => setValue('referentId', v)}
-          recruiters={toOptions(referentials.recruiters)}
+          recruiters={toSelectOptions(referentials.recruiters)}
         />
       </FormSection>
       <div className="flex justify-end border-t border-border/60 pt-4">

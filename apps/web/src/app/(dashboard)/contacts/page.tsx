@@ -1,12 +1,12 @@
 import { createServerCaller } from '@/lib/trpc/server'
-import { ContactsView } from '@/components/organisms/ContactsView'
+import { ContactsPage } from '@/components/organisms/ContactsPage'
 
-export default async function ContactsPage() {
+export default async function Page() {
   const caller = await createServerCaller()
   const [rows, pharmacies] = await Promise.all([
     caller.contact.list(),
     caller.contact.pharmacyOptions(),
   ])
 
-  return <ContactsView rows={rows} pharmacies={pharmacies} />
+  return <ContactsPage rows={rows} pharmacies={pharmacies} />
 }

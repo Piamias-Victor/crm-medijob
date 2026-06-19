@@ -1,4 +1,3 @@
-import type { MissionStatus } from '@prisma/client'
 import { isTerminalMissionStatus, isTerminalStageName } from '@/lib/kanban-terminal'
 import type {
   CandidateListItem,
@@ -23,29 +22,36 @@ export function buildKanbanColumns(
   candidates: RawCandidate[],
 ): KanbanColumn[] {
   const ordered = [...stages].sort((a, b) => a.position - b.position)
-  return ordered.map((stage) => ({
-    stage,
-    cards: candidates.flatMap((candidate) => {
-      const rows = activeMissions(candidate).filter((row) => row.stageId === stage.id)
-      if (rows.length === 0) return []
-      return [
-        {
+  const cardsByStage = new Map(ordered.map((stage) => [stage.id, [] as KanbanColumn['cards']]))
+
+  for (const candidate of candidates) {
+    const rowsByStage = new Map<string, RawMissionRow[]>()
+    for (const row of activeMissions(candidate)) {
+      const bucket = rowsByStage.get(row.stageId) ?? []
+      bucket.push(row)
+      rowsByStage.set(row.stageId, bucket)
+    }
+    for (const [stageId, rows] of rowsByStage) {
+      const cards = cardsByStage.get(stageId)
+      if (!cards) continue
+      cards.push({
+        candidateId: candidate.id,
+        name: fullName(candidate),
+        jobTitle: candidate.jobTitle?.name ?? null,
+        city: candidate.city,
+        referent: candidate.referent?.name ?? null,
+        rows: rows.map((row) => ({
+          missionId: row.mission.id,
           candidateId: candidate.id,
-          name: fullName(candidate),
-          jobTitle: candidate.jobTitle?.name ?? null,
-          city: candidate.city,
-          referent: candidate.referent?.name ?? null,
-          rows: rows.map((row) => ({
-            missionId: row.mission.id,
-            candidateId: candidate.id,
-            title: row.mission.title,
-            stageId: stage.id,
-            stageName: stage.name,
-          })),
-        },
-      ]
-    }),
-  }))
+          title: row.mission.title,
+          stageId,
+          stageName: row.stage.name,
+        })),
+      })
+    }
+  }
+
+  return ordered.map((stage) => ({ stage, cards: cardsByStage.get(stage.id) ?? [] }))
 }
 
 type MoveInput = { missionId: string; candidateId: string; targetStage: RawStage }

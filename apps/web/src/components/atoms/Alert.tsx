@@ -13,11 +13,8 @@ type Props = { variant: Variant; children: ReactNode; className?: string }
 
 export function Alert({ variant, children, className }: Props) {
   return (
-    <p
-      role="alert"
-      className={cn('rounded-md px-3 py-2 text-sm', variants[variant], className)}
-    >
+    <div role="alert" className={cn('rounded-md px-3 py-2 text-sm', variants[variant], className)}>
       {children}
-    </p>
+    </div>
   )
 }

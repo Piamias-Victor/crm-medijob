@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
 
 describe('loadCandidateReferentials', () => {

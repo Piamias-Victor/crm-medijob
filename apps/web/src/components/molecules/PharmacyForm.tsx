@@ -18,8 +18,9 @@ import { SiretSearchButton } from '@/components/molecules/SiretSearchButton'
 import { PharmacySelects } from '@/components/molecules/PharmacySelects'
 import { getMissingPharmacyFields } from '@/view-models/pharmacy-profile'
 
+import { toSelectOptions } from '@/lib/form-options'
+
 type Ref = { id: string; name: string }
-const toOptions = (refs: Ref[]) => refs.map((r) => ({ value: r.id, label: r.name }))
 
 type Props = {
   defaultValues?: Partial<PharmacyInput>
@@ -76,11 +77,11 @@ export function PharmacyForm(props: Props) {
             onStatus={(v) => setValue('status', v as PharmacyInput['status'])}
             groupementId={watch('groupementId')}
             onGroupement={(v) => setValue('groupementId', v)}
-            groupements={toOptions(groupements)}
+            groupements={toSelectOptions(groupements)}
             onCreateGroupement={addRef(setGroupements, props.onCreateGroupement)}
             softwareId={watch('softwareId')}
             onSoftware={(v) => setValue('softwareId', v)}
-            softwares={toOptions(softwares)}
+            softwares={toSelectOptions(softwares)}
             onCreateSoftware={addRef(setSoftwares, props.onCreateSoftware)}
           />
         </div>
