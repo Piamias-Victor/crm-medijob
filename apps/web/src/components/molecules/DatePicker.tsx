@@ -5,8 +5,6 @@ import { createPortal } from 'react-dom'
 import { Calendar } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { DatePickerPanel } from '@/components/molecules/DatePickerPanel'
-import { FloatingPanel } from '@/components/molecules/FloatingPanel'
-import { useFloatingPanel } from '@/lib/hooks/use-floating-panel'
 import {
   ASAP_DATE_LABEL,
   calendarDays,
@@ -54,6 +52,7 @@ export function DatePicker({
   const panel = open ? (
     <div
       ref={panelRef}
+      data-floating-panel
       style={style}
       className="overflow-auto rounded-xl border border-border bg-white p-3 shadow-lg"
     >
@@ -72,6 +71,7 @@ export function DatePicker({
           onChange(undefined)
           setOpen(false)
         }}
+        clearLabel={clearLabel}
       />
     </div>
   ) : null

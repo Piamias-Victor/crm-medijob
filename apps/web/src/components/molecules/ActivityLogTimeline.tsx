@@ -1,8 +1,8 @@
 'use client'
 
 import { History } from 'lucide-react'
-import type { ActivityLogRow } from '@/view-models/activity-log-list'
-import { ACTIVITY_TYPE_LABELS, formatActivityDate } from '@/lib/activity-log-options'
+import type { ActivityLogRow } from '@/view-models/activity-log'
+import { formatActivityDate } from '@/view-models/activity-log-display'
 import { Badge } from '@/components/atoms/Badge'
 import { EmptyState } from '@/components/atoms/EmptyState'
 
@@ -25,7 +25,7 @@ export function ActivityLogTimeline({ logs }: Props) {
         <li key={log.id} className="relative flex flex-col gap-2 rounded-xl border border-border/60 bg-white/70 p-4">
           <span className="absolute -left-[1.625rem] top-5 size-2.5 rounded-full bg-accent ring-4 ring-white" />
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="accent">{ACTIVITY_TYPE_LABELS[log.type]}</Badge>
+            <Badge variant="accent">{log.typeLabel}</Badge>
             <span className="text-xs text-fg-muted">{formatActivityDate(log.date)}</span>
           </div>
           <p className="text-sm text-fg-muted">Par {log.authorName}</p>

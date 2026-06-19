@@ -1,14 +1,14 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Building2, Star } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
-import type { ActivityLogRow } from '@/view-models/activity-log-list'
+import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
+import { pharmacyDetailHeaderChips } from '@/view-models/pharmacy-detail-header'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { PharmacyDetailTabs } from '@/components/molecules/PharmacyDetailTabs'
@@ -24,13 +24,17 @@ type Props = {
   softwares: Ref[]
   missionRefs: MissionRefs
   documents: DocumentListRow[]
-}
-
-export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRefs, documents }: Props) {
   activities: ActivityLogRow[]
 }
 
-export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRefs, activities }: Props) {
+export function PharmacyDetailPage({
+  pharmacy,
+  groupements,
+  softwares,
+  missionRefs,
+  documents,
+  activities,
+}: Props) {
   const router = useRouter()
   const utils = trpc.useUtils()
   const [tab, setTab] = useState<PharmacyTab>('infos')
@@ -39,16 +43,6 @@ export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRe
   const createJobTitle = trpc.mission.createJobTitle.useMutation()
   const newGroupement = trpc.pharmacy.createGroupement.useMutation()
   const newSoftware = trpc.pharmacy.createSoftware.useMutation()
-
-  const headerChips = useMemo(
-    () => [
-      ...(pharmacy.groupementName ? [{ icon: Building2, label: pharmacy.groupementName }] : []),
-      ...(pharmacy.primaryContactName
-        ? [{ icon: Star, label: `Contact principal · ${pharmacy.primaryContactName}`, tone: 'accent' as const }]
-        : []),
-    ],
-    [pharmacy],
-  )
 
   return (
     <motion.div
@@ -62,7 +56,7 @@ export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRe
         backLabel="Pharmacies"
         name={pharmacy.name}
         city={pharmacy.city ?? undefined}
-        chips={headerChips}
+        chips={pharmacyDetailHeaderChips(pharmacy)}
       />
       <div className="flex flex-wrap items-center gap-2 px-1">
         <PharmacyStatusBadge status={pharmacy.status} />

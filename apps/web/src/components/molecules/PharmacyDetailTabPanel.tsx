@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Construction } from 'lucide-react'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
-import type { ActivityLogRow } from '@/view-models/activity-log-list'
+import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
 import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
@@ -88,7 +88,7 @@ export function PharmacyDetailTabPanel(props: Props) {
         />
       ) : null}
       {props.tab === 'historique' ? (
-        <ActivityLogTab scope={{ pharmacyId: props.pharmacy.id }} initialLogs={props.activities} />
+        <ActivityLogTab scope={{ entityType: 'PHARMACY', entityId: props.pharmacy.id }} initialLogs={props.activities} />
       ) : null}
       {props.tab === 'documents' ? (
         <PharmacyDocumentsTab pharmacyId={props.pharmacy.id} documents={props.documents} />

@@ -10,7 +10,10 @@ import {
 
 describe('activityLogRouter', () => {
   it('lists contact logs mapped to timeline rows', async () => {
-    const rows = await activityLogCaller(makeActivityLogDeps()).list({ contactId: 'c1' })
+    const rows = await activityLogCaller(makeActivityLogDeps()).listByEntity({
+      entityType: 'CONTACT',
+      entityId: 'c1',
+    })
     expect(rows[0]).toMatchObject({
       id: activityEntity.id,
       type: 'NOTE',
@@ -20,39 +23,54 @@ describe('activityLogRouter', () => {
 
   it('passes ActivityType filters to repository', async () => {
     const deps = makeActivityLogDeps()
-    await activityLogCaller(deps).list({ contactId: 'c1', types: ['NOTE'] })
-    expect(deps.repo.list).toHaveBeenCalledWith({ contactId: 'c1', types: ['NOTE'] })
+    await activityLogCaller(deps).listByEntity({
+      entityType: 'CONTACT',
+      entityId: 'c1',
+      types: ['NOTE'],
+    })
+    expect(deps.listByEntity).toHaveBeenCalledWith({
+      entityType: 'CONTACT',
+      entityId: 'c1',
+      types: ['NOTE'],
+    })
   })
 
   it('creates manual log with session author on contact', async () => {
     const deps = makeActivityLogDeps()
     await activityLogCaller(deps).create({
-      contactId: 'c1',
+      entityType: 'CONTACT',
+      entityId: 'c1',
       type: 'DEVIS',
       content: 'Devis titulaire',
+      date: new Date('2026-02-02T14:00:00Z'),
     })
-    expect(deps.repo.create).toHaveBeenCalledWith(
+    expect(deps.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        contactId: 'c1',
+        entityType: 'CONTACT',
+        entityId: 'c1',
         authorId: 'u1',
         type: 'DEVIS',
       }),
     )
   })
 
-  it('scopes pharmacy logs by pharmacyId', async () => {
+  it('scopes pharmacy logs by entity', async () => {
     const deps = makeActivityLogDeps({
-      repo: {
-        list: vi.fn().mockResolvedValue([]),
-        create: vi.fn().mockResolvedValue(activityEntity),
-      },
+      listByEntity: vi.fn().mockResolvedValue([]),
+      create: vi.fn().mockResolvedValue(activityEntity),
     })
-    await activityLogCaller(deps).list({ pharmacyId: 'p1' })
-    expect(deps.repo.list).toHaveBeenCalledWith({ pharmacyId: 'p1', types: undefined })
+    await activityLogCaller(deps).listByEntity({ entityType: 'PHARMACY', entityId: 'p1' })
+    expect(deps.listByEntity).toHaveBeenCalledWith({
+      entityType: 'PHARMACY',
+      entityId: 'p1',
+      types: undefined,
+    })
   })
 
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeActivityLogRouter(makeActivityLogDeps()))({ session: null })
-    await expect(unauth.list({ contactId: 'c1' })).rejects.toThrow()
+    await expect(
+      unauth.listByEntity({ entityType: 'CONTACT', entityId: 'c1' }),
+    ).rejects.toThrow()
   })
 })

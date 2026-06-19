@@ -24,10 +24,10 @@ describe('PharmacyForm SIRET search', () => {
     let resolve: (v: PharmacySiretLookup[]) => void = () => {}
     setup(() => new Promise<PharmacySiretLookup[]>((r) => (resolve = r)))
 
-    expect(await screen.findByRole('status')).toBeInTheDocument()
+    expect(await screen.findByLabelText('Chargement')).toBeInTheDocument()
 
     resolve([])
-    await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByLabelText('Chargement')).not.toBeInTheDocument())
   })
 
   it('does not search when the query is empty', () => {

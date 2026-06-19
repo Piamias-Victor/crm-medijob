@@ -1,13 +1,14 @@
 import { vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeActivityLogRouter, type ActivityLogDeps } from '@/server/routers/activity-log'
-import type { ActivityLogEntity } from '@/view-models/activity-log-list'
+import type { ActivityLogEntity } from '@/view-models/activity-log'
 
 export const activityEntity: ActivityLogEntity = {
   id: 'a1',
   type: 'NOTE',
   content: 'Premier échange',
   date: new Date('2026-02-01T10:00:00Z'),
+  createdAt: new Date('2026-02-01T10:00:00Z'),
   author: { name: 'Recruteur Demo' },
 }
 
@@ -16,6 +17,7 @@ export const devisEntity: ActivityLogEntity = {
   type: 'DEVIS',
   content: 'Devis titulaire',
   date: new Date('2026-02-02T14:00:00Z'),
+  createdAt: new Date('2026-02-02T14:00:00Z'),
   author: { name: 'Recruteur Demo' },
 }
 
@@ -26,10 +28,8 @@ export const activitySession = {
 
 export function makeActivityLogDeps(overrides: Partial<ActivityLogDeps> = {}): ActivityLogDeps {
   return {
-    repo: {
-      list: vi.fn().mockResolvedValue([activityEntity, devisEntity]),
-      create: vi.fn().mockResolvedValue(devisEntity),
-    },
+    listByEntity: vi.fn().mockResolvedValue([activityEntity, devisEntity]),
+    create: vi.fn().mockResolvedValue(devisEntity),
     ...overrides,
   }
 }
