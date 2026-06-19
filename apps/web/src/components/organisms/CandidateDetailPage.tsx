@@ -6,6 +6,8 @@ import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
+import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
+import { CandidateCvStoredPreview } from '@/components/molecules/CandidateCvStoredPreview'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
 import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
 import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
@@ -68,7 +70,13 @@ export function CandidateDetailPage({ profile, referentials, activities }: Props
         bodyClassName={tab === 'missions' ? 'p-4 sm:p-5' : 'p-5 sm:p-6'}
       >
         {tab === 'profil' ? (
-          <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
+          <div className="flex flex-col gap-8">
+            <CandidateCvPanel profile={profile} referentials={referentials} />
+            <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
+            {profile.cvUrl ? (
+              <CandidateCvStoredPreview candidateId={profile.id} cvUrl={profile.cvUrl} />
+            ) : null}
+          </div>
         ) : null}
         {tab === 'historique' ? (
           <EntityActivityLogTab

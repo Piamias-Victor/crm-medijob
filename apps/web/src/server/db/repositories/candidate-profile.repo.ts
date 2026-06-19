@@ -29,6 +29,7 @@ export function makeCandidateProfileRepository(db: PrismaClient) {
             availableFrom: data.availableFrom ?? null,
             notes: data.notes ?? null,
             referentId: data.referentId,
+            ...(data.cvUrl ? { cvUrl: data.cvUrl } : {}),
             softwares: { create: data.softwareIds.map((softwareId) => ({ softwareId })) },
             contractPreferences: {
               create: data.contractTypes.map((contractType) => ({ contractType })),

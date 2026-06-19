@@ -1,6 +1,7 @@
 import { router, protectedProcedure } from '@/server/trpc'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage.repository'
+import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 import {
   candidateIdSchema,
@@ -9,11 +10,22 @@ import {
 import { toCandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import { toCandidateUpdateData } from '@/view-models/candidate-profile-map'
 import { fetchCandidateReferentials } from '@/server/read-models/candidate-referentials.adapter'
+import { uploadBlob, deleteBlob, vercelBlobClient } from '@/server/services/blob'
+import { createCvExtractionProvider } from '@/server/ai/cv-extraction-provider'
+import { runCvExtraction } from '@/server/ai/cv-extraction'
+import {
+  handleConfirmCvExtraction,
+  handleExtractCv,
+  type CandidateCvDeps,
+} from '@/server/routers/candidate-cv'
+import {
+  confirmCvExtractionSchema,
+  extractCvSchema,
+} from '@/server/routers/candidate-cv.schema'
 
-export type CandidateDeps = {
+export type CandidateDeps = CandidateCvDeps & {
   listForKanban: () => Promise<RawCandidate[]>
   listStages: () => Promise<RawStage[]>
-  findProfileById: (id: string) => ReturnType<typeof candidateRepository.findProfileById>
   updateProfile: (
     id: string,
     data: Parameters<typeof candidateRepository.updateProfile>[1],
@@ -39,8 +51,16 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     update: protectedProcedure.input(updateCandidateSchema).mutation(({ input }) =>
       deps.updateProfile(input.id, toCandidateUpdateData(input.data)),
     ),
+    extractCv: protectedProcedure.input(extractCvSchema).mutation(({ input }) =>
+      handleExtractCv(deps, input),
+    ),
+    confirmExtraction: protectedProcedure
+      .input(confirmCvExtractionSchema)
+      .mutation(({ input }) => handleConfirmCvExtraction(deps, input)),
   })
 }
+
+const cvProvider = createCvExtractionProvider()
 
 export const candidateRouter = makeCandidateRouter({
   listForKanban: () => candidateRepository.listForKanban(),
@@ -48,4 +68,9 @@ export const candidateRouter = makeCandidateRouter({
   findProfileById: (id) => candidateRepository.findProfileById(id),
   updateProfile: (id, data) => candidateRepository.updateProfile(id, data),
   referentials: fetchCandidateReferentials,
+  uploadCvBlob: (input) => uploadBlob(vercelBlobClient, input),
+  deleteCvBlob: (url) => deleteBlob(vercelBlobClient, url),
+  runCvExtraction: (file) => runCvExtraction(cvProvider, file),
+  listJobTitles: () => jobTitleRepository.list(),
+  confirmCvExtraction: (id, data) => candidateRepository.updateProfile(id, data),
 })

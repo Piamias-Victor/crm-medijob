@@ -2,6 +2,7 @@
 
 import type { FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { Input } from '@/components/atoms/Input'
+import { Textarea } from '@/components/atoms/Textarea'
 import { FormField } from '@/components/molecules/FormField'
 import { ASAP_DATE_LABEL } from '@/lib/date-picker-utils'
 import { DatePicker } from '@/components/molecules/DatePicker'
@@ -69,8 +70,8 @@ export function CandidateProfileFields({
         </FormField>
       </div>
       <div className="sm:col-span-2">
-        <FormField label="Notes internes" htmlFor="notes">
-          <Input id="notes" {...register('notes')} />
+        <FormField label="Résumé IA (notes internes)" htmlFor="notes">
+          <Textarea id="notes" rows={4} {...register('notes')} />
         </FormField>
       </div>
     </div>

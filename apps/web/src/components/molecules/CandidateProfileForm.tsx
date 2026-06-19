@@ -1,29 +1,24 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/atoms/Button'
 import { CandidateProfileFields } from '@/components/molecules/CandidateProfileFields'
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
 import { FormSection } from '@/components/molecules/FormSection'
 import { useCandidateProfileMutations } from '@/lib/hooks/use-candidate-profile-mutations'
+import { useCandidateProfileForm } from '@/lib/hooks/use-candidate-profile-form'
 import { getMissingMatchingFields } from '@/view-models/candidate-profile'
-import {
-  candidateProfileInputSchema,
-  type CandidateProfileInput,
-} from '@/view-models/candidate-profile.schema'
+import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { RefItem } from '@/view-models/referential'
+import { toSelectOptions } from '@/lib/form-options'
 
 type Referentials = {
   jobTitles: RefItem[]
   softwares: RefItem[]
   recruiters: RefItem[]
 }
-
-import { toSelectOptions } from '@/lib/form-options'
 
 type Props = {
   candidateId: string
@@ -34,10 +29,8 @@ type Props = {
 export function CandidateProfileForm({ candidateId, profile, referentials }: Props) {
   const { update, createJobTitle } = useCandidateProfileMutations()
   const [jobTitles, setJobTitles] = useState(referentials.jobTitles)
-  const { register, handleSubmit, setValue, watch, getValues, formState } = useForm<CandidateProfileInput>({
-    resolver: zodResolver(candidateProfileInputSchema),
-    defaultValues: profile.formValues,
-  })
+  const { register, handleSubmit, setValue, watch, getValues, formState } =
+    useCandidateProfileForm(profile.formValues)
 
   const missingFields = getMissingMatchingFields({
     city: watch('city') ?? null,

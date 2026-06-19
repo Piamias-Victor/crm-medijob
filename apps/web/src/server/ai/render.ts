@@ -23,5 +23,7 @@ export function renderResponse(kind: ResponseKind, data: unknown): string {
     }
     case 'report':
       return (data as ReportResponse).report
+    case 'cv':
+      return JSON.stringify(data)
   }
 }

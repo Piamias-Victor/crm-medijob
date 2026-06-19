@@ -16,4 +16,5 @@ export type CandidateProfileUpdate = {
   referentId: string
   softwareIds: string[]
   contractTypes: ContractType[]
+  cvUrl?: string
 }
