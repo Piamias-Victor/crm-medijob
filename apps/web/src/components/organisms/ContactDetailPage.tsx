@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Building2, Briefcase, Construction, Star } from 'lucide-react'
 import type { ContactDetailPayload, ContactMissionRow } from '@/view-models/contact-detail.types'
+import type { ActivityLogRow } from '@/view-models/activity-log-list'
 import type { ContactTab } from '@/view-models/contact-tabs'
 import { ROLE_LABELS } from '@/lib/contact-options'
 import { trpc } from '@/lib/trpc/client'
@@ -17,6 +18,7 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { ContactDetailTabs } from '@/components/molecules/ContactDetailTabs'
 import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
 import { ContactMissionsTab } from '@/components/molecules/ContactMissionsTab'
+import { ActivityLogTab } from '@/components/molecules/ActivityLogTab'
 
 type Ref = { id: string; name: string }
 
@@ -24,9 +26,10 @@ type Props = {
   contact: ContactDetailPayload
   missions: ContactMissionRow[]
   pharmacies: Ref[]
+  activities: ActivityLogRow[]
 }
 
-export function ContactDetailPage({ contact, missions, pharmacies }: Props) {
+export function ContactDetailPage({ contact, missions, pharmacies, activities }: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<ContactTab>('infos')
   const meta = CONTACT_TAB_META[tab]
@@ -82,7 +85,7 @@ export function ContactDetailPage({ contact, missions, pharmacies }: Props) {
               />
             ) : null}
             {tab === 'historique' ? (
-              <EmptyState icon={Construction} title="Bientôt disponible" description="ActivityLog contact — issue #63." />
+              <ActivityLogTab scope={{ contactId: contact.id }} initialLogs={activities} />
             ) : null}
             {tab === 'missions' ? <ContactMissionsTab missions={missions} /> : null}
             {tab === 'documents' ? (

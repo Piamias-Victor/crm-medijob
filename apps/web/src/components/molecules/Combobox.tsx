@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useAnchoredPanel } from '@/lib/use-anchored-panel'
 import { ComboboxDropdown, type ComboboxOption } from '@/components/molecules/ComboboxDropdown'
-import { FloatingPanel } from '@/components/molecules/FloatingPanel'
-import { useFloatingPanel } from '@/lib/hooks/use-floating-panel'
 
 export type { ComboboxOption }
 
@@ -20,20 +20,19 @@ type Props = {
 export function Combobox({ value, onChange, options, placeholder = 'Sélectionner', onCreate }: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const root = useRef<HTMLDivElement>(null)
-  const panelStyle = useFloatingPanel(open, root)
-  const selected = options.find((o) => o.value === value)
+  const { anchorRef, panelRef, style } = useAnchoredPanel(open)
 
   useEffect(() => {
+    if (!open) return
     const onClick = (e: MouseEvent) => {
       const target = e.target as Node
-      if (root.current?.contains(target)) return
-      if (target instanceof Element && target.closest('[data-floating-panel]')) return
+      if (anchorRef.current?.contains(target)) return
+      if (panelRef.current?.contains(target)) return
       setOpen(false)
     }
     document.addEventListener('mousedown', onClick)
     return () => document.removeEventListener('mousedown', onClick)
-  }, [])
+  }, [open, anchorRef, panelRef])
 
   const pick = (next: string) => {
     onChange(next)
@@ -41,8 +40,28 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
     setQuery('')
   }
 
+  const create = async () => {
+    if (!onCreate) return
+    const created = await onCreate(query.trim())
+    pick(created.value)
+  }
+
+  const panel = open ? (
+    <ComboboxDropdown
+      panelRef={panelRef}
+      style={style}
+      value={value}
+      query={query}
+      onQueryChange={setQuery}
+      filtered={filtered}
+      showCreate={showCreate}
+      onPick={pick}
+      onCreate={create}
+    />
+  ) : null
+
   return (
-    <div ref={root} className="relative">
+    <div ref={anchorRef} className="relative">
       <button
         type="button"
         aria-haspopup="listbox"
@@ -53,19 +72,7 @@ export function Combobox({ value, onChange, options, placeholder = 'Sélectionne
         <span className={cn(!selected && 'text-fg-muted')}>{selected?.label ?? placeholder}</span>
         <ChevronDown className={cn('size-4 text-fg-muted transition-transform', open && 'rotate-180')} />
       </button>
-      <FloatingPanel
-        style={panelStyle}
-        className="overflow-hidden rounded-md border border-border bg-white shadow-lg"
-      >
-        <ComboboxDropdown
-          value={value}
-          query={query}
-          onQuery={setQuery}
-          options={options}
-          onPick={pick}
-          onCreate={onCreate}
-        />
-      </FloatingPanel>
+      {typeof document !== 'undefined' && panel ? createPortal(panel, document.body) : null}
     </div>
   )
 }

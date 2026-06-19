@@ -1,37 +1,45 @@
 'use client'
 
+import { type RefObject } from 'react'
 import { Check, Plus } from 'lucide-react'
 
 export type ComboboxOption = { value: string; label: string }
 
 type Props = {
+  panelRef: RefObject<HTMLDivElement | null>
+  style: React.CSSProperties
   value?: string
   query: string
-  onQuery: (value: string) => void
-  options: ComboboxOption[]
+  onQueryChange: (query: string) => void
+  filtered: ComboboxOption[]
+  showCreate: boolean
   onPick: (value: string) => void
-  onCreate?: (label: string) => Promise<ComboboxOption>
+  onCreate: () => void
 }
 
-export function ComboboxDropdown({ value, query, onQuery, options, onPick, onCreate }: Props) {
-  const q = query.trim().toLowerCase()
-  const filtered = options.filter((o) => o.label.toLowerCase().includes(q))
-  const showCreate = Boolean(onCreate && q && !options.some((o) => o.label.toLowerCase() === q))
-
-  const create = async () => {
-    if (!onCreate) return
-    const created = await onCreate(query.trim())
-    onPick(created.value)
-  }
-
+export function ComboboxDropdown({
+  panelRef,
+  style,
+  value,
+  query,
+  onQueryChange,
+  filtered,
+  showCreate,
+  onPick,
+  onCreate,
+}: Props) {
   return (
-    <>
+    <div
+      ref={panelRef}
+      style={style}
+      className="overflow-hidden rounded-md border border-border bg-white shadow-lg"
+    >
       <input
         type="search"
         role="searchbox"
         autoFocus
         value={query}
-        onChange={(e) => onQuery(e.target.value)}
+        onChange={(e) => onQueryChange(e.target.value)}
         placeholder="Rechercher…"
         className="w-full border-b border-border px-3 py-2 text-sm outline-none placeholder:text-fg-muted"
       />
@@ -54,12 +62,12 @@ export function ComboboxDropdown({ value, query, onQuery, options, onPick, onCre
       {showCreate ? (
         <button
           type="button"
-          onClick={create}
+          onClick={onCreate}
           className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent hover:bg-surface"
         >
           <Plus className="size-4" /> Créer « {query.trim()} »
         </button>
       ) : null}
-    </>
+    </div>
   )
 }

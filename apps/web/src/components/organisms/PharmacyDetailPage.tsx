@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Building2, Star } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
 import type { PharmacyDetailPayload } from '@/view-models/pharmacy-detail.types'
+import type { ActivityLogRow } from '@/view-models/activity-log-list'
 import type { PharmacyTab } from '@/view-models/pharmacy-tabs'
 import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
@@ -21,9 +22,10 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   missionRefs: MissionRefs
+  activities: ActivityLogRow[]
 }
 
-export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRefs }: Props) {
+export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRefs, activities }: Props) {
   const router = useRouter()
   const utils = trpc.useUtils()
   const [tab, setTab] = useState<PharmacyTab>('infos')
@@ -85,6 +87,7 @@ export function PharmacyDetailPage({ pharmacy, groupements, softwares, missionRe
             onSearchSiret={(query) => utils.pharmacy.searchSiret.fetch({ query })}
             onCreateGroupement={(name) => newGroupement.mutateAsync({ name })}
             onCreateSoftware={(name) => newSoftware.mutateAsync({ name })}
+            activities={activities}
           />
         </motion.div>
       </AnimatePresence>
