@@ -4,24 +4,9 @@ import {
   toCandidateFormValues,
 } from '@/view-models/candidate-profile'
 import { toCandidateMissionRows } from '@/view-models/candidate-missions'
-import type { Prisma } from '@prisma/client'
+import type { CandidateProfileRecord } from '@/server/db/repositories/candidate-profile.repository'
 
-type ProfileRecord = Prisma.CandidateGetPayload<{
-  include: {
-    jobTitle: { select: { id: true; name: true } }
-    referent: { select: { id: true; name: true } }
-    softwares: { select: { softwareId: true } }
-    contractPreferences: { select: { contractType: true } }
-    missions: {
-      select: {
-        stage: { select: { id: true; name: true; position: true } }
-        mission: { select: { id: true; title: true; status: true } }
-      }
-    }
-  }
-}>
-
-export function toCandidateProfilePayload(candidate: ProfileRecord) {
+export function toCandidateProfilePayload(candidate: CandidateProfileRecord) {
   const matching = {
     city: candidate.city,
     postalCode: candidate.postalCode,

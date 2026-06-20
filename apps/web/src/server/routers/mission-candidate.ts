@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '@/server/trpc'
 import { missionCandidateRepository } from '@/server/db/repositories/mission-candidate.repository'
+import { updateStage as updateMissionCandidateStage } from '@/server/pipeline/mission-candidate.service'
 import { entityNotFound } from '@/server/trpc/entity-errors'
 
 const missionCandidateKey = z.object({
@@ -46,7 +47,10 @@ export function makeMissionCandidateRouter(deps: MissionCandidateDeps) {
 }
 
 export const missionCandidateRouter = makeMissionCandidateRouter({
-  updateStage: (input) => missionCandidateRepository.updateStage(input),
+  updateStage: (input) =>
+    updateMissionCandidateStage(input, {
+      updateStage: (payload) => missionCandidateRepository.updateStage(payload),
+    }),
   position: (input) => missionCandidateRepository.createAtDefaultStage(input),
   remove: (input) => missionCandidateRepository.remove(input),
 })

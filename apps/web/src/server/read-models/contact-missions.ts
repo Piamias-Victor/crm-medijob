@@ -11,9 +11,3 @@ export async function listContactMissions(
 ): Promise<ReturnType<typeof toContactMissionRows>> {
   return toContactMissionRows(await reader.listByContact(contactId))
 }
-
-export function makeContactMissionReader(
-  listByContact: ContactMissionReader['listByContact'],
-): ContactMissionReader {
-  return { listByContact }
-}

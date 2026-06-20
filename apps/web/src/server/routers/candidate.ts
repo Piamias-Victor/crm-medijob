@@ -8,7 +8,7 @@ import {
 } from '@/view-models/candidate-profile.schema'
 import { toCandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import { toCandidateUpdateData } from '@/view-models/candidate-profile-map'
-import { fetchCandidateReferentials } from '@/server/read-models/candidate-referentials.adapter'
+import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
 import {
   handleConfirmCvExtraction,
   handleExtractCv,
@@ -40,7 +40,7 @@ export type CandidateDeps = CandidateCvDeps &
     id: string,
     data: Parameters<typeof candidateRepository.updateProfile>[1],
   ) => ReturnType<typeof candidateRepository.updateProfile>
-  referentials: () => ReturnType<typeof fetchCandidateReferentials>
+  referentials: () => ReturnType<typeof loadCandidateReferentials>
 }
 
 async function listKanban(deps: CandidateDeps) {
@@ -51,7 +51,6 @@ async function listKanban(deps: CandidateDeps) {
 export function makeCandidateRouter(deps: CandidateDeps) {
   return router({
     list: protectedProcedure.query(() => listKanban(deps)),
-    cvtheque: protectedProcedure.query(() => listKanban(deps)),
     search: protectedProcedure.input(candidateSearchInput).query(async ({ input }) =>
       toCandidateSearchOptions(await deps.search(input.term, input.limit)),
     ),

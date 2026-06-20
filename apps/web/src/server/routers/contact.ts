@@ -2,7 +2,8 @@ import { z } from 'zod'
 import type { ContactRole, Prisma } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
-import { loadContactMissions } from '@/server/read-models/contact-missions.adapter'
+import { missionRepository } from '@/server/db/repositories/mission.repository'
+import { listContactMissions } from '@/server/read-models/contact-missions'
 import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toContactListRow, type ContactListEntity } from '@/view-models/contact-list'
 import { toContactDetail, type ContactDetailEntity } from '@/view-models/contact-detail'
@@ -20,7 +21,7 @@ export type ContactDeps = {
     setPrimary: (id: string) => Promise<ContactDetailEntity | null>
     softDelete: (id: string) => Promise<unknown>
   }
-  listMissions: (contactId: string) => ReturnType<typeof loadContactMissions>
+  listMissions: (contactId: string) => ReturnType<typeof listContactMissions>
   pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
 }
 
@@ -77,6 +78,9 @@ export function makeContactRouter(deps: ContactDeps) {
 
 export const contactRouter = makeContactRouter({
   contacts: contactRepository,
-  listMissions: loadContactMissions,
+  listMissions: (contactId) =>
+    listContactMissions(contactId, {
+      listByContact: (id) => missionRepository.listByContact(id),
+    }),
   pharmacies: { listForPicker: listPharmacyPickerOptions },
 })

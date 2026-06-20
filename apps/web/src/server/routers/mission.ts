@@ -3,8 +3,10 @@ import type { MissionStatus } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
+import { userRepository } from '@/server/db/repositories/user.repository'
 import { runMissionStatusTransition } from '@/server/mission/transition-status.adapter'
-import { fetchMissionReferentials } from '@/server/read-models/mission-referentials.adapter'
+import { loadMissionReferentials } from '@/server/read-models/mission-referentials'
+import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toMissionDetail, type MissionDetailEntity } from '@/view-models/mission-detail'
 import { toMissionUpdateData } from '@/view-models/mission-update'
 import { missionQuickCreateSchema } from '@/view-models/mission-quick-create.schema'
@@ -28,7 +30,7 @@ export type MissionDeps = {
   update: (id: string, data: ReturnType<typeof toMissionUpdateData>) => Promise<unknown>
   createQuick: (input: z.output<typeof missionQuickCreateSchema>) => Promise<{ id: string; status: MissionStatus }>
   createJobTitle: (name: string) => Promise<Ref>
-  referentials: () => ReturnType<typeof fetchMissionReferentials>
+  referentials: () => ReturnType<typeof loadMissionReferentials>
   updateStatus: (input: UpdateMissionStatusInput) => Promise<{ id: string; status: UpdateMissionStatusInput['status'] }>
 }
 
@@ -74,7 +76,12 @@ export const missionRouter = makeMissionRouter({
   createQuick: (input) =>
     missionRepository.createQuick({ ...input, startDate: input.startDate ?? new Date() }),
   createJobTitle: (name) => jobTitleRepository.create({ name }),
-  referentials: fetchMissionReferentials,
+  referentials: () =>
+    loadMissionReferentials({
+      listJobTitles: () => jobTitleRepository.list(),
+      listRecruiters: () => userRepository.listRecruiters(),
+      listPharmacies: listPharmacyPickerOptions,
+    }),
   updateStatus: (input) =>
     runMissionStatusTransition({
       missionId: input.id,
