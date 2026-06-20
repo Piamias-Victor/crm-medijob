@@ -47,14 +47,25 @@ describe('candidateRepository', () => {
     expect(await repo.findById(c.id)).toBeNull()
   })
 
-  it('searches by name, case-insensitive, excluding deleted', async () => {
-    const keep = await repo.create(newCandidate('Charlotte'))
+  it('searches by name, city, postal code, job title, excluding deleted', async () => {
+    const keep = await repo.create({
+      ...newCandidate('Charlotte'),
+      city: 'Lyon',
+      postalCode: '69003',
+    })
+    const byCity = await repo.create({ ...newCandidate('Denis'), city: 'Marseille', postalCode: '13001' })
+    const byJob = await repo.create(newCandidate('Elise'))
+    await db.prisma.candidate.update({
+      where: { id: byJob.id },
+      data: { jobTitle: { connect: { id: jobTitleId } } },
+    })
     const gone = await repo.create(newCandidate('Charline'))
     await repo.softDelete(gone.id)
 
-    const results = await repo.search('charl')
-
-    expect(results.some((x) => x.id === keep.id)).toBe(true)
-    expect(results.some((x) => x.id === gone.id)).toBe(false)
+    expect((await repo.search('charl')).some((x) => x.id === keep.id)).toBe(true)
+    expect((await repo.search('charl')).some((x) => x.id === gone.id)).toBe(false)
+    expect((await repo.search('marseille')).some((x) => x.id === byCity.id)).toBe(true)
+    expect((await repo.search('69003')).some((x) => x.id === keep.id)).toBe(true)
+    expect((await repo.search('pharmacien')).length).toBeGreaterThan(0)
   })
 })

@@ -4,11 +4,13 @@ import { Construction } from 'lucide-react'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { MissionTab } from '@/view-models/mission-tabs'
 import type { MissionFormValues } from '@/view-models/mission-form.schema'
+import type { PipelineStageRef } from '@/view-models/mission-pipeline.types'
 import { MISSION_TAB_META } from '@/view-models/mission-tab-meta'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { MissionInfoForm } from '@/components/molecules/MissionInfoForm'
 import { MissionStatusActions } from '@/components/molecules/MissionStatusActions'
+import { MissionPipelineSection } from '@/components/organisms/MissionPipelineSection'
 
 type Ref = { id: string; name: string }
 type ContactRef = { id: string; label: string }
@@ -16,6 +18,7 @@ type ContactRef = { id: string; label: string }
 type Props = {
   tab: MissionTab
   mission: MissionDetailPayload
+  pipelineStages: PipelineStageRef[]
   jobTitles: Ref[]
   pharmacies: Ref[]
   recruiters: Ref[]
@@ -33,7 +36,6 @@ export function MissionDetailTabPanel(props: Props) {
     <SectionCard variant="glass" title={meta.title} description={meta.description} bodyClassName="p-5 sm:p-6">
       {props.tab === 'infos' ? (
         <div className="flex flex-col gap-5">
-          <MissionStatusActions mission={props.mission} />
           <MissionInfoForm
             mission={props.mission}
             jobTitles={props.jobTitles}
@@ -45,9 +47,13 @@ export function MissionDetailTabPanel(props: Props) {
             onCreateJobTitle={props.onCreateJobTitle}
             onPharmacyChange={props.onPharmacyChange}
           />
+          <MissionStatusActions mission={props.mission} />
         </div>
       ) : null}
-      {props.tab !== 'infos' ? (
+      {props.tab === 'pipeline' ? (
+        <MissionPipelineSection mission={props.mission} stages={props.pipelineStages} />
+      ) : null}
+      {props.tab !== 'infos' && props.tab !== 'pipeline' ? (
         <EmptyState
           icon={Construction}
           title="Bientôt disponible"

@@ -27,7 +27,18 @@ export const missionDetailSelect = {
   candidates: {
     select: {
       candidateId: true,
-      candidate: { select: { firstName: true, lastName: true } },
+      stageId: true,
+      stage: { select: { id: true, name: true, position: true } },
+      candidate: {
+        select: {
+          firstName: true,
+          lastName: true,
+          city: true,
+          postalCode: true,
+          jobTitle: { select: { name: true } },
+          referent: { select: { name: true } },
+        },
+      },
     },
   },
 } satisfies Prisma.MissionSelect

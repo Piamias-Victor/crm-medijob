@@ -3,6 +3,7 @@ import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { makeCandidateProfileRepository } from './candidate-profile.repo'
+import { searchCandidates } from './candidate-search.repo'
 
 export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
@@ -38,18 +39,7 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         },
         select: { id: true, email: true, firstName: true, lastName: true, phone: true },
       }),
-    search: (term: string, limit = 8) =>
-      db.candidate.findMany({
-        where: {
-          ...NOT_DELETED,
-          OR: [
-            { firstName: { contains: term, mode: 'insensitive' } },
-            { lastName: { contains: term, mode: 'insensitive' } },
-          ],
-        },
-        orderBy: { lastName: 'asc' },
-        take: limit,
-      }),
+    search: (term: string, limit = 8) => searchCandidates(db, term, limit),
     listForKanban: (limit = DEFAULT_LIST_LIMIT) =>
       db.candidate.findMany({
         where: NOT_DELETED,

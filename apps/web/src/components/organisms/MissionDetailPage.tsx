@@ -7,6 +7,7 @@ import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { MissionTab } from '@/view-models/mission-tabs'
+import type { PipelineStageRef } from '@/view-models/mission-pipeline.types'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { MissionDetailTabs } from '@/components/molecules/MissionDetailTabs'
@@ -18,6 +19,7 @@ type ContactRef = { id: string; label: string }
 
 type Props = {
   mission: MissionDetailPayload
+  pipelineStages: PipelineStageRef[]
   jobTitles: Ref[]
   pharmacies: Ref[]
   recruiters: Ref[]
@@ -28,6 +30,7 @@ type Props = {
 
 export function MissionDetailPage({
   mission,
+  pipelineStages,
   jobTitles,
   pharmacies,
   recruiters,
@@ -80,6 +83,7 @@ export function MissionDetailPage({
       <MissionDetailTabPanel
         tab={tab}
         mission={mission}
+        pipelineStages={pipelineStages}
         jobTitles={jobTitles}
         pharmacies={pharmacies}
         recruiters={recruiters}

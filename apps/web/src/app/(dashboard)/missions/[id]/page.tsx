@@ -11,6 +11,7 @@ export default async function Page({ params }: Props) {
   if (!mission) notFound()
 
   const refs = await caller.mission.referentials()
+  const candidateRefs = await caller.candidate.referentials()
   const [documents, activities, contactsByPharmacy] = await Promise.all([
     caller.document.listByEntity({ entityType: 'MISSION', entityId: id }),
     caller.activityLog.listByEntity({ entityType: 'MISSION', entityId: id }),
@@ -25,6 +26,7 @@ export default async function Page({ params }: Props) {
   return (
     <MissionDetailPage
       mission={mission}
+      pipelineStages={candidateRefs.pipelineStages}
       jobTitles={refs.jobTitles}
       pharmacies={refs.pharmacies}
       recruiters={refs.recruiters}

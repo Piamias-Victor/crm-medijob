@@ -6,6 +6,12 @@ function toCandidateRows(entity: MissionDetailEntity) {
   return entity.candidates.map((row) => ({
     id: row.candidateId,
     fullName: `${row.candidate.firstName} ${row.candidate.lastName}`.trim(),
+    stageId: row.stageId,
+    stageName: row.stage.name,
+    jobTitle: row.candidate.jobTitle?.name ?? null,
+    city: row.candidate.city,
+    postalCode: row.candidate.postalCode,
+    referentName: row.candidate.referent?.name ?? null,
   }))
 }
 
