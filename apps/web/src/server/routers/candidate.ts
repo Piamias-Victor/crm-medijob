@@ -5,6 +5,10 @@ import {
   candidateIdSchema,
   updateCandidateSchema,
 } from '@/view-models/candidate-profile.schema'
+import {
+  candidateQuickCreateSchema,
+  type CandidateQuickCreateInput,
+} from '@/view-models/candidate-quick-create.schema'
 import { toCandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import { toCandidateUpdateData } from '@/view-models/candidate-profile-map'
 import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
@@ -39,6 +43,7 @@ export type CandidateDeps = CandidateCvDeps &
     id: string,
     data: Parameters<typeof candidateRepository.updateProfile>[1],
   ) => ReturnType<typeof candidateRepository.updateProfile>
+  createQuick: (input: CandidateQuickCreateInput) => ReturnType<typeof candidateRepository.createQuick>
   referentials: () => ReturnType<typeof loadCandidateReferentials>
 }
 
@@ -59,6 +64,9 @@ export function makeCandidateRouter(deps: CandidateDeps) {
       return toCandidateProfilePayload(candidate)
     }),
     referentials: protectedProcedure.query(() => deps.referentials()),
+    create: protectedProcedure
+      .input(candidateQuickCreateSchema)
+      .mutation(({ input }) => deps.createQuick(input)),
     update: protectedProcedure.input(updateCandidateSchema).mutation(({ input }) =>
       deps.updateProfile(input.id, toCandidateUpdateData(input.data)),
     ),

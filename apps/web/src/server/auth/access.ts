@@ -3,7 +3,7 @@ export type AccessRole = 'RECRUTEUR' | 'ADMIN' | null
 export type AccessDecision = 'allow' | 'redirect-login' | 'redirect-home' | 'forbid-admin'
 
 export const LOGIN_PATH = '/login'
-export const HOME_PATH = '/candidats'
+export const HOME_PATH = '/accueil'
 
 export function isAdminPath(pathname: string): boolean {
   return pathname === '/admin' || pathname.startsWith('/admin/')

@@ -18,6 +18,7 @@ type Props = {
   errors: FieldErrors<MissionQuickCreateInput>
   jobTitles: Ref[]
   recruiters: Ref[]
+  pharmacies?: Ref[]
   onCreateJobTitle: (name: string) => Promise<{ value: string; label: string }>
 }
 
@@ -28,13 +29,25 @@ export function MissionQuickCreateFields({
   errors,
   jobTitles,
   recruiters,
+  pharmacies,
   onCreateJobTitle,
 }: Props) {
   const startDate = watch('startDate')
+  const showPharmacy = Boolean(pharmacies?.length)
 
   return (
     <>
-      <input type="hidden" {...register('pharmacyId')} />
+      {showPharmacy ? (
+        <FormField label="Pharmacie" error={errors.pharmacyId?.message}>
+          <Combobox
+            value={watch('pharmacyId')}
+            onChange={(value) => setValue('pharmacyId', value, { shouldValidate: true })}
+            options={pharmacies!.map((p) => ({ value: p.id, label: p.name }))}
+          />
+        </FormField>
+      ) : (
+        <input type="hidden" {...register('pharmacyId')} />
+      )}
       <FormField label="Titre" htmlFor="mission-title" error={errors.title?.message}>
         <Input id="mission-title" {...register('title')} placeholder="Ex. Adjoint CDD" />
       </FormField>

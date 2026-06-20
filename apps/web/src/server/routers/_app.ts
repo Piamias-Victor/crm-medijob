@@ -12,9 +12,11 @@ import { jobOfferRouter } from '@/server/routers/job-offer'
 import { activityLogRouter } from '@/server/routers/activity-log'
 import { documentRouter } from '@/server/routers/document'
 import { matchingRouter } from '@/server/routers/matching'
+import { dashboardRouter } from '@/server/routers/dashboard'
 
 export const appRouter = router({
   health: healthRouter,
+  dashboard: dashboardRouter,
   admin: adminRouter,
   pharmacy: pharmacyRouter,
   contact: contactRouter,

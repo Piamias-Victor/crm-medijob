@@ -1,4 +1,5 @@
 import {
+  LayoutDashboard,
   Users,
   Building2,
   User,
@@ -12,6 +13,7 @@ import {
 export type NavItem = { label: string; href: string; icon: LucideIcon }
 
 export const navItems: NavItem[] = [
+  { label: 'Accueil', href: '/accueil', icon: LayoutDashboard },
   { label: 'Candidats', href: '/candidats', icon: Users },
   { label: 'Pharmacies', href: '/pharmacies', icon: Building2 },
   { label: 'Contacts', href: '/contacts', icon: User },
