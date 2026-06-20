@@ -1,30 +1,34 @@
 'use client'
 
-import { Briefcase, User } from 'lucide-react'
-import { PillTabs } from '@/components/molecules/PillTabs'
+import { Briefcase, FileText, History, User } from 'lucide-react'
+import { EntityDetailTabs } from '@/components/molecules/EntityDetailTabs'
 
-export type CandidateDetailTab = 'profil' | 'missions'
+export type CandidateDetailTab = 'profil' | 'historique' | 'missions' | 'documents'
 
 const tabs = [
   { id: 'profil' as const, label: 'Profil', icon: User },
+  { id: 'historique' as const, label: 'Historique', icon: History },
   { id: 'missions' as const, label: 'Missions', icon: Briefcase },
+  { id: 'documents' as const, label: 'Documents', icon: FileText },
 ]
 
 type Props = {
   active: CandidateDetailTab
   onChange: (tab: CandidateDetailTab) => void
   missionCount: number
+  activityCount: number
 }
 
-export function CandidateDetailTabs({ active, onChange, missionCount }: Props) {
+export function CandidateDetailTabs({ active, onChange, missionCount, activityCount }: Props) {
   return (
-    <PillTabs
-      aria-label="Sections fiche candidat"
+    <EntityDetailTabs
+      ariaLabel="Sections fiche candidat"
       active={active}
-      onChange={(id) => onChange(id as CandidateDetailTab)}
-      items={tabs.map((tab) => ({
+      onChange={onChange}
+      tabs={tabs.map((tab) => ({
         ...tab,
-        badge: tab.id === 'missions' ? missionCount : undefined,
+        badge:
+          tab.id === 'missions' ? missionCount : tab.id === 'historique' ? activityCount : undefined,
       }))}
     />
   )

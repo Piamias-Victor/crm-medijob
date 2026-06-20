@@ -13,7 +13,7 @@ export function PageHeader({ icon, title, description, children, className }: Pr
   return (
     <header
       className={cn(
-        'rounded-xl border border-border bg-gradient-to-br from-primary-muted/50 via-white to-accent-muted/40 p-6 shadow-sm',
+        'rounded-xl border border-border bg-gradient-to-br from-primary-muted/50 via-surface to-accent-muted/40 p-6 shadow-sm',
         className,
       )}
     >

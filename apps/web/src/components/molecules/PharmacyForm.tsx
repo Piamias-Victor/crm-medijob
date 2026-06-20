@@ -13,11 +13,14 @@ import { Button } from '@/components/atoms/Button'
 import { FormSection } from '@/components/molecules/FormSection'
 import { PharmacyLegalFields } from '@/components/molecules/PharmacyLegalFields'
 import { PharmacyContactFields } from '@/components/molecules/PharmacyContactFields'
+import { PharmacyProfileBanner } from '@/components/molecules/PharmacyProfileBanner'
 import { SiretSearchButton } from '@/components/molecules/SiretSearchButton'
 import { PharmacySelects } from '@/components/molecules/PharmacySelects'
+import { getMissingPharmacyFields } from '@/view-models/pharmacy-profile'
+
+import { toSelectOptions } from '@/lib/form-options'
 
 type Ref = { id: string; name: string }
-const toOptions = (refs: Ref[]) => refs.map((r) => ({ value: r.id, label: r.name }))
 
 type Props = {
   defaultValues?: Partial<PharmacyInput>
@@ -38,20 +41,20 @@ export function PharmacyForm(props: Props) {
   const [groupements, setGroupements] = useState(props.groupements)
   const [softwares, setSoftwares] = useState(props.softwares)
   const { searching, runSiret } = usePharmacySiretSearch(getValues, setValue, props.onSearchSiret)
-
-  const createGroupement = async (name: string) => {
-    const g = await props.onCreateGroupement(name)
-    setGroupements((prev) => [...prev, g])
-    return { value: g.id, label: g.name }
-  }
-  const createSoftware = async (name: string) => {
-    const s = await props.onCreateSoftware(name)
-    setSoftwares((prev) => [...prev, s])
-    return { value: s.id, label: s.name }
-  }
+  const addRef =
+    (setter: typeof setGroupements, fn: (name: string) => Promise<Ref>) => async (name: string) => {
+      const ref = await fn(name)
+      setter((prev) => [...prev, ref])
+      return { value: ref.id, label: ref.name }
+    }
+  const missingFields = getMissingPharmacyFields({
+    city: watch('city') ?? null,
+    postalCode: watch('postalCode') ?? null,
+  })
 
   return (
     <form onSubmit={handleSubmit(props.onSubmit)} className="flex flex-col gap-6" noValidate>
+      <PharmacyProfileBanner missingFields={missingFields} />
       <FormSection title="Identité légale">
         <PharmacyLegalFields
           register={register}
@@ -60,7 +63,12 @@ export function PharmacyForm(props: Props) {
         />
       </FormSection>
       <FormSection title="Coordonnées">
-        <PharmacyContactFields register={register} errors={formState.errors} />
+        <PharmacyContactFields
+          register={register}
+          setValue={setValue}
+          getValues={getValues}
+          errors={formState.errors}
+        />
       </FormSection>
       <FormSection title="Référentiels">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -69,12 +77,12 @@ export function PharmacyForm(props: Props) {
             onStatus={(v) => setValue('status', v as PharmacyInput['status'])}
             groupementId={watch('groupementId')}
             onGroupement={(v) => setValue('groupementId', v)}
-            groupements={toOptions(groupements)}
-            onCreateGroupement={createGroupement}
+            groupements={toSelectOptions(groupements)}
+            onCreateGroupement={addRef(setGroupements, props.onCreateGroupement)}
             softwareId={watch('softwareId')}
             onSoftware={(v) => setValue('softwareId', v)}
-            softwares={toOptions(softwares)}
-            onCreateSoftware={createSoftware}
+            softwares={toSelectOptions(softwares)}
+            onCreateSoftware={addRef(setSoftwares, props.onCreateSoftware)}
           />
         </div>
       </FormSection>

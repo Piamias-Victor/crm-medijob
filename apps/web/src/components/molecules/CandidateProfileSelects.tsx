@@ -1,13 +1,7 @@
 import { FormField } from '@/components/molecules/FormField'
 import { Combobox, type ComboboxOption } from '@/components/molecules/Combobox'
 import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
-import { CONTRACT_TYPE_LABELS } from '@/lib/candidate-options'
-import { CONTRACT_TYPES } from '@/view-models/candidate-profile.schema'
-
-const contractOptions = CONTRACT_TYPES.map((value) => ({
-  value,
-  label: CONTRACT_TYPE_LABELS[value],
-}))
+import { contractOptions } from '@/lib/contract-options'
 
 type Props = {
   jobTitleId?: string
@@ -21,6 +15,7 @@ type Props = {
   referentId?: string
   onReferent: (value: string) => void
   recruiters: ComboboxOption[]
+  onCreateJobTitle?: (name: string) => Promise<ComboboxOption>
 }
 
 export function CandidateProfileSelects(props: Props) {
@@ -32,6 +27,7 @@ export function CandidateProfileSelects(props: Props) {
           onChange={props.onJobTitle}
           options={props.jobTitles}
           placeholder="Choisir un métier"
+          onCreate={props.onCreateJobTitle}
         />
       </FormField>
       <FormField label="Référent">

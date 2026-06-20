@@ -51,6 +51,21 @@ describe('contactRouter', () => {
     expect(deps.contacts.setPrimary).toHaveBeenCalledWith('c1')
   })
 
+  it('batch listByPharmacyIds groups contacts by pharmacy', async () => {
+    const base = makeContactDeps()
+    const deps = makeContactDeps({
+      contacts: {
+        ...base.contacts,
+        listByPharmacyIds: vi.fn().mockResolvedValue([
+          { id: 'c1', firstName: 'Marie', lastName: 'Curie', pharmacyId: 'p1' },
+        ]),
+      },
+    })
+    const grouped = await contactCaller(deps).listByPharmacyIds({ pharmacyIds: ['p1'] })
+    expect(deps.contacts.listByPharmacyIds).toHaveBeenCalledWith(['p1'])
+    expect(grouped.p1).toEqual([{ id: 'c1', label: 'Marie Curie' }])
+  })
+
   it('lists missions via read-model', async () => {
     const deps = makeContactDeps({
       listMissions: vi.fn().mockResolvedValue([
@@ -60,6 +75,17 @@ describe('contactRouter', () => {
     const missions = await contactCaller(deps).missions({ id: 'c1' })
     expect(deps.listMissions).toHaveBeenCalledWith('c1')
     expect(missions[0]?.title).toBe('Titulaire CDI')
+  })
+
+  it('exposes pharmacy referentials under referentials and legacy pharmacyOptions', async () => {
+    const deps = makeContactDeps({
+      pharmacies: {
+        listForPicker: vi.fn().mockResolvedValue([{ id: 'p1', name: 'Pharmacie du Centre' }]),
+      },
+    })
+    const caller = contactCaller(deps)
+    await expect(caller.referentials()).resolves.toEqual([{ id: 'p1', name: 'Pharmacie du Centre' }])
+    await expect(caller.pharmacyOptions()).resolves.toEqual([{ id: 'p1', name: 'Pharmacie du Centre' }])
   })
 
   it('rejects unauthenticated callers', async () => {

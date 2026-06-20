@@ -1,9 +1,10 @@
 'use client'
 
-import { Search, X } from 'lucide-react'
+import { Search, X, SearchX } from 'lucide-react'
 import { useEntitySearch } from '@/lib/assistant/use-entity-search'
 import { contextPlaceholder, type ContextValue } from '@/lib/assistant/context'
 import { Input } from '@/components/atoms/Input'
+import { EmptyState } from '@/components/atoms/EmptyState'
 import type { ShortcutEntityType } from '@/server/ai/shortcuts'
 
 type Props = {
@@ -47,7 +48,9 @@ export function EntitySearch({ entityType, value, onChange }: Props) {
         <ul className="max-h-48 divide-y divide-border/60 overflow-y-auto rounded-lg border border-border/60 bg-white/95 shadow-sm">
           {isLoading ? <li className="px-3 py-2 text-xs text-fg-muted">Recherche…</li> : null}
           {!isLoading && results.length === 0 ? (
-            <li className="px-3 py-2 text-xs text-fg-muted">Aucun résultat</li>
+            <li className="px-3 py-2">
+              <EmptyState icon={SearchX} title="Aucun résultat" variant="compact" />
+            </li>
           ) : null}
           {results.map((option) => (
             <li key={option.id}>

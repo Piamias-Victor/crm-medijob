@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { monthLabel, WEEKDAY_LABELS } from '@/lib/date-picker-utils'
+import { ASAP_DATE_LABEL, monthLabel, WEEKDAY_LABELS } from '@/lib/date-picker-utils'
 
 type Props = {
   view: Date
@@ -13,12 +13,23 @@ type Props = {
   onNext: () => void
   onPick: (date: Date) => void
   onClear: () => void
+  clearLabel?: string
 }
 
 const sameDay = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 
-export function DatePickerPanel({ view, selected, today, days, onPrev, onNext, onPick, onClear }: Props) {
+export function DatePickerPanel({
+  view,
+  selected,
+  today,
+  days,
+  onPrev,
+  onNext,
+  onPick,
+  onClear,
+  clearLabel = ASAP_DATE_LABEL,
+}: Props) {
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
@@ -62,7 +73,7 @@ export function DatePickerPanel({ view, selected, today, days, onPrev, onNext, o
         onClick={onClear}
         className="mt-3 flex w-full items-center justify-center gap-1 rounded-md border border-border py-1.5 text-xs text-fg-muted hover:bg-surface"
       >
-        <X className="size-3" /> Disponible immédiatement
+        <X className="size-3" /> {clearLabel}
       </button>
     </>
   )

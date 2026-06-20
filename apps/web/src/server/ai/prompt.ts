@@ -6,6 +6,8 @@ const FORMAT_HINTS: Record<ResponseKind, string> = {
   email: '{"subject": string, "body": string}',
   offer: '{"title": string, "content": string (au moins 100 caractères)}',
   report: '{"report": string}',
+  anonymized: '{"profile": string (markdown sans PII)}',
+  cv: '{"firstName": string, "lastName": string, ... champs CV optionnels}',
 }
 
 export type PromptParts = {

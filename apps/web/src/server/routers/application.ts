@@ -1,5 +1,4 @@
 import { TRPCError } from '@trpc/server'
-import { z } from 'zod'
 import { router, protectedProcedure } from '@/server/trpc'
 import { applicationRepository } from '@/server/db/repositories/application.repository'
 import { detectApplicationDuplicate } from '@/server/application/intake.adapter'
@@ -7,7 +6,7 @@ import { refuseApplication } from '@/server/application/intake'
 import { IntakeError } from '@/server/application/intake-errors'
 import type { InboxItem } from '@/view-models/application-inbox'
 
-const idSchema = z.object({ id: z.string().min(1) })
+import { idSchema } from '@/lib/schemas/entity-id'
 
 export type ApplicationDeps = {
   listInbox: () => Promise<InboxItem[]>

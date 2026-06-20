@@ -1,62 +1,46 @@
 // @vitest-environment node
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
-import { makeCandidateRouter, type CandidateDeps } from '@/server/routers/candidate'
+import { makeCandidateRouter } from '@/server/routers/candidate'
+import { makeCandidateDeps, session } from '@/server/routers/candidate.test.fixtures'
 
-const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
-
-const profileFixture = {
-  id: 'c1',
-  firstName: 'Camille',
-  lastName: 'Durand',
-  email: null,
-  phone: null,
-  address: null,
-  city: 'Lyon',
-  postalCode: null,
-  jobTitleId: 'jt1',
-  mobilityRadiusKm: null,
-  mobilityNotes: null,
-  availableFrom: null,
-  notes: null,
-  referentId: 'u1',
-  jobTitle: { id: 'jt1', name: 'Pharmacien' },
-  referent: { id: 'u1', name: 'Recruteur' },
-  softwares: [],
-  contractPreferences: [],
-  missions: [],
-}
-
-function makeDeps(overrides: Partial<CandidateDeps> = {}): CandidateDeps {
-  return {
-    listForKanban: vi.fn().mockResolvedValue([{ id: 'c1' }]),
-    listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
-    findProfileById: vi.fn().mockResolvedValue(profileFixture),
-    updateProfile: vi.fn().mockResolvedValue(profileFixture),
-    referentials: vi.fn().mockResolvedValue({
-      jobTitles: [{ id: 'jt1', name: 'Pharmacien' }],
-      softwares: [],
-      recruiters: [{ id: 'u1', name: 'Recruteur' }],
-      pipelineStages: [{ id: 's1', name: 'Nouveau', position: 0 }],
-    }),
-    ...overrides,
-  }
-}
-
-function caller(deps: CandidateDeps) {
+function caller(deps = makeCandidateDeps()) {
   return createCallerFactory(makeCandidateRouter(deps))({ session })
 }
 
 describe('candidateRouter', () => {
-  it('returns candidates and pipeline stages for the CVthèque', async () => {
-    const deps = makeDeps()
-    const result = await caller(deps).cvtheque()
-    expect(result.candidates).toEqual([{ id: 'c1' }])
+  it('list retourne rows + stages sans dupliquer candidates bruts', async () => {
+    const result = await caller().list()
+    expect(result).not.toHaveProperty('candidates')
+    expect(result.rows[0]).toHaveProperty('missions')
     expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
   })
 
+  it('returns typed list source rows for the CVthèque', async () => {
+    const deps = makeCandidateDeps()
+    const result = await caller(deps).list()
+    expect(result.rows).toHaveLength(1)
+    expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
+    expect(result.rows[0]).toMatchObject({ id: 'c1', firstName: 'Camille', city: 'Lyon' })
+  })
+
+  it('searches candidates for the picker', async () => {
+    const deps = makeCandidateDeps()
+    const result = await caller(deps).search({ term: 'cam' })
+    expect(deps.search).toHaveBeenCalledWith('cam', undefined)
+    expect(result).toEqual([
+      {
+        id: 'c1',
+        label: 'Camille Durand',
+        jobTitle: 'Pharmacien',
+        city: 'Lyon',
+        postalCode: '69003',
+      },
+    ])
+  })
+
   it('returns profile payload with ADR 0010 incomplete matching flags', async () => {
-    const result = await caller(makeDeps()).getById({ id: 'c1' })
+    const result = await caller().getById({ id: 'c1' })
     expect(result?.isProfileIncompleteForMatching).toBe(true)
     expect(result?.missingMatchingFields).toEqual(
       expect.arrayContaining(['postalCode', 'mobilityRadiusKm']),
@@ -64,7 +48,7 @@ describe('candidateRouter', () => {
   })
 
   it('updates candidate profile via repository', async () => {
-    const deps = makeDeps()
+    const deps = makeCandidateDeps()
     await caller(deps).update({
       id: 'c1',
       data: {
@@ -84,7 +68,7 @@ describe('candidateRouter', () => {
   })
 
   it('rejects unauthenticated callers', async () => {
-    const unauth = createCallerFactory(makeCandidateRouter(makeDeps()))({ session: null })
-    await expect(unauth.cvtheque()).rejects.toThrow()
+    const unauth = createCallerFactory(makeCandidateRouter(makeCandidateDeps()))({ session: null })
+    await expect(unauth.list()).rejects.toThrow()
   })
 })

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Reorder } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
 import { ReferentialAddForm } from '@/components/molecules/ReferentialAddForm'
@@ -16,12 +17,11 @@ export function PipelineAdmin({ items }: { items: RefItem[] }) {
   const [pendingDelete, setPendingDelete] = useState<RefItem | null>(null)
   useEffect(() => setOrder(items), [items])
 
-  const onSuccess = () => router.refresh()
-  const onError = (e: { message: string }) => window.alert(e.message)
-  const create = trpc.admin.pipeline.create.useMutation({ onSuccess })
-  const update = trpc.admin.pipeline.update.useMutation({ onSuccess })
-  const remove = trpc.admin.pipeline.remove.useMutation({ onSuccess, onError })
-  const reorder = trpc.admin.pipeline.reorder.useMutation({ onSuccess })
+  const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
+  const create = trpc.admin.pipeline.create.useMutation(mutation)
+  const update = trpc.admin.pipeline.update.useMutation(mutation)
+  const remove = trpc.admin.pipeline.remove.useMutation(mutation)
+  const reorder = trpc.admin.pipeline.reorder.useMutation(mutation)
 
   const persistOrder = (next: RefItem[]) =>
     reorder.mutate({ orderedIds: next.map((s) => s.id) })

@@ -10,11 +10,11 @@ import { ListCardHeader } from '@/components/molecules/ListCardHeader'
 import { ListCardMeta } from '@/components/molecules/ListCardMeta'
 import { ListCardShell } from '@/components/molecules/ListCardShell'
 import { cardHover } from '@/lib/motion/variants'
-import type { CandidateListItem } from '@/view-models/candidate-kanban'
+import type { CandidateListRow } from '@/view-models/candidate-list'
 
 const badgeClass = 'px-2 py-0 text-[11px]'
 
-export function CvthequeListCard({ candidate }: { candidate: CandidateListItem }) {
+export function CvthequeListCard({ candidate }: { candidate: CandidateListRow }) {
   const subtitle = [candidate.jobTitle, candidate.city].filter(Boolean).join(' · ')
 
   return (

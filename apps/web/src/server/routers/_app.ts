@@ -4,11 +4,14 @@ import { adminRouter } from '@/server/routers/admin'
 import { pharmacyRouter } from '@/server/routers/pharmacy'
 import { contactRouter } from '@/server/routers/contact'
 import { assistantRouter } from '@/server/routers/assistant'
-import { candidateRouter } from '@/server/routers/candidate'
+import { candidateRouter } from '@/server/routers/candidate.adapter'
 import { missionCandidateRouter } from '@/server/routers/mission-candidate'
 import { applicationRouter } from '@/server/routers/application'
 import { missionRouter } from '@/server/routers/mission'
 import { jobOfferRouter } from '@/server/routers/job-offer'
+import { activityLogRouter } from '@/server/routers/activity-log'
+import { documentRouter } from '@/server/routers/document'
+import { matchingRouter } from '@/server/routers/matching'
 
 export const appRouter = router({
   health: healthRouter,
@@ -21,6 +24,9 @@ export const appRouter = router({
   missionCandidate: missionCandidateRouter,
   application: applicationRouter,
   jobOffer: jobOfferRouter,
+  activityLog: activityLogRouter,
+  document: documentRouter,
+  matching: matchingRouter,
 })
 
 export type AppRouter = typeof appRouter

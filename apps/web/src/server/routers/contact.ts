@@ -2,11 +2,13 @@ import { z } from 'zod'
 import type { ContactRole, Prisma } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
-import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
-import { loadContactMissions } from '@/server/read-models/contact-missions.adapter'
+import { missionRepository } from '@/server/db/repositories/mission.repository'
+import { listContactMissions } from '@/server/read-models/contact-missions'
+import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toContactListRow, type ContactListEntity } from '@/view-models/contact-list'
 import { toContactDetail, type ContactDetailEntity } from '@/view-models/contact-detail'
 import { contactInputSchema, updateContactSchema } from '@/view-models/contact-form.schema'
+import { groupContactsByPharmacy } from '@/view-models/contact-by-pharmacy'
 
 type PharmacyRef = { id: string; name: string }
 
@@ -14,16 +16,22 @@ export type ContactDeps = {
   contacts: {
     list: () => Promise<ContactListEntity[]>
     findById: (id: string) => Promise<ContactDetailEntity | null>
+    listByPharmacy: (pharmacyId: string) => Promise<{ id: string; firstName: string; lastName: string }[]>
+    listByPharmacyIds: (
+      pharmacyIds: string[],
+    ) => Promise<{ id: string; firstName: string; lastName: string; pharmacyId: string }[]>
     create: (data: Prisma.ContactUncheckedCreateInput) => Promise<unknown>
     update: (id: string, data: Prisma.ContactUncheckedUpdateInput) => Promise<unknown>
     setPrimary: (id: string) => Promise<ContactDetailEntity | null>
     softDelete: (id: string) => Promise<unknown>
   }
-  listMissions: (contactId: string) => ReturnType<typeof loadContactMissions>
+  listMissions: (contactId: string) => ReturnType<typeof listContactMissions>
   pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
 }
 
-const idSchema = z.object({ id: z.string().min(1) })
+import { idSchema } from '@/lib/schemas/entity-id'
+const pharmacyIdSchema = z.object({ pharmacyId: z.string().min(1) })
+const pharmacyIdsSchema = z.object({ pharmacyIds: z.array(z.string().min(1)) })
 
 function toData(input: z.output<typeof contactInputSchema>): Prisma.ContactUncheckedCreateInput {
   return {
@@ -47,7 +55,18 @@ export function makeContactRouter(deps: ContactDeps) {
       const contact = await deps.contacts.findById(input.id)
       return contact ? toContactDetail(contact) : null
     }),
+    /** @deprecated Use `referentials` — kept for existing callers during migration */
     pharmacyOptions: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
+    referentials: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
+    listByPharmacy: protectedProcedure.input(pharmacyIdSchema).query(async ({ input }) =>
+      (await deps.contacts.listByPharmacy(input.pharmacyId)).map((c) => ({
+        id: c.id,
+        label: `${c.firstName} ${c.lastName}`.trim(),
+      })),
+    ),
+    listByPharmacyIds: protectedProcedure.input(pharmacyIdsSchema).query(async ({ input }) =>
+      groupContactsByPharmacy(await deps.contacts.listByPharmacyIds(input.pharmacyIds)),
+    ),
     create: protectedProcedure
       .input(contactInputSchema)
       .mutation(({ input }) => deps.contacts.create(toData(input))),
@@ -67,11 +86,9 @@ export function makeContactRouter(deps: ContactDeps) {
 
 export const contactRouter = makeContactRouter({
   contacts: contactRepository,
-  listMissions: loadContactMissions,
-  pharmacies: {
-    listForPicker: async () => {
-      const rows = await pharmacyRepository.list()
-      return rows.map((p) => ({ id: p.id, name: p.name }))
-    },
-  },
+  listMissions: (contactId) =>
+    listContactMissions(contactId, {
+      listByContact: (id) => missionRepository.listByContact(id),
+    }),
+  pharmacies: { listForPicker: listPharmacyPickerOptions },
 })

@@ -1,4 +1,5 @@
 import { PrismaClient, MissionStatus } from '@prisma/client'
+import { seedDemoMatching } from './seed-demo-matching'
 
 // Données de démo CVthèque/inbox (idempotentes) pour tests manuels issue #54.
 export async function seedDemo(prisma: PrismaClient) {
@@ -70,6 +71,7 @@ export async function seedDemo(prisma: PrismaClient) {
   )
 
   await seedDemoApplications(prisma, missions[0].id, jobTitle.id)
+  await seedDemoMatching(prisma, referent.id)
 }
 
 async function seedDemoApplications(prisma: PrismaClient, missionId: string, jobTitleId: string) {

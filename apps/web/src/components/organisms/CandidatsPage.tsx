@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { toCandidateListRows } from '@/view-models/candidate-list'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Users } from 'lucide-react'
 import { CandidatTabs, type CandidatsTab } from '@/components/molecules/CandidatTabs'
@@ -9,20 +10,22 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
 import { CvthequeSection } from '@/components/organisms/CvthequeSection'
 import { tabPanelMotion } from '@/lib/motion/variants'
-import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban'
+import type { CandidateListRow } from '@/view-models/candidate-list'
+import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 import type { InboxItem } from '@/view-models/application-inbox'
 
 type Props = {
-  cvtheque: { candidates: RawCandidate[]; stages: RawStage[] }
+  list: { rows: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
 }
 
-export function CandidatsPage({ cvtheque, inbox }: Props) {
+export function CandidatsPage({ list, inbox }: Props) {
   const [tab, setTab] = useState<CandidatsTab>('cvtheque')
+  const listRows = useMemo(() => toCandidateListRows(list.rows), [list.rows])
   const description = useMemo(
     () =>
-      `${cvtheque.candidates.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
-    [cvtheque.candidates.length, inbox.length],
+      `${listRows.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
+    [listRows.length, inbox.length],
   )
 
   return (
@@ -35,7 +38,7 @@ export function CandidatsPage({ cvtheque, inbox }: Props) {
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
           {tab === 'cvtheque' ? (
-            <CvthequeSection candidates={cvtheque.candidates} stages={cvtheque.stages} />
+            <CvthequeSection rows={listRows} candidates={list.rows} stages={list.stages} />
           ) : (
             <SectionCard
               variant="glass"

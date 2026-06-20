@@ -1,5 +1,5 @@
 import type { MissionStatus } from '@prisma/client'
-import { isTerminalMissionStatus, isTerminalStageName } from '@/lib/kanban-terminal'
+import { filterActivePositionings } from '@/lib/kanban-active-positionings'
 
 export type RawCandidateMissionRow = {
   stage: { id: string; name: string; position: number }
@@ -40,16 +40,13 @@ export function moveCandidateMission(
   )
 }
 
-const isTerminalStatus = (status: MissionStatus) => isTerminalMissionStatus(status)
-const isTerminalStage = (name: string) => isTerminalStageName(name)
+const toMissionRow = (row: RawCandidateMissionRow): CandidateMissionRow => ({
+  missionId: row.mission.id,
+  missionTitle: row.mission.title,
+  stageId: row.stage.id,
+  stageName: row.stage.name,
+})
 
 export function toCandidateMissionRows(rows: RawCandidateMissionRow[]): CandidateMissionRow[] {
-  return rows
-    .filter((row) => !isTerminalStatus(row.mission.status) && !isTerminalStage(row.stage.name))
-    .map((row) => ({
-      missionId: row.mission.id,
-      missionTitle: row.mission.title,
-      stageId: row.stage.id,
-      stageName: row.stage.name,
-    }))
+  return filterActivePositionings(rows).map(toMissionRow)
 }

@@ -2,16 +2,16 @@
 
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
+import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { ReferentialManager } from '@/components/organisms/ReferentialManager'
 import type { RefItem } from '@/view-models/referential'
 
 export function GroupementAdmin({ items }: { items: RefItem[] }) {
   const router = useRouter()
-  const onSuccess = () => router.refresh()
-  const onError = (e: { message: string }) => window.alert(e.message)
-  const create = trpc.admin.groupement.create.useMutation({ onSuccess })
-  const update = trpc.admin.groupement.update.useMutation({ onSuccess })
-  const remove = trpc.admin.groupement.remove.useMutation({ onSuccess, onError })
+  const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
+  const create = trpc.admin.groupement.create.useMutation(mutation)
+  const update = trpc.admin.groupement.update.useMutation(mutation)
+  const remove = trpc.admin.groupement.remove.useMutation(mutation)
 
   return (
     <ReferentialManager

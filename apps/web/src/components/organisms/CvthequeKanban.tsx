@@ -6,6 +6,7 @@ import { LayoutGrid } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { KanbanColumn } from '@/components/molecules/KanbanColumn'
 import { trpc } from '@/lib/trpc/client'
+import { useKanbanOptimisticMutation } from '@/lib/hooks/use-kanban-optimistic-mutation'
 import {
   buildKanbanColumns,
   moveMissionRow,
@@ -22,17 +23,15 @@ export function CvthequeKanban({ candidates, stages }: Props) {
   const mutation = trpc.missionCandidate.updateStage.useMutation({
     onSettled: () => router.refresh(),
   })
-
-  function move(missionId: string, candidateId: string, stageId: string) {
-    const targetStage = stages.find((stage) => stage.id === stageId)
-    if (!targetStage) return
-    const snapshot = rows
-    setRows((prev) => moveMissionRow(prev, { missionId, candidateId, targetStage }))
-    mutation.mutate(
-      { missionId, candidateId, stageId },
-      { onError: () => setRows(snapshot) },
-    )
-  }
+  const move = useKanbanOptimisticMutation({
+    rows,
+    setRows,
+    applyOptimistic: (prev, vars: { missionId: string; candidateId: string; stageId: string }) => {
+      const targetStage = stages.find((stage) => stage.id === vars.stageId)
+      return targetStage ? moveMissionRow(prev, { missionId: vars.missionId, candidateId: vars.candidateId, targetStage }) : prev
+    },
+    mutate: mutation.mutate,
+  })
 
   if (stages.length === 0) {
     return <EmptyState icon={LayoutGrid} title="Aucune étape de pipeline configurée" />
@@ -41,7 +40,11 @@ export function CvthequeKanban({ candidates, stages }: Props) {
   return (
     <div className="flex gap-4 overflow-x-auto pb-2">
       {columns.map((column) => (
-        <KanbanColumn key={column.stage.id} column={column} onDropRow={move} />
+        <KanbanColumn
+          key={column.stage.id}
+          column={column}
+          onDropRow={(missionId, candidateId, stageId) => move({ missionId, candidateId, stageId })}
+        />
       ))}
     </div>
   )

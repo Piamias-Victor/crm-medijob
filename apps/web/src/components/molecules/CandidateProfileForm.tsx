@@ -1,21 +1,18 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { Button } from '@/components/atoms/Button'
 import { CandidateProfileFields } from '@/components/molecules/CandidateProfileFields'
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
 import { FormSection } from '@/components/molecules/FormSection'
-import { trpc } from '@/lib/trpc/client'
+import { useCandidateProfileMutations } from '@/lib/hooks/use-candidate-profile-mutations'
+import { useCandidateProfileForm } from '@/lib/hooks/use-candidate-profile-form'
 import { getMissingMatchingFields } from '@/view-models/candidate-profile'
-import {
-  candidateProfileInputSchema,
-  type CandidateProfileInput,
-} from '@/view-models/candidate-profile.schema'
+import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { RefItem } from '@/view-models/referential'
+import { toSelectOptions } from '@/lib/form-options'
 
 type Referentials = {
   jobTitles: RefItem[]
@@ -29,15 +26,11 @@ type Props = {
   referentials: Referentials
 }
 
-const toOptions = (items: RefItem[]) => items.map((i) => ({ value: i.id, label: i.name }))
-
 export function CandidateProfileForm({ candidateId, profile, referentials }: Props) {
-  const router = useRouter()
-  const update = trpc.candidate.update.useMutation({ onSuccess: () => router.refresh() })
-  const { register, handleSubmit, setValue, watch, getValues, formState } = useForm<CandidateProfileInput>({
-    resolver: zodResolver(candidateProfileInputSchema),
-    defaultValues: profile.formValues,
-  })
+  const { update, createJobTitle } = useCandidateProfileMutations()
+  const [jobTitles, setJobTitles] = useState(referentials.jobTitles)
+  const { register, handleSubmit, setValue, watch, getValues, formState } =
+    useCandidateProfileForm(profile.formValues)
 
   const missingFields = getMissingMatchingFields({
     city: watch('city') ?? null,
@@ -45,6 +38,12 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
     mobilityRadiusKm: watch('mobilityRadiusKm') ?? null,
     availableFrom: watch('availableFrom') ? new Date(watch('availableFrom')!) : null,
   })
+
+  const onCreateJobTitle = async (name: string) => {
+    const created = await createJobTitle.mutateAsync({ name })
+    setJobTitles((prev) => [...prev, created])
+    return { value: created.id, label: created.name }
+  }
 
   return (
     <form
@@ -67,15 +66,16 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
         <CandidateProfileSelects
           jobTitleId={watch('jobTitleId')}
           onJobTitle={(v) => setValue('jobTitleId', v)}
-          jobTitles={toOptions(referentials.jobTitles)}
+          jobTitles={toSelectOptions(jobTitles)}
+          onCreateJobTitle={onCreateJobTitle}
           softwareIds={watch('softwareIds') ?? []}
           onSoftwareIds={(v) => setValue('softwareIds', v)}
-          softwares={toOptions(referentials.softwares)}
+          softwares={toSelectOptions(referentials.softwares)}
           contractTypes={watch('contractTypes') ?? []}
           onContractTypes={(v) => setValue('contractTypes', v as CandidateProfileInput['contractTypes'])}
           referentId={watch('referentId')}
           onReferent={(v) => setValue('referentId', v)}
-          recruiters={toOptions(referentials.recruiters)}
+          recruiters={toSelectOptions(referentials.recruiters)}
         />
       </FormSection>
       <div className="flex justify-end border-t border-border/60 pt-4">

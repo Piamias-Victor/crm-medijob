@@ -1,6 +1,8 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { searchContacts } from './contact-search.repo'
 
 const listInclude = {
   pharmacy: { select: { name: true } },
@@ -35,14 +37,37 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
     },
     findById: (id: string) =>
       db.contact.findFirst({ where: { id, ...NOT_DELETED }, include: detailInclude }),
-    list: () =>
+    findForContext: (id: string) =>
+      db.contact.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          role: true,
+          isPrimary: true,
+          pharmacy: { select: { name: true } },
+        },
+      }),
+    list: (limit = DEFAULT_LIST_LIMIT) =>
       db.contact.findMany({
         where: NOT_DELETED,
         include: listInclude,
         orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
-    listByPharmacy: (pharmacyId: string) =>
-      db.contact.findMany({ where: { pharmacyId, ...NOT_DELETED } }),
+    listByPharmacy: (pharmacyId: string, limit = DEFAULT_LIST_LIMIT) =>
+      db.contact.findMany({ where: { pharmacyId, ...NOT_DELETED }, take: limit }),
+    listByPharmacyIds: (pharmacyIds: string[], limitPerPharmacy = DEFAULT_LIST_LIMIT) => {
+      if (pharmacyIds.length === 0) return Promise.resolve([])
+      return db.contact.findMany({
+        where: { pharmacyId: { in: pharmacyIds }, ...NOT_DELETED },
+        select: { id: true, firstName: true, lastName: true, pharmacyId: true },
+        orderBy: { createdAt: 'desc' },
+        take: limitPerPharmacy * pharmacyIds.length,
+      })
+    },
     update: async (id: string, data: Prisma.ContactUncheckedUpdateInput) => {
       if (!data.isPrimary) return db.contact.update({ where: { id }, data })
       return db.$transaction(async (tx) => {
@@ -60,6 +85,7 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       })
       return db.contact.findFirst({ where: { id }, include: detailInclude })
     },
+    search: (term: string, limit = 8) => searchContacts(db, term, limit),
     softDelete: (id: string) =>
       db.contact.update({ where: { id }, data: { deletedAt: new Date() } }),
   }
