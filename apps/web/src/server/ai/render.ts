@@ -5,6 +5,7 @@ import type {
   EmailResponse,
   OfferResponse,
   ReportResponse,
+  AnonymizedProfileResponse,
 } from './schemas'
 
 export function renderResponse(kind: ResponseKind, data: unknown): string {
@@ -23,6 +24,8 @@ export function renderResponse(kind: ResponseKind, data: unknown): string {
     }
     case 'report':
       return (data as ReportResponse).report
+    case 'anonymized':
+      return (data as AnonymizedProfileResponse).profile
     case 'cv':
       return JSON.stringify(data)
   }

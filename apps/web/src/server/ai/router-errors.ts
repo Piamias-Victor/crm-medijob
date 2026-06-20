@@ -7,6 +7,10 @@ const KNOWN_ERRORS: Record<string, { code: TRPCError['code']; message: string }>
     code: 'BAD_REQUEST',
     message: 'Réponse IA non valide. Réessaie.',
   },
+  ANONYMIZED_CONTAINS_PII: {
+    code: 'BAD_REQUEST',
+    message: 'Le dossier anonymisé contient des données personnelles. Réessaie.',
+  },
 }
 
 export function mapAssistantChatError(error: unknown): TRPCError {

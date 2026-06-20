@@ -1,17 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { CandidateDetailTabs, type CandidateDetailTab } from '@/components/molecules/CandidateDetailTabs'
+import { CandidateDetailTabPanel } from '@/components/molecules/CandidateDetailTabPanel'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
-import { SectionCard } from '@/components/molecules/SectionCard'
-import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
-import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
-import { CandidateCvStoredPreview } from '@/components/molecules/CandidateCvStoredPreview'
-import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
-import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
-import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
 import type { ActivityLogRow } from '@/view-models/activity-log'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { RefItem } from '@/view-models/referential'
 import type { RawStage } from '@/view-models/candidate-kanban.types'
@@ -27,19 +22,12 @@ type Props = {
   profile: CandidateProfilePayload
   referentials: Referentials
   activities: ActivityLogRow[]
+  documents: DocumentListRow[]
 }
 
-export function CandidateDetailPage({ profile, referentials, activities }: Props) {
+export function CandidateDetailPage({ profile, referentials, activities, documents }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
   const name = `${profile.firstName} ${profile.lastName}`.trim()
-  const meta = CANDIDATE_TAB_META[tab]
-  const missionsDescription = useMemo(
-    () =>
-      profile.missions.length === 0
-        ? 'Aucune mission active pour ce candidat.'
-        : `${profile.missions.length} mission(s) en cours de suivi.`,
-    [profile.missions.length],
-  )
 
   return (
     <EntityDetailShell
@@ -63,35 +51,13 @@ export function CandidateDetailPage({ profile, referentials, activities }: Props
       }
       tabKey={tab}
     >
-      <SectionCard
-        variant="glass"
-        title={tab === 'missions' ? 'Missions actives' : meta.title}
-        description={tab === 'missions' ? missionsDescription : meta.description}
-        bodyClassName={tab === 'missions' ? 'p-4 sm:p-5' : 'p-5 sm:p-6'}
-      >
-        {tab === 'profil' ? (
-          <div className="flex flex-col gap-8">
-            <CandidateCvPanel profile={profile} referentials={referentials} />
-            <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
-            {profile.cvUrl ? (
-              <CandidateCvStoredPreview candidateId={profile.id} cvUrl={profile.cvUrl} />
-            ) : null}
-          </div>
-        ) : null}
-        {tab === 'historique' ? (
-          <EntityActivityLogTab
-            scope={{ entityType: 'CANDIDATE', entityId: profile.id }}
-            initialLogs={activities}
-          />
-        ) : null}
-        {tab === 'missions' ? (
-          <CandidateMissionsTab
-            candidateId={profile.id}
-            stages={referentials.pipelineStages}
-            missions={profile.missions}
-          />
-        ) : null}
-      </SectionCard>
+      <CandidateDetailTabPanel
+        tab={tab}
+        profile={profile}
+        referentials={referentials}
+        activities={activities}
+        documents={documents}
+      />
     </EntityDetailShell>
   )
 }
