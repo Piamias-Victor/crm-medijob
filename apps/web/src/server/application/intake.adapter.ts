@@ -1,9 +1,14 @@
 import { applicationRepository } from '@/server/db/repositories/application.repository'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
-import type { DuplicateMatch } from '@/server/application/intake'
+import {
+  detectDuplicateCandidate,
+  type ApplicationIdentity,
+  type DuplicateMatch,
+} from '@/server/application/intake'
+import { fetchCandidateIdentitiesForDuplicate } from '@/server/application/intake.adapter.fetch'
 
 type DuplicateDeps = {
-  findApplication: (id: string) => ReturnType<typeof applicationRepository.findById>
+  findApplication: (id: string) => Promise<ApplicationIdentity | null>
   findByEmail: (email: string) => ReturnType<typeof candidateRepository.findIdentityByEmail>
   findByNamePhone: (
     firstName: string,
@@ -13,7 +18,16 @@ type DuplicateDeps = {
 }
 
 const defaultDeps: DuplicateDeps = {
-  findApplication: (id) => applicationRepository.findById(id),
+  findApplication: async (id) => {
+    const application = await applicationRepository.findById(id)
+    if (!application) return null
+    return {
+      email: application.email,
+      firstName: application.firstName,
+      lastName: application.lastName,
+      phone: application.phone,
+    }
+  },
   findByEmail: (email) => candidateRepository.findIdentityByEmail(email),
   findByNamePhone: (firstName, lastName, phone) =>
     candidateRepository.findIdentityByNamePhone(firstName, lastName, phone),
@@ -26,15 +40,6 @@ export async function detectApplicationDuplicate(
   const application = await deps.findApplication(applicationId)
   if (!application) return null
 
-  const emailHit = await deps.findByEmail(application.email)
-  if (emailHit) return { candidateId: emailHit.id, reason: 'email' }
-
-  if (!application.phone) return null
-
-  const namePhoneHit = await deps.findByNamePhone(
-    application.firstName,
-    application.lastName,
-    application.phone,
-  )
-  return namePhoneHit ? { candidateId: namePhoneHit.id, reason: 'name_phone' } : null
+  const candidates = await fetchCandidateIdentitiesForDuplicate(application, deps)
+  return detectDuplicateCandidate(application, candidates)
 }

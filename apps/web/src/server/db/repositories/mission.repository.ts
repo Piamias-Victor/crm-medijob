@@ -5,8 +5,6 @@ import { NOT_DELETED } from './soft-delete'
 import { missionDetailSelect } from './mission.repository.selects'
 import { missionMatchingSelect, type MissionMatchingRow } from './mission-matching.select'
 
-type StageUpdate = { candidateId: string; stageId: string }
-
 const listSelect = {
   id: true,
   title: true,
@@ -49,23 +47,6 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
       }),
     updateStatus: (id: string, status: MissionStatus) =>
       db.mission.update({ where: { id }, data: { status }, select: { id: true, status: true } }),
-    terminalTransition: (missionId: string, status: MissionStatus, stageUpdates: StageUpdate[]) =>
-      db.$transaction(async (tx) => {
-        const result = await tx.mission.update({
-          where: { id: missionId },
-          data: { status },
-          select: { id: true, status: true },
-        })
-        for (const update of stageUpdates) {
-          await tx.missionCandidate.update({
-            where: {
-              missionId_candidateId: { missionId, candidateId: update.candidateId },
-            },
-            data: { stageId: update.stageId },
-          })
-        }
-        return result
-      }),
     search: (term: string, limit = 8) =>
       db.mission.findMany({
         where: { ...NOT_DELETED, title: { contains: term, mode: 'insensitive' } },

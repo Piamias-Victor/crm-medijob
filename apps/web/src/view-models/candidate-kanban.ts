@@ -1,4 +1,4 @@
-import { isTerminalMissionStatus, isTerminalStageName } from '@/lib/kanban-terminal'
+import { filterActivePositionings } from '@/lib/kanban-active-positionings'
 import type {
   CandidateListItem,
   KanbanColumn,
@@ -12,9 +12,7 @@ export type * from './candidate-kanban.types'
 const fullName = (c: RawCandidate) => `${c.firstName} ${c.lastName}`.trim()
 
 export function activeMissions(candidate: RawCandidate): RawMissionRow[] {
-  return candidate.missions.filter(
-    (row) => !isTerminalMissionStatus(row.mission.status) && !isTerminalStageName(row.stage.name),
-  )
+  return filterActivePositionings(candidate.missions)
 }
 
 export function buildKanbanColumns(

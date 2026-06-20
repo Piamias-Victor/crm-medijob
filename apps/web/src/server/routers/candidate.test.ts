@@ -2,7 +2,8 @@
 import { describe, it, expect } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeCandidateRouter } from '@/server/routers/candidate'
-import { makeCandidateDeps, profileFixture, session } from '@/server/routers/candidate.test.fixtures'
+import { makeCandidateDeps, session } from '@/server/routers/candidate.test.fixtures'
+import type { CandidateListRow } from '@/view-models/candidate-list'
 
 function caller(deps = makeCandidateDeps()) {
   return createCallerFactory(makeCandidateRouter(deps))({ session })
@@ -17,9 +18,15 @@ describe('candidateRouter', () => {
     expect(result.rows[0]).toMatchObject({ id: 'c1', name: 'Camille Durand', city: 'Lyon' })
   })
 
-  it('keeps cvtheque as alias of list', async () => {
-    const deps = makeCandidateDeps()
-    expect(await caller(deps).cvtheque()).toEqual(await caller(deps).list())
+  it('list retourne rows typées CandidateListRow[], pas RawCandidate[]', async () => {
+    const result = await caller().list()
+    const row: CandidateListRow = result.rows[0]!
+    expect(row).toMatchObject({
+      id: 'c1',
+      name: 'Camille Durand',
+      activeMissionCount: expect.any(Number),
+    })
+    expect(result.candidates[0]).toHaveProperty('missions')
   })
 
   it('searches candidates for the picker', async () => {
@@ -67,6 +74,6 @@ describe('candidateRouter', () => {
 
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeCandidateRouter(makeCandidateDeps()))({ session: null })
-    await expect(unauth.cvtheque()).rejects.toThrow()
+    await expect(unauth.list()).rejects.toThrow()
   })
 })

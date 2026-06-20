@@ -1,7 +1,9 @@
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage.repository'
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
-import { fetchCandidateReferentials } from '@/server/read-models/candidate-referentials.adapter'
+import { softwareRepository } from '@/server/db/repositories/software.repository'
+import { userRepository } from '@/server/db/repositories/user.repository'
+import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
 import { uploadBlob, deleteBlob, vercelBlobClient } from '@/server/services/blob'
 import { createCvExtractionProvider } from '@/server/ai/cv-extraction-provider'
 import { runCvExtraction } from '@/server/ai/cv-extraction'
@@ -20,7 +22,13 @@ export const candidateRouter = makeCandidateRouter({
   updateDerivedFields: (id, fields) => candidateRepository.updateDerivedFields(id, fields),
   provider: documentsProvider,
   updateProfile: (id, data) => candidateRepository.updateProfile(id, data),
-  referentials: fetchCandidateReferentials,
+  referentials: () =>
+    loadCandidateReferentials({
+      listJobTitles: () => jobTitleRepository.list(),
+      listSoftwares: () => softwareRepository.list(),
+      listRecruiters: () => userRepository.listRecruiters(),
+      listPipelineStages: () => pipelineStageRepository.list(),
+    }),
   uploadCvBlob: (input) => uploadBlob(vercelBlobClient, input),
   deleteCvBlob: (url) => deleteBlob(vercelBlobClient, url),
   runCvExtraction: (file) => runCvExtraction(cvProvider, file),

@@ -18,6 +18,10 @@ export const candidateProfileInclude = {
   },
 } satisfies Prisma.CandidateInclude
 
+export type CandidateProfileRecord = Prisma.CandidateGetPayload<{
+  include: typeof candidateProfileInclude
+}>
+
 export const candidateDocumentsInclude = {
   jobTitle: { select: { name: true } },
   softwares: { select: { software: { select: { name: true } } } },

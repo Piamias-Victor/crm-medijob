@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client'
+import type { MissionStatus, PrismaClient } from '@prisma/client'
 import { DEFAULT_PIPELINE_STAGE_NAME } from '@/lib/pipeline-constants'
 import { NOT_DELETED } from './soft-delete'
 import { prisma as defaultDb } from './client'
@@ -6,6 +6,7 @@ import { prisma as defaultDb } from './client'
 type MissionCandidateKey = { missionId: string; candidateId: string }
 
 type UpdateStageInput = MissionCandidateKey & { stageId: string }
+type TerminalStageUpdate = { candidateId: string; stageId: string }
 
 export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
   return {
@@ -59,6 +60,27 @@ export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
     remove: ({ missionId, candidateId }: MissionCandidateKey) =>
       db.missionCandidate.delete({
         where: { missionId_candidateId: { missionId, candidateId } },
+      }),
+    applyTerminalTransition: (
+      missionId: string,
+      status: MissionStatus,
+      stageUpdates: TerminalStageUpdate[],
+    ) =>
+      db.$transaction(async (tx) => {
+        const result = await tx.mission.update({
+          where: { id: missionId },
+          data: { status },
+          select: { id: true, status: true },
+        })
+        for (const update of stageUpdates) {
+          await tx.missionCandidate.update({
+            where: {
+              missionId_candidateId: { missionId, candidateId: update.candidateId },
+            },
+            data: { stageId: update.stageId },
+          })
+        }
+        return result
       }),
   }
 }

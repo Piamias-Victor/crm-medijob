@@ -4,6 +4,7 @@ import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage
 import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { missionCandidateRepository } from '@/server/db/repositories/mission-candidate.repository'
 import { transitionMissionStatus } from '@/server/mission/transition-status'
+import { applyTerminalTransition } from '@/server/pipeline/mission-candidate.service'
 import { TransitionError } from '@/server/mission/transition-errors'
 
 async function findStageIdsByNames() {
@@ -42,7 +43,10 @@ export async function runMissionStatusTransition(
       },
       updateMissionStatus: (missionId, status) => missionRepository.updateStatus(missionId, status),
       applyTerminalTransition: (missionId, status, stageUpdates) =>
-        missionRepository.terminalTransition(missionId, status, stageUpdates),
+        applyTerminalTransition(missionId, status, stageUpdates, {
+          applyTerminalTransition: (id, nextStatus, updates) =>
+            missionCandidateRepository.applyTerminalTransition(id, nextStatus, updates),
+        }),
     })
   } catch (error) {
     mapTransitionError(error)
