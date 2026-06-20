@@ -6,6 +6,8 @@ import { Building2, MapPin } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
+import type { ActivityLogRow } from '@/view-models/activity-log'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { MissionTab } from '@/view-models/mission-tabs'
 import type { PipelineStageRef } from '@/view-models/mission-pipeline.types'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
@@ -24,6 +26,8 @@ type Props = {
   pharmacies: Ref[]
   recruiters: Ref[]
   contactsByPharmacy: Record<string, ContactRef[]>
+  activities: ActivityLogRow[]
+  documents: DocumentListRow[]
   activityCount: number
   documentCount: number
 }
@@ -35,6 +39,8 @@ export function MissionDetailPage({
   pharmacies,
   recruiters,
   contactsByPharmacy,
+  activities,
+  documents,
   activityCount,
   documentCount,
 }: Props) {
@@ -88,6 +94,8 @@ export function MissionDetailPage({
         pharmacies={pharmacies}
         recruiters={recruiters}
         contactsByPharmacy={contactsByPharmacy}
+        activities={activities}
+        documents={documents}
         submitting={update.isPending}
         onUpdate={(data) => update.mutate({ id: mission.id, data })}
         onCreateJobTitle={(name) => createJobTitle.mutateAsync({ name })}
