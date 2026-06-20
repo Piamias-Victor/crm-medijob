@@ -36,6 +36,6 @@ describe('LoginForm', () => {
       expect(screen.getByText('Redirection…')).toBeInTheDocument()
       expect(screen.getByRole('status', { name: 'Chargement' })).toBeInTheDocument()
     })
-    expect(push).toHaveBeenCalledWith('/candidats')
+    expect(push).toHaveBeenCalledWith('/accueil')
   })
 })

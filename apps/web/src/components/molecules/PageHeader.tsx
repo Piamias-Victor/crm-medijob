@@ -5,11 +5,12 @@ type Props = {
   icon: ReactNode
   title: string
   description?: string
+  actions?: ReactNode
   children?: ReactNode
   className?: string
 }
 
-export function PageHeader({ icon, title, description, children, className }: Props) {
+export function PageHeader({ icon, title, description, actions, children, className }: Props) {
   return (
     <header
       className={cn(
@@ -17,17 +18,20 @@ export function PageHeader({ icon, title, description, children, className }: Pr
         className,
       )}
     >
-      <div className="flex items-start gap-4">
-        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent text-accent-fg shadow-md shadow-accent/30">
-          {icon}
-        </span>
-        <div className="flex flex-col gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-fg">{title}</h1>
-            {description ? <p className="text-sm text-fg-muted">{description}</p> : null}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent text-accent-fg shadow-md shadow-accent/30">
+            {icon}
+          </span>
+          <div className="flex flex-col gap-3">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-fg">{title}</h1>
+              {description ? <p className="text-sm text-fg-muted">{description}</p> : null}
+            </div>
+            {children}
           </div>
-          {children}
         </div>
+        {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
       </div>
     </header>
   )

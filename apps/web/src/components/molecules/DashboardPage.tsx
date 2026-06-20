@@ -11,6 +11,7 @@ type Props = {
   title: string
   description?: string
   nav?: ReactNode
+  actions?: ReactNode
   maxWidth?: string
   children: ReactNode
 }
@@ -20,6 +21,7 @@ export function DashboardPage({
   title,
   description,
   nav,
+  actions,
   maxWidth = 'max-w-[88rem]',
   children,
 }: Props) {
@@ -30,7 +32,7 @@ export function DashboardPage({
       animate="visible"
       className={cn('mx-auto flex w-full flex-col gap-6', maxWidth)}
     >
-      <PageHeader icon={icon} title={title} description={description}>
+      <PageHeader icon={icon} title={title} description={description} actions={actions}>
         {nav}
       </PageHeader>
       {children}

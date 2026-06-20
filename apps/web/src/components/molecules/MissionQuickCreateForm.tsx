@@ -13,7 +13,8 @@ import { MissionQuickCreateFields } from '@/components/molecules/MissionQuickCre
 type Ref = { id: string; name: string }
 
 type Props = {
-  pharmacyId: string
+  pharmacyId?: string
+  pharmacies?: Ref[]
   jobTitles: Ref[]
   recruiters: Ref[]
   submitting: boolean
@@ -23,6 +24,7 @@ type Props = {
 
 export function MissionQuickCreateForm({
   pharmacyId,
+  pharmacies,
   jobTitles: initialJobTitles,
   recruiters,
   submitting,
@@ -33,7 +35,7 @@ export function MissionQuickCreateForm({
   const form = useForm<MissionQuickCreateInput>({
     resolver: zodResolver(missionQuickCreateSchema),
     defaultValues: {
-      pharmacyId,
+      pharmacyId: pharmacyId ?? pharmacies?.[0]?.id,
       contractType: 'CDI',
       referentId: recruiters[0]?.id,
       jobTitleId: initialJobTitles[0]?.id,
@@ -59,6 +61,7 @@ export function MissionQuickCreateForm({
         errors={form.formState.errors}
         jobTitles={jobTitles}
         recruiters={recruiters}
+        pharmacies={pharmacies}
         onCreateJobTitle={createJobTitle}
       />
       <div className="flex items-end sm:col-span-2">

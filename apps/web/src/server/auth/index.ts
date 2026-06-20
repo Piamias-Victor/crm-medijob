@@ -1,8 +1,10 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './config'
-import { authorizeCredentials } from './authorize'
 import { loginSchema } from './schema'
+import { validateServerEnv } from '@/server/env'
+
+validateServerEnv()
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -10,9 +12,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },
-      authorize: (raw) => {
+      authorize: async (raw) => {
         const parsed = loginSchema.safeParse(raw)
-        return parsed.success ? authorizeCredentials(parsed.data) : null
+        if (!parsed.success) return null
+        const { authorizeCredentials } = await import('./authorize')
+        return authorizeCredentials(parsed.data)
       },
     }),
   ],
