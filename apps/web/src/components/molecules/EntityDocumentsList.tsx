@@ -1,9 +1,10 @@
 'use client'
 
-import { Download, Trash2 } from 'lucide-react'
+import { Download, FileText, Trash2 } from 'lucide-react'
 import type { DocumentListRow } from '@/view-models/document-list'
 import { Badge } from '@/components/atoms/Badge'
 import { Button } from '@/components/atoms/Button'
+import { EmptyState } from '@/components/atoms/EmptyState'
 
 type Props = {
   documents: DocumentListRow[]
@@ -15,7 +16,7 @@ type Props = {
 
 export function EntityDocumentsList({ documents, emptyLabel, deletingId, onDownload, onDelete }: Props) {
   if (documents.length === 0) {
-    return <p className="text-sm text-fg-muted">{emptyLabel}</p>
+    return <EmptyState icon={FileText} title={emptyLabel} variant="compact" />
   }
 
   return (
@@ -23,7 +24,7 @@ export function EntityDocumentsList({ documents, emptyLabel, deletingId, onDownl
       {documents.map((doc) => (
         <li
           key={doc.id}
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/55 bg-white/88 px-4 py-3 text-sm shadow-sm"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border/55 bg-surface/90 px-4 py-3 text-sm shadow-sm"
         >
           <div className="min-w-0 space-y-1">
             <div className="flex flex-wrap items-center gap-2">

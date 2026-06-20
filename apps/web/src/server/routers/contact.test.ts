@@ -62,6 +62,17 @@ describe('contactRouter', () => {
     expect(missions[0]?.title).toBe('Titulaire CDI')
   })
 
+  it('exposes pharmacy referentials under referentials and legacy pharmacyOptions', async () => {
+    const deps = makeContactDeps({
+      pharmacies: {
+        listForPicker: vi.fn().mockResolvedValue([{ id: 'p1', name: 'Pharmacie du Centre' }]),
+      },
+    })
+    const caller = contactCaller(deps)
+    await expect(caller.referentials()).resolves.toEqual([{ id: 'p1', name: 'Pharmacie du Centre' }])
+    await expect(caller.pharmacyOptions()).resolves.toEqual([{ id: 'p1', name: 'Pharmacie du Centre' }])
+  })
+
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeContactRouter(makeContactDeps()))({ session: null })
     await expect(unauth.list()).rejects.toThrow()

@@ -1,47 +1,36 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { Briefcase } from 'lucide-react'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
-import { SectionCard } from '@/components/molecules/SectionCard'
-import { ViewToggle, type CvView } from '@/components/molecules/ViewToggle'
+import { ListKanbanShell } from '@/components/molecules/ListKanbanShell'
 import { MissionList } from '@/components/organisms/MissionList'
 import { MissionKanban } from '@/components/organisms/MissionKanban'
-import { tabPanelMotion } from '@/lib/motion/variants'
-import type { RawMission } from '@/view-models/mission-kanban'
+import type { CvView } from '@/components/molecules/ViewToggle'
+import type { MissionListRow } from '@/view-models/mission-list'
+import type { RawMission } from '@/view-models/mission-kanban.types'
 
-type Props = { missions: RawMission[] }
+type Props = { rows: MissionListRow[]; kanban: RawMission[] }
 
-export function MissionsPage({ missions }: Props) {
+export function MissionsPage({ rows, kanban }: Props) {
   const [view, setView] = useState<CvView>('list')
   const description = useMemo(
-    () => `${missions.length} mission(s) — liste complète ou kanban par statut.`,
-    [missions.length],
-  )
-  const sectionDescription = useMemo(
-    () =>
-      view === 'list'
-        ? 'Toutes les missions, y compris pourvues et annulées.'
-        : 'Glissez une carte pour changer le statut.',
-    [view],
+    () => `${rows.length} mission(s) — liste complète ou kanban par statut.`,
+    [rows.length],
   )
 
   return (
     <DashboardPage icon={<Briefcase className="size-5" />} title="Missions" description={description}>
-      <SectionCard
-        variant="glass"
-        title={view === 'list' ? 'Toutes les missions' : 'Pipeline missions'}
-        description={sectionDescription}
-        actions={<ViewToggle view={view} onChange={setView} />}
-        bodyClassName="p-4 sm:p-5"
-      >
-        <AnimatePresence mode="wait">
-          <motion.div key={view} {...tabPanelMotion}>
-            {view === 'list' ? <MissionList missions={missions} /> : <MissionKanban missions={missions} />}
-          </motion.div>
-        </AnimatePresence>
-      </SectionCard>
+      <ListKanbanShell
+        view={view}
+        onViewChange={setView}
+        listTitle="Toutes les missions"
+        kanbanTitle="Pipeline missions"
+        listDescription="Toutes les missions, y compris pourvues et annulées."
+        kanbanDescription="Glissez une carte pour changer le statut."
+        listView={<MissionList rows={rows} />}
+        kanbanView={<MissionKanban missions={kanban} />}
+      />
     </DashboardPage>
   )
 }

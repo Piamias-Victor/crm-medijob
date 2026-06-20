@@ -1,4 +1,4 @@
-import type { AssistantProvider, AssistantRequest } from './provider'
+import type { AssistantProvider, AssistantRequest } from './provider.types'
 
 export const DEFAULT_MODEL = 'google/gemini-2.5-flash-lite'
 

@@ -1,31 +1,21 @@
 'use client'
 
 import { Briefcase } from 'lucide-react'
-import { EmptyState } from '@/components/atoms/EmptyState'
-import { AnimatedEntityGrid } from '@/components/molecules/AnimatedEntityGrid'
 import { MissionListCard } from '@/components/molecules/MissionListCard'
-import { toMissionListItems, type RawMission } from '@/view-models/mission-kanban'
+import { EntityGridList } from '@/components/organisms/EntityGridList'
+import type { MissionListRow } from '@/view-models/mission-list'
 
-type Props = { missions: RawMission[] }
+type Props = { rows: MissionListRow[] }
 
-export function MissionList({ missions }: Props) {
-  const rows = toMissionListItems(missions)
-
-  if (rows.length === 0) {
-    return (
-      <EmptyState
-        icon={Briefcase}
-        title="Aucune mission"
-        description="Les besoins de staffing apparaîtront ici."
-      />
-    )
-  }
-
+export function MissionList({ rows }: Props) {
   return (
-    <AnimatedEntityGrid
+    <EntityGridList
       items={rows}
       getKey={(row) => row.id}
       renderItem={(row) => <MissionListCard row={row} />}
+      emptyIcon={Briefcase}
+      emptyTitle="Aucune mission"
+      emptyDescription="Les besoins de staffing apparaîtront ici."
     />
   )
 }

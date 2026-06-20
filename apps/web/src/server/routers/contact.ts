@@ -2,8 +2,8 @@ import { z } from 'zod'
 import type { ContactRole, Prisma } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
-import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { loadContactMissions } from '@/server/read-models/contact-missions.adapter'
+import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toContactListRow, type ContactListEntity } from '@/view-models/contact-list'
 import { toContactDetail, type ContactDetailEntity } from '@/view-models/contact-detail'
 import { contactInputSchema, updateContactSchema } from '@/view-models/contact-form.schema'
@@ -49,7 +49,9 @@ export function makeContactRouter(deps: ContactDeps) {
       const contact = await deps.contacts.findById(input.id)
       return contact ? toContactDetail(contact) : null
     }),
+    /** @deprecated Use `referentials` — kept for existing callers during migration */
     pharmacyOptions: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
+    referentials: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
     listByPharmacy: protectedProcedure.input(pharmacyIdSchema).query(async ({ input }) =>
       (await deps.contacts.listByPharmacy(input.pharmacyId)).map((c) => ({
         id: c.id,
@@ -76,10 +78,5 @@ export function makeContactRouter(deps: ContactDeps) {
 export const contactRouter = makeContactRouter({
   contacts: contactRepository,
   listMissions: loadContactMissions,
-  pharmacies: {
-    listForPicker: async () => {
-      const rows = await pharmacyRepository.list()
-      return rows.map((p) => ({ id: p.id, name: p.name }))
-    },
-  },
+  pharmacies: { listForPicker: listPharmacyPickerOptions },
 })

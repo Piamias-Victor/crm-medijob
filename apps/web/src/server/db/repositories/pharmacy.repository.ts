@@ -6,7 +6,8 @@ import { NOT_DELETED } from './soft-delete'
 const listInclude = {
   groupement: { select: { name: true } },
   contacts: {
-    where: NOT_DELETED,
+    where: { ...NOT_DELETED, isPrimary: true },
+    take: 1,
     select: { firstName: true, lastName: true, isPrimary: true },
   },
   _count: { select: { missions: { where: NOT_DELETED } } },
@@ -63,6 +64,13 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
       db.pharmacy.findMany({
         where: NOT_DELETED,
         include: listInclude,
+        orderBy: { name: 'asc' },
+        take: limit,
+      }),
+    listForPicker: (limit = DEFAULT_LIST_LIMIT) =>
+      db.pharmacy.findMany({
+        where: NOT_DELETED,
+        select: { id: true, name: true },
         orderBy: { name: 'asc' },
         take: limit,
       }),

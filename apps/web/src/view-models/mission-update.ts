@@ -1,6 +1,5 @@
 import type { MissionFormValues } from '@/view-models/mission-form.schema'
-
-const toNull = (value?: string) => value ?? null
+import { toNull } from '@/view-models/to-null'
 
 export function toMissionUpdateData(data: MissionFormValues) {
   return {

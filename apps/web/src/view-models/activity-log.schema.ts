@@ -1,6 +1,18 @@
 import { z } from 'zod'
-import { ACTIVITY_TYPES } from '@/view-models/activity-log-form.schema'
 import { DOCUMENT_ENTITY_TYPES } from '@/view-models/activity-log.types'
+
+export const ACTIVITY_TYPES = [
+  'APPEL',
+  'EMAIL',
+  'ENTRETIEN',
+  'MISSION',
+  'NOTE',
+  'ACTION_COMMERCIALE',
+  'DEVIS',
+  'AUTRE',
+] as const
+
+export type ActivityTypeValue = (typeof ACTIVITY_TYPES)[number]
 
 export const activityEntitySchema = z.object({
   entityType: z.enum(DOCUMENT_ENTITY_TYPES),

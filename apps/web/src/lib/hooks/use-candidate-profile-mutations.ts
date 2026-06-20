@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { useCreateJobTitleMutation } from '@/lib/hooks/use-create-job-title-mutation'
 
 export function useCandidateProfileMutations() {
   const router = useRouter()
@@ -10,10 +11,9 @@ export function useCandidateProfileMutations() {
     onSuccess: () => router.refresh(),
     successMessage: 'Profil enregistré',
   })
-  const refMutation = useEntityMutation()
 
   return {
     update: trpc.candidate.update.useMutation(mutation),
-    createJobTitle: trpc.mission.createJobTitle.useMutation(refMutation),
+    createJobTitle: useCreateJobTitleMutation(),
   }
 }

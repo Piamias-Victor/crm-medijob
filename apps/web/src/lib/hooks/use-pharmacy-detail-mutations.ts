@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { useCreateJobTitleMutation } from '@/lib/hooks/use-create-job-title-mutation'
 
 export function usePharmacyDetailMutations() {
   const router = useRouter()
@@ -20,7 +21,7 @@ export function usePharmacyDetailMutations() {
   return {
     update: trpc.pharmacy.update.useMutation(mutation),
     createMission: trpc.mission.create.useMutation(missionMutation),
-    createJobTitle: trpc.mission.createJobTitle.useMutation(refMutation),
+    createJobTitle: useCreateJobTitleMutation(),
     newGroupement: trpc.pharmacy.createGroupement.useMutation(refMutation),
     newSoftware: trpc.pharmacy.createSoftware.useMutation(refMutation),
     searchSiret: (query: string) => utils.pharmacy.searchSiret.fetch({ query }),

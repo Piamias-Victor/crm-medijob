@@ -43,7 +43,7 @@ function MetaChip({
         'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium',
         tone === 'accent'
           ? 'border-accent/25 bg-accent-muted/80 text-accent-hover'
-          : 'border-border/60 bg-white/70 text-fg-muted',
+          : 'border-border/60 bg-surface/70 text-fg-muted',
       )}
     >
       <Icon className="size-3 shrink-0" aria-hidden />
@@ -63,7 +63,7 @@ export function DetailPageHeader({
 }: Props) {
   return (
     <section className={SURFACE_GLASS_PANEL}>
-      <header className="border-b border-border/80 bg-gradient-to-r from-primary-muted/55 via-accent-muted/45 to-white px-5 py-4">
+      <header className="border-b border-border/80 bg-gradient-to-r from-primary-muted/55 via-surface to-accent-muted/45 px-5 py-4">
         <Link
           href={backHref}
           className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-fg-muted transition-colors hover:text-accent-hover"

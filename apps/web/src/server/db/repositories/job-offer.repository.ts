@@ -8,6 +8,7 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
     create: (data: Prisma.JobOfferCreateInput) => db.jobOffer.create({ data }),
     findById: (id: string) =>
       db.jobOffer.findFirst({ where: { id, ...NOT_DELETED } }),
+    /** @deprecated Not exposed via tRPC — use listForTable */
     list: () =>
       db.jobOffer.findMany({ where: NOT_DELETED, orderBy: { createdAt: 'desc' }, take: DEFAULT_LIST_LIMIT }),
     listForTable: (limit = DEFAULT_LIST_LIMIT) =>

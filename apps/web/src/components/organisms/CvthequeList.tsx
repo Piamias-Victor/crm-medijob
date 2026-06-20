@@ -1,29 +1,19 @@
 'use client'
 
 import { Users } from 'lucide-react'
-import { EmptyState } from '@/components/atoms/EmptyState'
-import { AnimatedEntityGrid } from '@/components/molecules/AnimatedEntityGrid'
 import { CvthequeListCard } from '@/components/molecules/CvthequeListCard'
-import { toListItems, type RawCandidate } from '@/view-models/candidate-kanban'
+import { EntityGridList } from '@/components/organisms/EntityGridList'
+import type { CandidateListRow } from '@/view-models/candidate-list'
 
-export function CvthequeList({ candidates }: { candidates: RawCandidate[] }) {
-  const items = toListItems(candidates)
-
-  if (items.length === 0) {
-    return (
-      <EmptyState
-        icon={Users}
-        title="Aucun candidat"
-        description="Les candidats ajoutés à la CVthèque apparaîtront ici."
-      />
-    )
-  }
-
+export function CvthequeList({ rows }: { rows: CandidateListRow[] }) {
   return (
-    <AnimatedEntityGrid
-      items={items}
-      getKey={(candidate) => candidate.id}
-      renderItem={(candidate) => <CvthequeListCard candidate={candidate} />}
+    <EntityGridList
+      items={rows}
+      getKey={(row) => row.id}
+      renderItem={(row) => <CvthequeListCard candidate={row} />}
+      emptyIcon={Users}
+      emptyTitle="Aucun candidat"
+      emptyDescription="Les candidats ajoutés à la CVthèque apparaîtront ici."
     />
   )
 }
