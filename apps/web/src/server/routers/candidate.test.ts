@@ -21,6 +21,21 @@ describe('candidateRouter', () => {
     expect(await caller(deps).cvtheque()).toEqual(await caller(deps).list())
   })
 
+  it('searches candidates for the picker', async () => {
+    const deps = makeCandidateDeps()
+    const result = await caller(deps).search({ term: 'cam' })
+    expect(deps.search).toHaveBeenCalledWith('cam', undefined)
+    expect(result).toEqual([
+      {
+        id: 'c1',
+        label: 'Camille Durand',
+        jobTitle: 'Pharmacien',
+        city: 'Lyon',
+        postalCode: '69003',
+      },
+    ])
+  })
+
   it('returns profile payload with ADR 0010 incomplete matching flags', async () => {
     const result = await caller().getById({ id: 'c1' })
     expect(result?.isProfileIncompleteForMatching).toBe(true)

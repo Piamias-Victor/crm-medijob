@@ -1,18 +1,25 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Ban } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import { Button } from '@/components/atoms/Button'
+import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
 
 type Props = { mission: MissionDetailPayload }
 
 export function MissionStatusActions({ mission }: Props) {
   const router = useRouter()
+  const [open, setOpen] = useState(false)
   const mutation = useEntityMutation({
-    onSuccess: () => router.refresh(),
+    onSuccess: () => {
+      setOpen(false)
+      router.refresh()
+    },
     successMessage: 'Mission annulée',
   })
   const markAnnulee = trpc.mission.markAnnulee.useMutation(mutation)
@@ -20,22 +27,37 @@ export function MissionStatusActions({ mission }: Props) {
   if (isTerminalMissionStatus(mission.status)) return null
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border/55 bg-white/70 p-4">
-      <div>
-        <p className="text-sm font-medium text-fg">Annuler le besoin</p>
-        <p className="mt-1 text-xs leading-relaxed text-fg-muted">
-          Si la pharmacie abandonne le recrutement. La mission sort du kanban actif et tous les
-          candidats passent en « Pas retenu ». Le statut « Pourvu » se déclenche depuis le pipeline
-          candidats (#66), pas ici.
-        </p>
+    <>
+      <div className="flex flex-col gap-3 rounded-xl border border-error/25 bg-error/5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-error/10 text-error">
+            <Ban className="size-4" aria-hidden />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-fg">Besoin abandonné</p>
+            <p className="text-xs leading-relaxed text-fg-muted">
+              Retire la mission du kanban actif et passe les candidats en « Pas retenu ».
+            </p>
+          </div>
+        </div>
+        <Button
+          variant="danger"
+          className="shrink-0 px-3 py-2 text-xs sm:text-sm"
+          disabled={markAnnulee.isPending}
+          onClick={() => setOpen(true)}
+        >
+          Annuler la mission
+        </Button>
       </div>
-      <Button
-        variant="ghost"
-        disabled={markAnnulee.isPending}
-        onClick={() => markAnnulee.mutate({ id: mission.id })}
-      >
-        {markAnnulee.isPending ? 'Annulation…' : 'Annuler la mission'}
-      </Button>
-    </div>
+      <ConfirmDialog
+        open={open}
+        title="Annuler cette mission ?"
+        description="Cette action est définitive pour le recrutement en cours. Les candidats positionnés passeront en « Pas retenu »."
+        confirmLabel={markAnnulee.isPending ? 'Annulation…' : 'Confirmer l’annulation'}
+        loading={markAnnulee.isPending}
+        onClose={() => setOpen(false)}
+        onConfirm={() => markAnnulee.mutate({ id: mission.id })}
+      />
+    </>
   )
 }

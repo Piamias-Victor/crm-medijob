@@ -27,8 +27,32 @@ const entity: MissionDetailEntity = {
   referent: { name: 'Réf Demo' },
   contact: { id: 'c1', firstName: 'Marie', lastName: 'Curie' },
   candidates: [
-    { candidateId: 'ca1', candidate: { firstName: 'Alice', lastName: 'Martin' } },
-    { candidateId: 'ca2', candidate: { firstName: 'Bob', lastName: 'Durand' } },
+    {
+      candidateId: 'ca1',
+      stageId: 'st1',
+      stage: { id: 'st1', name: 'Nouveau', position: 0 },
+      candidate: {
+        firstName: 'Alice',
+        lastName: 'Martin',
+        city: 'Lyon',
+        postalCode: '69003',
+        jobTitle: { name: 'Pharmacien' },
+        referent: { name: 'Réf Demo' },
+      },
+    },
+    {
+      candidateId: 'ca2',
+      stageId: 'st1',
+      stage: { id: 'st1', name: 'Nouveau', position: 0 },
+      candidate: {
+        firstName: 'Bob',
+        lastName: 'Durand',
+        city: 'Paris',
+        postalCode: '75011',
+        jobTitle: { name: 'Préparateur' },
+        referent: { name: 'Réf Demo' },
+      },
+    },
   ],
 }
 
@@ -39,8 +63,26 @@ describe('toMissionDetail', () => {
     expect(payload.formSource.title).toBe('Titulaire CDI')
     expect(payload.formSource.contactId).toBe('c1')
     expect(payload.candidates).toEqual([
-      { id: 'ca1', fullName: 'Alice Martin' },
-      { id: 'ca2', fullName: 'Bob Durand' },
+      {
+        id: 'ca1',
+        fullName: 'Alice Martin',
+        stageId: 'st1',
+        stageName: 'Nouveau',
+        jobTitle: 'Pharmacien',
+        city: 'Lyon',
+        postalCode: '69003',
+        referentName: 'Réf Demo',
+      },
+      {
+        id: 'ca2',
+        fullName: 'Bob Durand',
+        stageId: 'st1',
+        stageName: 'Nouveau',
+        jobTitle: 'Préparateur',
+        city: 'Paris',
+        postalCode: '75011',
+        referentName: 'Réf Demo',
+      },
     ])
   })
 })

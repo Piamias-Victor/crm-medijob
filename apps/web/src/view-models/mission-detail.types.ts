@@ -2,7 +2,16 @@ import type { ContractType, MissionStatus } from '@prisma/client'
 
 export type MissionCandidateEntity = {
   candidateId: string
-  candidate: { firstName: string; lastName: string }
+  stageId: string
+  stage: { id: string; name: string; position: number }
+  candidate: {
+    firstName: string
+    lastName: string
+    city: string | null
+    postalCode: string | null
+    jobTitle: { name: string } | null
+    referent: { name: string } | null
+  }
 }
 
 export type MissionDetailEntity = {
@@ -32,7 +41,16 @@ export type MissionDetailEntity = {
   candidates: MissionCandidateEntity[]
 }
 
-export type MissionCandidateRow = { id: string; fullName: string }
+export type MissionCandidateRow = {
+  id: string
+  fullName: string
+  stageId: string
+  stageName: string
+  jobTitle: string | null
+  city: string | null
+  postalCode: string | null
+  referentName: string | null
+}
 
 export type MissionFormSource = {
   title: string

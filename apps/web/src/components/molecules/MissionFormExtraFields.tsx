@@ -3,8 +3,8 @@
 import type { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form'
 import type { MissionInput } from '@/view-models/mission-form.schema'
 import { Input } from '@/components/atoms/Input'
-import { Switch } from '@/components/atoms/Switch'
 import { Textarea } from '@/components/atoms/Textarea'
+import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
 import { FormField } from '@/components/molecules/FormField'
 
 type Props = {
@@ -34,11 +34,13 @@ export function MissionFormExtraFields({ register, setValue, watch, errors }: Pr
       <FormField label="Planning" error={errors.planning?.message}>
         <Input {...register('planning')} placeholder="Ex. Jour, alterné…" />
       </FormField>
-      <FormField label="Temps plein">
-        <Switch
-          checked={Boolean(tempsPlein)}
-          label="Poste à temps plein"
-          onChange={(checked) => setValue('tempsPlein', checked, { shouldValidate: true })}
+      <FormField label="Régime horaire">
+        <CheckboxGroup
+          options={[{ value: 'temps-plein', label: 'Temps plein' }]}
+          values={tempsPlein ? ['temps-plein'] : []}
+          onChange={(values) =>
+            setValue('tempsPlein', values.includes('temps-plein'), { shouldValidate: true })
+          }
         />
       </FormField>
       <div className="sm:col-span-2">

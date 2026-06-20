@@ -33,6 +33,16 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
   return {
     listForKanban: vi.fn().mockResolvedValue([{ id: 'c1' }]),
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
+    search: vi.fn().mockResolvedValue([
+      {
+        id: 'c1',
+        firstName: 'Camille',
+        lastName: 'Durand',
+        city: 'Lyon',
+        postalCode: '69003',
+        jobTitle: { name: 'Pharmacien' },
+      },
+    ]),
     findProfileById: vi.fn().mockResolvedValue(profileFixture),
     updateProfile: vi.fn().mockResolvedValue(profileFixture),
     referentials: vi.fn().mockResolvedValue({
