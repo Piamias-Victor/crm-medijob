@@ -9,11 +9,12 @@ function caller(deps = makeCandidateDeps()) {
 }
 
 describe('candidateRouter', () => {
-  it('returns candidates and pipeline stages for the CVthèque', async () => {
+  it('returns typed list rows with kanban data for the CVthèque', async () => {
     const deps = makeCandidateDeps()
     const result = await caller(deps).list()
-    expect(result.candidates).toEqual([{ id: 'c1' }])
+    expect(result.candidates).toHaveLength(1)
     expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
+    expect(result.rows[0]).toMatchObject({ id: 'c1', name: 'Camille Durand', city: 'Lyon' })
   })
 
   it('keeps cvtheque as alias of list', async () => {

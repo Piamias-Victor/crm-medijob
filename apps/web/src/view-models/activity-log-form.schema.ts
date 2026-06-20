@@ -1,17 +1,7 @@
 import { z } from 'zod'
+import { ACTIVITY_TYPES } from '@/view-models/activity-log.schema'
 
-export const ACTIVITY_TYPES = [
-  'APPEL',
-  'EMAIL',
-  'ENTRETIEN',
-  'MISSION',
-  'NOTE',
-  'ACTION_COMMERCIALE',
-  'DEVIS',
-  'AUTRE',
-] as const
-
-export type ActivityTypeValue = (typeof ACTIVITY_TYPES)[number]
+export type { ActivityTypeValue } from '@/view-models/activity-log.schema'
 
 export const activityLogFormSchema = z.object({
   type: z.enum(ACTIVITY_TYPES),

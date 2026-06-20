@@ -9,6 +9,7 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
       db.application.create({ data }),
     findById: (id: string) =>
       db.application.findFirst({ where: { id, ...NOT_DELETED } }),
+    /** @deprecated Not exposed via tRPC — use listInbox or domain-specific queries */
     list: (limit = DEFAULT_LIST_LIMIT) =>
       db.application.findMany({
         where: NOT_DELETED,

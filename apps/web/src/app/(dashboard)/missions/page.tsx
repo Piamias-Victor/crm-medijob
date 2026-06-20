@@ -3,7 +3,7 @@ import { MissionsPage } from '@/components/organisms/MissionsPage'
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const missions = await caller.mission.list()
+  const { rows, kanban } = await caller.mission.list()
 
-  return <MissionsPage missions={missions} />
+  return <MissionsPage rows={rows} kanban={kanban} />
 }

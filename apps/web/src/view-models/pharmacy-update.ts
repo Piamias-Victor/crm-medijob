@@ -1,5 +1,6 @@
 import type { PharmacyStatus } from '@/view-models/pharmacy-form.schema'
 import { computeNumeroTVA } from '@/lib/tva'
+import { toNull } from '@/view-models/to-null'
 import type { z } from 'zod'
 import type { pharmacyInputSchema } from '@/view-models/pharmacy-form.schema'
 
@@ -21,8 +22,6 @@ export type PharmacyUpdate = {
   paymentConditions: string | null
   notes: string | null
 }
-
-const toNull = (value?: string) => value ?? null
 
 export function toPharmacyUpdateData(data: PharmacyData): PharmacyUpdate {
   const numeroTVA = data.siret

@@ -1,5 +1,6 @@
 import { router, protectedProcedure } from '@/server/trpc'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
+import { toCandidateListRows } from '@/view-models/candidate-list'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 import {
   candidateIdSchema,
@@ -44,7 +45,7 @@ export type CandidateDeps = CandidateCvDeps &
 
 async function listKanban(deps: CandidateDeps) {
   const [candidates, stages] = await Promise.all([deps.listForKanban(), deps.listStages()])
-  return { candidates, stages }
+  return { rows: toCandidateListRows(candidates), candidates, stages }
 }
 
 export function makeCandidateRouter(deps: CandidateDeps) {

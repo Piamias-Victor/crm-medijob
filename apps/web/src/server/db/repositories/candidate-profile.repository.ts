@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 
-export type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
+export type { CandidateProfileUpdate } from './types/candidate-profile.types'
 
 export const candidateProfileInclude = {
   jobTitle: { select: { id: true, name: true } },

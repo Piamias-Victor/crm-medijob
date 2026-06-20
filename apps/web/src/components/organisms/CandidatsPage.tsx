@@ -9,11 +9,12 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
 import { CvthequeSection } from '@/components/organisms/CvthequeSection'
 import { tabPanelMotion } from '@/lib/motion/variants'
-import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban'
+import type { CandidateListRow } from '@/view-models/candidate-list'
+import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 import type { InboxItem } from '@/view-models/application-inbox'
 
 type Props = {
-  list: { candidates: RawCandidate[]; stages: RawStage[] }
+  list: { rows: CandidateListRow[]; candidates: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
 }
 
@@ -21,8 +22,8 @@ export function CandidatsPage({ list, inbox }: Props) {
   const [tab, setTab] = useState<CandidatsTab>('cvtheque')
   const description = useMemo(
     () =>
-      `${list.candidates.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
-    [list.candidates.length, inbox.length],
+      `${list.rows.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
+    [list.rows.length, inbox.length],
   )
 
   return (
@@ -35,7 +36,7 @@ export function CandidatsPage({ list, inbox }: Props) {
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
           {tab === 'cvtheque' ? (
-            <CvthequeSection candidates={list.candidates} stages={list.stages} />
+            <CvthequeSection rows={list.rows} candidates={list.candidates} stages={list.stages} />
           ) : (
             <SectionCard
               variant="glass"

@@ -1,7 +1,7 @@
 import type { PrismaClient, UserRole } from '@prisma/client'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
-import type { UserListItem } from '@/view-models/user-admin'
+import type { UserRecord } from './types/user.types'
 
 const listSelect = {
   id: true,
@@ -25,7 +25,7 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
         orderBy: { name: 'asc' },
         select: { id: true, name: true },
       }),
-    list: (): Promise<UserListItem[]> =>
+    list: (): Promise<UserRecord[]> =>
       db.user.findMany({
         where: NOT_DELETED,
         select: listSelect,

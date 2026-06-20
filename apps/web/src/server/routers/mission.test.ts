@@ -8,10 +8,22 @@ import { makeMissionDeps, missionCaller } from '@/server/routers/mission.test.fi
 const statusInput = { id: 'm1', status: 'EN_RECHERCHE' as const }
 
 describe('missionRouter', () => {
-  it('returns missions from list', async () => {
-    const rows = [{ id: 'm1', title: 'CDI' }]
-    const deps = makeMissionDeps({ list: vi.fn().mockResolvedValue(rows) })
-    await expect(missionCaller(deps).list()).resolves.toEqual(rows)
+  it('returns typed list rows and kanban missions from list', async () => {
+    const kanban = [
+      {
+        id: 'm1',
+        title: 'CDI',
+        status: 'A_POURVOIR' as const,
+        startDate: new Date('2026-03-01'),
+        jobTitle: { name: 'Pharmacien' },
+        pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon' },
+        referent: { name: 'Réf Demo' },
+      },
+    ]
+    const deps = makeMissionDeps({ list: vi.fn().mockResolvedValue(kanban) })
+    const result = await missionCaller(deps).list()
+    expect(result.kanban).toEqual(kanban)
+    expect(result.rows[0]).toMatchObject({ id: 'm1', title: 'CDI', pharmacyName: 'Pharmacie du Centre' })
   })
 
   it('maps getById through mission detail view-model', async () => {

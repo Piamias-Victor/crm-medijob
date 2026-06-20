@@ -9,15 +9,12 @@ import { ListCardMeta } from '@/components/molecules/ListCardMeta'
 import { ListCardShell } from '@/components/molecules/ListCardShell'
 import { MissionStatusBadge } from '@/components/molecules/MissionStatusBadge'
 import { cardHover } from '@/lib/motion/variants'
-import type { MissionListItem } from '@/view-models/mission-kanban.types'
+import type { MissionListRow } from '@/view-models/mission-list'
+import { formatDateFr } from '@/view-models/format-date-fr'
 
 const badgeClass = 'px-2 py-0 text-[11px]'
 
-function formatDate(value: Date) {
-  return new Intl.DateTimeFormat('fr-FR').format(value)
-}
-
-export function MissionListCard({ row }: { row: MissionListItem }) {
+export function MissionListCard({ row }: { row: MissionListRow }) {
   const subtitle = [row.jobTitle, row.city].filter(Boolean).join(' · ')
 
   return (
@@ -39,7 +36,7 @@ export function MissionListCard({ row }: { row: MissionListItem }) {
           <ListCardChip icon={Building2}>{row.pharmacyName}</ListCardChip>
           {row.city ? <ListCardChip icon={MapPin}>{row.city}</ListCardChip> : null}
           {row.referent ? <ListCardChip icon={UserRound}>{row.referent}</ListCardChip> : null}
-          <ListCardChip icon={Calendar}>{formatDate(row.startDate)}</ListCardChip>
+          <ListCardChip icon={Calendar}>{formatDateFr(row.startDate)}</ListCardChip>
         </ListCardMeta>
       </ListCardShell>
     </motion.div>

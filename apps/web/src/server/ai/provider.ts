@@ -1,12 +1,7 @@
-import type { ResponseKind } from './schemas'
 import { mockProvider } from './mock-provider'
 import { createOpenRouterProvider, DEFAULT_MODEL } from './openrouter-provider'
 
-export type AssistantRequest = { prompt: string; kind: ResponseKind | 'matching' }
-
-export interface AssistantProvider {
-  complete(request: AssistantRequest): Promise<string>
-}
+export type { AssistantProvider, AssistantRequest } from './provider.types'
 
 type ProviderEnv = {
   EXTRACTION_PROVIDER?: string
@@ -20,7 +15,7 @@ const envFromProcess = (): ProviderEnv => ({
   EXTRACTION_MODEL: process.env.EXTRACTION_MODEL,
 })
 
-export function createAssistantProvider(env: ProviderEnv = envFromProcess()): AssistantProvider {
+export function createAssistantProvider(env: ProviderEnv = envFromProcess()) {
   if (env.EXTRACTION_PROVIDER !== 'mock' && env.OPENROUTER_API_KEY) {
     return createOpenRouterProvider(env.OPENROUTER_API_KEY, env.EXTRACTION_MODEL ?? DEFAULT_MODEL)
   }

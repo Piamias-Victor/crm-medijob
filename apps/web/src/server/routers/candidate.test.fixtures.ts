@@ -31,7 +31,17 @@ export const profileFixture = {
 
 export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): CandidateDeps {
   return {
-    listForKanban: vi.fn().mockResolvedValue([{ id: 'c1' }]),
+    listForKanban: vi.fn().mockResolvedValue([
+      {
+        id: 'c1',
+        firstName: 'Camille',
+        lastName: 'Durand',
+        city: 'Lyon',
+        jobTitle: { name: 'Pharmacien' },
+        referent: { name: 'Recruteur' },
+        missions: [],
+      },
+    ]),
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
     search: vi.fn().mockResolvedValue([
       {

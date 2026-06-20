@@ -6,6 +6,7 @@ export const LOGIN_EASE = MOTION_EASE
 
 const easeOut: Transition = { duration: 0.25, ease: MOTION_EASE }
 
+/** Card shadow tokens — rgba kept for cross-browser shadow compositing */
 const CARD_SHADOW_REST = '0 1px 2px rgb(0 0 0 / 0.05)'
 const CARD_SHADOW_HOVER = '0 4px 12px rgb(0 0 0 / 0.08)'
 

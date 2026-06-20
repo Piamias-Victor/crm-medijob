@@ -1,28 +1,26 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { trpc } from '@/lib/trpc/client'
-import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { MissionTab } from '@/view-models/mission-tabs'
 import type { PipelineStageRef } from '@/view-models/mission-pipeline.types'
+import type { RefItem } from '@/view-models/referential'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { MissionDetailHeader } from '@/components/molecules/MissionDetailHeader'
 import { MissionDetailTabs } from '@/components/molecules/MissionDetailTabs'
 import { MissionDetailTabPanel } from '@/components/molecules/MissionDetailTabPanel'
+import { useMissionDetailMutations } from '@/lib/hooks/use-mission-detail-mutations'
 
-type Ref = { id: string; name: string }
 type ContactRef = { id: string; label: string }
 
 type Props = {
   mission: MissionDetailPayload
   pipelineStages: PipelineStageRef[]
-  jobTitles: Ref[]
-  pharmacies: Ref[]
-  recruiters: Ref[]
+  jobTitles: RefItem[]
+  pharmacies: RefItem[]
+  recruiters: RefItem[]
   contactsByPharmacy: Record<string, ContactRef[]>
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
@@ -42,15 +40,8 @@ export function MissionDetailPage({
   activityCount,
   documentCount,
 }: Props) {
-  const router = useRouter()
   const [tab, setTab] = useState<MissionTab>('infos')
-  const mutation = useEntityMutation({
-    onSuccess: () => router.refresh(),
-    successMessage: 'Mission enregistrée',
-  })
-  const refMutation = useEntityMutation()
-  const update = trpc.mission.update.useMutation(mutation)
-  const createJobTitle = trpc.mission.createJobTitle.useMutation(refMutation)
+  const { update, createJobTitle, onPharmacyChange } = useMissionDetailMutations()
 
   return (
     <EntityDetailShell
@@ -79,7 +70,7 @@ export function MissionDetailPage({
         submitting={update.isPending}
         onUpdate={(data) => update.mutate({ id: mission.id, data })}
         onCreateJobTitle={(name) => createJobTitle.mutateAsync({ name })}
-        onPharmacyChange={() => router.refresh()}
+        onPharmacyChange={onPharmacyChange}
       />
     </EntityDetailShell>
   )

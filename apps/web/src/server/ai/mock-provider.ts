@@ -1,4 +1,4 @@
-import type { AssistantProvider, AssistantRequest } from './provider'
+import type { AssistantProvider, AssistantRequest } from './provider.types'
 import type { ResponseKind } from './schemas'
 import { buildMockSummary } from './mock-summary'
 

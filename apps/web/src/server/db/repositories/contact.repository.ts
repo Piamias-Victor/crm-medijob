@@ -2,6 +2,7 @@ import type { PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { searchContacts } from './contact-search.repo'
 
 const listInclude = {
   pharmacy: { select: { name: true } },
@@ -75,6 +76,7 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       })
       return db.contact.findFirst({ where: { id }, include: detailInclude })
     },
+    search: (term: string, limit = 8) => searchContacts(db, term, limit),
     softDelete: (id: string) =>
       db.contact.update({ where: { id }, data: { deletedAt: new Date() } }),
   }
