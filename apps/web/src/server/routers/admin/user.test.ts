@@ -65,6 +65,17 @@ describe('userRouter', () => {
     })
   })
 
+  it('refuse de rétrograder le dernier ADMIN', async () => {
+    const deps = makeUserDeps({
+      findById: vi.fn().mockResolvedValue({ id: 'a1', role: 'ADMIN' }),
+      countAdmins: vi.fn().mockResolvedValue(1),
+    })
+    await expect(
+      adminCaller(deps).update({ id: 'a1', name: 'Admin', role: 'RECRUTEUR' }),
+    ).rejects.toMatchObject({ code: 'CONFLICT' })
+    expect(deps.update).not.toHaveBeenCalled()
+  })
+
   it('rejects duplicate email on create', async () => {
     const deps = makeUserDeps({
       findByEmail: vi.fn().mockResolvedValue({ id: 'other', email: 'jane@medijob.fr' }),

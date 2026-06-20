@@ -15,12 +15,7 @@ export default async function Page({ params }: Props) {
   const [documents, activities, contactsByPharmacy] = await Promise.all([
     caller.document.listByEntity({ entityType: 'MISSION', entityId: id }),
     caller.activityLog.listByEntity({ entityType: 'MISSION', entityId: id }),
-    Promise.all(
-      refs.pharmacies.map(async (pharmacy) => {
-        const contacts = await caller.contact.listByPharmacy({ pharmacyId: pharmacy.id })
-        return [pharmacy.id, contacts] as const
-      }),
-    ).then((entries) => Object.fromEntries(entries)),
+    caller.contact.listByPharmacyIds({ pharmacyIds: refs.pharmacies.map((pharmacy) => pharmacy.id) }),
   ])
 
   return (

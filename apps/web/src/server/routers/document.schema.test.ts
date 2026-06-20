@@ -33,4 +33,14 @@ describe('uploadDocumentSchema', () => {
     })
     expect(result.success).toBe(false)
   })
+
+  it('rejette upload si base64 décodé > size', () => {
+    const bigBase64 = Buffer.alloc(2048).toString('base64')
+    const result = uploadDocumentSchema.safeParse({
+      ...base,
+      size: 100,
+      dataBase64: bigBase64,
+    })
+    expect(result.success).toBe(false)
+  })
 })

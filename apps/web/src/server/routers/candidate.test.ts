@@ -3,30 +3,25 @@ import { describe, it, expect } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 import { makeCandidateDeps, session } from '@/server/routers/candidate.test.fixtures'
-import type { CandidateListRow } from '@/view-models/candidate-list'
 
 function caller(deps = makeCandidateDeps()) {
   return createCallerFactory(makeCandidateRouter(deps))({ session })
 }
 
 describe('candidateRouter', () => {
-  it('returns typed list rows with kanban data for the CVthèque', async () => {
-    const deps = makeCandidateDeps()
-    const result = await caller(deps).list()
-    expect(result.candidates).toHaveLength(1)
+  it('list retourne rows + stages sans dupliquer candidates bruts', async () => {
+    const result = await caller().list()
+    expect(result).not.toHaveProperty('candidates')
+    expect(result.rows[0]).toHaveProperty('missions')
     expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
-    expect(result.rows[0]).toMatchObject({ id: 'c1', name: 'Camille Durand', city: 'Lyon' })
   })
 
-  it('list retourne rows typées CandidateListRow[], pas RawCandidate[]', async () => {
-    const result = await caller().list()
-    const row: CandidateListRow = result.rows[0]!
-    expect(row).toMatchObject({
-      id: 'c1',
-      name: 'Camille Durand',
-      activeMissionCount: expect.any(Number),
-    })
-    expect(result.candidates[0]).toHaveProperty('missions')
+  it('returns typed list source rows for the CVthèque', async () => {
+    const deps = makeCandidateDeps()
+    const result = await caller(deps).list()
+    expect(result.rows).toHaveLength(1)
+    expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
+    expect(result.rows[0]).toMatchObject({ id: 'c1', firstName: 'Camille', city: 'Lyon' })
   })
 
   it('searches candidates for the picker', async () => {

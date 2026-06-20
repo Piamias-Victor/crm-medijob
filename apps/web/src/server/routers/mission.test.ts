@@ -8,7 +8,7 @@ import { makeMissionDeps, missionCaller } from '@/server/routers/mission.test.fi
 const statusInput = { id: 'm1', status: 'EN_RECHERCHE' as const }
 
 describe('missionRouter', () => {
-  it('returns typed list rows and kanban missions from list', async () => {
+  it('list retourne rows sans dupliquer kanban', async () => {
     const kanban = [
       {
         id: 'm1',
@@ -22,8 +22,8 @@ describe('missionRouter', () => {
     ]
     const deps = makeMissionDeps({ list: vi.fn().mockResolvedValue(kanban) })
     const result = await missionCaller(deps).list()
-    expect(result.kanban).toEqual(kanban)
-    expect(result.rows[0]).toMatchObject({ id: 'm1', title: 'CDI', pharmacyName: 'Pharmacie du Centre' })
+    expect(result).not.toHaveProperty('kanban')
+    expect(result.rows).toEqual(kanban)
   })
 
   it('maps getById through mission detail view-model', async () => {

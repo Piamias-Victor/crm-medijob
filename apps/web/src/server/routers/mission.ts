@@ -10,7 +10,6 @@ import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toMissionDetail, type MissionDetailEntity } from '@/view-models/mission-detail'
 import { toMissionUpdateData } from '@/view-models/mission-update'
 import { missionQuickCreateSchema } from '@/view-models/mission-quick-create.schema'
-import { toMissionListRows } from '@/view-models/mission-list'
 import type { RawMission } from '@/view-models/mission-kanban.types'
 import {
   idSchema,
@@ -36,10 +35,7 @@ export type MissionDeps = {
 
 export function makeMissionRouter(deps: MissionDeps) {
   return router({
-    list: protectedProcedure.query(async () => {
-      const kanban = await deps.list()
-      return { rows: toMissionListRows(kanban), kanban }
-    }),
+    list: protectedProcedure.query(async () => ({ rows: await deps.list() })),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const mission = await deps.findDetailById(input.id)
       return mission ? toMissionDetail(mission) : null

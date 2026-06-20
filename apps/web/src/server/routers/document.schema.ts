@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { documentUploadError } from '@/lib/document-upload'
+import { base64SizeError } from '@/lib/upload-base64'
 
 const entityTypes = ['PHARMACY', 'CONTACT', 'MISSION', 'CANDIDATE'] as const
 const categories = ['CONTRAT', 'DEVIS', 'FACTURE', 'CONVENTION', 'AUTRE'] as const
@@ -26,6 +27,8 @@ export const uploadDocumentSchema = z
   .superRefine((input, ctx) => {
     const message = documentUploadError(input)
     if (message) ctx.addIssue({ code: 'custom', message, path: ['filename'] })
+    const sizeError = base64SizeError(input.dataBase64, input.size)
+    if (sizeError) ctx.addIssue({ code: 'custom', message: sizeError, path: ['dataBase64'] })
   })
 
 export const deleteDocumentSchema = z.object({ id: z.string().min(1) })

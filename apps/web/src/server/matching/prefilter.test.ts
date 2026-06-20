@@ -1,35 +1,12 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
 import { prefilterCandidates } from '@/server/matching/prefilter'
-import type { MatchingCandidateInput, MatchingMissionInput } from '@/server/matching/matching-input.types'
-
-const mission: MatchingMissionInput = {
-  jobTitleId: 'jt-pharmacien',
-  contractType: 'CDI',
-  startDate: new Date('2026-07-01'),
-  pharmacyCity: 'Lyon',
-  pharmacyPostalCode: '69001',
-}
-
-const baseCandidate = (
-  overrides: Partial<MatchingCandidateInput> = {},
-): MatchingCandidateInput => ({
-  id: 'c1',
-  firstName: 'Camille',
-  lastName: 'Durand',
-  jobTitleId: 'jt-pharmacien',
-  jobTitleName: 'Pharmacien',
-  city: 'Lyon',
-  postalCode: '69003',
-  mobilityRadiusKm: 30,
-  availableFrom: null,
-  preferredContractTypes: ['CDI'],
-  ...overrides,
-})
-
-const nearLookup = async () => ({ lat: 45.75, lon: 4.85 })
-
-const scores = new Map([['jt-pharmacien', 100], ['jt-preparateur', 100]])
+import {
+  baseCandidate,
+  mission,
+  nearLookup,
+  scores,
+} from '@/server/matching/prefilter.test.fixtures'
 
 describe('prefilterCandidates', () => {
   it('excludes candidates whose job title scores 0 in the compatibility matrix', async () => {
@@ -95,5 +72,17 @@ describe('prefilterCandidates', () => {
       nearLookup,
     )
     expect(result.excluded[0].reasons).toContain('availability')
+  })
+
+  it('exclut candidats geo si lookup pharmacie échoue', async () => {
+    const lookupGeo = async (cp: string) => (cp === '69001' ? null : nearLookup())
+    const result = await prefilterCandidates(
+      mission,
+      [baseCandidate({ id: 'geo-fail' })],
+      scores,
+      lookupGeo,
+    )
+    expect(result.eligible).toHaveLength(0)
+    expect(result.excluded[0].reasons).toContain('geo')
   })
 })

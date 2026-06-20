@@ -39,7 +39,7 @@ export function buildMatchingPrompt(mission: MissionPrompt, candidates: Matching
 
   return [
     'Tu es un assistant recrutement officine. Score chaque candidat 0-100 pour la mission.',
-    'Réponds UNIQUEMENT en JSON array: [{ candidateId, score, justification }].',
+    'Réponds UNIQUEMENT en JSON object: { "scores": [{ "candidateId", "score", "justification" }] }.',
     missionBlock,
     'Candidats:',
     candidatesBlock,

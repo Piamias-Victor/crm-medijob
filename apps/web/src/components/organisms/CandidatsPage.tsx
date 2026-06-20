@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { toCandidateListRows } from '@/view-models/candidate-list'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Users } from 'lucide-react'
 import { CandidatTabs, type CandidatsTab } from '@/components/molecules/CandidatTabs'
@@ -14,16 +15,17 @@ import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.type
 import type { InboxItem } from '@/view-models/application-inbox'
 
 type Props = {
-  list: { rows: CandidateListRow[]; candidates: RawCandidate[]; stages: RawStage[] }
+  list: { rows: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
 }
 
 export function CandidatsPage({ list, inbox }: Props) {
   const [tab, setTab] = useState<CandidatsTab>('cvtheque')
+  const listRows = useMemo(() => toCandidateListRows(list.rows), [list.rows])
   const description = useMemo(
     () =>
-      `${list.rows.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
-    [list.rows.length, inbox.length],
+      `${listRows.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
+    [listRows.length, inbox.length],
   )
 
   return (
@@ -36,7 +38,7 @@ export function CandidatsPage({ list, inbox }: Props) {
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
           {tab === 'cvtheque' ? (
-            <CvthequeSection rows={list.rows} candidates={list.candidates} stages={list.stages} />
+            <CvthequeSection rows={listRows} candidates={list.rows} stages={list.stages} />
           ) : (
             <SectionCard
               variant="glass"

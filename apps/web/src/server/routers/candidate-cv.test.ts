@@ -61,7 +61,7 @@ describe('candidateRouter CV extraction', () => {
     const deps = makeCvDeps()
     await caller(deps).confirmExtraction({
       candidateId: 'c1',
-      cvUrl: 'https://blob.example/cv.pdf',
+      cvUrl: 'https://abc123.public.blob.vercel-storage.com/cv.pdf',
       data: {
         firstName: 'Camille',
         lastName: 'Martin',
@@ -75,7 +75,10 @@ describe('candidateRouter CV extraction', () => {
 
     expect(deps.confirmCvExtraction).toHaveBeenCalledWith(
       'c1',
-      expect.objectContaining({ cvUrl: 'https://blob.example/cv.pdf', lastName: 'Martin' }),
+      expect.objectContaining({
+        cvUrl: 'https://abc123.public.blob.vercel-storage.com/cv.pdf',
+        lastName: 'Martin',
+      }),
     )
   })
 })

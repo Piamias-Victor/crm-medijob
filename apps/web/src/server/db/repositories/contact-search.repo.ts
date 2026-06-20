@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { filterSearchPool } from '@/lib/search-pool'
 import { NOT_DELETED } from './soft-delete'
 
 const searchSelect = {
@@ -21,10 +22,13 @@ export async function searchContacts(db: PrismaClient, term: string, limit = 8) 
     take: DEFAULT_LIST_LIMIT,
   })
 
-  return pool
-    .filter((row) => {
+  return filterSearchPool(
+    pool,
+    trimmed,
+    (row, term) => {
       const haystack = `${row.firstName} ${row.lastName} ${row.email ?? ''} ${row.pharmacy.name}`.toLowerCase()
-      return haystack.includes(trimmed)
-    })
-    .slice(0, limit)
+      return haystack.includes(term.toLowerCase())
+    },
+    limit,
+  )
 }

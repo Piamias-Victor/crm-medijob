@@ -7,8 +7,8 @@ import { prefilterCandidates } from '@/server/matching/prefilter'
 import {
   toMatchingCandidateInput,
   toMatchingMissionInput,
-  toMissionMatchingPayload,
 } from '@/view-models/mission-matching-map'
+import { toMissionMatchingPayload } from '@/view-models/mission-matching-payload'
 
 type CompatRow = { candidateJobTitleId: string; score: number }
 
