@@ -31,6 +31,8 @@ export default async function Page({ params }: Props) {
       pharmacies={refs.pharmacies}
       recruiters={refs.recruiters}
       contactsByPharmacy={contactsByPharmacy}
+      activities={activities}
+      documents={documents}
       activityCount={activities.length}
       documentCount={documents.length}
     />
