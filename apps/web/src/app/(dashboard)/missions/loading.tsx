@@ -1,5 +1,5 @@
-import { EntityListSkeleton } from '@/components/molecules/EntityListSkeleton'
+import { MissionsPageSkeleton } from '@/components/molecules/skeletons/MissionsPageSkeleton'
 
 export default function Loading() {
-  return <EntityListSkeleton />
+  return <MissionsPageSkeleton />
 }
