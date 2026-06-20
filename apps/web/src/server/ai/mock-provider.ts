@@ -5,6 +5,15 @@ import { buildMockSummary } from './mock-summary'
 const FILLER =
   'Contenu généré en mode simulation pour permettre les tests sans clé API Gemini. '
 
+function buildMatchingMock(prompt: string) {
+  const ids = [...prompt.matchAll(/id=([^\s\n]+)/g)].map((match) => match[1]!)
+  return ids.map((candidateId, index) => ({
+    candidateId,
+    score: Math.max(55, 92 - index * 7),
+    justification: `Score simulé — profil ${index + 1} compatible avec la mission.`,
+  }))
+}
+
 const builders: Record<ResponseKind, (prompt: string) => object> = {
   chat: (prompt) => ({ reply: `Réponse simulée. ${prompt}` }),
   summary: (prompt) => ({ summary: buildMockSummary(prompt) }),
@@ -36,6 +45,8 @@ const builders: Record<ResponseKind, (prompt: string) => object> = {
 }
 
 export const mockProvider: AssistantProvider = {
-  complete: ({ kind, prompt }: AssistantRequest) =>
-    Promise.resolve(JSON.stringify(builders[kind](prompt))),
+  complete: ({ kind, prompt }: AssistantRequest) => {
+    if (kind === 'matching') return Promise.resolve(JSON.stringify(buildMatchingMock(prompt)))
+    return Promise.resolve(JSON.stringify(builders[kind](prompt)))
+  },
 }

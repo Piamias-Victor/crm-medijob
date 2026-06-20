@@ -4,6 +4,10 @@ import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { makeCandidateProfileRepository } from './candidate-profile.repo'
 import { searchCandidates } from './candidate-search.repo'
+import {
+  candidateMatchingSelect,
+  type CandidateMatchingRow,
+} from './candidate-matching.select'
 
 export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
@@ -40,6 +44,13 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         select: { id: true, email: true, firstName: true, lastName: true, phone: true },
       }),
     search: (term: string, limit = 8) => searchCandidates(db, term, limit),
+    listForMatching: (limit = DEFAULT_LIST_LIMIT): Promise<CandidateMatchingRow[]> =>
+      db.candidate.findMany({
+        where: NOT_DELETED,
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        select: candidateMatchingSelect,
+      }),
     listForKanban: (limit = DEFAULT_LIST_LIMIT) =>
       db.candidate.findMany({
         where: NOT_DELETED,

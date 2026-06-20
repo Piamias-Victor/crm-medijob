@@ -15,6 +15,7 @@ import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
 import { MissionInfoForm } from '@/components/molecules/MissionInfoForm'
 import { MissionStatusActions } from '@/components/molecules/MissionStatusActions'
 import { MissionPipelineSection } from '@/components/organisms/MissionPipelineSection'
+import { MissionMatchingTab } from '@/components/organisms/MissionMatchingTab'
 
 type Ref = { id: string; name: string }
 type ContactRef = { id: string; label: string }
@@ -59,6 +60,15 @@ export function MissionDetailTabPanel(props: Props) {
       {props.tab === 'pipeline' ? (
         <MissionPipelineSection mission={props.mission} stages={props.pipelineStages} />
       ) : null}
+      {props.tab === 'matching' ? (
+        <MissionMatchingTab
+          missionId={props.mission.id}
+          missionStatus={props.mission.status}
+          jobTitleName={props.mission.jobTitleName}
+          pharmacyName={props.mission.pharmacyName}
+          positionedIds={props.mission.candidates.map((candidate) => candidate.id)}
+        />
+      ) : null}
       {props.tab === 'historique' ? (
         <EntityActivityLogTab
           scope={{ entityType: 'MISSION', entityId: props.mission.id }}
@@ -73,7 +83,11 @@ export function MissionDetailTabPanel(props: Props) {
           emptyLabel="Aucun document pour cette mission."
         />
       ) : null}
-      {props.tab !== 'infos' && props.tab !== 'pipeline' && props.tab !== 'historique' && props.tab !== 'documents' ? (
+      {props.tab !== 'infos' &&
+      props.tab !== 'pipeline' &&
+      props.tab !== 'matching' &&
+      props.tab !== 'historique' &&
+      props.tab !== 'documents' ? (
         <EmptyState
           icon={Construction}
           title="Bientôt disponible"
