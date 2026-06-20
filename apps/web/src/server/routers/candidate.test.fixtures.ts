@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { mockProvider } from '@/server/ai/mock-provider'
 import type { CandidateDeps } from '@/server/routers/candidate'
 
 export const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
@@ -18,6 +19,9 @@ export const profileFixture = {
   availableFrom: null,
   notes: null,
   referentId: 'u1',
+  cvUrl: null,
+  cvSummary: null,
+  anonymizedProfile: null,
   jobTitle: { id: 'jt1', name: 'Pharmacien' },
   referent: { id: 'u1', name: 'Recruteur' },
   softwares: [],
@@ -42,6 +46,9 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     runCvExtraction: vi.fn(),
     listJobTitles: vi.fn(),
     confirmCvExtraction: vi.fn(),
+    findDocumentsProfile: vi.fn().mockResolvedValue(null),
+    updateDerivedFields: vi.fn(),
+    provider: mockProvider,
     ...overrides,
   }
 }

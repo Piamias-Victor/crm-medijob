@@ -19,11 +19,20 @@ import {
   type CandidateCvDeps,
 } from '@/server/routers/candidate-cv'
 import {
+  handleGenerateAnonymized,
+  handleGenerateSummary,
+  handleSaveCvSummary,
+  type CandidateDocumentsDeps,
+} from '@/server/routers/candidate-documents'
+import {
   confirmCvExtractionSchema,
   extractCvSchema,
 } from '@/server/routers/candidate-cv.schema'
+import { saveCvSummarySchema } from '@/server/routers/candidate-documents.schema'
+import { createAssistantProvider } from '@/server/ai/provider'
 
-export type CandidateDeps = CandidateCvDeps & {
+export type CandidateDeps = CandidateCvDeps &
+  CandidateDocumentsDeps & {
   listForKanban: () => Promise<RawCandidate[]>
   listStages: () => Promise<RawStage[]>
   updateProfile: (
@@ -57,15 +66,28 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     confirmExtraction: protectedProcedure
       .input(confirmCvExtractionSchema)
       .mutation(({ input }) => handleConfirmCvExtraction(deps, input)),
+    generateSummary: protectedProcedure.input(candidateIdSchema).mutation(({ input }) =>
+      handleGenerateSummary(deps, input.id),
+    ),
+    saveCvSummary: protectedProcedure.input(saveCvSummarySchema).mutation(({ input }) =>
+      handleSaveCvSummary(deps, input.id, input.cvSummary),
+    ),
+    generateAnonymized: protectedProcedure.input(candidateIdSchema).mutation(({ input }) =>
+      handleGenerateAnonymized(deps, input.id),
+    ),
   })
 }
 
 const cvProvider = createCvExtractionProvider()
+const documentsProvider = createAssistantProvider()
 
 export const candidateRouter = makeCandidateRouter({
   listForKanban: () => candidateRepository.listForKanban(),
   listStages: () => pipelineStageRepository.list(),
   findProfileById: (id) => candidateRepository.findProfileById(id),
+  findDocumentsProfile: (id) => candidateRepository.findDocumentsProfile(id),
+  updateDerivedFields: (id, fields) => candidateRepository.updateDerivedFields(id, fields),
+  provider: documentsProvider,
   updateProfile: (id, data) => candidateRepository.updateProfile(id, data),
   referentials: fetchCandidateReferentials,
   uploadCvBlob: (input) => uploadBlob(vercelBlobClient, input),

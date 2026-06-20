@@ -7,11 +7,14 @@ import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
 import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
+import { CandidateCvSummaryPanel } from '@/components/organisms/CandidateCvSummaryPanel'
 import { CandidateCvStoredPreview } from '@/components/molecules/CandidateCvStoredPreview'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
+import { CandidateDocumentsTab } from '@/components/organisms/CandidateDocumentsTab'
 import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
 import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
 import type { ActivityLogRow } from '@/view-models/activity-log'
+import type { DocumentListRow } from '@/view-models/document-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { RefItem } from '@/view-models/referential'
 import type { RawStage } from '@/view-models/candidate-kanban.types'
@@ -27,9 +30,10 @@ type Props = {
   profile: CandidateProfilePayload
   referentials: Referentials
   activities: ActivityLogRow[]
+  documents: DocumentListRow[]
 }
 
-export function CandidateDetailPage({ profile, referentials, activities }: Props) {
+export function CandidateDetailPage({ profile, referentials, activities, documents }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
   const name = `${profile.firstName} ${profile.lastName}`.trim()
   const meta = CANDIDATE_TAB_META[tab]
@@ -73,6 +77,7 @@ export function CandidateDetailPage({ profile, referentials, activities }: Props
           <div className="flex flex-col gap-8">
             <CandidateCvPanel profile={profile} referentials={referentials} />
             <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
+            <CandidateCvSummaryPanel profile={profile} />
             {profile.cvUrl ? (
               <CandidateCvStoredPreview candidateId={profile.id} cvUrl={profile.cvUrl} />
             ) : null}
@@ -90,6 +95,9 @@ export function CandidateDetailPage({ profile, referentials, activities }: Props
             stages={referentials.pipelineStages}
             missions={profile.missions}
           />
+        ) : null}
+        {tab === 'documents' ? (
+          <CandidateDocumentsTab profile={profile} documents={documents} />
         ) : null}
       </SectionCard>
     </EntityDetailShell>

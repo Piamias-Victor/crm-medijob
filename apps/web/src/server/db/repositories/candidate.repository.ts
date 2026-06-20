@@ -14,6 +14,8 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
     findById: (id: string) =>
       db.candidate.findFirst({ where: { id, ...NOT_DELETED } }),
     findProfileById: profile.findProfileById,
+    findDocumentsProfile: profile.findDocumentsProfile,
+    updateDerivedFields: profile.updateDerivedFields,
     updateProfile: profile.updateProfile,
     list: (limit = DEFAULT_LIST_LIMIT) =>
       db.candidate.findMany({

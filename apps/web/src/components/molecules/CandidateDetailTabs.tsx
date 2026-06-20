@@ -1,14 +1,15 @@
 'use client'
 
-import { Briefcase, History, User } from 'lucide-react'
+import { Briefcase, FileText, History, User } from 'lucide-react'
 import { EntityDetailTabs } from '@/components/molecules/EntityDetailTabs'
 
-export type CandidateDetailTab = 'profil' | 'historique' | 'missions'
+export type CandidateDetailTab = 'profil' | 'historique' | 'missions' | 'documents'
 
 const tabs = [
   { id: 'profil' as const, label: 'Profil', icon: User },
   { id: 'historique' as const, label: 'Historique', icon: History },
   { id: 'missions' as const, label: 'Missions', icon: Briefcase },
+  { id: 'documents' as const, label: 'Documents', icon: FileText },
 ]
 
 type Props = {
