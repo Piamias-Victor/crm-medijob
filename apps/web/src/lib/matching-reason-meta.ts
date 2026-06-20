@@ -1,4 +1,4 @@
-import { Briefcase, Calendar, FileText, MapPin, Route } from 'lucide-react'
+import { Briefcase, Calendar, FileText, MapPin, Route, Sparkles } from 'lucide-react'
 import type { ExclusionReasonCode } from '@/server/matching/exclusion-reasons'
 
 export const MATCHING_REASON_META: Record<
@@ -10,4 +10,5 @@ export const MATCHING_REASON_META: Record<
   distance: { icon: Route, badge: 'warning' },
   contract: { icon: FileText, badge: 'default' },
   availability: { icon: Calendar, badge: 'default' },
+  not_scored: { icon: Sparkles, badge: 'default' },
 }

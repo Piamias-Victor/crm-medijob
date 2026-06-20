@@ -40,6 +40,7 @@ export function makeContactDeps(overrides: Partial<ContactDeps> = {}): ContactDe
       list: vi.fn().mockResolvedValue([contactEntity]),
       findById: vi.fn().mockResolvedValue(contactDetailEntity),
       listByPharmacy: vi.fn().mockResolvedValue([]),
+      listByPharmacyIds: vi.fn().mockResolvedValue([]),
       create: vi.fn().mockImplementation((data) => Promise.resolve({ id: 'new', ...data })),
       update: vi.fn().mockResolvedValue({ id: 'c1' }),
       setPrimary: vi.fn().mockResolvedValue(contactDetailEntity),

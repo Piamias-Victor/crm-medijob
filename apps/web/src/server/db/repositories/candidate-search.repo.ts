@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { filterSearchPool } from '@/lib/search-pool'
 import { matchesFoldedCandidateSearch } from '@/lib/search-fold'
 import { NOT_DELETED } from './soft-delete'
 
@@ -23,5 +24,5 @@ export async function searchCandidates(db: PrismaClient, term: string, limit = 8
     take: DEFAULT_LIST_LIMIT,
   })
 
-  return pool.filter((row) => matchesFoldedCandidateSearch(row, trimmed)).slice(0, limit)
+  return filterSearchPool(pool, trimmed, matchesFoldedCandidateSearch, limit)
 }

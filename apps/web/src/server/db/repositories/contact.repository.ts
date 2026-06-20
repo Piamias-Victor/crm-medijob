@@ -59,6 +59,15 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       }),
     listByPharmacy: (pharmacyId: string, limit = DEFAULT_LIST_LIMIT) =>
       db.contact.findMany({ where: { pharmacyId, ...NOT_DELETED }, take: limit }),
+    listByPharmacyIds: (pharmacyIds: string[], limitPerPharmacy = DEFAULT_LIST_LIMIT) => {
+      if (pharmacyIds.length === 0) return Promise.resolve([])
+      return db.contact.findMany({
+        where: { pharmacyId: { in: pharmacyIds }, ...NOT_DELETED },
+        select: { id: true, firstName: true, lastName: true, pharmacyId: true },
+        orderBy: { createdAt: 'desc' },
+        take: limitPerPharmacy * pharmacyIds.length,
+      })
+    },
     update: async (id: string, data: Prisma.ContactUncheckedUpdateInput) => {
       if (!data.isPrimary) return db.contact.update({ where: { id }, data })
       return db.$transaction(async (tx) => {

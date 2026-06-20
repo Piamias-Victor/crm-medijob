@@ -43,6 +43,18 @@ export function makeUserRouter(deps: UserDeps) {
       return deps.create({ ...input, password })
     }),
     update: adminProcedure.input(updateUserSchema).mutation(async ({ input }) => {
+      const user = await deps.findById(input.id)
+      if (!user) throw new TRPCError({ code: 'NOT_FOUND' })
+      if (
+        user.role === 'ADMIN' &&
+        input.role !== 'ADMIN' &&
+        (await deps.countAdmins()) <= 1
+      ) {
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'Impossible de rétrograder le dernier administrateur',
+        })
+      }
       const plain = normalizeUpdatePassword(input.password)
       const password = plain ? await deps.hashPassword(plain) : undefined
       return deps.update({ ...input, password })

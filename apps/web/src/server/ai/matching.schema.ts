@@ -8,7 +8,17 @@ export const matchingScoreItemSchema = z.object({
 
 export const matchingScoreResponseSchema = z.array(matchingScoreItemSchema).min(1)
 
+const matchingScoreWrapperSchema = z.object({
+  scores: matchingScoreResponseSchema,
+})
+
 export type MatchingScoreItem = z.infer<typeof matchingScoreItemSchema>
+
+function normalizeMatchingScoreJson(json: unknown): unknown {
+  if (Array.isArray(json)) return json
+  if (json && typeof json === 'object' && 'scores' in json) return (json as { scores: unknown }).scores
+  return json
+}
 
 export function parseMatchingScoreResponse(raw: string): MatchingScoreItem[] {
   let json: unknown
@@ -17,5 +27,10 @@ export function parseMatchingScoreResponse(raw: string): MatchingScoreItem[] {
   } catch {
     throw new Error('AI_RESPONSE_NOT_JSON')
   }
-  return matchingScoreResponseSchema.parse(json)
+  const normalized = normalizeMatchingScoreJson(json)
+  const parsed = matchingScoreResponseSchema.safeParse(normalized)
+  if (parsed.success) return parsed.data
+  const wrapped = matchingScoreWrapperSchema.safeParse(json)
+  if (wrapped.success) return wrapped.data.scores
+  return matchingScoreResponseSchema.parse(normalized)
 }

@@ -1,5 +1,6 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { KANBAN_MISSIONS_LIMIT } from '@/lib/kanban-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { makeCandidateProfileRepository } from './candidate-profile.repo'
@@ -64,6 +65,7 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
           jobTitle: { select: { name: true } },
           referent: { select: { name: true } },
           missions: {
+            take: KANBAN_MISSIONS_LIMIT,
             select: {
               stageId: true,
               stage: { select: { id: true, name: true, position: true } },

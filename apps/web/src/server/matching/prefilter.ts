@@ -43,7 +43,9 @@ export async function prefilterCandidates(
 
     if (!hasGeo(candidate.city, candidate.postalCode) || !pharmacyGeoOk) {
       reasons.push('geo')
-    } else if (pharmacyCoords) {
+    } else if (!pharmacyCoords) {
+      reasons.push('geo')
+    } else {
       const candidateCoords = await lookupGeo(candidate.postalCode!.trim())
       if (!candidateCoords) {
         reasons.push('geo')
