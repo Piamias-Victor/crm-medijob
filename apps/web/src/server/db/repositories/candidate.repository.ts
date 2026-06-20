@@ -9,6 +9,8 @@ import {
   candidateMatchingSelect,
   type CandidateMatchingRow,
 } from './candidate-matching.select'
+import { toCandidateQuickCreateData } from '@/view-models/candidate-create-map'
+import type { CandidateQuickCreateInput } from '@/view-models/candidate-quick-create.schema'
 
 export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
@@ -17,6 +19,8 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
 
   return {
     create: (data: Prisma.CandidateCreateInput) => db.candidate.create({ data }),
+    createQuick: (input: CandidateQuickCreateInput) =>
+      db.candidate.create({ data: toCandidateQuickCreateData(input), select: { id: true } }),
     findById: (id: string) =>
       db.candidate.findFirst({ where: { id, ...NOT_DELETED } }),
     findProfileById: profile.findProfileById,

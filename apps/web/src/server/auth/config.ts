@@ -2,13 +2,11 @@ import type { NextAuthConfig } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { evaluateAccess, HOME_PATH, LOGIN_PATH, type AccessRole } from './access'
 import { applyTokenToSession } from './session-from-token'
-import { getAuthSecret, validateServerEnv } from '@/server/env'
-
-validateServerEnv()
 
 export const authConfig = {
   trustHost: true,
-  secret: getAuthSecret(),
+  // Direct refs — required so Vercel/Next inlines vars in the Edge middleware bundle.
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   pages: { signIn: LOGIN_PATH },
   providers: [],
   callbacks: {
