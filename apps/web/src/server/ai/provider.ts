@@ -2,7 +2,7 @@ import type { ResponseKind } from './schemas'
 import { mockProvider } from './mock-provider'
 import { createOpenRouterProvider, DEFAULT_MODEL } from './openrouter-provider'
 
-export type AssistantRequest = { prompt: string; kind: ResponseKind }
+export type AssistantRequest = { prompt: string; kind: ResponseKind | 'matching' }
 
 export interface AssistantProvider {
   complete(request: AssistantRequest): Promise<string>
