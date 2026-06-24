@@ -16,4 +16,5 @@ export const dsSections: DsSection[] = [
   { id: 'tableau', label: 'Tableau' },
   { id: 'soft-delete', label: 'Soft delete' },
   { id: 'email-button', label: 'Email' },
+  { id: 'duplicate-detection', label: 'Doublons' },
 ]

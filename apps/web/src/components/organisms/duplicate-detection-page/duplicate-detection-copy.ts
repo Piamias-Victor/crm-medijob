@@ -1,0 +1,8 @@
+export const DUPLICATE_LEFT_TITLE = 'Existant'
+export const DUPLICATE_RIGHT_TITLE = 'Nouveau'
+export const DUPLICATE_KEEP_LEFT = 'Garder gauche'
+export const DUPLICATE_KEEP_RIGHT = 'Garder droite'
+export const DUPLICATE_MERGE = 'Fusionner'
+export const DUPLICATE_IGNORE = 'Ignorer'
+export const DUPLICATE_CANCEL = 'Annuler'
+export const DUPLICATE_MERGING = 'Fusion…'
