@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn'
 export type CheckboxOption = { value: string; label: string }
 
 type Props = {
-  options: CheckboxOption[]
+  options: readonly CheckboxOption[]
   values: string[]
   onChange: (values: string[]) => void
 }

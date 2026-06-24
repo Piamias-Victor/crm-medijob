@@ -14,7 +14,7 @@ export type { ComboboxOption }
 type Props = {
   value?: string
   onChange: (value: string) => void
-  options: ComboboxOption[]
+  options: readonly ComboboxOption[]
   placeholder?: string
   onCreate?: (label: string) => Promise<ComboboxOption>
 }
