@@ -1,7 +1,11 @@
 import { createServerCaller } from '@/lib/trpc/server'
 import { CandidatsPage } from '@/components/organisms/CandidatsPage'
+import { parseCandidatsTab } from '@/view-models/candidats-tab'
 
-export default async function Page() {
+type Props = { searchParams: Promise<{ tab?: string }> }
+
+export default async function Page({ searchParams }: Props) {
+  const { tab } = await searchParams
   const caller = await createServerCaller()
   const [list, inbox, refs] = await Promise.all([
     caller.candidate.list(),
@@ -15,6 +19,7 @@ export default async function Page() {
       inbox={inbox}
       jobTitles={refs.jobTitles}
       recruiters={refs.recruiters}
+      initialTab={parseCandidatsTab(tab)}
     />
   )
 }

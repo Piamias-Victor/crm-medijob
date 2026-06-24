@@ -11,6 +11,7 @@ import {
 import { usePharmacySiretSearch } from '@/hooks/use-pharmacy-siret-search'
 import { Button } from '@/components/atoms/Button'
 import { FormSection } from '@/components/molecules/FormSection'
+import { FormErrorBanner } from '@/components/atoms/FormErrorBanner'
 import { PharmacyLegalFields } from '@/components/molecules/PharmacyLegalFields'
 import { PharmacyContactFields } from '@/components/molecules/PharmacyContactFields'
 import { PharmacyProfileBanner } from '@/components/molecules/PharmacyProfileBanner'
@@ -27,6 +28,7 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   submitting: boolean
+  errorMessage?: string | null
   onSubmit: (data: PharmacyInput) => void
   onSearchSiret: (query: string) => Promise<PharmacySiretLookup[]>
   onCreateGroupement: (name: string) => Promise<Ref>
@@ -54,6 +56,7 @@ export function PharmacyForm(props: Props) {
 
   return (
     <form onSubmit={handleSubmit(props.onSubmit)} className="flex flex-col gap-6" noValidate>
+      {props.errorMessage ? <FormErrorBanner message={props.errorMessage} /> : null}
       <PharmacyProfileBanner missingFields={missingFields} />
       <FormSection title="Identité légale">
         <PharmacyLegalFields

@@ -24,6 +24,7 @@ export type PharmacyDetailTabContentProps = {
   documents: DocumentListRow[]
   submittingInfo: boolean
   submittingMission: boolean
+  updateErrorMessage?: string | null
   onUpdate: (data: PharmacyInput) => void
   onCreateMission: (data: MissionQuickCreateInput) => void
   onCreateJobTitle: (name: string) => Promise<Ref>
@@ -41,6 +42,7 @@ export function PharmacyDetailTabContent(props: PharmacyDetailTabContentProps) {
         groupements={props.groupements}
         softwares={props.softwares}
         submitting={props.submittingInfo}
+        errorMessage={props.updateErrorMessage}
         onSubmit={props.onUpdate}
         onSearchSiret={props.onSearchSiret}
         onCreateGroupement={props.onCreateGroupement}

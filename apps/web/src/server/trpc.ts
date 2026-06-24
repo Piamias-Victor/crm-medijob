@@ -1,6 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import type { Session } from 'next-auth'
+import { mapPrismaError } from '@/server/trpc/prisma-errors'
 
 async function getSession(): Promise<Session | null> {
   try {
@@ -17,11 +18,19 @@ type Context = Awaited<ReturnType<typeof createTRPCContext>>
 
 const t = initTRPC.context<Context>().create({ transformer: superjson })
 
+const errorMapper = t.middleware(async ({ next }) => {
+  const result = await next()
+  if (!result.ok) throw mapPrismaError(result.error)
+  return result
+})
+
 export const router = t.router
-export const publicProcedure = t.procedure
 export const createCallerFactory = t.createCallerFactory
 
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+const baseProcedure = t.procedure.use(errorMapper)
+export const publicProcedure = baseProcedure
+
+export const protectedProcedure = baseProcedure.use(({ ctx, next }) => {
   if (!ctx.session?.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' })
   }

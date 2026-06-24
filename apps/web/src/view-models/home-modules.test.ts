@@ -11,6 +11,10 @@ describe('buildHomeModules', () => {
     })
     expect(modules).toHaveLength(4)
     expect(modules[0]).toMatchObject({ label: 'Missions', value: 3, accent: true })
-    expect(modules[3]?.accent).toBe(true)
+    expect(modules[3]).toMatchObject({
+      label: 'Inbox',
+      href: '/candidats?tab=inbox',
+      accent: true,
+    })
   })
 })

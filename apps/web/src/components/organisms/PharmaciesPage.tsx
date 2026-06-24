@@ -53,6 +53,7 @@ export function PharmaciesPage({ rows, groupements, softwares }: Props) {
           groupements={groupements}
           softwares={softwares}
           submitting={create.isPending}
+          errorMessage={create.error?.message}
           onClose={() => setOpen(false)}
           onSubmit={(data) => create.mutate(data)}
           onSearchSiret={(query) => utils.pharmacy.searchSiret.fetch({ query })}

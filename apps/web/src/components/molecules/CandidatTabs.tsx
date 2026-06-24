@@ -2,8 +2,9 @@
 
 import { Inbox, List } from 'lucide-react'
 import { PillTabs } from '@/components/molecules/PillTabs'
+import type { CandidatsTab } from '@/view-models/candidats-tab'
 
-export type CandidatsTab = 'cvtheque' | 'inbox'
+export type { CandidatsTab }
 
 const tabs = [
   { id: 'cvtheque' as const, label: 'CVthèque', icon: List },

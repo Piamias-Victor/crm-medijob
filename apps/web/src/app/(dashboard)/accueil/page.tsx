@@ -3,22 +3,7 @@ import { HomePage } from '@/components/organisms/HomePage'
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const [overview, missionRefs, pharmacyRefs] = await Promise.all([
-    caller.dashboard.overview(),
-    caller.mission.referentials(),
-    caller.pharmacy.referentials(),
-  ])
+  const overview = await caller.dashboard.overview()
 
-  return (
-    <HomePage
-      overview={overview}
-      referentials={{
-        jobTitles: missionRefs.jobTitles,
-        recruiters: missionRefs.recruiters,
-        pharmacies: missionRefs.pharmacies,
-        groupements: pharmacyRefs.groupements,
-        softwares: pharmacyRefs.softwares,
-      }}
-    />
-  )
+  return <HomePage overview={overview} />
 }
