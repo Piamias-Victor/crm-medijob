@@ -17,14 +17,14 @@ function ariaSortValue(sort: EntityTableSortState | null | undefined, columnId: 
 
 export function EntityTableHeader<TRow>({ columns, sort, onSort, hasActions }: Props<TRow>) {
   return (
-    <thead className="bg-surface/80">
+    <thead className="border-b border-border/80 bg-gradient-to-r from-primary-muted/80 via-primary-muted/50 to-accent-muted/70">
       <tr>
         {columns.map((column) => (
           <th
             key={column.id}
             scope="col"
             aria-sort={column.sortable ? ariaSortValue(sort, column.id) : undefined}
-            className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-fg-muted"
+            className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-primary"
           >
             <TableSortHeader
               label={column.header}
@@ -37,7 +37,7 @@ export function EntityTableHeader<TRow>({ columns, sort, onSort, hasActions }: P
         {hasActions ? (
           <th
             scope="col"
-            className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-fg-muted"
+            className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-accent-hover"
           >
             Actions
           </th>

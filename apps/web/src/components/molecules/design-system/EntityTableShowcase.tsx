@@ -49,7 +49,7 @@ export function EntityTableShowcase() {
       emptyTitle="Aucune ligne"
       emptyDescription="Ajoutez des données pour alimenter le tableau."
       renderActions={() => (
-        <Button type="button" variant="ghost" className="px-2 py-1 text-xs">
+        <Button type="button" variant="accent" className="px-2 py-1 text-xs shadow-sm shadow-accent/20">
           Ouvrir
         </Button>
       )}
