@@ -1,9 +1,8 @@
 import { type ReactNode } from 'react'
+import { type DuplicateFieldConfig } from '@/lib/merge/duplicate-field-config'
 import { type FieldSide } from '@/lib/merge/resolve-merged-fields'
 
-export type DuplicateField<T extends Record<string, unknown>> = {
-  key: keyof T
-  label: string
+export type DuplicateField<T extends Record<string, unknown>> = DuplicateFieldConfig<T> & {
   render: (value: T[keyof T]) => ReactNode
 }
 
@@ -16,7 +15,6 @@ export type DuplicateDetectionPageProps<T extends Record<string, unknown>> = {
   onMerge: (merged: T) => void | Promise<void>
   onIgnore: () => void | Promise<void>
   onCancel: () => void
-  merging?: boolean
 }
 
 export type DuplicateFieldRowProps<T extends Record<string, unknown>> = {

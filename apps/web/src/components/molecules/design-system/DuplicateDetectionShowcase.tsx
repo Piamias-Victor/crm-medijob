@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { DuplicateDetectionPage } from '@/components/organisms/duplicate-detection-page/duplicate-detection-page'
 import { type DuplicateField } from '@/components/organisms/duplicate-detection-page/duplicate-detection-types'
 import { useToastStore } from '@/stores/toast-store'
@@ -35,31 +34,28 @@ const FIELDS: DuplicateField<DemoCandidate>[] = [
 
 export function DuplicateDetectionShowcase() {
   const push = useToastStore((s) => s.push)
-  const [merging, setMerging] = useState(false)
 
   return (
     <div className="space-y-4">
       <p className="text-sm text-fg-muted">
-        Comparaison côte-à-côte générique — champs différents surlignés, fusion champ par champ.
+        Comparaison côte-à-côte générique — pastille « Différent » sur les champs modifiés, fusion
+        champ par champ.
       </p>
       <div className="max-w-4xl">
         <DuplicateDetectionPage
-        left={EXISTING}
-        right={INCOMING}
-        fields={FIELDS}
-        merging={merging}
-        onMerge={async (merged) => {
-          setMerging(true)
-          await new Promise((resolve) => setTimeout(resolve, 500))
-          setMerging(false)
-          push({ variant: 'success', message: `Fusion : ${merged.email}` })
-        }}
-        onIgnore={async () => {
-          push({ variant: 'warning', message: 'Ignoré — création sans fusion' })
-        }}
-        onCancel={() => {
-          push({ variant: 'warning', message: 'Annulé — retour sans mutation' })
-        }}
+          left={EXISTING}
+          right={INCOMING}
+          fields={FIELDS}
+          onMerge={async (merged) => {
+            await new Promise((resolve) => setTimeout(resolve, 500))
+            push({ variant: 'success', message: `Fusion : ${merged.email}` })
+          }}
+          onIgnore={async () => {
+            push({ variant: 'warning', message: 'Ignoré — création sans fusion' })
+          }}
+          onCancel={() => {
+            push({ variant: 'warning', message: 'Annulé — retour sans mutation' })
+          }}
         />
       </div>
     </div>

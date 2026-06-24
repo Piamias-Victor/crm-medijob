@@ -11,8 +11,8 @@ import {
   DUPLICATE_MERGING,
   DUPLICATE_RIGHT_TITLE,
 } from '@/components/organisms/duplicate-detection-page/duplicate-detection-copy'
-import { buildDefaultSelections } from '@/components/organisms/duplicate-detection-page/duplicate-detection-selection'
 import { type DuplicateDetectionPageProps } from '@/components/organisms/duplicate-detection-page/duplicate-detection-types'
+import { buildDefaultSelections } from '@/lib/merge/build-default-selections'
 import { resolveMergedFields, type FieldSide } from '@/lib/merge/resolve-merged-fields'
 
 export function DuplicateDetectionPage<T extends Record<string, unknown>>({
@@ -24,12 +24,10 @@ export function DuplicateDetectionPage<T extends Record<string, unknown>>({
   onMerge,
   onIgnore,
   onCancel,
-  merging = false,
 }: DuplicateDetectionPageProps<T>) {
   const fieldKeys = useMemo(() => fields.map((field) => field.key), [fields])
-  const [selections, setSelections] = useState(() =>
-    buildDefaultSelections(left, right, fieldKeys),
-  )
+  const [selections, setSelections] = useState(() => buildDefaultSelections(left, right, fields))
+  const [merging, setMerging] = useState(false)
   const [ignoring, setIgnoring] = useState(false)
   const busy = merging || ignoring
 
@@ -38,7 +36,12 @@ export function DuplicateDetectionPage<T extends Record<string, unknown>>({
   }
 
   async function handleMerge() {
-    await onMerge(resolveMergedFields(left, right, selections, fieldKeys))
+    setMerging(true)
+    try {
+      await onMerge(resolveMergedFields(left, right, selections, fieldKeys))
+    } finally {
+      setMerging(false)
+    }
   }
 
   async function handleIgnore() {

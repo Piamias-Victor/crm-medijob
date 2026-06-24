@@ -1,5 +1,6 @@
 export type FieldSide = 'left' | 'right'
 
+/** Shallow merge for flat entity records — nested objects are replaced wholesale. */
 export function resolveMergedFields<T extends Record<string, unknown>>(
   left: T,
   right: T,

@@ -1,13 +1,15 @@
 'use client'
 
 import { Badge } from '@/components/atoms/Badge'
+import { DuplicateFieldOption } from '@/components/molecules/duplicate-detection/duplicate-field-option'
 import {
   DUPLICATE_DIFFERS,
   DUPLICATE_SELECT_EXISTING,
   DUPLICATE_SELECT_INCOMING,
 } from '@/components/organisms/duplicate-detection-page/duplicate-detection-copy'
-import { DuplicateFieldOption } from '@/components/organisms/duplicate-detection-page/duplicate-field-option'
 import { type DuplicateFieldRowProps } from '@/components/organisms/duplicate-detection-page/duplicate-detection-types'
+import { getFieldEquals } from '@/lib/merge/duplicate-field-config'
+import { fieldValuesDiffer } from '@/lib/merge/field-values-equal'
 
 export function DuplicateFieldRow<T extends Record<string, unknown>>({
   field,
@@ -16,7 +18,8 @@ export function DuplicateFieldRow<T extends Record<string, unknown>>({
   selected,
   onSelect,
 }: DuplicateFieldRowProps<T>) {
-  const differs = leftValue !== rightValue
+  const equals = getFieldEquals(field)
+  const differs = fieldValuesDiffer(leftValue, rightValue, equals)
   const groupName = String(field.key)
 
   return (

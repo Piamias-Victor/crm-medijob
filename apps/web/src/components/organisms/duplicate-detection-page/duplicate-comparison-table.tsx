@@ -1,9 +1,6 @@
-'use client'
-
-import {
-  DUPLICATE_FIELD_HEADER,
-} from '@/components/organisms/duplicate-detection-page/duplicate-detection-copy'
-import { DuplicateFieldRow } from '@/components/organisms/duplicate-detection-page/duplicate-field-row'
+import { Card } from '@/components/atoms/Card'
+import { DuplicateFieldRow } from '@/components/molecules/duplicate-detection/duplicate-field-row'
+import { DUPLICATE_FIELD_HEADER } from '@/components/organisms/duplicate-detection-page/duplicate-detection-copy'
 import { type DuplicateComparisonTableProps } from '@/components/organisms/duplicate-detection-page/duplicate-detection-types'
 
 export function DuplicateComparisonTable<T extends Record<string, unknown>>({
@@ -16,7 +13,7 @@ export function DuplicateComparisonTable<T extends Record<string, unknown>>({
   onSelect,
 }: DuplicateComparisonTableProps<T>) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white">
+    <Card className="overflow-hidden p-0">
       <div className="grid grid-cols-[minmax(7rem,11rem)_1fr_1fr] border-b border-border bg-surface/90">
         <div className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-fg-muted">
           {DUPLICATE_FIELD_HEADER}
@@ -38,6 +35,6 @@ export function DuplicateComparisonTable<T extends Record<string, unknown>>({
           onSelect={(side) => onSelect(field.key, side)}
         />
       ))}
-    </div>
+    </Card>
   )
 }
