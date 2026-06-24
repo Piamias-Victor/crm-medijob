@@ -1,5 +1,5 @@
 import type { RawCandidate } from '@/view-models/candidate-kanban.types'
-import { formatDateFr } from '@/view-models/format-date-fr'
+import { buildCvthequeCoreFields } from '@/view-models/cvtheque-core-fields'
 
 export type CandidateTableRow = {
   id: string
@@ -12,28 +12,23 @@ export type CandidateTableRow = {
   availability: string
 }
 
-export function candidateDepartment(postalCode: string | null): string | null {
-  const code = postalCode?.trim()
-  if (!code || code.length < 2) return null
-  return code.slice(0, 2)
-}
-
-export function formatCandidateAvailability(availableFrom: Date | null, now = new Date()): string {
-  if (!availableFrom) return 'Dès que possible'
-  if (availableFrom.getTime() <= now.getTime()) return 'Immédiate'
-  return formatDateFr(availableFrom)
-}
+export { candidateDepartment, formatCandidateAvailability } from '@/view-models/cvtheque-core-fields'
 
 export function toCandidateTableRow(candidate: RawCandidate, now = new Date()): CandidateTableRow {
   return {
     id: candidate.id,
-    lastName: candidate.lastName,
-    firstName: candidate.firstName,
-    jobTitle: candidate.jobTitle?.name ?? null,
-    city: candidate.city,
-    department: candidateDepartment(candidate.postalCode),
-    referent: candidate.referent?.name ?? null,
-    availability: formatCandidateAvailability(candidate.availableFrom, now),
+    ...buildCvthequeCoreFields(
+      {
+        lastName: candidate.lastName,
+        firstName: candidate.firstName,
+        city: candidate.city,
+        postalCode: candidate.postalCode,
+        availableFrom: candidate.availableFrom,
+        jobTitle: candidate.jobTitle,
+        referent: candidate.referent,
+      },
+      now,
+    ),
   }
 }
 

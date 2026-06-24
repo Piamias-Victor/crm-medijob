@@ -1,13 +1,10 @@
 'use client'
 
-import { useId, useRef, type ReactNode } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { X } from 'lucide-react'
-import { Button } from '@/components/atoms/Button'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { AnimatePresence } from 'framer-motion'
+import { GlassModalPanel } from '@/components/molecules/GlassModalPanel'
 import { useModalFocusTrap } from '@/lib/hooks/use-modal-focus-trap'
-import { SURFACE_GLASS } from '@/lib/constants/surface-glass'
-import { modalEntrance } from '@/lib/motion/variants'
-import { cn } from '@/lib/cn'
 
 type Props = {
   open: boolean
@@ -36,59 +33,36 @@ export function GlassModal({
   const titleId = useId()
   const descriptionId = useId()
   const dismiss = preventDismiss ? () => undefined : onClose
+  const [mounted, setMounted] = useState(open)
 
   useModalFocusTrap(open && trapFocus, panelRef, dismiss)
 
-  return (
-    <AnimatePresence>
+  useEffect(() => {
+    if (open) setMounted(true)
+  }, [open])
+
+  if (typeof document === 'undefined' || !mounted) return null
+
+  return createPortal(
+    <AnimatePresence onExitComplete={() => setMounted(false)}>
       {open ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.button
-            type="button"
-            aria-label="Fermer"
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={dismiss}
-          />
-          <motion.div
-            ref={panelRef}
+          <GlassModalPanel
+            panelRef={panelRef}
+            titleId={titleId}
+            descriptionId={descriptionId}
+            title={title}
+            description={description}
+            onDismiss={dismiss}
+            preventDismiss={preventDismiss}
+            className={className}
             role={role}
-            aria-modal="true"
-            aria-labelledby={titleId}
-            aria-describedby={description ? descriptionId : undefined}
-            variants={modalEntrance}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className={cn('relative flex max-h-[90dvh] w-full max-w-xl flex-col', SURFACE_GLASS, className)}
           >
-            <header className="flex items-start justify-between gap-3 border-b border-border/80 bg-gradient-to-r from-primary-muted/55 via-accent-muted/40 to-white px-5 py-4">
-              <div>
-                <h2 id={titleId} className="text-lg font-semibold tracking-tight text-fg">
-                  {title}
-                </h2>
-                {description ? (
-                  <p id={descriptionId} className="mt-1 text-sm text-fg-muted">
-                    {description}
-                  </p>
-                ) : null}
-              </div>
-              <Button
-                variant="ghost"
-                onClick={dismiss}
-                disabled={preventDismiss}
-                aria-label="Fermer"
-                className="shrink-0 px-2"
-              >
-                <X className="size-5" />
-              </Button>
-            </header>
-            <div className="overflow-y-auto p-5 sm:p-6">{children}</div>
-          </motion.div>
+            {children}
+          </GlassModalPanel>
         </div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }
