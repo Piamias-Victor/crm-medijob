@@ -8,6 +8,7 @@ import {
   type MissionQuickCreateInput,
 } from '@/view-models/mission-quick-create.schema'
 import { Button } from '@/components/atoms/Button'
+import { FormErrorBanner } from '@/components/atoms/FormErrorBanner'
 import { MissionQuickCreateFields } from '@/components/molecules/MissionQuickCreateFields'
 
 type Ref = { id: string; name: string }
@@ -18,6 +19,7 @@ type Props = {
   jobTitles: Ref[]
   recruiters: Ref[]
   submitting: boolean
+  errorMessage?: string | null
   onSubmit: (data: MissionQuickCreateInput) => void
   onCreateJobTitle: (name: string) => Promise<Ref>
 }
@@ -28,6 +30,7 @@ export function MissionQuickCreateForm({
   jobTitles: initialJobTitles,
   recruiters,
   submitting,
+  errorMessage,
   onSubmit,
   onCreateJobTitle,
 }: Props) {
@@ -54,6 +57,11 @@ export function MissionQuickCreateForm({
       className="grid gap-4 rounded-xl border border-border/55 bg-white/70 p-4 sm:grid-cols-2"
       noValidate
     >
+      {errorMessage ? (
+        <div className="sm:col-span-2">
+          <FormErrorBanner message={errorMessage} />
+        </div>
+      ) : null}
       <MissionQuickCreateFields
         register={form.register}
         setValue={form.setValue}

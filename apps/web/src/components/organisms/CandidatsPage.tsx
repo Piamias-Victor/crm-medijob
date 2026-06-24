@@ -25,11 +25,12 @@ type Props = {
   inbox: InboxItem[]
   jobTitles: Ref[]
   recruiters: Ref[]
+  initialTab?: CandidatsTab
 }
 
-export function CandidatsPage({ list, inbox, jobTitles, recruiters }: Props) {
+export function CandidatsPage({ list, inbox, jobTitles, recruiters, initialTab = 'cvtheque' }: Props) {
   const router = useRouter()
-  const [tab, setTab] = useState<CandidatsTab>('cvtheque')
+  const [tab, setTab] = useState<CandidatsTab>(initialTab)
   const [open, setOpen] = useState(false)
   const listRows = useMemo(() => toCandidateListRows(list.rows), [list.rows])
   const description = useMemo(

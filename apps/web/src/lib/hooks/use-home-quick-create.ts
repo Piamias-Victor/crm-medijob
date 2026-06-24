@@ -1,15 +1,41 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { referentialQueriesFor } from '@/view-models/home-referential-queries'
 import type { HomeQuickCreateKind, HomeReferentials } from '@/view-models/home-referentials'
 
-export function useHomeQuickCreate(refs: HomeReferentials) {
+const EMPTY_REFS: HomeReferentials = {
+  jobTitles: [],
+  recruiters: [],
+  pharmacies: [],
+  groupements: [],
+  softwares: [],
+}
+
+export function useHomeQuickCreate() {
   const router = useRouter()
   const utils = trpc.useUtils()
   const [open, setOpen] = useState<HomeQuickCreateKind | null>(null)
+  const queries = referentialQueriesFor(open)
+  const missionRefs = trpc.mission.referentials.useQuery(undefined, { enabled: queries.mission })
+  const pharmacyRefs = trpc.pharmacy.referentials.useQuery(undefined, { enabled: queries.pharmacy })
+
+  const refs = useMemo<HomeReferentials>(
+    () => ({
+      jobTitles: missionRefs.data?.jobTitles ?? EMPTY_REFS.jobTitles,
+      recruiters: missionRefs.data?.recruiters ?? EMPTY_REFS.recruiters,
+      pharmacies: missionRefs.data?.pharmacies ?? EMPTY_REFS.pharmacies,
+      groupements: pharmacyRefs.data?.groupements ?? EMPTY_REFS.groupements,
+      softwares: pharmacyRefs.data?.softwares ?? EMPTY_REFS.softwares,
+    }),
+    [missionRefs.data, pharmacyRefs.data],
+  )
+
+  const refsLoading =
+    (queries.mission && missionRefs.isLoading) || (queries.pharmacy && pharmacyRefs.isLoading)
 
   const refresh = useCallback(() => {
     setOpen(null)
@@ -34,6 +60,7 @@ export function useHomeQuickCreate(refs: HomeReferentials) {
     open,
     setOpen,
     refs,
+    refsLoading,
     createCandidate,
     createMission,
     createPharmacy,

@@ -12,6 +12,7 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   submitting: boolean
+  errorMessage?: string | null
   onSubmit: (data: PharmacyInput) => void
   onSearchSiret: (query: string) => Promise<{ siret: string; name: string; address: string; city: string; postalCode: string }[]>
   onCreateGroupement: (name: string) => Promise<Ref>
@@ -27,6 +28,7 @@ export function PharmacyInfoForm(props: Props) {
       groupements={props.groupements}
       softwares={props.softwares}
       submitting={props.submitting}
+      errorMessage={props.errorMessage}
       onSubmit={props.onSubmit}
       onSearchSiret={props.onSearchSiret}
       onCreateGroupement={props.onCreateGroupement}

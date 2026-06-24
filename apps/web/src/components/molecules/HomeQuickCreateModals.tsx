@@ -4,12 +4,17 @@ import { CandidateFormModal } from '@/components/molecules/CandidateFormModal'
 import { ContactFormModal } from '@/components/molecules/ContactFormModal'
 import { MissionFormModal } from '@/components/molecules/MissionFormModal'
 import { PharmacyFormModal } from '@/components/molecules/PharmacyFormModal'
+import { QuickCreateLoading } from '@/components/molecules/QuickCreateLoading'
 import type { HomeQuickCreateState } from '@/lib/hooks/use-home-quick-create'
 
 type Props = { state: HomeQuickCreateState }
 
 export function HomeQuickCreateModals({ state }: Props) {
-  const { open, setOpen, refs } = state
+  const { open, setOpen, refs, refsLoading } = state
+
+  if (open && refsLoading) {
+    return <QuickCreateLoading onClose={() => setOpen(null)} />
+  }
 
   return (
     <>
@@ -18,6 +23,7 @@ export function HomeQuickCreateModals({ state }: Props) {
         jobTitles={refs.jobTitles}
         recruiters={refs.recruiters}
         submitting={state.createCandidate.isPending}
+        errorMessage={state.createCandidate.error?.message}
         onClose={() => setOpen(null)}
         onSubmit={(data) => state.createCandidate.mutate(data)}
       />
@@ -27,6 +33,7 @@ export function HomeQuickCreateModals({ state }: Props) {
         jobTitles={refs.jobTitles}
         recruiters={refs.recruiters}
         submitting={state.createMission.isPending}
+        errorMessage={state.createMission.error?.message}
         onClose={() => setOpen(null)}
         onSubmit={(data) => state.createMission.mutate(data)}
         onCreateJobTitle={(name) => state.newJobTitle.mutateAsync({ name })}
@@ -36,6 +43,7 @@ export function HomeQuickCreateModals({ state }: Props) {
         groupements={refs.groupements}
         softwares={refs.softwares}
         submitting={state.createPharmacy.isPending}
+        errorMessage={state.createPharmacy.error?.message}
         onClose={() => setOpen(null)}
         onSubmit={(data) => state.createPharmacy.mutate(data)}
         onSearchSiret={state.searchSiret}
@@ -46,6 +54,7 @@ export function HomeQuickCreateModals({ state }: Props) {
         open={open === 'contact'}
         pharmacies={refs.pharmacies}
         submitting={state.createContact.isPending}
+        errorMessage={state.createContact.error?.message}
         onClose={() => setOpen(null)}
         onSubmit={(data) => state.createContact.mutate(data)}
       />

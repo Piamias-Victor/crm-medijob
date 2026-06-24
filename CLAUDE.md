@@ -42,15 +42,20 @@ Single-context repo — one `CONTEXT.md` at the root + `docs/adr/`. See `docs/ag
 
 ## Workflow agent (obligatoire)
 
+Voir le détail complet : `docs/prompt-rules.md` (5 phases).
+
 Avant tout travail sur une issue :
 
 1. Lire `docs/prompt-rules.md` et `docs/github-rules.md`
-2. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}`
-3. Créer le worktree Git
-4. Lancer `/caveman` puis `/tdd`
+2. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}` (worktree seulement si parallèle)
+3. Lancer `/caveman` puis `/tdd`
 
-En fin de session :
+Quand le code est prêt (phase 3) :
 
-1. Pusher sur sa branche
-2. Ouvrir une PR vers `dev` avec `Closes #N` dans le body
-3. Déposer son `HANDOFF_ISSUE_{N}.md` dans `docs/handoffs/`
+1. Pusher + ouvrir PR vers `dev` (`Closes #N`)
+2. **Poster obligatoirement** commande de test + checklist tests manuels dans le chat
+
+Sur `/handoff` (phase 4) :
+
+1. Déposer `docs/handoffs/HANDOFF_ISSUE_{N}.md` dans la PR
+2. Cleanup worktree (phase 5) si applicable

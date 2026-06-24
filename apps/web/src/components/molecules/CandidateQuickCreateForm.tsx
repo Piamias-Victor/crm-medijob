@@ -7,6 +7,7 @@ import {
   type CandidateQuickCreateInput,
 } from '@/view-models/candidate-quick-create.schema'
 import { Button } from '@/components/atoms/Button'
+import { FormErrorBanner } from '@/components/atoms/FormErrorBanner'
 import { CandidateQuickCreateFields } from '@/components/molecules/CandidateQuickCreateFields'
 
 type Ref = { id: string; name: string }
@@ -15,10 +16,17 @@ type Props = {
   jobTitles: Ref[]
   recruiters: Ref[]
   submitting: boolean
+  errorMessage?: string | null
   onSubmit: (data: CandidateQuickCreateInput) => void
 }
 
-export function CandidateQuickCreateForm({ jobTitles, recruiters, submitting, onSubmit }: Props) {
+export function CandidateQuickCreateForm({
+  jobTitles,
+  recruiters,
+  submitting,
+  errorMessage,
+  onSubmit,
+}: Props) {
   const form = useForm<CandidateQuickCreateInput>({
     resolver: zodResolver(candidateQuickCreateSchema),
     defaultValues: {
@@ -33,6 +41,11 @@ export function CandidateQuickCreateForm({ jobTitles, recruiters, submitting, on
       className="grid gap-4 sm:grid-cols-2"
       noValidate
     >
+      {errorMessage ? (
+        <div className="sm:col-span-2">
+          <FormErrorBanner message={errorMessage} />
+        </div>
+      ) : null}
       <CandidateQuickCreateFields
         register={form.register}
         setValue={form.setValue}

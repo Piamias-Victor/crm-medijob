@@ -20,6 +20,22 @@ function setup(onSearchSiret: () => Promise<PharmacySiretLookup[]>) {
 }
 
 describe('PharmacyForm SIRET search', () => {
+  it('shows a server error banner when provided', () => {
+    render(
+      <PharmacyForm
+        groupements={[]}
+        softwares={[]}
+        submitting={false}
+        errorMessage="Une pharmacie avec ce SIRET existe déjà."
+        onSubmit={() => {}}
+        onSearchSiret={async () => []}
+        onCreateGroupement={async (name) => ({ id: 'g', name })}
+        onCreateSoftware={async (name) => ({ id: 's', name })}
+      />,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent('Une pharmacie avec ce SIRET existe déjà.')
+  })
+
   it('shows a spinner while the lookup is pending', async () => {
     let resolve: (v: PharmacySiretLookup[]) => void = () => {}
     setup(() => new Promise<PharmacySiretLookup[]>((r) => (resolve = r)))

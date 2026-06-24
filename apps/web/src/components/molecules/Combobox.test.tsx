@@ -46,4 +46,15 @@ describe('Combobox', () => {
     await waitFor(() => expect(onCreate).toHaveBeenCalledWith('Gamma'))
     expect(onChange).toHaveBeenCalledWith('c')
   })
+
+  it('shows an error when inline create fails', async () => {
+    const onCreate = vi.fn().mockRejectedValue(new Error('Ce logiciel existe déjà.'))
+    render(
+      <Combobox value="" onChange={() => {}} options={options} placeholder="Choisir" onCreate={onCreate} />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: /choisir/i }))
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'Gamma' } })
+    fireEvent.click(screen.getByRole('button', { name: /créer.*gamma/i }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Ce logiciel existe déjà.')
+  })
 })

@@ -12,6 +12,7 @@ type Props = {
   pharmacies: Ref[]
   jobTitles: Ref[]
   recruiters: Ref[]
+  errorMessage?: string | null
   onClose: () => void
   onSubmit: (data: MissionQuickCreateInput) => void
   onCreateJobTitle: (name: string) => Promise<Ref>
@@ -23,6 +24,7 @@ export function MissionFormModal({
   pharmacies,
   jobTitles,
   recruiters,
+  errorMessage,
   onClose,
   onSubmit,
   onCreateJobTitle,
@@ -39,6 +41,7 @@ export function MissionFormModal({
         jobTitles={jobTitles}
         recruiters={recruiters}
         submitting={submitting}
+        errorMessage={errorMessage}
         onSubmit={onSubmit}
         onCreateJobTitle={onCreateJobTitle}
       />

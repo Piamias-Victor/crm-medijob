@@ -11,15 +11,11 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { useHomeQuickCreate } from '@/lib/hooks/use-home-quick-create'
 import { HOME_ACTIONS } from '@/view-models/home-modules'
 import type { DashboardOverview } from '@/view-models/home-overview'
-import type { HomeReferentials } from '@/view-models/home-referentials'
 
-type Props = {
-  overview: DashboardOverview
-  referentials: HomeReferentials
-}
+type Props = { overview: DashboardOverview }
 
-export function HomePage({ overview, referentials }: Props) {
-  const quickCreate = useHomeQuickCreate(referentials)
+export function HomePage({ overview }: Props) {
+  const quickCreate = useHomeQuickCreate()
   const description = useMemo(
     () =>
       `${overview.missionsActive} mission(s) à pourvoir · ${overview.candidates} candidat(s) · ${overview.inboxPending} candidature(s) en attente`,

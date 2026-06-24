@@ -23,3 +23,15 @@ docs/prompts/
 > **Note** : #60 prompt en `done/` — code fiche pharmacy pas encore sur `dev` ; #61/#63 peuvent nécessiter shell `/pharmacies/[id]`.
 
 Voir : `docs/ISSUE_DEPENDENCIES.md`
+
+## Workflow agent (5 phases)
+
+| Phase | Action |
+|-------|--------|
+| 1 Setup | Lire règles · branche · worktree si parallèle · `/caveman` |
+| 2 Implémentation | `/tdd` |
+| 3 Prêt à tester | Push + PR + **commande de test + tests manuels** (obligatoire) |
+| 4 Handoff | `/handoff` → commit handoff dans la PR |
+| 5 Cleanup | Supprimer worktree · `pending/` → `done/` après merge |
+
+Détail : `docs/prompt-rules.md`

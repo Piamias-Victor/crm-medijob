@@ -11,6 +11,7 @@ type Props = {
   submitting: boolean
   jobTitles: Ref[]
   recruiters: Ref[]
+  errorMessage?: string | null
   onClose: () => void
   onSubmit: (data: CandidateQuickCreateInput) => void
 }
@@ -20,6 +21,7 @@ export function CandidateFormModal({
   submitting,
   jobTitles,
   recruiters,
+  errorMessage,
   onClose,
   onSubmit,
 }: Props) {
@@ -34,6 +36,7 @@ export function CandidateFormModal({
         jobTitles={jobTitles}
         recruiters={recruiters}
         submitting={submitting}
+        errorMessage={errorMessage}
         onSubmit={onSubmit}
       />
     </GlassModal>

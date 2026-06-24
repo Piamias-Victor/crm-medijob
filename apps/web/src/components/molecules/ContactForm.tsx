@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { contactInputSchema, type ContactInput } from '@/view-models/contact-form.schema'
 import { Button } from '@/components/atoms/Button'
+import { FormErrorBanner } from '@/components/atoms/FormErrorBanner'
 import { Textarea } from '@/components/atoms/Textarea'
 import { FormSection } from '@/components/molecules/FormSection'
 import { ContactAffiliationFields } from '@/components/molecules/ContactAffiliationFields'
@@ -18,10 +19,18 @@ type Props = {
   pharmacies: Ref[]
   lockedPharmacyId?: string
   submitting: boolean
+  errorMessage?: string | null
   onSubmit: (data: ContactInput) => void
 }
 
-export function ContactForm({ defaultValues, pharmacies, lockedPharmacyId, submitting, onSubmit }: Props) {
+export function ContactForm({
+  defaultValues,
+  pharmacies,
+  lockedPharmacyId,
+  submitting,
+  errorMessage,
+  onSubmit,
+}: Props) {
   const { register, handleSubmit, control, formState } = useForm<ContactInput>({
     resolver: zodResolver(contactInputSchema),
     defaultValues: { role: 'AUTRE', isPrimary: false, ...defaultValues },
@@ -30,6 +39,7 @@ export function ContactForm({ defaultValues, pharmacies, lockedPharmacyId, submi
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+      {errorMessage ? <FormErrorBanner message={errorMessage} /> : null}
       {lockedPharmacyId ? <input type="hidden" {...register('pharmacyId')} /> : null}
       <FormSection title="Rattachement">
         <ContactAffiliationFields
