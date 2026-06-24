@@ -1,7 +1,15 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import DesignSystemPage from './page'
 import { dsSections } from '@/lib/design-system'
+
+const mockSearchParams = new URLSearchParams()
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => '/design-system',
+  useSearchParams: () => mockSearchParams,
+}))
 
 describe('Design system page', () => {
   it('announces itself with a top-level heading', () => {

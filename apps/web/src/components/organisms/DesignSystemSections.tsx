@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, Suspense } from 'react'
 import { dsSections } from '@/lib/design-system'
 import { Section } from '@/components/molecules/design-system/Section'
 import { LogoShowcase } from '@/components/molecules/design-system/LogoShowcase'
@@ -28,7 +28,11 @@ const nodes: Record<string, ReactNode> = {
   'empty-state': <EmptyStateShowcase />,
   skeleton: <SkeletonShowcase />,
   toast: <ToastShowcase />,
-  tableau: <EntityTableShowcase />,
+  tableau: (
+    <Suspense fallback={<p className="text-sm text-fg-muted">Chargement des filtres…</p>}>
+      <EntityTableShowcase />
+    </Suspense>
+  ),
 }
 
 export function DesignSystemSections() {
