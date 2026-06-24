@@ -13,6 +13,7 @@ import { CandidateShowcase } from '@/components/molecules/design-system/Candidat
 import { EmptyStateShowcase } from '@/components/molecules/design-system/EmptyStateShowcase'
 import { SkeletonShowcase } from '@/components/molecules/design-system/SkeletonShowcase'
 import { ToastShowcase } from '@/components/molecules/design-system/ToastShowcase'
+import { EntityTableShowcase } from '@/components/molecules/design-system/EntityTableShowcase'
 
 const nodes: Record<string, ReactNode> = {
   logo: <LogoShowcase />,
@@ -27,6 +28,7 @@ const nodes: Record<string, ReactNode> = {
   'empty-state': <EmptyStateShowcase />,
   skeleton: <SkeletonShowcase />,
   toast: <ToastShowcase />,
+  tableau: <EntityTableShowcase />,
 }
 
 export function DesignSystemSections() {
