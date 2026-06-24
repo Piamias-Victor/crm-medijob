@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { LayoutDashboard } from 'lucide-react'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
 import { HomeNavPills } from '@/components/molecules/HomeNavPills'
@@ -10,17 +11,27 @@ import { HomeQuickCreateModals } from '@/components/molecules/HomeQuickCreateMod
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { useHomeQuickCreate } from '@/lib/hooks/use-home-quick-create'
 import { HOME_ACTIONS } from '@/view-models/home-modules'
+import type { HomeQuickCreateKind } from '@/view-models/home-referentials'
 import type { DashboardOverview } from '@/view-models/home-overview'
 
 type Props = { overview: DashboardOverview }
 
 export function HomePage({ overview }: Props) {
+  const router = useRouter()
   const quickCreate = useHomeQuickCreate()
   const description = useMemo(
     () =>
       `${overview.missionsActive} mission(s) à pourvoir · ${overview.candidates} candidat(s) · ${overview.inboxPending} candidature(s) en attente`,
     [overview.candidates, overview.inboxPending, overview.missionsActive],
   )
+
+  const onQuickAction = (kind: HomeQuickCreateKind) => {
+    if (kind === 'candidate') {
+      router.push('/candidats/new')
+      return
+    }
+    quickCreate.setOpen(kind)
+  }
 
   return (
     <DashboardPage
@@ -44,7 +55,7 @@ export function HomePage({ overview }: Props) {
         description="Ajoutez candidats, missions, pharmacies ou contacts sans quitter l'accueil."
         bodyClassName="p-4 sm:p-5"
       >
-        <HomeQuickActions actions={HOME_ACTIONS} onOpen={quickCreate.setOpen} />
+        <HomeQuickActions actions={HOME_ACTIONS} onOpen={onQuickAction} />
       </SectionCard>
       <HomeQuickCreateModals state={quickCreate} />
     </DashboardPage>

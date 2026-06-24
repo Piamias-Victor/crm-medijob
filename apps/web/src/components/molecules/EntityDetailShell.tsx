@@ -7,7 +7,7 @@ import { pageEntrance, tabPanelMotion } from '@/lib/motion/variants'
 type Props = {
   header: ReactNode
   meta?: ReactNode
-  tabs: ReactNode
+  tabs?: ReactNode
   tabKey: string
   children: ReactNode
 }
@@ -22,7 +22,7 @@ export function EntityDetailShell({ header, meta, tabs, tabKey, children }: Prop
     >
       {header}
       {meta}
-      {tabs}
+      {tabs ?? null}
       <AnimatePresence mode="wait">
         <motion.div key={tabKey} className="w-full" {...tabPanelMotion}>
           {children}

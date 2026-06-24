@@ -1,5 +1,6 @@
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
+import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 
 export function toCandidateUpdateData(data: CandidateProfileInput): CandidateProfileUpdate {
   return {
