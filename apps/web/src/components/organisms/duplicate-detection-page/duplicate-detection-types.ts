@@ -26,3 +26,21 @@ export type DuplicateFieldRowProps<T extends Record<string, unknown>> = {
   selected: FieldSide
   onSelect: (side: FieldSide) => void
 }
+
+export type DuplicateFieldOptionProps = {
+  name: string
+  selected: boolean
+  label: string
+  onSelect: () => void
+  children: ReactNode
+}
+
+export type DuplicateComparisonTableProps<T extends Record<string, unknown>> = {
+  fields: DuplicateField<T>[]
+  left: T
+  right: T
+  leftTitle: string
+  rightTitle: string
+  selections: Partial<Record<keyof T, FieldSide>>
+  onSelect: (key: keyof T, side: FieldSide) => void
+}

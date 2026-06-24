@@ -42,7 +42,8 @@ export function DuplicateDetectionShowcase() {
       <p className="text-sm text-fg-muted">
         Comparaison côte-à-côte générique — champs différents surlignés, fusion champ par champ.
       </p>
-      <DuplicateDetectionPage
+      <div className="max-w-4xl">
+        <DuplicateDetectionPage
         left={EXISTING}
         right={INCOMING}
         fields={FIELDS}
@@ -59,7 +60,8 @@ export function DuplicateDetectionShowcase() {
         onCancel={() => {
           push({ variant: 'warning', message: 'Annulé — retour sans mutation' })
         }}
-      />
+        />
+      </div>
     </div>
   )
 }

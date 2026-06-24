@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/atoms/Button'
+import { DuplicateComparisonTable } from '@/components/organisms/duplicate-detection-page/duplicate-comparison-table'
 import {
   DUPLICATE_CANCEL,
   DUPLICATE_IGNORE,
@@ -10,7 +11,6 @@ import {
   DUPLICATE_MERGING,
   DUPLICATE_RIGHT_TITLE,
 } from '@/components/organisms/duplicate-detection-page/duplicate-detection-copy'
-import { DuplicateFieldRow } from '@/components/organisms/duplicate-detection-page/duplicate-field-row'
 import { buildDefaultSelections } from '@/components/organisms/duplicate-detection-page/duplicate-detection-selection'
 import { type DuplicateDetectionPageProps } from '@/components/organisms/duplicate-detection-page/duplicate-detection-types'
 import { resolveMergedFields, type FieldSide } from '@/lib/merge/resolve-merged-fields'
@@ -52,30 +52,23 @@ export function DuplicateDetectionPage<T extends Record<string, unknown>>({
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2">
-        <h2 className="text-lg font-semibold text-fg">{leftTitle}</h2>
-        <h2 className="text-lg font-semibold text-fg">{rightTitle}</h2>
-      </div>
-      <div className="space-y-4">
-        {fields.map((field) => (
-          <DuplicateFieldRow
-            key={String(field.key)}
-            field={field}
-            leftValue={left[field.key]}
-            rightValue={right[field.key]}
-            selected={selections[field.key] ?? 'left'}
-            onSelect={(side) => selectField(field.key, side)}
-          />
-        ))}
-      </div>
-      <div className="flex flex-wrap justify-end gap-3 border-t border-border/50 pt-4">
+      <DuplicateComparisonTable
+        fields={fields}
+        left={left}
+        right={right}
+        leftTitle={leftTitle}
+        rightTitle={rightTitle}
+        selections={selections}
+        onSelect={selectField}
+      />
+      <div className="flex flex-wrap justify-end gap-3">
         <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>
           {DUPLICATE_CANCEL}
         </Button>
-        <Button type="button" variant="ghost" onClick={handleIgnore} disabled={busy}>
+        <Button type="button" variant="primary" onClick={handleIgnore} disabled={busy}>
           {DUPLICATE_IGNORE}
         </Button>
-        <Button type="button" onClick={handleMerge} disabled={busy} className="min-w-30">
+        <Button type="button" variant="accent" onClick={handleMerge} disabled={busy} className="min-w-30">
           {merging ? DUPLICATE_MERGING : DUPLICATE_MERGE}
         </Button>
       </div>

@@ -2,9 +2,10 @@
 
 import { cn } from '@/lib/cn'
 import {
-  DUPLICATE_KEEP_LEFT,
-  DUPLICATE_KEEP_RIGHT,
+  DUPLICATE_SELECT_EXISTING,
+  DUPLICATE_SELECT_INCOMING,
 } from '@/components/organisms/duplicate-detection-page/duplicate-detection-copy'
+import { DuplicateFieldOption } from '@/components/organisms/duplicate-detection-page/duplicate-field-option'
 import { type DuplicateFieldRowProps } from '@/components/organisms/duplicate-detection-page/duplicate-detection-types'
 
 export function DuplicateFieldRow<T extends Record<string, unknown>>({
@@ -20,39 +21,27 @@ export function DuplicateFieldRow<T extends Record<string, unknown>>({
   return (
     <div
       className={cn(
-        'rounded-lg border p-4',
-        differs ? 'border-warning/25 bg-warning/8' : 'border-border bg-surface',
+        'grid grid-cols-[minmax(7rem,11rem)_1fr_1fr] border-b border-border/70 last:border-b-0',
+        differs && 'bg-warning/[0.07]',
       )}
     >
-      <p className="mb-3 text-sm font-medium text-fg">{field.label}</p>
-      <div className="grid gap-4 md:grid-cols-2">
-        <label className="flex cursor-pointer gap-3 rounded-md border border-border/60 p-3">
-          <input
-            type="radio"
-            name={groupName}
-            checked={selected === 'left'}
-            onChange={() => onSelect('left')}
-            className="mt-1"
-          />
-          <span className="space-y-1">
-            <span className="block text-xs text-fg-muted">{DUPLICATE_KEEP_LEFT}</span>
-            <span className="block text-sm text-fg">{field.render(leftValue)}</span>
-          </span>
-        </label>
-        <label className="flex cursor-pointer gap-3 rounded-md border border-border/60 p-3">
-          <input
-            type="radio"
-            name={groupName}
-            checked={selected === 'right'}
-            onChange={() => onSelect('right')}
-            className="mt-1"
-          />
-          <span className="space-y-1">
-            <span className="block text-xs text-fg-muted">{DUPLICATE_KEEP_RIGHT}</span>
-            <span className="block text-sm text-fg">{field.render(rightValue)}</span>
-          </span>
-        </label>
-      </div>
+      <div className="flex items-center px-4 py-3 text-sm font-medium text-fg">{field.label}</div>
+      <DuplicateFieldOption
+        name={groupName}
+        selected={selected === 'left'}
+        label={`${field.label} — ${DUPLICATE_SELECT_EXISTING}`}
+        onSelect={() => onSelect('left')}
+      >
+        {field.render(leftValue)}
+      </DuplicateFieldOption>
+      <DuplicateFieldOption
+        name={groupName}
+        selected={selected === 'right'}
+        label={`${field.label} — ${DUPLICATE_SELECT_INCOMING}`}
+        onSelect={() => onSelect('right')}
+      >
+        {field.render(rightValue)}
+      </DuplicateFieldOption>
     </div>
   )
 }
