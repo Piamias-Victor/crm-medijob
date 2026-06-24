@@ -15,6 +15,7 @@ import { SkeletonShowcase } from '@/components/molecules/design-system/SkeletonS
 import { ToastShowcase } from '@/components/molecules/design-system/ToastShowcase'
 import { EntityTableShowcase } from '@/components/molecules/design-system/EntityTableShowcase'
 import { SoftDeleteModalShowcase } from '@/components/molecules/design-system/SoftDeleteModalShowcase'
+import { EmailButtonShowcase } from '@/components/molecules/design-system/EmailButtonShowcase'
 
 const nodes: Record<string, ReactNode> = {
   logo: <LogoShowcase />,
@@ -35,6 +36,7 @@ const nodes: Record<string, ReactNode> = {
     </Suspense>
   ),
   'soft-delete': <SoftDeleteModalShowcase />,
+  'email-button': <EmailButtonShowcase />,
 }
 
 export function DesignSystemSections() {

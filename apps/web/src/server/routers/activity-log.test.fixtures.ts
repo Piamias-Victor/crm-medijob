@@ -30,6 +30,7 @@ export function makeActivityLogDeps(overrides: Partial<ActivityLogDeps> = {}): A
   return {
     listByEntity: vi.fn().mockResolvedValue([activityEntity, devisEntity]),
     create: vi.fn().mockResolvedValue(devisEntity),
+    createBatch: vi.fn().mockResolvedValue([devisEntity, activityEntity]),
     ...overrides,
   }
 }
