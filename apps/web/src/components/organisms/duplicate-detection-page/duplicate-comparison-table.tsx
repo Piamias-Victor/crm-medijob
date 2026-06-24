@@ -16,7 +16,7 @@ export function DuplicateComparisonTable<T extends Record<string, unknown>>({
   onSelect,
 }: DuplicateComparisonTableProps<T>) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
+    <div className="overflow-hidden rounded-xl border border-border bg-white">
       <div className="grid grid-cols-[minmax(7rem,11rem)_1fr_1fr] border-b border-border bg-surface/90">
         <div className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-fg-muted">
           {DUPLICATE_FIELD_HEADER}

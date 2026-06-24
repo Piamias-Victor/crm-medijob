@@ -13,10 +13,8 @@ export function DuplicateFieldOption({
   return (
     <label
       className={cn(
-        'flex min-h-14 cursor-pointer items-center gap-3 border-l border-border px-4 py-3 transition-colors',
-        selected
-          ? 'bg-accent-muted/35 ring-2 ring-inset ring-accent/25'
-          : 'hover:bg-surface/80',
+        'flex min-h-14 cursor-pointer items-center gap-3 border-l border-border px-4 py-3',
+        !selected && 'hover:bg-surface/60',
       )}
     >
       <input
