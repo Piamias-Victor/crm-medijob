@@ -6,6 +6,7 @@ import { CvthequeKanban } from '@/components/organisms/CvthequeKanban'
 import { CvthequeTable } from '@/components/organisms/cvtheque-table/cvtheque-table'
 import type { CvthequeView } from '@/components/molecules/ViewToggle'
 import { cvthequeViewOptions } from '@/components/molecules/ViewToggle'
+import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
 import { useCvthequeListQuery } from '@/lib/hooks/use-cvtheque-list-query'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
@@ -18,7 +19,8 @@ type Props = {
 
 export function CvthequeSection({ initialList, filterConfig, onCountChange }: Props) {
   const [view, setView] = useState<CvthequeView>('table')
-  const { values, setFilters, reset, candidates, stages, tableRows } = useCvthequeListQuery(
+  const [sort, setSort] = useState<EntityTableSortState | null>(null)
+  const { values, setFilters, reset, candidates, stages, tableRows, apiFilters } = useCvthequeListQuery(
     initialList,
     filterConfig,
     onCountChange,
@@ -42,6 +44,9 @@ export function CvthequeSection({ initialList, filterConfig, onCountChange }: Pr
             onChange={setFilters}
             onReset={reset}
             rows={tableRows}
+            exportFilters={apiFilters}
+            sort={sort}
+            onSortChange={setSort}
           />
         </Suspense>
       }

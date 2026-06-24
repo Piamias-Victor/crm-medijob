@@ -9,8 +9,11 @@ import {
   type CandidateMatchingRow,
 } from './candidate-matching.select'
 import { candidateCvthequeSelect } from './candidate-cvtheque.select'
-import { buildCandidateListWhere } from './candidate-list-where'
+import { buildCandidateExportSelect } from './candidate-export-select.builder'
+import { buildCandidateListQuery } from './candidate-list-query'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
+import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
+import type { RawCandidateExport } from '@/view-models/candidate-export.types'
 
 export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
@@ -55,19 +58,14 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         take: limit,
         select: candidateMatchingSelect,
       }),
-    listForKanban: (filters: CandidateListFilters = {}, limit = DEFAULT_LIST_LIMIT) => {
-      const filterWhere = buildCandidateListWhere(filters)
-      const where: Prisma.CandidateWhereInput =
-        Object.keys(filterWhere).length === 0
-          ? NOT_DELETED
-          : { AND: [NOT_DELETED, filterWhere] }
-      return db.candidate.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        select: candidateCvthequeSelect,
-      })
-    },
+    listForKanban: (filters: CandidateListFilters = {}, limit = DEFAULT_LIST_LIMIT) =>
+      buildCandidateListQuery(db, filters, candidateCvthequeSelect, limit),
+    listForExport: async (filters: CandidateListFilters = {}, columnIds: CvthequeExportColumnId[]) =>
+      (await buildCandidateListQuery(
+        db,
+        filters,
+        buildCandidateExportSelect(columnIds),
+      )) as unknown as RawCandidateExport[],
     findForContext: (id: string) =>
       db.candidate.findFirst({
         where: { id, ...NOT_DELETED },

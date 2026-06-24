@@ -31,10 +31,15 @@ import {
   toCandidateSearchOptions,
 } from '@/server/routers/candidate-search'
 import { candidateListFiltersSchema, type CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
+import { candidateExportInputSchema } from '@/view-models/candidate-export.schema'
+import type { RawCandidateExport } from '@/view-models/candidate-export.types'
+import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
+import { handleCandidateExportCsv } from '@/server/routers/candidate-export'
 
 export type CandidateDeps = CandidateCvDeps &
   CandidateDocumentsDeps & {
   listForKanban: (filters?: CandidateListFilters) => Promise<RawCandidate[]>
+  listForExport: (filters?: CandidateListFilters, columnIds?: CvthequeExportColumnId[]) => Promise<RawCandidateExport[]>
   listStages: () => Promise<RawStage[]>
   search: (term: string, limit?: number) => Promise<CandidateSearchRow[]>
   updateProfile: (
@@ -56,6 +61,9 @@ export function makeCandidateRouter(deps: CandidateDeps) {
   return router({
     list: protectedProcedure.input(candidateListFiltersSchema.optional()).query(({ input }) =>
       listKanban(deps, input),
+    ),
+    exportCsv: protectedProcedure.input(candidateExportInputSchema).query(({ input }) =>
+      handleCandidateExportCsv(deps, input),
     ),
     search: protectedProcedure.input(candidateSearchInput).query(async ({ input }) =>
       toCandidateSearchOptions(await deps.search(input.term, input.limit)),

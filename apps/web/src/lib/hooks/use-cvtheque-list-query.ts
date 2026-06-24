@@ -47,5 +47,5 @@ export function useCvthequeListQuery(
     onCountChange?.(candidates.length)
   }, [candidates.length, onCountChange])
 
-  return { values, setFilters, reset, candidates, stages, tableRows, defaults }
+  return { values, setFilters, reset, candidates, stages, tableRows, apiFilters, defaults }
 }

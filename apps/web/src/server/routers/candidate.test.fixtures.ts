@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 import { mockProvider } from '@/server/ai/mock-provider'
+import { candidateExportFixture } from '@/server/routers/candidate-export.fixture'
 import type { CandidateDeps } from '@/server/routers/candidate'
 
 export const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
@@ -44,6 +45,7 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
         missions: [],
       },
     ]),
+    listForExport: vi.fn().mockResolvedValue([candidateExportFixture]),
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
     search: vi.fn().mockResolvedValue([
       {

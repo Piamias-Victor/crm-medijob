@@ -4,9 +4,10 @@ import { useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { RotateCcw, SlidersHorizontal } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
-import { ExportCsvButton } from '@/components/molecules/export-csv-button/export-csv-button'
+import { CvthequeExportButton } from '@/components/organisms/cvtheque-table/cvtheque-export-button'
 import { CvthequeAdvancedFiltersPanel } from '@/components/organisms/cvtheque-table/cvtheque-advanced-filters-panel'
 import { CvthequeFilterField } from '@/components/organisms/cvtheque-table/cvtheque-filter-field'
+import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import type { CvthequeFilterValues } from '@/lib/filters/cvtheque-filter-map'
 import {
@@ -16,17 +17,27 @@ import {
 } from '@/lib/filters/cvtheque-filter-utils'
 import { useOutsidePointerClose } from '@/lib/hooks/use-outside-pointer-close'
 import { useAnchoredPanel } from '@/lib/use-anchored-panel'
+import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 
 type Props = {
   filterConfig: CvthequeFilterConfig
   values: CvthequeFilterValues
   onChange: (values: CvthequeFilterValues) => void
   onReset: () => void
-  csvHeaders: string[]
-  csvRows: string[][]
+  exportFilters: CandidateListFilters
+  sort: EntityTableSortState | null
+  exportDisabled?: boolean
 }
 
-export function CvthequeFilterBar({ filterConfig, values, onChange, onReset, csvHeaders, csvRows }: Props) {
+export function CvthequeFilterBar({
+  filterConfig,
+  values,
+  onChange,
+  onReset,
+  exportFilters,
+  sort,
+  exportDisabled = false,
+}: Props) {
   const [open, setOpen] = useState(false)
   const { primary, advanced } = useMemo(() => splitCvthequeFilterConfig(filterConfig), [filterConfig])
   const defaults = useMemo(() => buildCvthequeFilterDefaults(filterConfig), [filterConfig])
@@ -61,7 +72,7 @@ export function CvthequeFilterBar({ filterConfig, values, onChange, onReset, csv
           : null}
       </div>
       <div className="ml-auto flex shrink-0 items-center gap-2">
-        <ExportCsvButton filename="cvtheque" headers={csvHeaders} rows={csvRows} />
+        <CvthequeExportButton filters={exportFilters} sort={sort} disabled={exportDisabled} />
         <Button type="button" variant="ghost" onClick={onReset} className="h-[38px] shrink-0 px-2 py-1.5 text-sm">
           <RotateCcw className="size-4" />
           Réinitialiser

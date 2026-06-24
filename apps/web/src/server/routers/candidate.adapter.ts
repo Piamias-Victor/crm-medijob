@@ -15,6 +15,7 @@ const documentsProvider = createAssistantProvider()
 
 export const candidateRouter = makeCandidateRouter({
   listForKanban: (filters) => candidateRepository.listForKanban(filters),
+  listForExport: (filters, columnIds) => candidateRepository.listForExport(filters, columnIds ?? []),
   listStages: () => pipelineStageRepository.list(),
   search: (term, limit) => candidateRepository.search(term, limit),
   findProfileById: (id) => candidateRepository.findProfileById(id),

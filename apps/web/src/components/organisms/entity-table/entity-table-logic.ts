@@ -1,36 +1,5 @@
 import type { CellValue, ColumnDef, SortDirection } from '@/components/organisms/entity-table/entity-table-types'
-
-const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}/
-
-function isNullish(value: CellValue): value is null | undefined {
-  return value === null || value === undefined
-}
-
-function toSortable(value: CellValue): number | string {
-  if (value instanceof Date) return value.getTime()
-  if (typeof value === 'number') return value
-  if (typeof value === 'string') {
-    const parsed = Date.parse(value)
-    if (!Number.isNaN(parsed) && ISO_DATE_RE.test(value)) return parsed
-    return value
-  }
-  return String(value)
-}
-
-function compareValues(left: CellValue, right: CellValue, direction: SortDirection): number {
-  if (isNullish(left) && isNullish(right)) return 0
-  if (isNullish(left)) return 1
-  if (isNullish(right)) return -1
-
-  const a = toSortable(left)
-  const b = toSortable(right)
-  const base =
-    typeof a === 'number' && typeof b === 'number'
-      ? a - b
-      : String(a).localeCompare(String(b), 'fr', { sensitivity: 'base' })
-
-  return direction === 'asc' ? base : -base
-}
+import { sortRowsByAccessor } from '@/lib/sort-rows'
 
 export function sortEntityRows<TRow>(
   rows: TRow[],
@@ -40,10 +9,7 @@ export function sortEntityRows<TRow>(
 ): TRow[] {
   const column = columns.find((entry) => entry.id === columnId)
   if (!column) return [...rows]
-
-  return [...rows].sort((left, right) =>
-    compareValues(column.accessor(left), column.accessor(right), direction),
-  )
+  return sortRowsByAccessor(rows, (row) => column.accessor(row) as CellValue, direction)
 }
 
 type PaginationResult<TRow> = {
