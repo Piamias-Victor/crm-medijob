@@ -1,5 +1,6 @@
 'use client'
 
+import { type ReactNode } from 'react'
 import { RotateCcw } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { FilterBarField } from '@/components/organisms/filter-bar/filter-bar-field'
@@ -10,6 +11,7 @@ export type FilterBarProps<TConfigs extends readonly FilterConfig[]> = {
   values: FilterValues<TConfigs>
   onChange: (values: FilterValues<TConfigs>) => void
   onReset: () => void
+  actions?: ReactNode
 }
 
 export function FilterBar<TConfigs extends readonly FilterConfig[]>({
@@ -17,16 +19,20 @@ export function FilterBar<TConfigs extends readonly FilterConfig[]>({
   values,
   onChange,
   onReset,
+  actions,
 }: FilterBarProps<TConfigs>) {
   return (
     <div className="flex items-end gap-2 overflow-x-auto rounded-lg border border-border bg-surface px-3 py-2">
       {config.map((item) => (
         <FilterBarField key={item.id} config={item} values={values} onChange={onChange} />
       ))}
-      <Button type="button" variant="ghost" onClick={onReset} className="ml-auto h-[38px] shrink-0 px-2 py-1.5 text-sm">
-        <RotateCcw className="size-4" />
-        Réinitialiser
-      </Button>
+      <div className="ml-auto flex shrink-0 items-center gap-2">
+        {actions}
+        <Button type="button" variant="ghost" onClick={onReset} className="h-[38px] shrink-0 px-2 py-1.5 text-sm">
+          <RotateCcw className="size-4" />
+          Réinitialiser
+        </Button>
+      </div>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import {
   buildDemoListRows,
   demoFilterConfig,
 } from '@/components/molecules/design-system/entity-table-showcase-data'
+import { ExportCsvButton } from '@/components/molecules/export-csv-button/export-csv-button'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import type { ColumnDef } from '@/components/organisms/entity-table/entity-table-types'
 import { FilterBar } from '@/components/organisms/filter-bar/filter-bar'
@@ -32,10 +33,32 @@ export function EntityTableShowcase() {
   const rows = useMemo(() => buildDemoListRows(), [])
   const { values, filters, onChange, reset } = useEntityFilters(demoFilterConfig)
   const filteredRows = useMemo(() => filterDemoListRows(rows, filters), [filters, rows])
+  const csvRows = useMemo(
+    () =>
+      filteredRows.map((row) => [
+        row.name,
+        row.city,
+        row.metier,
+        formatDateFr(row.createdAt),
+      ]),
+    [filteredRows],
+  )
 
   return (
     <div className="space-y-4">
-      <FilterBar config={demoFilterConfig} values={values} onChange={onChange} onReset={reset} />
+      <FilterBar
+        config={demoFilterConfig}
+        values={values}
+        onChange={onChange}
+        onReset={reset}
+        actions={
+          <ExportCsvButton
+            filename="candidats-demo"
+            headers={['Nom', 'Ville', 'Métier', 'Créé le']}
+            rows={csvRows}
+          />
+        }
+      />
       <EntityTable
         rows={filteredRows}
         columns={columns}
