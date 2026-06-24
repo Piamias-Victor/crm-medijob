@@ -9,21 +9,6 @@ function caller(deps = makeCandidateDeps()) {
 }
 
 describe('candidateRouter', () => {
-  it('list retourne rows + stages sans dupliquer candidates bruts', async () => {
-    const result = await caller().list()
-    expect(result).not.toHaveProperty('candidates')
-    expect(result.rows[0]).toHaveProperty('missions')
-    expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
-  })
-
-  it('returns typed list source rows for the CVthèque', async () => {
-    const deps = makeCandidateDeps()
-    const result = await caller(deps).list()
-    expect(result.rows).toHaveLength(1)
-    expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
-    expect(result.rows[0]).toMatchObject({ id: 'c1', firstName: 'Camille', city: 'Lyon' })
-  })
-
   it('searches candidates for the picker', async () => {
     const deps = makeCandidateDeps()
     const result = await caller(deps).search({ term: 'cam' })

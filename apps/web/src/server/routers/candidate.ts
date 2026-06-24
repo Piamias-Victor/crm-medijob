@@ -30,10 +30,11 @@ import {
   candidateSearchInput,
   toCandidateSearchOptions,
 } from '@/server/routers/candidate-search'
+import { candidateListFiltersSchema, type CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 
 export type CandidateDeps = CandidateCvDeps &
   CandidateDocumentsDeps & {
-  listForKanban: () => Promise<RawCandidate[]>
+  listForKanban: (filters?: CandidateListFilters) => Promise<RawCandidate[]>
   listStages: () => Promise<RawStage[]>
   search: (term: string, limit?: number) => Promise<CandidateSearchRow[]>
   updateProfile: (
@@ -46,14 +47,16 @@ export type CandidateDeps = CandidateCvDeps &
   referentials: () => ReturnType<typeof loadCandidateReferentials>
 }
 
-async function listKanban(deps: CandidateDeps) {
-  const [rows, stages] = await Promise.all([deps.listForKanban(), deps.listStages()])
+async function listKanban(deps: CandidateDeps, filters?: CandidateListFilters) {
+  const [rows, stages] = await Promise.all([deps.listForKanban(filters), deps.listStages()])
   return { rows, stages }
 }
 
 export function makeCandidateRouter(deps: CandidateDeps) {
   return router({
-    list: protectedProcedure.query(() => listKanban(deps)),
+    list: protectedProcedure.input(candidateListFiltersSchema.optional()).query(({ input }) =>
+      listKanban(deps, input),
+    ),
     search: protectedProcedure.input(candidateSearchInput).query(async ({ input }) =>
       toCandidateSearchOptions(await deps.search(input.term, input.limit)),
     ),

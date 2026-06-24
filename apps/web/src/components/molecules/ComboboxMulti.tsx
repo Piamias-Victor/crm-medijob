@@ -2,8 +2,10 @@
 
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
-import { Check, ChevronDown } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
+import { ComboboxMultiPanel } from '@/components/molecules/ComboboxMultiPanel'
 import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
+import { useOutsidePointerClose } from '@/lib/hooks/use-outside-pointer-close'
 import { useAnchoredPanel } from '@/lib/use-anchored-panel'
 import { cn } from '@/lib/cn'
 
@@ -17,68 +19,32 @@ type Props = {
 
 export function ComboboxMulti({ values, onChange, options, placeholder = 'Tous', unit }: Props) {
   const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
   const { anchorRef, panelRef, style } = useAnchoredPanel(open, 280)
+  useOutsidePointerClose(open, () => setOpen(false), anchorRef, panelRef)
 
   useEffect(() => {
-    if (!open) return
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node
-      if (anchorRef.current?.contains(target)) return
-      if (panelRef.current?.contains(target)) return
-      setOpen(false)
-    }
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [open, anchorRef, panelRef])
+    if (!open) setQuery('')
+  }, [open])
 
-  const toggle = (value: string) => {
-    onChange(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value])
-  }
-
-  const summary =
-    values.length === 0
-      ? placeholder
-      : values.length === 1
-        ? (options.find((option) => option.value === values[0])?.label ?? values[0])
-        : unit
-          ? `${values.length} ${unit}`
-          : String(values.length)
+  const summary = !values.length
+    ? placeholder
+    : values.length === 1
+      ? (options.find((option) => option.value === values[0])?.label ?? values[0])
+      : unit
+        ? `${values.length} ${unit}`
+        : String(values.length)
 
   const dropdown = open ? (
-    <div
-      ref={panelRef}
+    <ComboboxMultiPanel
+      panelRef={panelRef}
       style={style}
-      className="overflow-hidden rounded-md border border-border bg-surface shadow-lg"
-      onPointerDown={(event) => event.stopPropagation()}
-    >
-      <ul className="max-h-56 overflow-y-auto py-1">
-        <li>
-          <button
-            type="button"
-            onClick={() => onChange([])}
-            className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg hover:bg-surface"
-          >
-            Tous
-            {!values.length ? <Check className="size-4 text-accent" /> : null}
-          </button>
-        </li>
-        {options.map((option) => {
-          const checked = values.includes(option.value)
-          return (
-            <li key={option.value}>
-              <button
-                type="button"
-                onClick={() => toggle(option.value)}
-                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg hover:bg-surface"
-              >
-                {option.label}
-                {checked ? <Check className="size-4 text-accent" /> : null}
-              </button>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+      values={values}
+      onChange={onChange}
+      options={options}
+      query={query}
+      onQueryChange={setQuery}
+    />
   ) : null
 
   return (

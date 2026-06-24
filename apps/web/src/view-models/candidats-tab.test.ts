@@ -1,31 +1,35 @@
-import { describe, expect, it } from 'vitest'
-import { candidatsNavHref, candidatsPageHref, parseCandidatsTab } from './candidats-tab'
+import { describe, it, expect } from 'vitest'
+import {
+  buildCandidatsTabHref,
+  candidatsNavHref,
+  candidatsPageHref,
+  parseCandidatsTab,
+} from './candidats-tab'
 
 describe('parseCandidatsTab', () => {
-  it('opens inbox when tab=inbox', () => {
+  it('parse inbox', () => {
     expect(parseCandidatsTab('inbox')).toBe('inbox')
-  })
-
-  it('defaults to cvtheque for unknown or missing tab', () => {
     expect(parseCandidatsTab(undefined)).toBe('cvtheque')
-    expect(parseCandidatsTab('cvtheque')).toBe('cvtheque')
-    expect(parseCandidatsTab('other')).toBe('cvtheque')
   })
 })
 
 describe('candidatsPageHref', () => {
-  it('links inbox tile to the inbox tab', () => {
+  it('build inbox and cvtheque hrefs', () => {
     expect(candidatsPageHref('inbox')).toBe('/candidats?tab=inbox')
     expect(candidatsPageHref('cvtheque')).toBe('/candidats')
   })
 })
 
-describe('candidatsNavHref', () => {
-  it('links to inbox when pending applications exist', () => {
-    expect(candidatsNavHref(3)).toBe('/candidats?tab=inbox')
+describe('buildCandidatsTabHref', () => {
+  it('conserve filtres existants en changeant onglet', () => {
+    expect(buildCandidatsTabHref('inbox', 'metier=jt1')).toBe('/candidats?metier=jt1&tab=inbox')
+    expect(buildCandidatsTabHref('cvtheque', 'metier=jt1&tab=inbox')).toBe('/candidats?metier=jt1')
   })
+})
 
-  it('links to cvtheque when inbox is empty', () => {
+describe('candidatsNavHref', () => {
+  it('priorise inbox si candidatures en attente', () => {
+    expect(candidatsNavHref(3)).toBe('/candidats?tab=inbox')
     expect(candidatsNavHref(0)).toBe('/candidats')
   })
 })

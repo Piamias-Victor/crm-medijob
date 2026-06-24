@@ -1,6 +1,7 @@
 'use client'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Button } from '@/components/atoms/Button'
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   totalPages: number
   pageSize: number
   pageSizeOptions: number[]
+  pageSizeControl?: ReactNode
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: number) => void
 }
@@ -15,28 +17,15 @@ type Props = {
 export function TablePagination({
   page,
   totalPages,
-  pageSize,
-  pageSizeOptions,
+  pageSizeControl,
   onPageChange,
-  onPageSizeChange,
 }: Props) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-3 py-2">
-      <label className="flex items-center gap-2 text-sm text-fg-muted">
-        Lignes par page
-        <select
-          value={pageSize}
-          onChange={(event) => onPageSizeChange(Number(event.target.value))}
-          className="rounded-md border border-border bg-surface px-2 py-1 text-sm text-fg"
-          aria-label="Nombre de lignes par page"
-        >
-          {pageSizeOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="flex items-center gap-2 text-sm text-fg-muted">
+        <span>Lignes par page</span>
+        {pageSizeControl}
+      </div>
       <div className="flex items-center gap-2">
         <span className="text-sm text-fg-muted">
           Page {page} / {totalPages}

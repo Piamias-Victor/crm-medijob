@@ -8,6 +8,7 @@ import { deserializeFilters, serializeFilters } from '@/lib/filters/serialize'
 
 type Options<TConfigs extends readonly FilterConfig[]> = {
   syncUrl?: boolean
+  preserveSearchParams?: readonly string[]
   values?: FilterValues<TConfigs>
   onValuesChange?: (values: FilterValues<TConfigs>) => void
 }
@@ -16,7 +17,7 @@ export function useEntityFilters<TConfigs extends readonly FilterConfig[]>(
   config: TConfigs,
   options: Options<TConfigs> = {},
 ) {
-  const { syncUrl = true, onValuesChange } = options
+  const { syncUrl = true, onValuesChange, preserveSearchParams = [] } = options
   const searchParams = useSearchParams()
   const searchKey = searchParams.toString()
   const pathname = usePathname()
@@ -46,10 +47,15 @@ export function useEntityFilters<TConfigs extends readonly FilterConfig[]>(
   useEffect(() => {
     if (!syncUrl) return
     const params = serializeFilters(config, values)
+    for (const key of preserveSearchParams) {
+      const preserved = searchParams.get(key)
+      if (preserved) params.set(key, preserved)
+    }
     const query = params.toString()
-    if (query === searchParams.toString()) return
+    const current = searchParams.toString()
+    if (query === current) return
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
-  }, [config, pathname, router, searchKey, searchParams, syncUrl, values])
+  }, [config, pathname, preserveSearchParams, router, searchKey, searchParams, syncUrl, values])
 
   const onChange = useCallback(
     (next: FilterValues<TConfigs>) => {

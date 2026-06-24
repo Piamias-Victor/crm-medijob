@@ -4,6 +4,7 @@ import { EmptyState } from '@/components/atoms/EmptyState'
 import { paginateEntityRows, sortEntityRows } from '@/components/organisms/entity-table/entity-table-logic'
 import { EntityTableHeader } from '@/components/organisms/entity-table/entity-table-header'
 import { EntityTablePagination } from '@/components/organisms/entity-table/entity-table-pagination'
+import { EntityTableRow } from '@/components/organisms/entity-table/entity-table-row'
 import { useEntityTableState } from '@/components/organisms/entity-table/entity-table-state'
 import type { EntityTableProps } from '@/components/organisms/entity-table/entity-table-types'
 
@@ -15,6 +16,7 @@ export function EntityTable<TRow>({
   emptyTitle,
   emptyDescription,
   renderActions,
+  getRowHref,
   pageSize,
   pageSizeOptions,
   sort: controlledSort,
@@ -44,7 +46,7 @@ export function EntityTable<TRow>({
   const hasActions = Boolean(renderActions)
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-white/80">
+    <div className="overflow-hidden rounded-lg border border-border bg-surface/80">
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse text-sm">
           <EntityTableHeader
@@ -55,16 +57,14 @@ export function EntityTable<TRow>({
           />
           <tbody>
             {pagination.rows.map((row) => (
-              <tr key={getRowId(row)} className="border-t border-border/70 transition-colors hover:bg-surface/60">
-                {columns.map((column) => (
-                  <td key={column.id} className="px-3 py-2 text-fg">
-                    {column.cell ? column.cell(row) : String(column.accessor(row) ?? '—')}
-                  </td>
-                ))}
-                {hasActions ? (
-                  <td className="px-3 py-2 text-right">{renderActions?.(row)}</td>
-                ) : null}
-              </tr>
+              <EntityTableRow
+                key={getRowId(row)}
+                row={row}
+                columns={columns}
+                hasActions={hasActions}
+                renderActions={renderActions}
+                getRowHref={getRowHref}
+              />
             ))}
           </tbody>
         </table>

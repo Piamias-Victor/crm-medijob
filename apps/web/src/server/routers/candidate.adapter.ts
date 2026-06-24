@@ -14,7 +14,7 @@ const cvProvider = createCvExtractionProvider()
 const documentsProvider = createAssistantProvider()
 
 export const candidateRouter = makeCandidateRouter({
-  listForKanban: () => candidateRepository.listForKanban(),
+  listForKanban: (filters) => candidateRepository.listForKanban(filters),
   listStages: () => pipelineStageRepository.list(),
   search: (term, limit) => candidateRepository.search(term, limit),
   findProfileById: (id) => candidateRepository.findProfileById(id),

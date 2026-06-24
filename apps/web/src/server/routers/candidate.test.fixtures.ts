@@ -37,6 +37,8 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
         firstName: 'Camille',
         lastName: 'Durand',
         city: 'Lyon',
+        postalCode: '69003',
+        availableFrom: null,
         jobTitle: { name: 'Pharmacien' },
         referent: { name: 'Recruteur' },
         missions: [],

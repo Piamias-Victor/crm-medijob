@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LayoutGrid } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
@@ -19,6 +19,9 @@ type Props = { candidates: RawCandidate[]; stages: RawStage[] }
 export function CvthequeKanban({ candidates, stages }: Props) {
   const router = useRouter()
   const [rows, setRows] = useState(candidates)
+  useEffect(() => {
+    setRows(candidates)
+  }, [candidates])
   const columns = useMemo(() => buildKanbanColumns(stages, rows), [stages, rows])
   const mutation = trpc.missionCandidate.updateStage.useMutation({
     onSettled: () => router.refresh(),

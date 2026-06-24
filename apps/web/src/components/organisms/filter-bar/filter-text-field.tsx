@@ -14,7 +14,7 @@ export function FilterTextField({ config, value, onChange }: Props) {
       <Input
         type="search"
         value={value}
-        placeholder={config.placeholder ?? config.label}
+        placeholder={config.placeholder !== undefined ? config.placeholder : config.label}
         className="h-[38px] py-1.5"
         onChange={(event) => onChange(event.target.value)}
       />
