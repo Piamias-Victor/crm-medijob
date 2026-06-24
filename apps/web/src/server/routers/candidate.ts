@@ -1,67 +1,43 @@
 import { router, protectedProcedure } from '@/server/trpc'
-import { candidateRepository } from '@/server/db/repositories/candidate.repository'
-import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 import {
   candidateIdSchema,
   candidateCreateInputSchema,
   updateCandidateSchema,
 } from '@/view-models/candidate-profile.schema'
 import { toCandidateProfilePayload } from '@/view-models/candidate-profile-payload'
-import { toCandidateUpdateData } from '@/view-models/candidate-profile-map'
-import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
+import { toCandidateCreateData, toCandidateUpdateData } from '@/view-models/candidate-profile-map'
 import {
   handleConfirmCvExtraction,
   handleExtractCv,
-  type CandidateCvDeps,
+  handleExtractCvDraft,
 } from '@/server/routers/candidate-cv'
+import { handleDiscardCvDraft } from '@/server/routers/candidate-cv-discard'
 import {
   handleGenerateAnonymized,
   handleGenerateSummary,
   handleSaveCvSummary,
-  type CandidateDocumentsDeps,
 } from '@/server/routers/candidate-documents'
 import {
   confirmCvExtractionSchema,
+  discardCvDraftSchema,
+  extractCvDraftSchema,
   extractCvSchema,
 } from '@/server/routers/candidate-cv.schema'
 import { saveCvSummarySchema } from '@/server/routers/candidate-documents.schema'
-import type { CandidateSearchRow } from '@/server/routers/candidate-search'
-import {
-  candidateSearchInput,
-  toCandidateSearchOptions,
-} from '@/server/routers/candidate-search'
-import { candidateListFiltersSchema, type CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
+import { candidateSearchInput, toCandidateSearchOptions } from '@/server/routers/candidate-search'
+import { candidateListFiltersSchema } from '@/view-models/candidate-list-filters.schema'
 import { candidateExportInputSchema } from '@/view-models/candidate-export.schema'
-import type { RawCandidateExport } from '@/view-models/candidate-export.types'
-import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
 import { handleCandidateExportCsv } from '@/server/routers/candidate-export'
+import type { CandidateDeps } from '@/server/routers/candidate.deps'
 
-export type CandidateDeps = CandidateCvDeps &
-  CandidateDocumentsDeps & {
-  listForKanban: (filters?: CandidateListFilters) => Promise<RawCandidate[]>
-  listForExport: (filters?: CandidateListFilters, columnIds?: CvthequeExportColumnId[]) => Promise<RawCandidateExport[]>
-  listStages: () => Promise<RawStage[]>
-  search: (term: string, limit?: number) => Promise<CandidateSearchRow[]>
-  updateProfile: (
-    id: string,
-    data: Parameters<typeof candidateRepository.updateProfile>[1],
-  ) => ReturnType<typeof candidateRepository.updateProfile>
-  createProfile: (
-    input: Parameters<typeof candidateRepository.createProfile>[0],
-  ) => ReturnType<typeof candidateRepository.createProfile>
-  referentials: () => ReturnType<typeof loadCandidateReferentials>
-}
-
-async function listKanban(deps: CandidateDeps, filters?: CandidateListFilters) {
-  const [rows, stages] = await Promise.all([deps.listForKanban(filters), deps.listStages()])
-  return { rows, stages }
-}
+export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
 export function makeCandidateRouter(deps: CandidateDeps) {
   return router({
-    list: protectedProcedure.input(candidateListFiltersSchema.optional()).query(({ input }) =>
-      listKanban(deps, input),
-    ),
+    list: protectedProcedure.input(candidateListFiltersSchema.optional()).query(async ({ input }) => {
+      const [rows, stages] = await Promise.all([deps.listForKanban(input), deps.listStages()])
+      return { rows, stages }
+    }),
     exportCsv: protectedProcedure.input(candidateExportInputSchema).query(({ input }) =>
       handleCandidateExportCsv(deps, input),
     ),
@@ -76,9 +52,15 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     referentials: protectedProcedure.query(() => deps.referentials()),
     create: protectedProcedure
       .input(candidateCreateInputSchema)
-      .mutation(({ input }) => deps.createProfile(toCandidateUpdateData(input))),
+      .mutation(({ input }) => deps.createProfile(toCandidateCreateData(input))),
     update: protectedProcedure.input(updateCandidateSchema).mutation(({ input }) =>
       deps.updateProfile(input.id, toCandidateUpdateData(input.data)),
+    ),
+    extractCvDraft: protectedProcedure.input(extractCvDraftSchema).mutation(({ input }) =>
+      handleExtractCvDraft(deps, input),
+    ),
+    discardCvDraft: protectedProcedure.input(discardCvDraftSchema).mutation(({ input }) =>
+      handleDiscardCvDraft(deps, input),
     ),
     extractCv: protectedProcedure.input(extractCvSchema).mutation(({ input }) =>
       handleExtractCv(deps, input),

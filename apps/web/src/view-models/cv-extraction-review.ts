@@ -5,8 +5,28 @@ import {
   DEFAULT_MOBILITY_RADIUS_KM,
   type CandidateFormSource,
 } from '@/view-models/candidate-profile'
-import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
+import { CREATE_CONTRACT_TYPES, type CandidateCreateInput, type CandidateProfileInput } from '@/view-models/candidate-profile.schema'
 import type { RefItem } from '@/view-models/referential'
+
+function toCreateFormSource(defaults: CandidateCreateInput): CandidateFormSource {
+  return {
+    firstName: defaults.firstName,
+    lastName: defaults.lastName,
+    email: defaults.email ?? null,
+    phone: defaults.phone ?? null,
+    address: defaults.address ?? null,
+    city: defaults.city ?? null,
+    postalCode: defaults.postalCode ?? null,
+    jobTitleId: defaults.jobTitleId,
+    mobilityRadiusKm: defaults.mobilityRadiusKm,
+    mobilityNotes: defaults.mobilityNotes ?? null,
+    availableFrom: defaults.availableFrom ? new Date(defaults.availableFrom) : null,
+    notes: defaults.notes ?? null,
+    referentId: defaults.referentId,
+    softwareIds: defaults.softwareIds,
+    contractTypes: defaults.contractTypes,
+  }
+}
 
 function cleanExtracted(value: string | undefined, fallback?: string | null) {
   if (isExtractedPlaceholder(value)) return fallback ?? undefined
@@ -57,5 +77,21 @@ export function buildCvReviewFormValues(
     notes:
       cleanExtracted(extraction.profileSummary, profile.notes) ?? profile.notes ?? undefined,
     referentId: profile.referentId,
+  }
+}
+
+const createContractTypes = new Set<string>(CREATE_CONTRACT_TYPES)
+
+export function buildCvCreateFormValues(
+  extraction: CvExtraction,
+  defaults: CandidateCreateInput,
+  referentials: { jobTitles: RefItem[]; softwares: RefItem[] },
+): CandidateCreateInput {
+  const reviewed = buildCvReviewFormValues(extraction, toCreateFormSource(defaults), referentials)
+  return {
+    ...reviewed,
+    contractTypes: reviewed.contractTypes.filter((type): type is CandidateCreateInput['contractTypes'][number] =>
+      createContractTypes.has(type),
+    ),
   }
 }

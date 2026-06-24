@@ -4,12 +4,14 @@ import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { useCreateJobTitleMutation } from '@/lib/hooks/use-create-job-title-mutation'
+import { clearCvImportDraft, readCvImportDraft } from '@/lib/cv-import-draft-storage'
 
 export function useCandidateCreateMutations() {
   const router = useRouter()
   const mutation = useEntityMutation({ successMessage: 'Candidat créé' })
   const create = trpc.candidate.create.useMutation({
     onSuccess: (result) => {
+      if (readCvImportDraft()) clearCvImportDraft()
       mutation.onSuccess()
       router.push(`/candidats/${result.id}`)
     },

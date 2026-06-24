@@ -36,6 +36,12 @@ describe('toCandidateProfileWriteData', () => {
     })
   })
 
+  it('includes cvUrl on create payload when present', () => {
+    expect(
+      toCandidateProfileUpdateData({ ...sample, cvUrl: 'https://cv.example/cv.pdf' }).cvUrl,
+    ).toBe('https://cv.example/cv.pdf')
+  })
+
   it('includes cvUrl on update payload when present', () => {
     expect(toCandidateProfileUpdateData({ ...sample, cvUrl: 'https://cv.example/cv.pdf' }).cvUrl).toBe(
       'https://cv.example/cv.pdf',
