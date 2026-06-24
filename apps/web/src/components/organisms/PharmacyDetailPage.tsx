@@ -74,6 +74,7 @@ export function PharmacyDetailPage({
         documents={documents}
         submittingInfo={mutations.update.isPending}
         submittingMission={mutations.createMission.isPending}
+        updateErrorMessage={mutations.update.error?.message}
         onUpdate={(data) => mutations.update.mutate({ id: pharmacy.id, data })}
         onCreateMission={(data) => mutations.createMission.mutate(data)}
         onCreateJobTitle={(name) => mutations.createJobTitle.mutateAsync({ name })}

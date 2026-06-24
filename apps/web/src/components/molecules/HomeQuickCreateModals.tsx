@@ -36,6 +36,7 @@ export function HomeQuickCreateModals({ state }: Props) {
         groupements={refs.groupements}
         softwares={refs.softwares}
         submitting={state.createPharmacy.isPending}
+        errorMessage={state.createPharmacy.error?.message}
         onClose={() => setOpen(null)}
         onSubmit={(data) => state.createPharmacy.mutate(data)}
         onSearchSiret={state.searchSiret}

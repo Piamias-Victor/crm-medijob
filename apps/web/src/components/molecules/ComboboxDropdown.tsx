@@ -15,6 +15,7 @@ type Props = {
   showCreate: boolean
   onPick: (value: string) => void
   onCreate: () => void
+  createError?: string | null
 }
 
 export function ComboboxDropdown({
@@ -27,12 +28,13 @@ export function ComboboxDropdown({
   showCreate,
   onPick,
   onCreate,
+  createError,
 }: Props) {
   return (
     <div
       ref={panelRef}
       style={style}
-      className="overflow-hidden rounded-md border border-border bg-white shadow-lg"
+      className="overflow-hidden rounded-md border border-border bg-surface shadow-lg"
     >
       <Input
         type="search"
@@ -68,6 +70,11 @@ export function ComboboxDropdown({
         >
           <Plus className="size-4" /> Créer « {query.trim()} »
         </button>
+      ) : null}
+      {createError ? (
+        <p role="alert" className="border-t border-error/25 bg-error/5 px-3 py-2 text-sm text-error">
+          {createError}
+        </p>
       ) : null}
     </div>
   )

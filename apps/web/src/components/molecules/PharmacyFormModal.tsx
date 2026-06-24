@@ -13,6 +13,7 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   submitting: boolean
+  errorMessage?: string | null
   onClose: () => void
   onSubmit: (data: PharmacyInput) => void
   onSearchSiret: (query: string) => Promise<PharmacySiretLookup[]>
@@ -27,6 +28,7 @@ export function PharmacyFormModal({
   groupements,
   softwares,
   submitting,
+  errorMessage,
   onClose,
   onSubmit,
   onSearchSiret,
@@ -48,6 +50,7 @@ export function PharmacyFormModal({
         groupements={groupements}
         softwares={softwares}
         submitting={submitting}
+        errorMessage={errorMessage}
         onSubmit={onSubmit}
         onSearchSiret={onSearchSiret}
         onCreateGroupement={onCreateGroupement}
