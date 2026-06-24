@@ -1,4 +1,8 @@
 import { IntakeError } from '@/server/application/intake-errors'
+import {
+  pickEmailMatch,
+  pickNamePhoneMatch,
+} from '@/server/candidate/duplicate-identity-match'
 
 export type ApplicationIdentity = {
   email: string
@@ -20,27 +24,20 @@ export type DuplicateMatch = {
   reason: 'email' | 'name_phone'
 }
 
-const norm = (value: string) => value.trim().toLowerCase()
-
 export function detectDuplicateCandidate(
   application: ApplicationIdentity,
   candidates: CandidateIdentity[],
 ): DuplicateMatch | null {
-  const emailHit = candidates.find(
-    (c) => c.email && norm(c.email) === norm(application.email),
-  )
+  const probe = {
+    email: application.email,
+    firstName: application.firstName,
+    lastName: application.lastName,
+    phone: application.phone,
+  }
+  const emailHit = pickEmailMatch(probe, candidates)
   if (emailHit) return { candidateId: emailHit.id, reason: 'email' }
 
-  if (!application.phone) return null
-
-  const namePhoneHit = candidates.find(
-    (c) =>
-      c.phone &&
-      application.phone &&
-      norm(c.phone) === norm(application.phone) &&
-      norm(c.firstName) === norm(application.firstName) &&
-      norm(c.lastName) === norm(application.lastName),
-  )
+  const namePhoneHit = pickNamePhoneMatch(probe, candidates)
   return namePhoneHit ? { candidateId: namePhoneHit.id, reason: 'name_phone' } : null
 }
 

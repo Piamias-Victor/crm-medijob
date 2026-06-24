@@ -7,6 +7,7 @@ import { CandidateProfileSelects } from '@/components/molecules/CandidateProfile
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
 import { FormSection } from '@/components/molecules/FormSection'
 import { useCandidateProfileMutations } from '@/lib/hooks/use-candidate-profile-mutations'
+import { useCandidateProfileSubmit } from '@/lib/hooks/use-candidate-profile-submit'
 import { useCandidateProfileForm } from '@/lib/hooks/use-candidate-profile-form'
 import { getMissingMatchingFields } from '@/view-models/candidate-profile'
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
@@ -28,6 +29,7 @@ type Props = {
 
 export function CandidateProfileForm({ candidateId, profile, referentials }: Props) {
   const { update, createJobTitle } = useCandidateProfileMutations()
+  const submitProfile = useCandidateProfileSubmit(candidateId)
   const [jobTitles, setJobTitles] = useState(referentials.jobTitles)
   const { register, handleSubmit, setValue, watch, getValues, formState } =
     useCandidateProfileForm(profile.formValues)
@@ -46,11 +48,7 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
   }
 
   return (
-    <form
-      onSubmit={handleSubmit((data) => update.mutate({ id: candidateId, data }))}
-      className="flex flex-col gap-8"
-      noValidate
-    >
+    <form onSubmit={handleSubmit(submitProfile)} className="flex flex-col gap-8" noValidate>
       <CandidateProfileBanner missingFields={missingFields} />
       <FormSection title="Coordonnées & mobilité">
         <CandidateProfileFields
