@@ -68,4 +68,23 @@ describe('candidateRepository', () => {
     expect((await repo.search('69003')).some((x) => x.id === keep.id)).toBe(true)
     expect((await repo.search('pharmacien')).length).toBeGreaterThan(0)
   })
+
+  it('merges candidates and soft-deletes the absorbed profile', async () => {
+    const kept = await repo.create({ ...newCandidate('FusionKeep'), email: 'keep@x.fr' })
+    const absorbed = await repo.create({ ...newCandidate('FusionDrop'), email: 'drop@x.fr' })
+
+    await repo.mergeCandidates(kept.id, absorbed.id, {
+      firstName: 'FusionKeep',
+      lastName: 'Test',
+      email: 'keep@x.fr',
+      jobTitleId,
+      referentId,
+      mobilityRadiusKm: 20,
+      softwareIds: [],
+      contractTypes: ['CDI'],
+    })
+
+    expect(await repo.findById(absorbed.id)).toBeNull()
+    expect((await repo.findProfileById(kept.id))?.email).toBe('keep@x.fr')
+  })
 })

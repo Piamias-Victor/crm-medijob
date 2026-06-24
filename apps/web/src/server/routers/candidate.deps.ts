@@ -25,4 +25,7 @@ export type CandidateDeps = CandidateCvDeps &
       input: Parameters<typeof candidateRepository.createProfile>[0],
     ) => ReturnType<typeof candidateRepository.createProfile>
     referentials: () => ReturnType<typeof loadCandidateReferentials>
+    findIdentityByEmail: typeof candidateRepository.findIdentityByEmail
+    findIdentityByNamePhone: typeof candidateRepository.findIdentityByNamePhone
+    mergeCandidates: typeof candidateRepository.mergeCandidates
   }

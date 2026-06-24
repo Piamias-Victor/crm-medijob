@@ -32,6 +32,7 @@ export type CreateProps = BaseProps & {
   mode: 'create'
   defaultValues: CandidateCreateInput
   contractOptionList: ComboboxOption[]
+  cvUrl?: string
   onSubmit: (data: CandidateCreateInput) => void
 }
 

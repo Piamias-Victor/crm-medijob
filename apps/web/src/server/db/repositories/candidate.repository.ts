@@ -11,6 +11,9 @@ import {
 import { candidateCvthequeSelect } from './candidate-cvtheque.select'
 import { buildCandidateExportSelect } from './candidate-export-select.builder'
 import { buildCandidateListQuery } from './candidate-list-query'
+import { makeCandidateDuplicateRepository } from './candidate-duplicate.repo'
+import { makeCandidateMergeRepository } from './candidate-merge.repo'
+import type { CandidateProfileUpdate } from './candidate-profile.repository'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
@@ -19,6 +22,8 @@ export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
 export function makeCandidateRepository(db: PrismaClient = defaultDb) {
   const profile = makeCandidateProfileRepository(db)
+  const duplicate = makeCandidateDuplicateRepository(db)
+  const merge = makeCandidateMergeRepository(db)
 
   return {
     create: (data: Prisma.CandidateCreateInput) => db.candidate.create({ data }),
@@ -35,21 +40,10 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         orderBy: { createdAt: 'desc' },
         take: limit,
       }),
-    findIdentityByEmail: (email: string) =>
-      db.candidate.findFirst({
-        where: { ...NOT_DELETED, email: { equals: email.trim(), mode: 'insensitive' } },
-        select: { id: true, email: true, firstName: true, lastName: true, phone: true },
-      }),
-    findIdentityByNamePhone: (firstName: string, lastName: string, phone: string) =>
-      db.candidate.findFirst({
-        where: {
-          ...NOT_DELETED,
-          phone: phone.trim(),
-          firstName: { equals: firstName.trim(), mode: 'insensitive' },
-          lastName: { equals: lastName.trim(), mode: 'insensitive' },
-        },
-        select: { id: true, email: true, firstName: true, lastName: true, phone: true },
-      }),
+    findIdentityByEmail: duplicate.findIdentityByEmail,
+    findIdentityByNamePhone: duplicate.findIdentityByNamePhone,
+    mergeCandidates: (keptId: string, absorbedId: string | undefined, data: CandidateProfileUpdate) =>
+      merge.merge(keptId, absorbedId, data),
     search: (term: string, limit = 8) => searchCandidates(db, term, limit),
     listForMatching: (limit = DEFAULT_LIST_LIMIT): Promise<CandidateMatchingRow[]> =>
       db.candidate.findMany({

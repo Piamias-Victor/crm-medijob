@@ -29,6 +29,14 @@ import { candidateListFiltersSchema } from '@/view-models/candidate-list-filters
 import { candidateExportInputSchema } from '@/view-models/candidate-export.schema'
 import { handleCandidateExportCsv } from '@/server/routers/candidate-export'
 import type { CandidateDeps } from '@/server/routers/candidate.deps'
+import {
+  detectDuplicateInputSchema,
+  candidateMergeInputSchema,
+} from '@/view-models/candidate-duplicate.schema'
+import {
+  handleDetectDuplicate,
+  handleMergeCandidate,
+} from '@/server/routers/candidate-duplicate-handlers'
 
 export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
@@ -76,6 +84,12 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     ),
     generateAnonymized: protectedProcedure.input(candidateIdSchema).mutation(({ input }) =>
       handleGenerateAnonymized(deps, input.id),
+    ),
+    detectDuplicate: protectedProcedure.input(detectDuplicateInputSchema).query(({ input }) =>
+      handleDetectDuplicate(deps, input),
+    ),
+    merge: protectedProcedure.input(candidateMergeInputSchema).mutation(({ input }) =>
+      handleMergeCandidate(deps, input),
     ),
   })
 }

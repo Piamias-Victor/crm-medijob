@@ -7,20 +7,20 @@ describe('detectDuplicateCandidate', () => {
     { id: 'c1', email: 'a@x.fr', firstName: 'Alice', lastName: 'Martin', phone: '0600000001' },
   ]
 
+  it('matches by normalized name and phone', () => {
+    const match = detectDuplicateCandidate(
+      { email: 'new@x.fr', firstName: 'Alice', lastName: 'Martin', phone: '06 00 00 00 01' },
+      [{ ...candidates[0], phone: '0600000001' }],
+    )
+    expect(match?.reason).toBe('name_phone')
+  })
+
   it('matches existing Candidate by email', () => {
     const match = detectDuplicateCandidate(
       { email: 'a@x.fr', firstName: 'Bob', lastName: 'X', phone: null },
       candidates,
     )
     expect(match).toEqual({ candidateId: 'c1', reason: 'email' })
-  })
-
-  it('matches by normalized name and phone', () => {
-    const match = detectDuplicateCandidate(
-      { email: 'new@x.fr', firstName: 'Alice', lastName: 'Martin', phone: '0600000001' },
-      candidates,
-    )
-    expect(match?.reason).toBe('name_phone')
   })
 })
 

@@ -32,6 +32,7 @@ export function CandidateCvCreateForm(props: Props) {
       defaultValues={props.defaultValues}
       referentials={props.referentials}
       contractOptionList={createContractOptions}
+      cvUrl={props.cvUrl}
       submitting={create.isPending}
       errorMessage={create.error?.message}
       onCreateJobTitle={async (name) => {
