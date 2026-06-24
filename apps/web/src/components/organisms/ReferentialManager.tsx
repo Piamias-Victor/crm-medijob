@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { FolderOpen } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
+import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import { ReferentialAddForm } from '@/components/molecules/ReferentialAddForm'
 import { ReferentialRow } from '@/components/molecules/ReferentialRow'
 import type { RefItem, ReferentialActions } from '@/view-models/referential'
@@ -28,10 +28,9 @@ export function ReferentialManager({
 }: Props) {
   const [pendingDelete, setPendingDelete] = useState<RefItem | null>(null)
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!pendingDelete) return
-    onDelete(pendingDelete.id)
-    setPendingDelete(null)
+    await onDelete(pendingDelete.id)
   }
 
   return (
@@ -65,14 +64,13 @@ export function ReferentialManager({
           </ul>
         )}
       </SectionCard>
-      <ConfirmDialog
+      <SoftDeleteModal
+        entityName={pendingDelete?.name ?? ''}
         open={Boolean(pendingDelete)}
-        onClose={() => setPendingDelete(null)}
+        onOpenChange={(next) => {
+          if (!next) setPendingDelete(null)
+        }}
         onConfirm={confirmDelete}
-        title="Supprimer cet élément ?"
-        description={
-          pendingDelete ? `« ${pendingDelete.name} » sera définitivement retiré du référentiel.` : ''
-        }
       />
     </>
   )

@@ -11,7 +11,7 @@ export function SoftwareAdmin({ items }: { items: RefItem[] }) {
   const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
   const create = trpc.admin.software.create.useMutation(mutation)
   const update = trpc.admin.software.update.useMutation(mutation)
-  const remove = trpc.admin.software.remove.useMutation(mutation)
+  const remove = trpc.admin.software.remove.useMutation({ onSuccess: () => router.refresh() })
 
   return (
     <ReferentialManager
@@ -21,7 +21,7 @@ export function SoftwareAdmin({ items }: { items: RefItem[] }) {
       items={items}
       onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
       onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}
-      onDelete={(id) => remove.mutate({ id })}
+      onDelete={(id) => remove.mutateAsync({ id }).then(() => undefined)}
     />
   )
 }

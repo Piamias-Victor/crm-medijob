@@ -11,7 +11,7 @@ export function GroupementAdmin({ items }: { items: RefItem[] }) {
   const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
   const create = trpc.admin.groupement.create.useMutation(mutation)
   const update = trpc.admin.groupement.update.useMutation(mutation)
-  const remove = trpc.admin.groupement.remove.useMutation(mutation)
+  const remove = trpc.admin.groupement.remove.useMutation({ onSuccess: () => router.refresh() })
 
   return (
     <ReferentialManager
@@ -21,7 +21,7 @@ export function GroupementAdmin({ items }: { items: RefItem[] }) {
       items={items}
       onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
       onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}
-      onDelete={(id) => remove.mutate({ id })}
+      onDelete={(id) => remove.mutateAsync({ id }).then(() => undefined)}
     />
   )
 }

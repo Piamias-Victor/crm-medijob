@@ -1,9 +1,10 @@
 'use client'
 
-import { type ReactNode } from 'react'
+import { useId, useRef, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
+import { useModalFocusTrap } from '@/lib/hooks/use-modal-focus-trap'
 import { SURFACE_GLASS } from '@/lib/constants/surface-glass'
 import { modalEntrance } from '@/lib/motion/variants'
 import { cn } from '@/lib/cn'
@@ -15,9 +16,29 @@ type Props = {
   description?: string
   children: ReactNode
   className?: string
+  role?: 'dialog' | 'alertdialog'
+  trapFocus?: boolean
+  preventDismiss?: boolean
 }
 
-export function GlassModal({ open, onClose, title, description, children, className }: Props) {
+export function GlassModal({
+  open,
+  onClose,
+  title,
+  description,
+  children,
+  className,
+  role = 'dialog',
+  trapFocus = false,
+  preventDismiss = false,
+}: Props) {
+  const panelRef = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+  const descriptionId = useId()
+  const dismiss = preventDismiss ? () => undefined : onClose
+
+  useModalFocusTrap(open && trapFocus, panelRef, dismiss)
+
   return (
     <AnimatePresence>
       {open ? (
@@ -29,12 +50,14 @@ export function GlassModal({ open, onClose, title, description, children, classN
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={dismiss}
           />
           <motion.div
-            role="dialog"
+            ref={panelRef}
+            role={role}
             aria-modal="true"
-            aria-label={title}
+            aria-labelledby={titleId}
+            aria-describedby={description ? descriptionId : undefined}
             variants={modalEntrance}
             initial="hidden"
             animate="visible"
@@ -43,10 +66,22 @@ export function GlassModal({ open, onClose, title, description, children, classN
           >
             <header className="flex items-start justify-between gap-3 border-b border-border/80 bg-gradient-to-r from-primary-muted/55 via-accent-muted/40 to-white px-5 py-4">
               <div>
-                <h2 className="text-lg font-semibold tracking-tight text-fg">{title}</h2>
-                {description ? <p className="mt-1 text-sm text-fg-muted">{description}</p> : null}
+                <h2 id={titleId} className="text-lg font-semibold tracking-tight text-fg">
+                  {title}
+                </h2>
+                {description ? (
+                  <p id={descriptionId} className="mt-1 text-sm text-fg-muted">
+                    {description}
+                  </p>
+                ) : null}
               </div>
-              <Button variant="ghost" onClick={onClose} aria-label="Fermer" className="shrink-0 px-2">
+              <Button
+                variant="ghost"
+                onClick={dismiss}
+                disabled={preventDismiss}
+                aria-label="Fermer"
+                className="shrink-0 px-2"
+              >
                 <X className="size-5" />
               </Button>
             </header>

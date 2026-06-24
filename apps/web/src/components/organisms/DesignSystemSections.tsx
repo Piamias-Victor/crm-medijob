@@ -14,6 +14,7 @@ import { EmptyStateShowcase } from '@/components/molecules/design-system/EmptySt
 import { SkeletonShowcase } from '@/components/molecules/design-system/SkeletonShowcase'
 import { ToastShowcase } from '@/components/molecules/design-system/ToastShowcase'
 import { EntityTableShowcase } from '@/components/molecules/design-system/EntityTableShowcase'
+import { SoftDeleteModalShowcase } from '@/components/molecules/design-system/SoftDeleteModalShowcase'
 
 const nodes: Record<string, ReactNode> = {
   logo: <LogoShowcase />,
@@ -33,6 +34,7 @@ const nodes: Record<string, ReactNode> = {
       <EntityTableShowcase />
     </Suspense>
   ),
+  'soft-delete': <SoftDeleteModalShowcase />,
 }
 
 export function DesignSystemSections() {

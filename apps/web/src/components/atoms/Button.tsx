@@ -1,12 +1,13 @@
 import { type ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/cn'
 
-type Variant = 'primary' | 'accent' | 'ghost' | 'danger'
+type Variant = 'primary' | 'accent' | 'ghost' | 'outline' | 'danger'
 
 const variants: Record<Variant, string> = {
   primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
   accent: 'bg-accent text-accent-fg hover:bg-accent-hover',
   ghost: 'bg-transparent text-fg hover:bg-surface',
+  outline: 'border border-border bg-transparent text-fg hover:bg-surface',
   danger: 'bg-error text-accent-fg hover:opacity-90',
 }
 

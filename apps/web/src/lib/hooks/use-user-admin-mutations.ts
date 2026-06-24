@@ -25,10 +25,9 @@ export function useUserAdminMutations(onClose: () => void, clearDelete: () => vo
       },
     }),
     remove: trpc.admin.user.remove.useMutation({
-      ...mutation,
       onSuccess: () => {
         clearDelete()
-        mutation.onSuccess()
+        refresh()
       },
     }),
   }

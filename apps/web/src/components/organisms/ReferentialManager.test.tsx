@@ -42,12 +42,12 @@ describe('ReferentialManager', () => {
     await waitFor(() => expect(props.onAdd).not.toHaveBeenCalled())
   })
 
-  it('confirms before deleting an item', () => {
+  it('confirms before deleting an item', async () => {
     const props = setup()
     fireEvent.click(screen.getAllByRole('button', { name: 'Supprimer' })[0])
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    const dialog = screen.getByRole('alertdialog')
     expect(props.onDelete).not.toHaveBeenCalled()
-    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Supprimer' }))
-    expect(props.onDelete).toHaveBeenCalledWith('1')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Supprimer' }))
+    await waitFor(() => expect(props.onDelete).toHaveBeenCalledWith('1'))
   })
 })

@@ -7,6 +7,7 @@ export function ButtonsShowcase() {
         <Button variant="accent">Primaire teal</Button>
         <Button variant="primary">Secondaire navy</Button>
         <Button variant="ghost">Ghost</Button>
+        <Button variant="outline">Outline</Button>
         <Button variant="danger">Destructif</Button>
       </div>
       <div className="flex flex-wrap items-center gap-3">
