@@ -14,7 +14,7 @@ vi.mock('@/lib/trpc/client', () => ({
   trpc: {
     mission: {
       markAnnulee: {
-        useMutation: () => ({ mutate, isPending: false }),
+        useMutation: () => ({ mutate, mutateAsync: mutate, isPending: false }),
       },
     },
   },
@@ -52,13 +52,13 @@ describe('MissionStatusActions', () => {
     mutate.mockClear()
   })
 
-  it('opens ConfirmDialog before cancelling a mission', () => {
+  it('opens SoftDeleteModal before cancelling a mission', () => {
     render(<MissionStatusActions mission={toMissionDetail(missionEntity)} />)
 
     fireEvent.click(screen.getByRole('button', { name: /annuler la mission/i }))
 
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByText(/annuler cette mission/i)).toBeInTheDocument()
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /supprimer titulaire cdi/i })).toBeInTheDocument()
     expect(mutate).not.toHaveBeenCalled()
   })
 })

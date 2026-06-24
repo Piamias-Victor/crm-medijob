@@ -14,4 +14,5 @@ export const dsSections: DsSection[] = [
   { id: 'skeleton', label: 'Skeleton' },
   { id: 'toast', label: 'Toast' },
   { id: 'tableau', label: 'Tableau' },
+  { id: 'soft-delete', label: 'Soft delete' },
 ]

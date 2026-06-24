@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
+import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import { UserList } from '@/components/organisms/UserList'
 import { UserCreateForm } from '@/components/molecules/UserCreateForm'
 import { UserEditForm } from '@/components/molecules/UserEditForm'
@@ -57,17 +57,16 @@ export function UsersAdmin({ users }: { users: UserListItem[] }) {
           />
         ) : null}
       </GlassModal>
-      <ConfirmDialog
+      <SoftDeleteModal
+        entityName={pendingDelete?.name ?? ''}
         open={Boolean(pendingDelete)}
-        onClose={() => setPendingDelete(null)}
-        onConfirm={() => pendingDelete && remove.mutate({ id: pendingDelete.id })}
-        title="Supprimer cet utilisateur ?"
-        description={
-          pendingDelete
-            ? `Le compte « ${pendingDelete.name} » (${pendingDelete.email}) sera définitivement supprimé.`
-            : ''
-        }
-        loading={remove.isPending}
+        onOpenChange={(next) => {
+          if (!next) setPendingDelete(null)
+        }}
+        onConfirm={async () => {
+          if (!pendingDelete) return
+          await remove.mutateAsync({ id: pendingDelete.id })
+        }}
       />
     </>
   )
