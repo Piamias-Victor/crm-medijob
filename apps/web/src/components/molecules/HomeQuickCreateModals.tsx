@@ -1,6 +1,5 @@
 'use client'
 
-import { CandidateFormModal } from '@/components/molecules/CandidateFormModal'
 import { ContactFormModal } from '@/components/molecules/ContactFormModal'
 import { MissionFormModal } from '@/components/molecules/MissionFormModal'
 import { PharmacyFormModal } from '@/components/molecules/PharmacyFormModal'
@@ -18,15 +17,6 @@ export function HomeQuickCreateModals({ state }: Props) {
 
   return (
     <>
-      <CandidateFormModal
-        open={open === 'candidate'}
-        jobTitles={refs.jobTitles}
-        recruiters={refs.recruiters}
-        submitting={state.createCandidate.isPending}
-        errorMessage={state.createCandidate.error?.message}
-        onClose={() => setOpen(null)}
-        onSubmit={(data) => state.createCandidate.mutate(data)}
-      />
       <MissionFormModal
         open={open === 'mission'}
         pharmacies={refs.pharmacies}

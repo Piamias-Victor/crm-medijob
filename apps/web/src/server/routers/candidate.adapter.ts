@@ -22,7 +22,7 @@ export const candidateRouter = makeCandidateRouter({
   updateDerivedFields: (id, fields) => candidateRepository.updateDerivedFields(id, fields),
   provider: documentsProvider,
   updateProfile: (id, data) => candidateRepository.updateProfile(id, data),
-  createQuick: (input) => candidateRepository.createQuick(input),
+  createProfile: (input) => candidateRepository.createProfile(input),
   referentials: () =>
     loadCandidateReferentials({
       listJobTitles: () => jobTitleRepository.list(),

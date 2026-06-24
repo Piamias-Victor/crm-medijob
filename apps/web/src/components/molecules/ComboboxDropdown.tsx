@@ -54,7 +54,7 @@ export function ComboboxDropdown({
               role="option"
               aria-selected={o.value === value}
               onClick={() => onPick(o.value)}
-              className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg hover:bg-surface"
+              className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg transition-colors hover:bg-accent-muted hover:text-accent-hover"
             >
               {o.label}
               {o.value === value ? <Check className="size-4 text-accent" /> : null}
@@ -66,7 +66,7 @@ export function ComboboxDropdown({
         <button
           type="button"
           onClick={onCreate}
-          className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent hover:bg-surface"
+          className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent transition-colors hover:bg-accent-muted hover:text-accent-hover"
         >
           <Plus className="size-4" /> Créer « {query.trim()} »
         </button>

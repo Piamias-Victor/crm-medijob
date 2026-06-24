@@ -67,6 +67,31 @@ describe('candidateRouter', () => {
     )
   })
 
+  it('creates candidate profile via repository with full payload', async () => {
+    const deps = makeCandidateDeps()
+    const result = await caller(deps).create({
+      firstName: 'Alice',
+      lastName: 'Martin',
+      jobTitleId: 'jt1',
+      referentId: 'u1',
+      mobilityRadiusKm: 20,
+      softwareIds: ['sw1'],
+      contractTypes: ['CDI'],
+      notes: 'Contexte recruteur',
+    })
+    expect(deps.createProfile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: 'Alice',
+        lastName: 'Martin',
+        mobilityRadiusKm: 20,
+        softwareIds: ['sw1'],
+        contractTypes: ['CDI'],
+        notes: 'Contexte recruteur',
+      }),
+    )
+    expect(result).toEqual({ id: 'c-new' })
+  })
+
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeCandidateRouter(makeCandidateDeps()))({ session: null })
     await expect(unauth.list()).rejects.toThrow()

@@ -55,7 +55,7 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     ]),
     findProfileById: vi.fn().mockResolvedValue(profileFixture),
     updateProfile: vi.fn().mockResolvedValue(profileFixture),
-    createQuick: vi.fn().mockResolvedValue({ id: 'c-new' }),
+    createProfile: vi.fn().mockResolvedValue({ id: 'c-new' }),
     referentials: vi.fn().mockResolvedValue({
       jobTitles: [{ id: 'jt1', name: 'Pharmacien' }],
       softwares: [],

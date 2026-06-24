@@ -2,11 +2,11 @@
 
 import type { FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { Input } from '@/components/atoms/Input'
-import { Textarea } from '@/components/atoms/Textarea'
 import { FormField } from '@/components/molecules/FormField'
 import { ASAP_DATE_LABEL } from '@/lib/date-picker-utils'
 import { DatePicker } from '@/components/molecules/DatePicker'
 import { CandidateGeoFields } from '@/components/molecules/CandidateGeoFields'
+import { CandidateNotesField } from '@/components/molecules/CandidateNotesField'
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
   getValues: UseFormGetValues<CandidateProfileInput>
   availableFrom?: string
   onAvailableFrom: (value: string | undefined) => void
+  hideNotes?: boolean
 }
 
 export function CandidateProfileFields({
@@ -25,6 +26,7 @@ export function CandidateProfileFields({
   getValues,
   availableFrom,
   onAvailableFrom,
+  hideNotes,
 }: Props) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -69,11 +71,7 @@ export function CandidateProfileFields({
           <Input id="mobilityNotes" {...register('mobilityNotes')} />
         </FormField>
       </div>
-      <div className="sm:col-span-2">
-        <FormField label="Résumé IA (notes internes)" htmlFor="notes">
-          <Textarea id="notes" rows={4} {...register('notes')} />
-        </FormField>
-      </div>
+      {hideNotes ? null : <CandidateNotesField register={register} />}
     </div>
   )
 }

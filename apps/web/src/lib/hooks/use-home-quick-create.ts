@@ -42,13 +42,11 @@ export function useHomeQuickCreate() {
     router.refresh()
   }, [router])
 
-  const candidateMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Candidat créé' })
   const missionMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Mission créée' })
   const pharmacyMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Pharmacie créée' })
   const contactMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Contact créé' })
   const refMutation = useEntityMutation()
 
-  const createCandidate = trpc.candidate.create.useMutation(candidateMutation)
   const createMission = trpc.mission.create.useMutation(missionMutation)
   const createPharmacy = trpc.pharmacy.create.useMutation(pharmacyMutation)
   const createContact = trpc.contact.create.useMutation(contactMutation)
@@ -61,7 +59,6 @@ export function useHomeQuickCreate() {
     setOpen,
     refs,
     refsLoading,
-    createCandidate,
     createMission,
     createPharmacy,
     createContact,
