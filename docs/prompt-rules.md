@@ -54,6 +54,8 @@ docs/prompts/done/PROMPT_ISSUE_{NNN}.md      ← issue mergée sur dev
 - `{NNN}` = numéro d'issue GitHub sur 3 chiffres minimum (ex. `050`, `054`)
 - Nouveau prompt → créer dans **`pending/`**, **commit + push direct sur `dev`** (docs/prompts uniquement — pas de PR)
 - **Après merge PR issue** : `git mv pending/ → done/` puis **commit + push direct sur `dev`**
+- **Interdit** : même issue dans `pending/` **et** `done/` — CI `pnpm lint:prompts` échoue
+- **Interdit** : `git checkout origin/dev -- docs/prompts/pending/` (restaure des copies obsolètes déjà dans `done/`)
 - Un prompt = une issue. Pas de prompt partagé entre plusieurs issues.
 
 ## Structure obligatoire d'un prompt

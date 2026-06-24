@@ -10,6 +10,7 @@
     "test": "pnpm --filter web test",
     "lint": "pnpm --filter web lint",
     "typecheck": "pnpm --filter web typecheck",
-    "lint:lines": "node scripts/check-line-count.mjs"
+    "lint:lines": "node scripts/check-line-count.mjs",
+    "lint:prompts": "node scripts/check-prompt-lifecycle.mjs"
   }
 }
