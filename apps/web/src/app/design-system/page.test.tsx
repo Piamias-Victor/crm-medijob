@@ -12,11 +12,11 @@ describe('Design system page', () => {
     ).toBeInTheDocument()
   })
 
-  it('documents the 12 charte sections as labelled regions', () => {
+  it('documents the 13 charte sections as labelled regions', () => {
     render(<DesignSystemPage />)
 
     expect(screen.getAllByRole('region')).toHaveLength(dsSections.length)
-    expect(dsSections).toHaveLength(12)
+    expect(dsSections).toHaveLength(13)
   })
 
   it('anchors every section so the in-page nav can scroll to it', () => {
