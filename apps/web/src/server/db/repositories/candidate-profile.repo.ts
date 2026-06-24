@@ -7,7 +7,6 @@ import {
 } from './candidate-profile.repository'
 import {
   toCandidateProfileUpdateData,
-  toCandidateProfileWriteData,
 } from './candidate-profile-write'
 
 export function makeCandidateProfileRepository(db: PrismaClient) {
@@ -24,7 +23,7 @@ export function makeCandidateProfileRepository(db: PrismaClient) {
       }),
     createProfile: (data: CandidateProfileUpdate) =>
       db.candidate.create({
-        data: toCandidateProfileWriteData(data),
+        data: toCandidateProfileUpdateData(data),
         select: { id: true },
       }),
     updateProfile: async (id: string, data: CandidateProfileUpdate) => {

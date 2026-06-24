@@ -1,6 +1,5 @@
-import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
+import type { CandidateProfileInput, CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
-import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 
 export function toCandidateUpdateData(data: CandidateProfileInput): CandidateProfileUpdate {
   return {
@@ -19,5 +18,12 @@ export function toCandidateUpdateData(data: CandidateProfileInput): CandidatePro
     referentId: data.referentId,
     softwareIds: data.softwareIds ?? [],
     contractTypes: data.contractTypes ?? [],
+  }
+}
+
+export function toCandidateCreateData(data: CandidateCreateInput): CandidateProfileUpdate {
+  return {
+    ...toCandidateUpdateData(data),
+    ...(data.cvUrl ? { cvUrl: data.cvUrl } : {}),
   }
 }

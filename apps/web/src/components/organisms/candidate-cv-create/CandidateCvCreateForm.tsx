@@ -1,28 +1,29 @@
 'use client'
 
 import { CandidateCvExtractionForm } from '@/components/organisms/candidate-cv-extraction/CandidateCvExtractionForm'
-import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
+import { useCandidateCreateMutations } from '@/lib/hooks/use-candidate-create-mutations'
+import { createContractOptions } from '@/lib/contract-options'
+import type { CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import type { CvExtraction } from '@/server/ai/cv-extraction.schema'
 import type { RefItem } from '@/view-models/referential'
 
 type Props = {
+  cvUrl: string
   previewUrl: string
   previewMimeType: string
   previewFilename: string
   extraction: CvExtraction
   suggestedJobTitles: RefItem[]
-  defaultValues: CandidateProfileInput
+  defaultValues: CandidateCreateInput
   referentials: { jobTitles: RefItem[]; softwares: RefItem[]; recruiters: RefItem[] }
-  submitting: boolean
-  onCancel: () => void
-  onConfirm: (data: CandidateProfileInput) => void
-  onCreateJobTitle: (name: string) => Promise<{ value: string; label: string }>
 }
 
-export function CandidateCvReviewForm(props: Props) {
+export function CandidateCvCreateForm(props: Props) {
+  const { create, createJobTitle } = useCandidateCreateMutations()
+
   return (
     <CandidateCvExtractionForm
-      mode="review"
+      mode="create"
       previewUrl={props.previewUrl}
       previewMimeType={props.previewMimeType}
       previewFilename={props.previewFilename}
@@ -30,10 +31,14 @@ export function CandidateCvReviewForm(props: Props) {
       suggestedJobTitles={props.suggestedJobTitles}
       defaultValues={props.defaultValues}
       referentials={props.referentials}
-      submitting={props.submitting}
-      onCancel={props.onCancel}
-      onSubmit={props.onConfirm}
-      onCreateJobTitle={props.onCreateJobTitle}
+      contractOptionList={createContractOptions}
+      submitting={create.isPending}
+      errorMessage={create.error?.message}
+      onCreateJobTitle={async (name) => {
+        const created = await createJobTitle.mutateAsync({ name })
+        return { value: created.id, label: created.name }
+      }}
+      onSubmit={(data) => create.mutate({ ...data, cvUrl: props.cvUrl })}
     />
   )
 }

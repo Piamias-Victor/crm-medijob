@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react'
 import { ListKanbanShell } from '@/components/molecules/ListKanbanShell'
 import { CvthequeKanban } from '@/components/organisms/CvthequeKanban'
 import { CvthequeTable } from '@/components/organisms/cvtheque-table/cvtheque-table'
+import { CvthequeTableSkeleton } from '@/components/molecules/skeletons/CvthequeTableSkeleton'
 import type { CvthequeView } from '@/components/molecules/ViewToggle'
 import { cvthequeViewOptions } from '@/components/molecules/ViewToggle'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
@@ -37,7 +38,7 @@ export function CvthequeSection({ initialList, filterConfig, onCountChange }: Pr
       listDescription="Parcourez tous les profils de la CVthèque."
       kanbanDescription="Suivez la progression par mission et étape de pipeline."
       listView={
-        <Suspense fallback={<p className="text-sm text-fg-muted">Chargement du tableau…</p>}>
+        <Suspense fallback={<CvthequeTableSkeleton />}>
           <CvthequeTable
             filterConfig={filterConfig}
             values={values}

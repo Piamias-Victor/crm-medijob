@@ -25,3 +25,9 @@ export function cvUploadError(input: { filename: string; mimeType: string }) {
     ? null
     : 'Format non supporté. Formats acceptés : PDF, PNG.'
 }
+
+export function sanitizeCvFilename(filename: string) {
+  const base = filename.trim().split(/[/\\]/).pop() ?? filename.trim()
+  const safe = base.replace(/[^\w.\- ()[\]àâäéèêëïîôùûüç]/gi, '_')
+  return safe.length > 0 ? safe.slice(0, 200) : 'cv.pdf'
+}

@@ -41,4 +41,18 @@ describe('candidateCreateInputSchema', () => {
         .contractTypes,
     ).toEqual(['CDI', 'INTERIM'])
   })
+
+  it('accepts optional cvUrl on allowed blob domain', () => {
+    const cvUrl = 'https://abc123.public.blob.vercel-storage.com/candidate/import/cv.pdf'
+    expect(candidateCreateInputSchema.parse({ ...validBase, cvUrl }).cvUrl).toBe(cvUrl)
+  })
+
+  it('rejects cvUrl outside allowed blob domain', () => {
+    expect(
+      candidateCreateInputSchema.safeParse({
+        ...validBase,
+        cvUrl: 'https://evil.example.com/cv.pdf',
+      }).success,
+    ).toBe(false)
+  })
 })

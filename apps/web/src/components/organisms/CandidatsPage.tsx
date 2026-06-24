@@ -11,6 +11,7 @@ import { DashboardPage } from '@/components/molecules/DashboardPage'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
 import { CvthequeSection } from '@/components/organisms/CvthequeSection'
+import { CreerViaCvButton } from '@/components/molecules/CreerViaCvButton'
 import { tabPanelMotion } from '@/lib/motion/variants'
 import { buildCandidatsTabHref } from '@/view-models/candidats-tab'
 import type { InboxItem } from '@/view-models/application-inbox'
@@ -50,10 +51,13 @@ export function CandidatsPage({ list, inbox, filterConfig, initialTab = 'cvthequ
       description={description}
       nav={<CandidatTabs active={tab} onChange={onTabChange} inboxCount={inbox.length} />}
       actions={
-        <Link href="/candidats/new" className={accentButtonClassName}>
-          <Plus className="size-4" />
-          Nouveau candidat
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <CreerViaCvButton />
+          <Link href="/candidats/new" className={accentButtonClassName}>
+            <Plus className="size-4" />
+            Nouveau candidat
+          </Link>
+        </div>
       }
     >
       <AnimatePresence mode="wait">

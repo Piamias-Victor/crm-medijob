@@ -19,6 +19,12 @@ describe('matchJobTitles', () => {
     expect(matches.map((m) => m.id)).toContain('jt3')
   })
 
+  it('matches préparatrice to préparateur, not pharmacien', () => {
+    const matches = matchJobTitles('Préparatrice en pharmacie', titles)
+    expect(matches.map((m) => m.id)).not.toContain('jt1')
+    expect(matches[0]?.id).toBe('jt2')
+  })
+
   it('returns empty list for blank input', () => {
     expect(matchJobTitles('   ', titles)).toEqual([])
   })
