@@ -16,6 +16,7 @@ import { ToastShowcase } from '@/components/molecules/design-system/ToastShowcas
 import { EntityTableShowcase } from '@/components/molecules/design-system/EntityTableShowcase'
 import { SoftDeleteModalShowcase } from '@/components/molecules/design-system/SoftDeleteModalShowcase'
 import { EmailButtonShowcase } from '@/components/molecules/design-system/EmailButtonShowcase'
+import { DuplicateDetectionShowcase } from '@/components/molecules/design-system/DuplicateDetectionShowcase'
 
 const nodes: Record<string, ReactNode> = {
   logo: <LogoShowcase />,
@@ -37,6 +38,7 @@ const nodes: Record<string, ReactNode> = {
   ),
   'soft-delete': <SoftDeleteModalShowcase />,
   'email-button': <EmailButtonShowcase />,
+  'duplicate-detection': <DuplicateDetectionShowcase />,
 }
 
 export function DesignSystemSections() {

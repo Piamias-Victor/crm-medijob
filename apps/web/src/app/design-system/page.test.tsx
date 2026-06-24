@@ -24,7 +24,7 @@ describe('Design system page', () => {
     render(<DesignSystemPage />)
 
     expect(screen.getAllByRole('region')).toHaveLength(dsSections.length)
-    expect(dsSections).toHaveLength(15)
+    expect(dsSections).toHaveLength(16)
   })
 
   it('anchors every section so the in-page nav can scroll to it', () => {
