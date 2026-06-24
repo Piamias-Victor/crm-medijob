@@ -21,8 +21,8 @@ export function TableSortHeader({ label, sortable, direction, onSort }: Props) {
       type="button"
       onClick={onSort}
       className={cn(
-        'inline-flex items-center gap-1 rounded-md px-1 py-0.5 text-left font-semibold text-inherit',
-        'hover:bg-white/50',
+        'inline-flex items-center gap-1 rounded-md px-1.5 py-1 text-left font-semibold text-inherit transition-[padding,background-color]',
+        'hover:bg-white/50 hover:px-2.5 hover:py-1.5',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
       )}
       aria-label={`Trier par ${label}`}

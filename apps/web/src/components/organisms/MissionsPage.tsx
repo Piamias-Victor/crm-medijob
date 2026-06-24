@@ -12,7 +12,8 @@ import { ListKanbanShell } from '@/components/molecules/ListKanbanShell'
 import { MissionFormModal } from '@/components/molecules/MissionFormModal'
 import { MissionList } from '@/components/organisms/MissionList'
 import { MissionKanban } from '@/components/organisms/MissionKanban'
-import type { CvView } from '@/components/molecules/ViewToggle'
+import type { ListKanbanView } from '@/components/molecules/ViewToggle'
+import { missionViewOptions } from '@/components/molecules/ViewToggle'
 import type { RawMission } from '@/view-models/mission-kanban.types'
 
 type Ref = { id: string; name: string }
@@ -26,7 +27,7 @@ type Props = {
 
 export function MissionsPage({ rows, pharmacies, jobTitles, recruiters }: Props) {
   const router = useRouter()
-  const [view, setView] = useState<CvView>('list')
+  const [view, setView] = useState<ListKanbanView>('list')
   const [open, setOpen] = useState(false)
   const listRows = useMemo(() => toMissionListRows(rows), [rows])
   const description = useMemo(
@@ -56,7 +57,9 @@ export function MissionsPage({ rows, pharmacies, jobTitles, recruiters }: Props)
     >
       <ListKanbanShell
         view={view}
+        primaryView="list"
         onViewChange={setView}
+        viewOptions={missionViewOptions}
         listTitle="Toutes les missions"
         kanbanTitle="Pipeline missions"
         listDescription="Toutes les missions, y compris pourvues et annulées."

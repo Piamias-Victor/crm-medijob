@@ -23,9 +23,16 @@ type Props = {
   referentials: Referentials
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  backHref?: string
 }
 
-export function CandidateDetailPage({ profile, referentials, activities, documents }: Props) {
+export function CandidateDetailPage({
+  profile,
+  referentials,
+  activities,
+  documents,
+  backHref = '/candidats',
+}: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
   const name = `${profile.firstName} ${profile.lastName}`.trim()
 
@@ -33,7 +40,7 @@ export function CandidateDetailPage({ profile, referentials, activities, documen
     <EntityDetailShell
       header={
         <DetailPageHeader
-          backHref="/candidats"
+          backHref={backHref}
           backLabel="CVthèque"
           name={name}
           jobTitle={profile.jobTitleName}

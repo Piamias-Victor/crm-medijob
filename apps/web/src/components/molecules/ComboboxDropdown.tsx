@@ -1,6 +1,7 @@
 'use client'
 
 import { type RefObject } from 'react'
+import { COMBOBOX_OPTION_CLASS } from '@/lib/combobox-option-class'
 import { Check, Plus } from 'lucide-react'
 import { Input } from '@/components/atoms/Input'
 import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
@@ -54,7 +55,7 @@ export function ComboboxDropdown({
               role="option"
               aria-selected={o.value === value}
               onClick={() => onPick(o.value)}
-              className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg transition-colors hover:bg-accent-muted hover:text-accent-hover"
+              className={COMBOBOX_OPTION_CLASS}
             >
               {o.label}
               {o.value === value ? <Check className="size-4 text-accent" /> : null}

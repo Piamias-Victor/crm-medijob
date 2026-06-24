@@ -12,6 +12,7 @@ export type FilterBarProps<TConfigs extends readonly FilterConfig[]> = {
   onChange: (values: FilterValues<TConfigs>) => void
   onReset: () => void
   actions?: ReactNode
+  wrap?: boolean
 }
 
 export function FilterBar<TConfigs extends readonly FilterConfig[]>({
@@ -20,9 +21,14 @@ export function FilterBar<TConfigs extends readonly FilterConfig[]>({
   onChange,
   onReset,
   actions,
+  wrap = false,
 }: FilterBarProps<TConfigs>) {
   return (
-    <div className="flex items-end gap-2 overflow-x-auto rounded-lg border border-border bg-surface px-3 py-2">
+    <div
+      className={`flex items-end gap-2 rounded-lg border border-border bg-surface px-3 py-2 ${
+        wrap ? 'flex-wrap' : 'overflow-x-auto'
+      }`}
+    >
       {config.map((item) => (
         <FilterBarField key={item.id} config={item} values={values} onChange={onChange} />
       ))}
