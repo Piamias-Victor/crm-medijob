@@ -40,11 +40,9 @@ export function useHomeQuickCreate() {
   }, [router])
 
   const missionMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Mission créée' })
-  const contactMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Contact créé' })
   const refMutation = useEntityMutation()
 
   const createMission = trpc.mission.create.useMutation(missionMutation)
-  const createContact = trpc.contact.create.useMutation(contactMutation)
   const newJobTitle = trpc.mission.createJobTitle.useMutation(refMutation)
 
   return {
@@ -53,7 +51,6 @@ export function useHomeQuickCreate() {
     refs,
     refsLoading,
     createMission,
-    createContact,
     newJobTitle,
   }
 }

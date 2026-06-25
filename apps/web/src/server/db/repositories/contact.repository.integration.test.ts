@@ -62,4 +62,25 @@ describe('contactRepository', () => {
     for (let i = 0; i < 3; i++) await repo.create(newContact(`Pharm${i}`))
     expect((await repo.listByPharmacy(pharmacyId, 2)).length).toBe(2)
   })
+
+  it('findPrimaryByPharmacy can exclude the current contact', async () => {
+    const pharmacy = await db.prisma.pharmacy.create({ data: { name: 'Primary lookup pharma' } })
+    const primary = await repo.create({
+      firstName: 'Claire',
+      lastName: 'Doe',
+      pharmacyId: pharmacy.id,
+      email: 'claire@example.com',
+      isPrimary: true,
+    })
+    const other = await repo.create({
+      firstName: 'Denis',
+      lastName: 'Doe',
+      pharmacyId: pharmacy.id,
+      email: 'denis@example.com',
+      isPrimary: false,
+    })
+    expect(await repo.findPrimaryByPharmacy(pharmacy.id)).toMatchObject({ firstName: 'Claire' })
+    expect(await repo.findPrimaryByPharmacy(pharmacy.id, other.id)).toMatchObject({ firstName: 'Claire' })
+    expect(await repo.findPrimaryByPharmacy(pharmacy.id, primary.id)).toBeNull()
+  })
 })

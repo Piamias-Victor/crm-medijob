@@ -4,6 +4,7 @@ import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { searchContacts } from './contact-search.repo'
 import { listContactsByPharmacyWithEmail } from './contact-list-by-pharmacy.repo'
+import { findPrimaryContactByPharmacy } from './contact-primary.repo'
 
 const listInclude = {
   pharmacy: { select: { name: true } },
@@ -60,6 +61,8 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       }),
     listByPharmacy: (pharmacyId: string, limit = DEFAULT_LIST_LIMIT) =>
       listContactsByPharmacyWithEmail(db, pharmacyId, limit),
+    findPrimaryByPharmacy: (pharmacyId: string, excludeContactId?: string) =>
+      findPrimaryContactByPharmacy(db, pharmacyId, excludeContactId),
     listByPharmacyIds: (pharmacyIds: string[], limitPerPharmacy = DEFAULT_LIST_LIMIT) => {
       if (pharmacyIds.length === 0) return Promise.resolve([])
       return db.contact.findMany({

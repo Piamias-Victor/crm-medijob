@@ -3,10 +3,7 @@ import { ContactsPage } from '@/components/organisms/ContactsPage'
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const [rows, pharmacies] = await Promise.all([
-    caller.contact.list(),
-    caller.contact.pharmacyOptions(),
-  ])
+  const rows = await caller.contact.list()
 
-  return <ContactsPage rows={rows} pharmacies={pharmacies} />
+  return <ContactsPage rows={rows} />
 }
