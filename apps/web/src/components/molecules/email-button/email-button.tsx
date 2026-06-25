@@ -8,14 +8,13 @@ import { DEFAULT_COMPOSE_CLIENT, type ComposeClient } from '@/lib/mailto/compose
 import { isValidEmailRecipient } from '@/lib/mailto/is-valid-email-recipient'
 import { openEmailCompose } from '@/lib/mailto/open-email-compose'
 import { scheduleActivityLogPrompt } from '@/lib/mailto/schedule-activity-log-prompt'
-import { useToastStore } from '@/stores/toast-store'
 import { ActivityLogPromptModal } from '@/components/molecules/email-button/activity-log-prompt-modal'
 import {
   activityLogScopesFromContext,
   type ActivityLogContext,
 } from '@/components/molecules/email-button/activity-log-context'
+import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import {
-  COMPOSE_POPUP_BLOCKED,
   EMAIL_BUTTON_DEFAULT_LABEL,
   EMAIL_INVALID_TOOLTIP,
   EMAIL_MISSING_TOOLTIP,
@@ -28,6 +27,7 @@ type Props = {
   label?: string
   composeClient?: ComposeClient
   activityLogContext?: ActivityLogContext
+  onActivityLogPrompt?: (payload: ActivityLogPromptPayload) => void
 }
 
 export function EmailButton({
@@ -37,8 +37,8 @@ export function EmailButton({
   label = EMAIL_BUTTON_DEFAULT_LABEL,
   composeClient = DEFAULT_COMPOSE_CLIENT,
   activityLogContext,
+  onActivityLogPrompt,
 }: Props) {
-  const push = useToastStore((state) => state.push)
   const [promptOpen, setPromptOpen] = useState(false)
   const promptCleanupRef = useRef<(() => void) | null>(null)
   const trimmedTo = to.trim()
@@ -50,14 +50,17 @@ export function EmailButton({
   useEffect(() => () => promptCleanupRef.current?.(), [])
 
   function handleClick() {
-    const opened = openEmailCompose(buildComposeUrl({ to: trimmedTo, subject, body }, composeClient), composeClient)
-    if (!opened) {
-      push({ variant: 'error', message: COMPOSE_POPUP_BLOCKED })
-      return
-    }
+    openEmailCompose(buildComposeUrl({ to: trimmedTo, subject, body }, composeClient), composeClient)
     promptCleanupRef.current?.()
     if (scopes.length > 0) {
-      promptCleanupRef.current = scheduleActivityLogPrompt(() => setPromptOpen(true))
+      promptCleanupRef.current = scheduleActivityLogPrompt(() => {
+        const payload = { scopes, defaultContent: subject ?? '' }
+        if (onActivityLogPrompt) {
+          onActivityLogPrompt(payload)
+          return
+        }
+        setPromptOpen(true)
+      })
     }
   }
 
@@ -69,7 +72,7 @@ export function EmailButton({
         <Mail className="size-4" />
         {label}
       </Button>
-      {scopes.length > 0 && promptOpen ? (
+      {scopes.length > 0 && promptOpen && !onActivityLogPrompt ? (
         <ActivityLogPromptModal
           open={promptOpen}
           onOpenChange={setPromptOpen}

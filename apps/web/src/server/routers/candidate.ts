@@ -37,6 +37,7 @@ import {
   handleDetectDuplicate,
   handleMergeCandidate,
 } from '@/server/routers/candidate-duplicate-handlers'
+import { createPresentToPharmacyProcedure } from '@/server/routers/candidate-present-pharmacy.procedure'
 
 export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
@@ -91,5 +92,6 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     merge: protectedProcedure.input(candidateMergeInputSchema).mutation(({ input }) =>
       handleMergeCandidate(deps, input),
     ),
+    presentToPharmacy: createPresentToPharmacyProcedure(deps),
   })
 }

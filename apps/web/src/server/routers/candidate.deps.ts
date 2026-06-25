@@ -3,13 +3,15 @@ import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.type
 import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
 import type { CandidateCvDeps } from '@/server/routers/candidate-cv'
 import type { CandidateDocumentsDeps } from '@/server/routers/candidate-documents'
+import type { CandidatePresentPharmacyDeps } from '@/server/routers/candidate-present-pharmacy'
 import type { CandidateSearchRow } from '@/server/routers/candidate-search'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
 
 export type CandidateDeps = CandidateCvDeps &
-  CandidateDocumentsDeps & {
+  CandidateDocumentsDeps &
+  CandidatePresentPharmacyDeps & {
     listForKanban: (filters?: CandidateListFilters) => Promise<RawCandidate[]>
     listForExport: (
       filters?: CandidateListFilters,

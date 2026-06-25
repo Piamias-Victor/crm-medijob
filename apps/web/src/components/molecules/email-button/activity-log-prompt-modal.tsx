@@ -52,7 +52,13 @@ export function ActivityLogPromptModal({ open, onOpenChange, defaultContent, sco
   })
 
   return (
-    <GlassModal open={open} onClose={close} title={ACTIVITY_LOG_PROMPT_TITLE} className="max-w-md">
+    <GlassModal
+      open={open}
+      onClose={close}
+      title={ACTIVITY_LOG_PROMPT_TITLE}
+      overlayClassName="z-[60]"
+      className="max-w-md"
+    >
       <form onSubmit={onSubmit} className="space-y-4">
         <FormField label="Contenu" htmlFor={contentId}>
           <Textarea id={contentId} rows={3} disabled={isPending} {...register('content')} />

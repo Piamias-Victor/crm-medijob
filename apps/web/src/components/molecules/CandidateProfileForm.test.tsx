@@ -3,11 +3,19 @@ import { describe, it, expect, vi } from 'vitest'
 import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+}))
+
 vi.mock('@/lib/hooks/use-candidate-profile-mutations', () => ({
   useCandidateProfileMutations: () => ({
     update: { mutate: vi.fn(), isPending: false },
     createJobTitle: { mutateAsync: vi.fn() },
   }),
+}))
+
+vi.mock('@/lib/hooks/use-candidate-duplicate-guard', () => ({
+  useCandidateDuplicateGuard: () => vi.fn().mockResolvedValue(false),
 }))
 
 const baseProfile: CandidateProfilePayload = {

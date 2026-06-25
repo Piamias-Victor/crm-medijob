@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence } from 'framer-motion'
 import { GlassModalPanel } from '@/components/molecules/GlassModalPanel'
 import { useModalFocusTrap } from '@/lib/hooks/use-modal-focus-trap'
+import { cn } from '@/lib/cn'
 
 type Props = {
   open: boolean
@@ -13,6 +14,7 @@ type Props = {
   description?: string
   children: ReactNode
   className?: string
+  overlayClassName?: string
   role?: 'dialog' | 'alertdialog'
   trapFocus?: boolean
   preventDismiss?: boolean
@@ -25,6 +27,7 @@ export function GlassModal({
   description,
   children,
   className,
+  overlayClassName = 'z-50',
   role = 'dialog',
   trapFocus = false,
   preventDismiss = false,
@@ -46,7 +49,7 @@ export function GlassModal({
   return createPortal(
     <AnimatePresence onExitComplete={() => setMounted(false)}>
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className={cn('fixed inset-0 flex items-center justify-center p-4', overlayClassName)}>
           <GlassModalPanel
             panelRef={panelRef}
             titleId={titleId}

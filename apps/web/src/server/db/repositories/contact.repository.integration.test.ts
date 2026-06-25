@@ -19,7 +19,7 @@ afterAll(async () => {
 })
 
 function newContact(firstName: string) {
-  return { firstName, lastName: 'Doe', pharmacyId }
+  return { firstName, lastName: 'Doe', pharmacyId, email: `${firstName.toLowerCase()}@example.com` }
 }
 
 describe('contactRepository', () => {

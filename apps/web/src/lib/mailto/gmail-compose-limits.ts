@@ -1,0 +1,1 @@
+export const GMAIL_COMPOSE_MAX_BODY_CHARS = 500
