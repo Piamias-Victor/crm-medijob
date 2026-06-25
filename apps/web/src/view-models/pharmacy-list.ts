@@ -8,6 +8,7 @@ export type PharmacyListEntity = {
   city: string | null
   status: PharmacyStatus
   groupement: { name: string } | null
+  software: { name: string } | null
   contacts: { firstName: string; lastName: string; isPrimary: boolean }[]
   _count: { missions: number }
 }
@@ -20,6 +21,7 @@ export type PharmacyListRow = {
   status: PharmacyStatus
   primaryContactName: string | null
   missionCount: number
+  softwareName: string | null
 }
 
 export function toPharmacyListRow(entity: PharmacyListEntity): PharmacyListRow {
@@ -32,5 +34,6 @@ export function toPharmacyListRow(entity: PharmacyListEntity): PharmacyListRow {
     status: entity.status,
     primaryContactName: primary ? `${primary.firstName} ${primary.lastName}` : null,
     missionCount: entity._count.missions,
+    softwareName: entity.software?.name ?? null,
   }
 }

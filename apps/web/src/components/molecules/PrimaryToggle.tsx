@@ -39,7 +39,7 @@ export function PrimaryToggle({ checked, onChange, id = 'is-primary' }: Props) {
       <span className="flex flex-col gap-0.5">
         <span className="text-sm font-semibold text-fg">Titulaire principal</span>
         <span className="text-xs leading-relaxed text-fg-muted">
-          Un seul titulaire par pharmacie. L&apos;ancien reste actif si vous changez.
+          Un seul titulaire par pharmacie. Cocher remplace le titulaire principal actuel.
         </span>
       </span>
     </label>

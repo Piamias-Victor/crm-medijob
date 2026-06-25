@@ -20,6 +20,7 @@ export function ContactInfoForm({ contact, pharmacies, submitting, onSubmit }: P
       key={contact.id + contact.updatedAt.toISOString()}
       defaultValues={toContactFormValues(contact)}
       pharmacies={pharmacies}
+      excludeContactId={contact.id}
       submitting={submitting}
       onSubmit={onSubmit}
     />

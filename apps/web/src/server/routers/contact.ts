@@ -1,60 +1,31 @@
 import { z } from 'zod'
-import type { ContactRole, Prisma } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { listContactMissions } from '@/server/read-models/contact-missions'
 import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
-import { toContactListRow, type ContactListEntity } from '@/view-models/contact-list'
-import { toContactDetail, type ContactDetailEntity } from '@/view-models/contact-detail'
+import { toContactListRow } from '@/view-models/contact-list'
+import { toContactDetail } from '@/view-models/contact-detail'
 import { contactInputSchema, updateContactSchema } from '@/view-models/contact-form.schema'
 import { groupContactsByPharmacy } from '@/view-models/contact-by-pharmacy'
 import { mapContactPharmacyPickerRows } from '@/view-models/contact-pharmacy-picker'
-
-type PharmacyRef = { id: string; name: string }
-
-export type ContactDeps = {
-  contacts: {
-    list: () => Promise<ContactListEntity[]>
-    findById: (id: string) => Promise<ContactDetailEntity | null>
-    listByPharmacy: (
-      pharmacyId: string,
-    ) => Promise<
-      { id: string; firstName: string; lastName: string; email: string | null; isPrimary: boolean }[]
-    >
-    listByPharmacyIds: (
-      pharmacyIds: string[],
-    ) => Promise<{ id: string; firstName: string; lastName: string; pharmacyId: string }[]>
-    create: (data: Prisma.ContactUncheckedCreateInput) => Promise<unknown>
-    update: (id: string, data: Prisma.ContactUncheckedUpdateInput) => Promise<unknown>
-    setPrimary: (id: string) => Promise<ContactDetailEntity | null>
-    softDelete: (id: string) => Promise<unknown>
-  }
-  listMissions: (contactId: string) => ReturnType<typeof listContactMissions>
-  pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
-}
-
+import { toContactPrimaryName } from '@/view-models/contact-primary-warning'
+import { toContactCreateData, type ContactDeps } from '@/server/routers/contact.deps'
 import { idSchema } from '@/lib/schemas/entity-id'
-const pharmacyIdSchema = z.object({ pharmacyId: z.string().min(1) })
-const pharmacyIdsSchema = z.object({ pharmacyIds: z.array(z.string().min(1)) })
+import { contactListFiltersSchema } from '@/view-models/contact-list-filters.schema'
 
-function toData(input: z.output<typeof contactInputSchema>): Prisma.ContactUncheckedCreateInput {
-  return {
-    pharmacyId: input.pharmacyId,
-    firstName: input.firstName,
-    lastName: input.lastName,
-    email: input.email,
-    phone: input.phone,
-    role: input.role as ContactRole,
-    isPrimary: input.isPrimary,
-    notes: input.notes,
-  }
-}
+export type { ContactDeps } from '@/server/routers/contact.deps'
+
+const pharmacyIdSchema = z.object({ pharmacyId: z.string().min(1) })
+const primaryByPharmacySchema = pharmacyIdSchema.extend({
+  excludeContactId: z.string().min(1).optional(),
+})
+const pharmacyIdsSchema = z.object({ pharmacyIds: z.array(z.string().min(1)) })
 
 export function makeContactRouter(deps: ContactDeps) {
   return router({
-    list: protectedProcedure.query(async () =>
-      (await deps.contacts.list()).map(toContactListRow),
+    list: protectedProcedure.input(contactListFiltersSchema.optional()).query(async ({ input }) =>
+      (await deps.contacts.list(input)).map(toContactListRow),
     ),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const contact = await deps.contacts.findById(input.id)
@@ -66,15 +37,24 @@ export function makeContactRouter(deps: ContactDeps) {
     listByPharmacy: protectedProcedure.input(pharmacyIdSchema).query(async ({ input }) =>
       mapContactPharmacyPickerRows(await deps.contacts.listByPharmacy(input.pharmacyId)),
     ),
+    primaryByPharmacy: protectedProcedure.input(primaryByPharmacySchema).query(async ({ input }) => {
+      const primary = await deps.contacts.findPrimaryByPharmacy(
+        input.pharmacyId,
+        input.excludeContactId,
+      )
+      const fullName = primary ? toContactPrimaryName(primary) : null
+      return fullName ? { fullName } : null
+    }),
     listByPharmacyIds: protectedProcedure.input(pharmacyIdsSchema).query(async ({ input }) =>
       groupContactsByPharmacy(await deps.contacts.listByPharmacyIds(input.pharmacyIds)),
     ),
-    create: protectedProcedure
-      .input(contactInputSchema)
-      .mutation(({ input }) => deps.contacts.create(toData(input))),
+    create: protectedProcedure.input(contactInputSchema).mutation(async ({ input }) => {
+      const contact = await deps.contacts.create(toContactCreateData(input))
+      return { id: contact.id }
+    }),
     update: protectedProcedure
       .input(updateContactSchema)
-      .mutation(({ input }) => deps.contacts.update(input.id, toData(input.data))),
+      .mutation(({ input }) => deps.contacts.update(input.id, toContactCreateData(input.data))),
     setPrimary: protectedProcedure.input(idSchema).mutation(async ({ input }) => {
       const contact = await deps.contacts.setPrimary(input.id)
       return contact ? toContactDetail(contact) : null

@@ -1,33 +1,34 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useCallback, useMemo, useState } from 'react'
 import { User, Plus } from 'lucide-react'
-import { trpc } from '@/lib/trpc/client'
-import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
-import { Button } from '@/components/atoms/Button'
+import { accentButtonClassName } from '@/lib/button-styles'
 import { EntityListPageShell } from '@/components/molecules/EntityListPageShell'
-import { ContactFormModal } from '@/components/molecules/ContactFormModal'
-import { ContactList } from '@/components/organisms/ContactList'
+import { ContactTable } from '@/components/organisms/contact-table/contact-table'
+import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
+import { useContactListQuery } from '@/lib/hooks/use-contact-list-query'
+import type { ContactFilterConfig } from '@/lib/filters/contact-filter-config'
 import type { ContactListRow } from '@/view-models/contact-list'
-
-type Ref = { id: string; name: string }
+import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
 
 type Props = {
-  rows: ContactListRow[]
-  pharmacies: Ref[]
+  initialRows: ContactListRow[]
+  serverFilters: ContactListFilters
+  filterConfig: ContactFilterConfig
 }
 
-export function ContactsPage({ rows, pharmacies }: Props) {
-  const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const description = useMemo(() => `${rows.length} interlocuteur(s) au portefeuille`, [rows.length])
-  const refresh = () => {
-    setOpen(false)
-    router.refresh()
-  }
-  const mutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Contact créé' })
-  const create = trpc.contact.create.useMutation(mutation)
+export function ContactsPage({ initialRows, serverFilters, filterConfig }: Props) {
+  const [sort, setSort] = useState<EntityTableSortState | null>(null)
+  const [count, setCount] = useState(initialRows.length)
+  const onCountChange = useCallback((next: number) => setCount(next), [])
+  const { values, setFilters, reset, rows } = useContactListQuery(
+    initialRows,
+    serverFilters,
+    filterConfig,
+    onCountChange,
+  )
+  const description = useMemo(() => `${count} interlocuteur(s) au portefeuille`, [count])
 
   return (
     <EntityListPageShell
@@ -37,22 +38,21 @@ export function ContactsPage({ rows, pharmacies }: Props) {
       sectionTitle="Annuaire"
       sectionDescription="Interlocuteurs des officines : titulaires, adjoints et équipes."
       action={
-        <Button variant="accent" className="shadow-md shadow-accent/20" onClick={() => setOpen(true)}>
+        <Link href="/contacts/new" className={accentButtonClassName}>
           <Plus className="size-4" />
           Nouveau contact
-        </Button>
-      }
-      modal={
-        <ContactFormModal
-          open={open}
-          pharmacies={pharmacies}
-          submitting={create.isPending}
-          onClose={() => setOpen(false)}
-          onSubmit={(data) => create.mutate(data)}
-        />
+        </Link>
       }
     >
-      <ContactList rows={rows} />
+      <ContactTable
+        filterConfig={filterConfig}
+        values={values}
+        onChange={setFilters}
+        onReset={reset}
+        rows={rows}
+        sort={sort}
+        onSortChange={setSort}
+      />
     </EntityListPageShell>
   )
 }

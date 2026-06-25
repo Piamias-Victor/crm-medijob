@@ -36,6 +36,7 @@ export default async function Page({ searchParams }: Props) {
       <CandidatsPage
         list={list}
         inbox={inbox}
+        serverFilters={listFilters}
         filterConfig={filterConfig}
         initialTab={parseCandidatsTab(typeof tab === 'string' ? tab : undefined)}
       />

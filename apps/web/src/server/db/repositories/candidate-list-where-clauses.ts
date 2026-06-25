@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import { TERMINAL_MISSION_STATUSES } from '@/lib/pipeline-constants'
+import { ACTIVE_MISSION_STATUS_FILTER } from '@/server/db/repositories/mission-active-where'
+import { NOT_DELETED } from '@/server/db/repositories/soft-delete'
 
 const emptyField = (field: 'city' | 'postalCode'): Prisma.CandidateWhereInput => ({
   OR: [{ [field]: null }, { [field]: '' }],
@@ -10,7 +11,7 @@ const filledField = (field: 'city' | 'postalCode'): Prisma.CandidateWhereInput =
 })
 
 const activeMissionClause: Prisma.MissionCandidateWhereInput = {
-  mission: { status: { notIn: [...TERMINAL_MISSION_STATUSES] } },
+  mission: { ...NOT_DELETED, ...ACTIVE_MISSION_STATUS_FILTER },
 }
 
 const notOnActiveMission: Prisma.CandidateWhereInput = {

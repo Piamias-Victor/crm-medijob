@@ -52,7 +52,6 @@ export function formatPresentCandidate(c: PresentCandidateLike): string {
 export type PharmacyLike = {
   name: string
   city?: string | null
-  type?: string | null
   status?: string | null
   notes?: string | null
 }
@@ -61,7 +60,6 @@ export function formatPharmacy(p: PharmacyLike): string {
   return toBlock([
     ['Pharmacie', p.name],
     ['Ville', p.city],
-    ['Type', p.type],
     ['Statut', p.status],
     ['Notes', p.notes],
   ])

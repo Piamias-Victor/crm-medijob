@@ -11,8 +11,9 @@ export const contactEntity: ContactListEntity = {
   role: 'TITULAIRE',
   phone: null,
   email: 'marie@example.com',
+  isPrimary: true,
   createdAt: new Date('2026-01-15'),
-  pharmacy: { name: 'Pharmacie du Centre' },
+  pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon', postalCode: '69003' },
 }
 
 export const contactDetailEntity: ContactDetailEntity = {
@@ -40,6 +41,7 @@ export function makeContactDeps(overrides: Partial<ContactDeps> = {}): ContactDe
       list: vi.fn().mockResolvedValue([contactEntity]),
       findById: vi.fn().mockResolvedValue(contactDetailEntity),
       listByPharmacy: vi.fn().mockResolvedValue([]),
+      findPrimaryByPharmacy: vi.fn().mockResolvedValue(null),
       listByPharmacyIds: vi.fn().mockResolvedValue([]),
       create: vi.fn().mockImplementation((data) => Promise.resolve({ id: 'new', ...data })),
       update: vi.fn().mockResolvedValue({ id: 'c1' }),
