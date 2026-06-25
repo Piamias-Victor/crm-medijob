@@ -2,6 +2,7 @@ import type { PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT, DETAIL_MISSIONS_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { listPharmaciesForRadiusSearch } from './pharmacy-list-in-radius.repo'
 
 const listInclude = {
   groupement: { select: { name: true } },
@@ -80,6 +81,8 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
         orderBy: { name: 'asc' },
         take: limit,
       }),
+    listForRadiusSearch: (postalCodePrefix?: string | null) =>
+      listPharmaciesForRadiusSearch(db, postalCodePrefix),
     softDelete: (id: string) =>
       db.pharmacy.update({ where: { id }, data: { deletedAt: new Date() } }),
   }

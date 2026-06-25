@@ -5,7 +5,7 @@ import { Mail } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { buildComposeUrl } from '@/lib/mailto/build-compose-url'
 import { DEFAULT_COMPOSE_CLIENT, type ComposeClient } from '@/lib/mailto/compose-client'
-import { isValidEmailRecipient } from '@/lib/mailto/is-valid-email-recipient'
+import { hasValidComposeRecipients } from '@/lib/mailto/has-valid-compose-recipients'
 import { openEmailCompose } from '@/lib/mailto/open-email-compose'
 import { scheduleActivityLogPrompt } from '@/lib/mailto/schedule-activity-log-prompt'
 import { ActivityLogPromptModal } from '@/components/molecules/email-button/activity-log-prompt-modal'
@@ -21,7 +21,8 @@ import {
 } from '@/components/molecules/email-button/email-button-copy'
 
 type Props = {
-  to: string
+  to?: string
+  bcc?: string
   subject?: string
   body?: string
   label?: string
@@ -31,7 +32,8 @@ type Props = {
 }
 
 export function EmailButton({
-  to,
+  to = '',
+  bcc,
   subject,
   body,
   label = EMAIL_BUTTON_DEFAULT_LABEL,
@@ -42,15 +44,19 @@ export function EmailButton({
   const [promptOpen, setPromptOpen] = useState(false)
   const promptCleanupRef = useRef<(() => void) | null>(null)
   const trimmedTo = to.trim()
-  const missing = !trimmedTo
-  const invalid = !missing && !isValidEmailRecipient(trimmedTo)
-  const disabled = missing || invalid
+  const trimmedBcc = bcc?.trim() ?? ''
+  const recipientsValid = hasValidComposeRecipients({ to: trimmedTo, bcc: trimmedBcc })
+  const disabled = !recipientsValid
+  const hasRecipientInput = Boolean(trimmedTo || trimmedBcc)
   const scopes = activityLogContext ? activityLogScopesFromContext(activityLogContext) : []
 
   useEffect(() => () => promptCleanupRef.current?.(), [])
 
   function handleClick() {
-    openEmailCompose(buildComposeUrl({ to: trimmedTo, subject, body }, composeClient), composeClient)
+    openEmailCompose(
+      buildComposeUrl({ to: trimmedTo, bcc: trimmedBcc || undefined, subject, body }, composeClient),
+      composeClient,
+    )
     promptCleanupRef.current?.()
     if (scopes.length > 0) {
       promptCleanupRef.current = scheduleActivityLogPrompt(() => {
@@ -64,7 +70,11 @@ export function EmailButton({
     }
   }
 
-  const tooltip = missing ? EMAIL_MISSING_TOOLTIP : invalid ? EMAIL_INVALID_TOOLTIP : undefined
+  const tooltip = !recipientsValid
+    ? hasRecipientInput
+      ? EMAIL_INVALID_TOOLTIP
+      : EMAIL_MISSING_TOOLTIP
+    : undefined
 
   return (
     <>

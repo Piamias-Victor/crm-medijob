@@ -1,9 +1,10 @@
 'use client'
 
-import { ExternalLink, Building2 } from 'lucide-react'
+import { ExternalLink, Building2, MapPin } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { CandidateCvUploadButton } from '@/components/molecules/CandidateCvUploadButton'
 import { PRESENT_CANDIDATE_PHARMACY_BUTTON_LABEL } from '@/lib/constants/present-candidate-pharmacy-copy'
+import { PRESENT_CANDIDATE_RADIUS_BUTTON_LABEL } from '@/lib/constants/present-candidate-radius-copy'
 import { candidateCvApiPath } from '@/lib/candidate-cv-url'
 import { cn } from '@/lib/cn'
 
@@ -13,6 +14,7 @@ type Props = {
   submitting: boolean
   onFile: (file: File) => void
   onPresentPharmacy?: () => void
+  onPresentRadius?: () => void
 }
 
 export function CandidateCvActionsBar({
@@ -21,6 +23,7 @@ export function CandidateCvActionsBar({
   submitting,
   onFile,
   onPresentPharmacy,
+  onPresentRadius,
 }: Props) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -44,6 +47,12 @@ export function CandidateCvActionsBar({
           <Button type="button" variant="outline" className="gap-2" onClick={onPresentPharmacy}>
             <Building2 className="size-4 shrink-0" />
             {PRESENT_CANDIDATE_PHARMACY_BUTTON_LABEL}
+          </Button>
+        ) : null}
+        {onPresentRadius ? (
+          <Button type="button" variant="outline" className="gap-2" onClick={onPresentRadius}>
+            <MapPin className="size-4 shrink-0" />
+            {PRESENT_CANDIDATE_RADIUS_BUTTON_LABEL}
           </Button>
         ) : null}
       </div>

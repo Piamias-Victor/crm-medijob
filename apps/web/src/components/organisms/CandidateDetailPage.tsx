@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { CandidateDetailTabs, type CandidateDetailTab } from '@/components/molecules/CandidateDetailTabs'
-import { PresentCandidatePharmacyModal } from '@/components/molecules/present-candidate-pharmacy/present-candidate-pharmacy-modal'
-import { ActivityLogPromptModal } from '@/components/molecules/email-button/activity-log-prompt-modal'
-import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import { CandidateDetailTabPanel } from '@/components/molecules/CandidateDetailTabPanel'
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
+import { CandidatePresentModals } from '@/components/organisms/CandidatePresentModals'
+import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
+import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
@@ -38,6 +38,7 @@ export function CandidateDetailPage({
 }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
   const [presentOpen, setPresentOpen] = useState(false)
+  const [presentRadiusOpen, setPresentRadiusOpen] = useState(false)
   const [activityLogPrompt, setActivityLogPrompt] = useState<ActivityLogPromptPayload | null>(null)
   const name = `${profile.firstName} ${profile.lastName}`.trim()
 
@@ -70,24 +71,19 @@ export function CandidateDetailPage({
         activities={activities}
         documents={documents}
         onPresentPharmacy={() => setPresentOpen(true)}
+        onPresentRadius={() => setPresentRadiusOpen(true)}
       />
-      {presentOpen ? (
-        <PresentCandidatePharmacyModal
-          candidateId={profile.id}
-          onClose={() => setPresentOpen(false)}
-          onActivityLogPrompt={setActivityLogPrompt}
-        />
-      ) : null}
-      {activityLogPrompt ? (
-        <ActivityLogPromptModal
-          open
-          onOpenChange={(open) => {
-            if (!open) setActivityLogPrompt(null)
-          }}
-          defaultContent={activityLogPrompt.defaultContent}
-          scopes={activityLogPrompt.scopes}
-        />
-      ) : null}
+      <CandidatePresentModals
+        candidateId={profile.id}
+        defaultRadiusKm={profile.mobilityRadiusKm ?? DEFAULT_MOBILITY_RADIUS_KM}
+        presentOpen={presentOpen}
+        presentRadiusOpen={presentRadiusOpen}
+        activityLogPrompt={activityLogPrompt}
+        onClosePresent={() => setPresentOpen(false)}
+        onClosePresentRadius={() => setPresentRadiusOpen(false)}
+        onActivityLogPrompt={setActivityLogPrompt}
+        onActivityLogPromptClose={() => setActivityLogPrompt(null)}
+      />
     </EntityDetailShell>
   )
 }

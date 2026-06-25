@@ -4,6 +4,8 @@ import { loadCandidateReferentials } from '@/server/read-models/candidate-refere
 import type { CandidateCvDeps } from '@/server/routers/candidate-cv'
 import type { CandidateDocumentsDeps } from '@/server/routers/candidate-documents'
 import type { CandidatePresentPharmacyDeps } from '@/server/routers/candidate-present-pharmacy'
+import type { ListPharmaciesInRadiusDeps } from '@/server/routers/candidate-list-in-radius'
+import type { CandidatePresentRadiusDeps } from '@/server/routers/candidate-present-radius'
 import type { CandidateSearchRow } from '@/server/routers/candidate-search'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
@@ -11,7 +13,9 @@ import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-colum
 
 export type CandidateDeps = CandidateCvDeps &
   CandidateDocumentsDeps &
-  CandidatePresentPharmacyDeps & {
+  CandidatePresentPharmacyDeps &
+  ListPharmaciesInRadiusDeps &
+  CandidatePresentRadiusDeps & {
     listForKanban: (filters?: CandidateListFilters) => Promise<RawCandidate[]>
     listForExport: (
       filters?: CandidateListFilters,
