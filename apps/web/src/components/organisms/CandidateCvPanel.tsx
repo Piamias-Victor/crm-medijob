@@ -12,9 +12,9 @@ type Referentials = {
   recruiters: RefItem[]
 }
 
-type Props = { profile: CandidateProfilePayload; referentials: Referentials }
+type Props = { profile: CandidateProfilePayload; referentials: Referentials; onPresentPharmacy?: () => void }
 
-export function CandidateCvPanel({ profile, referentials }: Props) {
+export function CandidateCvPanel({ profile, referentials, onPresentPharmacy }: Props) {
   const cv = useCandidateCvReviewState(profile, referentials)
 
   if (cv.review && cv.reviewDefaults && cv.preview) {
@@ -45,6 +45,7 @@ export function CandidateCvPanel({ profile, referentials }: Props) {
         hasCv={Boolean(profile.cvUrl)}
         submitting={cv.extractPending}
         onFile={(file) => void cv.onUpload(file)}
+        onPresentPharmacy={onPresentPharmacy}
       />
       {cv.uploadError ? <p className="text-sm text-error">{cv.uploadError}</p> : null}
       {cv.extractError ? <p className="text-sm text-error">{cv.extractError.message}</p> : null}

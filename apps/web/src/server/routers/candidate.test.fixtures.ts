@@ -75,6 +75,8 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     findIdentityByNamePhone: vi.fn().mockResolvedValue(null),
     mergeCandidates: vi.fn().mockResolvedValue({ id: 'c1' }),
     findDocumentsProfile: vi.fn().mockResolvedValue(null),
+    findPharmacyForContext: vi.fn().mockResolvedValue(null),
+    findContactById: vi.fn().mockResolvedValue(null),
     updateDerivedFields: vi.fn(),
     provider: mockProvider,
     ...overrides,

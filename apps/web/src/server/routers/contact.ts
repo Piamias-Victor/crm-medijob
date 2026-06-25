@@ -9,6 +9,7 @@ import { toContactListRow, type ContactListEntity } from '@/view-models/contact-
 import { toContactDetail, type ContactDetailEntity } from '@/view-models/contact-detail'
 import { contactInputSchema, updateContactSchema } from '@/view-models/contact-form.schema'
 import { groupContactsByPharmacy } from '@/view-models/contact-by-pharmacy'
+import { mapContactPharmacyPickerRows } from '@/view-models/contact-pharmacy-picker'
 
 type PharmacyRef = { id: string; name: string }
 
@@ -16,7 +17,11 @@ export type ContactDeps = {
   contacts: {
     list: () => Promise<ContactListEntity[]>
     findById: (id: string) => Promise<ContactDetailEntity | null>
-    listByPharmacy: (pharmacyId: string) => Promise<{ id: string; firstName: string; lastName: string }[]>
+    listByPharmacy: (
+      pharmacyId: string,
+    ) => Promise<
+      { id: string; firstName: string; lastName: string; email: string | null; isPrimary: boolean }[]
+    >
     listByPharmacyIds: (
       pharmacyIds: string[],
     ) => Promise<{ id: string; firstName: string; lastName: string; pharmacyId: string }[]>
@@ -59,10 +64,7 @@ export function makeContactRouter(deps: ContactDeps) {
     pharmacyOptions: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
     referentials: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
     listByPharmacy: protectedProcedure.input(pharmacyIdSchema).query(async ({ input }) =>
-      (await deps.contacts.listByPharmacy(input.pharmacyId)).map((c) => ({
-        id: c.id,
-        label: `${c.firstName} ${c.lastName}`.trim(),
-      })),
+      mapContactPharmacyPickerRows(await deps.contacts.listByPharmacy(input.pharmacyId)),
     ),
     listByPharmacyIds: protectedProcedure.input(pharmacyIdsSchema).query(async ({ input }) =>
       groupContactsByPharmacy(await deps.contacts.listByPharmacyIds(input.pharmacyIds)),
