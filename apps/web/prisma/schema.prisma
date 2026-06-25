@@ -17,11 +17,6 @@ enum UserRole {
   ADMIN
 }
 
-enum PharmacyType {
-  INDEPENDANTE
-  CLINIQUE
-}
-
 enum PharmacyStatus {
   PROSPECT
   ACTIF
@@ -271,7 +266,6 @@ model Pharmacy {
   phone             String?
   email             String?
   website           String?
-  type              PharmacyType?
   status            PharmacyStatus @default(PROSPECT)
   groupementId      String?
   softwareId        String?
@@ -290,6 +284,9 @@ model Pharmacy {
 
   @@index([deletedAt])
   @@index([groupementId])
+  @@index([status])
+  @@index([softwareId])
+  @@index([postalCode])
 }
 
 // ─── Contacts ─────────────────────────────────────────────────

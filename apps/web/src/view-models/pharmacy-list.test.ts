@@ -7,6 +7,7 @@ const base: PharmacyListEntity = {
   city: 'Paris',
   status: 'ACTIF',
   groupement: { name: 'Giphar' },
+  software: { name: 'Winpharma' },
   contacts: [
     { firstName: 'Marie', lastName: 'Curie', isPrimary: true },
     { firstName: 'Paul', lastName: 'Bert', isPrimary: false },
@@ -24,6 +25,7 @@ describe('toPharmacyListRow', () => {
       status: 'ACTIF',
       primaryContactName: 'Marie Curie',
       missionCount: 3,
+      softwareName: 'Winpharma',
     })
   })
 
@@ -32,11 +34,13 @@ describe('toPharmacyListRow', () => {
       ...base,
       city: null,
       groupement: null,
+      software: null,
       contacts: [{ firstName: 'Paul', lastName: 'Bert', isPrimary: false }],
     })
 
     expect(row.groupementName).toBeNull()
     expect(row.primaryContactName).toBeNull()
     expect(row.city).toBeNull()
+    expect(row.softwareName).toBeNull()
   })
 })

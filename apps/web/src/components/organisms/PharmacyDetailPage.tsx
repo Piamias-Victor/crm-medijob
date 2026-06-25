@@ -23,6 +23,7 @@ type Props = {
   missionRefs: MissionRefs
   documents: DocumentListRow[]
   activities: ActivityLogRow[]
+  backHref?: string
 }
 
 export function PharmacyDetailPage({
@@ -32,6 +33,7 @@ export function PharmacyDetailPage({
   missionRefs,
   documents,
   activities,
+  backHref = '/pharmacies',
 }: Props) {
   const [tab, setTab] = useState<PharmacyTab>('infos')
   const mutations = usePharmacyDetailMutations()
@@ -40,7 +42,7 @@ export function PharmacyDetailPage({
     <EntityDetailShell
       header={
         <DetailPageHeader
-          backHref="/pharmacies"
+          backHref={backHref}
           backLabel="Pharmacies"
           name={pharmacy.name}
           city={pharmacy.city ?? undefined}

@@ -16,16 +16,18 @@ import { tabPanelMotion } from '@/lib/motion/variants'
 import { buildCandidatsTabHref } from '@/view-models/candidats-tab'
 import type { InboxItem } from '@/view-models/application-inbox'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
+import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 
 type Props = {
   list: { rows: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
+  serverFilters: CandidateListFilters
   filterConfig: CvthequeFilterConfig
   initialTab?: CandidatsTab
 }
 
-export function CandidatsPage({ list, inbox, filterConfig, initialTab = 'cvtheque' }: Props) {
+export function CandidatsPage({ list, inbox, serverFilters, filterConfig, initialTab = 'cvtheque' }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [tab, setTab] = useState<CandidatsTab>(initialTab)
@@ -65,6 +67,7 @@ export function CandidatsPage({ list, inbox, filterConfig, initialTab = 'cvthequ
           {tab === 'cvtheque' ? (
             <CvthequeSection
               initialList={list}
+              serverFilters={serverFilters}
               filterConfig={filterConfig}
               onCountChange={setCvthequeCount}
             />

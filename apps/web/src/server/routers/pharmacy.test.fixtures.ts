@@ -7,6 +7,7 @@ export const pharmacyListEntity: PharmacyListEntity = {
   city: 'Paris',
   status: 'ACTIF',
   groupement: { name: 'Giphar' },
+  software: { name: 'Winpharma' },
   contacts: [{ firstName: 'Marie', lastName: 'Curie', isPrimary: true }],
   _count: { missions: 2 },
 }

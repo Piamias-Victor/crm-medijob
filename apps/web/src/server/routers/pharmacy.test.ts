@@ -7,7 +7,18 @@ import { makeDeps, pharmacyCaller, recruteurSession } from '@/server/routers/pha
 describe('pharmacyRouter', () => {
   it('returns list rows mapped to SPEC columns', async () => {
     const rows = await pharmacyCaller(makeDeps()).list()
-    expect(rows[0]).toMatchObject({ name: 'Pharmacie du Centre', groupementName: 'Giphar', missionCount: 2 })
+    expect(rows[0]).toMatchObject({
+      name: 'Pharmacie du Centre',
+      groupementName: 'Giphar',
+      missionCount: 2,
+      softwareName: 'Winpharma',
+    })
+  })
+
+  it('forwards list filters to repository', async () => {
+    const deps = makeDeps()
+    await pharmacyCaller(deps).list({ statuses: ['ACTIF'], groupementIds: ['g1'] })
+    expect(deps.pharmacies.list).toHaveBeenCalledWith({ statuses: ['ACTIF'], groupementIds: ['g1'] })
   })
 
   it('returns enriched pharmacy detail by id', async () => {

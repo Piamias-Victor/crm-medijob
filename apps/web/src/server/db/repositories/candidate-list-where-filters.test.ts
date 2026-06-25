@@ -39,7 +39,7 @@ describe('buildCandidateListWhere filters', () => {
     expect(buildCandidateListWhere({ available: true }, now)).toEqual({
       AND: [
         { OR: [{ availableFrom: null }, { availableFrom: { lte: now } }] },
-        { NOT: { missions: { some: { mission: { status: { notIn: ['POURVU', 'ANNULEE'] } } } } } },
+        { NOT: { missions: { some: { mission: { deletedAt: null, status: { notIn: ['POURVU', 'ANNULEE'] } } } } } },
       ],
     })
   })
@@ -48,7 +48,7 @@ describe('buildCandidateListWhere filters', () => {
     expect(buildCandidateListWhere({ available: false }, now)).toEqual({
       OR: [
         { availableFrom: { gt: now } },
-        { missions: { some: { mission: { status: { notIn: ['POURVU', 'ANNULEE'] } } } } },
+        { missions: { some: { mission: { deletedAt: null, status: { notIn: ['POURVU', 'ANNULEE'] } } } } },
       ],
     })
   })

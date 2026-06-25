@@ -6,6 +6,7 @@ import { groupementRepository } from '@/server/db/repositories/groupement.reposi
 import { softwareRepository } from '@/server/db/repositories/software.repository'
 import { searchSiret as searchSiretService, type SiretResult } from '@/server/services/siret'
 import { toPharmacyListRow, type PharmacyListEntity } from '@/view-models/pharmacy-list'
+import type { PharmacyListFilters } from '@/view-models/pharmacy-list-filters.schema'
 import { toPharmacyDetail, type PharmacyDetailEntity } from '@/view-models/pharmacy-detail'
 import { toPharmacyUpdateData } from '@/view-models/pharmacy-update'
 import {
@@ -13,13 +14,14 @@ import {
   updatePharmacySchema,
   searchSiretSchema,
 } from '@/view-models/pharmacy-form.schema'
+import { pharmacyListFiltersSchema } from '@/view-models/pharmacy-list-filters.schema'
 
 type Ref = { id: string; name: string }
 type CreatedPharmacy = { id: string }
 
 export type PharmacyDeps = {
   pharmacies: {
-    list: () => Promise<PharmacyListEntity[]>
+    list: (filters?: PharmacyListFilters) => Promise<PharmacyListEntity[]>
     findDetailById: (id: string) => Promise<PharmacyDetailEntity | null>
     create: (data: Prisma.PharmacyUncheckedCreateInput) => Promise<CreatedPharmacy>
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) => Promise<unknown>
@@ -36,8 +38,8 @@ const nameSchema = z.object({ name: z.string().trim().min(1) })
 
 export function makePharmacyRouter(deps: PharmacyDeps) {
   return router({
-    list: protectedProcedure.query(async () =>
-      (await deps.pharmacies.list()).map(toPharmacyListRow),
+    list: protectedProcedure.input(pharmacyListFiltersSchema.optional()).query(async ({ input }) =>
+      (await deps.pharmacies.list(input)).map(toPharmacyListRow),
     ),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const pharmacy = await deps.pharmacies.findDetailById(input.id)
@@ -70,7 +72,7 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
 
 export const pharmacyRouter = makePharmacyRouter({
   pharmacies: {
-    list: () => pharmacyRepository.list(),
+    list: (filters) => pharmacyRepository.list(filters),
     findDetailById: (id) => pharmacyRepository.findDetailById(id),
     create: (data) => pharmacyRepository.create(data),
     update: (id, data) => pharmacyRepository.update(id, data),
