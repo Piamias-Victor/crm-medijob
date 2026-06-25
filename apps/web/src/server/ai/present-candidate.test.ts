@@ -19,8 +19,7 @@ const input = {
   pharmacy: {
     name: 'Pharmacie du Centre',
     city: 'Lyon',
-    type: 'INDEPENDANTE',
-    status: 'CLIENT',
+    status: 'ACTIF',
     notes: 'Client fidèle',
   },
 }

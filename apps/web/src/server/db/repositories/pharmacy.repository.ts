@@ -1,11 +1,19 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT, DETAIL_MISSIONS_LIMIT } from '@/lib/list-limits'
+import type { PharmacyListFilters } from '@/view-models/pharmacy-list-filters.schema'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { buildPharmacyListWhere } from './pharmacy-list-where'
 import { listPharmaciesForRadiusSearch } from './pharmacy-list-in-radius.repo'
+
+function buildPharmacyListQueryWhere(filters?: PharmacyListFilters): Prisma.PharmacyWhereInput {
+  const filterWhere = buildPharmacyListWhere(filters)
+  return Object.keys(filterWhere).length === 0 ? NOT_DELETED : { AND: [NOT_DELETED, filterWhere] }
+}
 
 const listInclude = {
   groupement: { select: { name: true } },
+  software: { select: { name: true } },
   contacts: {
     where: { ...NOT_DELETED, isPrimary: true },
     take: 1,
@@ -57,13 +65,13 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
     findForContext: (id: string) =>
       db.pharmacy.findFirst({
         where: { id, ...NOT_DELETED },
-        select: { name: true, city: true, type: true, status: true, notes: true },
+        select: { name: true, city: true, status: true, notes: true },
       }),
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) =>
       db.pharmacy.update({ where: { id }, data }),
-    list: (limit = DEFAULT_LIST_LIMIT) =>
+    list: (filters?: PharmacyListFilters, limit = DEFAULT_LIST_LIMIT) =>
       db.pharmacy.findMany({
-        where: NOT_DELETED,
+        where: buildPharmacyListQueryWhere(filters),
         include: listInclude,
         orderBy: { name: 'asc' },
         take: limit,

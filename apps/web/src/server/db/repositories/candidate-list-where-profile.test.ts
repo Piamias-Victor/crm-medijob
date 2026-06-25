@@ -25,13 +25,13 @@ describe('buildCandidateListWhere profile and missions', () => {
 
   it('filtre mission active', () => {
     expect(buildCandidateListWhere({ activeMission: true })).toEqual({
-      missions: { some: { mission: { status: { notIn: ['POURVU', 'ANNULEE'] } } } },
+      missions: { some: { mission: { deletedAt: null, status: { notIn: ['POURVU', 'ANNULEE'] } } } },
     })
   })
 
   it('filtre sans mission active', () => {
     expect(buildCandidateListWhere({ activeMission: false })).toEqual({
-      NOT: { missions: { some: { mission: { status: { notIn: ['POURVU', 'ANNULEE'] } } } } },
+      NOT: { missions: { some: { mission: { deletedAt: null, status: { notIn: ['POURVU', 'ANNULEE'] } } } } },
     })
   })
 

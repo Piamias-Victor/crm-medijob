@@ -29,8 +29,7 @@ function presentCaller(overrides: Partial<ReturnType<typeof makeCandidateDeps>> 
     findPharmacyForContext: vi.fn().mockResolvedValue({
       name: 'Pharmacie du Centre',
       city: 'Lyon',
-      type: 'INDEPENDANTE',
-      status: 'CLIENT',
+      status: 'ACTIF',
       notes: null,
     }),
     findContactById: vi.fn().mockResolvedValue({
