@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client'
 import type { z } from 'zod'
 import type { listContactMissions } from '@/server/read-models/contact-missions'
 import type { ContactListEntity } from '@/view-models/contact-list'
+import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
 import type { ContactDetailEntity } from '@/view-models/contact-detail'
 import type { contactInputSchema } from '@/view-models/contact-form.schema'
 
@@ -10,7 +11,7 @@ export type CreatedContact = { id: string }
 
 export type ContactDeps = {
   contacts: {
-    list: () => Promise<ContactListEntity[]>
+    list: (filters?: ContactListFilters) => Promise<ContactListEntity[]>
     findById: (id: string) => Promise<ContactDetailEntity | null>
     listByPharmacy: (
       pharmacyId: string,

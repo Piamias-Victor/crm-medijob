@@ -55,7 +55,7 @@ describe('contactRepository', () => {
 
   it('list respects take limit', async () => {
     for (let i = 0; i < 3; i++) await repo.create(newContact(`Limit${i}`))
-    expect((await repo.list(2)).length).toBe(2)
+    expect((await repo.list(undefined, 2)).length).toBe(2)
   })
 
   it('listByPharmacy respects take limit', async () => {

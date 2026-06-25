@@ -11,8 +11,9 @@ export const contactEntity: ContactListEntity = {
   role: 'TITULAIRE',
   phone: null,
   email: 'marie@example.com',
+  isPrimary: true,
   createdAt: new Date('2026-01-15'),
-  pharmacy: { name: 'Pharmacie du Centre' },
+  pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon', postalCode: '69003' },
 }
 
 export const contactDetailEntity: ContactDetailEntity = {

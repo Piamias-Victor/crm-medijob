@@ -13,7 +13,7 @@
 | 1 | #155 | Page `/pharmacies/new` dédiée ✓ |
 | 2 | #156 | Page `/contacts/new` dédiée ✓ |
 | 3 | #158 | Tableau pharmacies + filtres multi ✓ |
-| 4 | **#159** | Tableau contacts + filtres multi ← **cette session** |
+| 4 | **#159** | Tableau contacts + filtres multi ✓ |
 | 5 | #162 | Export CSV pharmacies filtrée (blocked #158, #149) |
 | 6 | #163 | Export CSV contacts filtrée (blocked #159, #149) |
 | 7 | #173 | Détection et fusion doublons Pharmacy |

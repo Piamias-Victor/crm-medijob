@@ -20,9 +20,17 @@ type Props = {
   pharmacies: RefItem[]
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  backHref?: string
 }
 
-export function ContactDetailPage({ contact, missions, pharmacies, activities, documents }: Props) {
+export function ContactDetailPage({
+  contact,
+  missions,
+  pharmacies,
+  activities,
+  documents,
+  backHref = '/contacts',
+}: Props) {
   const [tab, setTab] = useState<ContactTab>('infos')
   const { update, setPrimary } = useContactDetailMutations()
 
@@ -41,7 +49,7 @@ export function ContactDetailPage({ contact, missions, pharmacies, activities, d
     <EntityDetailShell
       header={
         <DetailPageHeader
-          backHref="/contacts"
+          backHref={backHref}
           backLabel="Contacts"
           name={contact.fullName}
           chips={headerChips}

@@ -2,6 +2,32 @@ import { describe, it, expect, vi } from 'vitest'
 import type { PrismaClient } from '@prisma/client'
 import { makeContactRepository } from '@/server/db/repositories/contact.repository'
 
+describe('makeContactRepository list', () => {
+  it('applique filtres repository sur findMany', async () => {
+    const findMany = vi.fn().mockResolvedValue([])
+    const repo = makeContactRepository({ contact: { findMany } } as unknown as PrismaClient)
+
+    await repo.list({ isPrimary: true, pharmacyStatuses: ['PROSPECT'] })
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          AND: [
+            { deletedAt: null },
+            { pharmacy: { deletedAt: null } },
+            {
+              AND: [
+                { isPrimary: true },
+                { pharmacy: { status: { in: ['PROSPECT'] } } },
+              ],
+            },
+          ],
+        },
+      }),
+    )
+  })
+})
+
 describe('makeContactRepository listByPharmacyIds', () => {
   it('retourne contacts groupables par pharmacyId en une requête', async () => {
     const findMany = vi.fn().mockResolvedValue([
