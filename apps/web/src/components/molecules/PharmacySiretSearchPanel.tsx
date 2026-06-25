@@ -3,19 +3,32 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
 import { PharmacyLegalFields } from '@/components/molecules/PharmacyLegalFields'
 import { SiretLookupPicker } from '@/components/molecules/SiretLookupPicker'
+import { SiretSearchAlertModal } from '@/components/molecules/SiretSearchAlertModal'
 import { SiretSearchButton } from '@/components/molecules/SiretSearchButton'
-import { SiretSearchFeedback } from '@/components/molecules/SiretSearchFeedback'
-import type { SiretSearchFeedback as Feedback } from '@/hooks/use-pharmacy-siret-search'
+import type { AnnuaireSearchSource, SiretSearchFeedback } from '@/hooks/use-pharmacy-siret-search'
 import type { PharmacyInput, PharmacySiretLookup } from '@/view-models/pharmacy-form.schema'
 
 type Props = {
   register: UseFormRegister<PharmacyInput>
   errors: FieldErrors<PharmacyInput>
   searching: boolean
-  onRunSiret: () => void
-  feedback: Feedback | null
+  activeSource: AnnuaireSearchSource | null
+  onRunSearch: (source: AnnuaireSearchSource) => void
+  feedback: SiretSearchFeedback | null
+  onDismissFeedback: () => void
   candidates: PharmacySiretLookup[]
   onPick: (match: PharmacySiretLookup) => void
+}
+
+function searchButton(
+  searching: boolean,
+  activeSource: AnnuaireSearchSource | null,
+  source: AnnuaireSearchSource,
+  onRunSearch: Props['onRunSearch'],
+) {
+  const ariaLabel = source === 'name' ? 'Rechercher par nom' : 'Rechercher par SIRET'
+  const loading = searching && activeSource === source
+  return <SiretSearchButton loading={loading} ariaLabel={ariaLabel} onClick={() => onRunSearch(source)} />
 }
 
 export function PharmacySiretSearchPanel(props: Props) {
@@ -24,9 +37,10 @@ export function PharmacySiretSearchPanel(props: Props) {
       <PharmacyLegalFields
         register={props.register}
         errors={props.errors}
-        siretButton={<SiretSearchButton loading={props.searching} onClick={props.onRunSiret} />}
+        nameButton={searchButton(props.searching, props.activeSource, 'name', props.onRunSearch)}
+        siretButton={searchButton(props.searching, props.activeSource, 'siret', props.onRunSearch)}
       />
-      <SiretSearchFeedback feedback={props.feedback} />
+      <SiretSearchAlertModal feedback={props.feedback} onClose={props.onDismissFeedback} />
       {props.candidates.length > 0 ? (
         <SiretLookupPicker matches={props.candidates} onPick={props.onPick} />
       ) : null}

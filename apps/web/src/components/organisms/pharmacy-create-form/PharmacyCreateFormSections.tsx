@@ -8,7 +8,7 @@ import { PharmacySelects } from '@/components/molecules/PharmacySelects'
 import { PharmacySiretSearchPanel } from '@/components/molecules/PharmacySiretSearchPanel'
 import { toSelectOptions } from '@/lib/form-options'
 import { getMissingPharmacyFields } from '@/view-models/pharmacy-profile'
-import type { SiretSearchFeedback } from '@/hooks/use-pharmacy-siret-search'
+import type { AnnuaireSearchSource, SiretSearchFeedback } from '@/hooks/use-pharmacy-siret-search'
 import type { PharmacyInput, PharmacySiretLookup } from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
@@ -23,8 +23,10 @@ type Props = {
   groupements: Ref[]
   softwares: Ref[]
   searching: boolean
-  onRunSiret: () => void
+  activeSource: AnnuaireSearchSource | null
+  onRunSearch: (source: AnnuaireSearchSource) => void
   feedback: SiretSearchFeedback | null
+  onDismissFeedback: () => void
   candidates: PharmacySiretLookup[]
   onPickMatch: (match: PharmacySiretLookup) => void
   onCreateGroupement: (name: string) => Promise<ComboboxOption>
@@ -45,8 +47,10 @@ export function PharmacyCreateFormSections(props: Props) {
           register={props.register}
           errors={props.errors}
           searching={props.searching}
-          onRunSiret={props.onRunSiret}
+          activeSource={props.activeSource}
+          onRunSearch={props.onRunSearch}
           feedback={props.feedback}
+          onDismissFeedback={props.onDismissFeedback}
           candidates={props.candidates}
           onPick={props.onPickMatch}
         />

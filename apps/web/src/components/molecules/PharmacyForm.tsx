@@ -53,8 +53,10 @@ export function PharmacyForm(props: Props) {
           register={register}
           errors={formState.errors}
           searching={siret.searching}
-          onRunSiret={siret.runSiret}
+          activeSource={siret.activeSource}
+          onRunSearch={siret.runSearch}
           feedback={siret.feedback}
+          onDismissFeedback={siret.dismissFeedback}
           candidates={siret.candidates}
           onPick={siret.pickMatch}
         />
