@@ -1,19 +1,34 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { User, Plus } from 'lucide-react'
 import { accentButtonClassName } from '@/lib/button-styles'
 import { EntityListPageShell } from '@/components/molecules/EntityListPageShell'
-import { ContactList } from '@/components/organisms/ContactList'
+import { ContactTable } from '@/components/organisms/contact-table/contact-table'
+import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
+import { useContactListQuery } from '@/lib/hooks/use-contact-list-query'
+import type { ContactFilterConfig } from '@/lib/filters/contact-filter-config'
 import type { ContactListRow } from '@/view-models/contact-list'
+import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
 
 type Props = {
-  rows: ContactListRow[]
+  initialRows: ContactListRow[]
+  serverFilters: ContactListFilters
+  filterConfig: ContactFilterConfig
 }
 
-export function ContactsPage({ rows }: Props) {
-  const description = useMemo(() => `${rows.length} interlocuteur(s) au portefeuille`, [rows.length])
+export function ContactsPage({ initialRows, serverFilters, filterConfig }: Props) {
+  const [sort, setSort] = useState<EntityTableSortState | null>(null)
+  const [count, setCount] = useState(initialRows.length)
+  const onCountChange = useCallback((next: number) => setCount(next), [])
+  const { values, setFilters, reset, rows } = useContactListQuery(
+    initialRows,
+    serverFilters,
+    filterConfig,
+    onCountChange,
+  )
+  const description = useMemo(() => `${count} interlocuteur(s) au portefeuille`, [count])
 
   return (
     <EntityListPageShell
@@ -29,7 +44,15 @@ export function ContactsPage({ rows }: Props) {
         </Link>
       }
     >
-      <ContactList rows={rows} />
+      <ContactTable
+        filterConfig={filterConfig}
+        values={values}
+        onChange={setFilters}
+        onReset={reset}
+        rows={rows}
+        sort={sort}
+        onSortChange={setSort}
+      />
     </EntityListPageShell>
   )
 }

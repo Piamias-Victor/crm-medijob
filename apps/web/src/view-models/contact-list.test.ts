@@ -8,8 +8,9 @@ const entity: ContactListEntity = {
   role: 'TITULAIRE',
   phone: '0102030405',
   email: 'marie@example.com',
+  isPrimary: true,
   createdAt: new Date('2026-01-15'),
-  pharmacy: { name: 'Pharmacie du Centre' },
+  pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon', postalCode: '69003' },
 }
 
 describe('toContactListRow', () => {
@@ -21,6 +22,9 @@ describe('toContactListRow', () => {
       pharmacyName: 'Pharmacie du Centre',
       phone: '0102030405',
       email: 'marie@example.com',
+      isPrimary: true,
+      city: 'Lyon',
+      department: '69',
     })
     expect(row.createdAtLabel).toBe('15/01/2026')
   })

@@ -1,11 +1,16 @@
 import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { ContactDetailPage } from '@/components/organisms/ContactDetailPage'
+import { parseContactBackHref } from '@/lib/contact-href'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ back?: string }>
+}
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { id } = await params
+  const { back } = await searchParams
   const caller = await createServerCaller()
   const [contact, missions, pharmacies, activities, documents] = await Promise.all([
     caller.contact.getById({ id }),
@@ -24,6 +29,7 @@ export default async function Page({ params }: Props) {
       pharmacies={pharmacies}
       activities={activities}
       documents={documents}
+      backHref={parseContactBackHref(back)}
     />
   )
 }

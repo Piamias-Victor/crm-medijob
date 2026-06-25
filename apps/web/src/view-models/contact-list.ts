@@ -1,4 +1,5 @@
 import type { ContactRole } from '@prisma/client'
+import { candidateDepartment } from '@/view-models/cvtheque-core-fields'
 
 // View-model : pont entre Contact et colonnes liste (SPEC_V2 §6.658).
 
@@ -9,8 +10,9 @@ export type ContactListEntity = {
   role: ContactRole
   phone: string | null
   email: string | null
+  isPrimary: boolean
   createdAt: Date
-  pharmacy: { name: string }
+  pharmacy: { name: string; city: string | null; postalCode: string | null }
 }
 
 export type ContactListRow = {
@@ -21,6 +23,9 @@ export type ContactListRow = {
   phone: string | null
   email: string | null
   createdAtLabel: string
+  isPrimary: boolean
+  city: string | null
+  department: string | null
 }
 
 const dateFmt = new Intl.DateTimeFormat('fr-FR')
@@ -34,5 +39,8 @@ export function toContactListRow(entity: ContactListEntity): ContactListRow {
     phone: entity.phone,
     email: entity.email,
     createdAtLabel: dateFmt.format(entity.createdAt),
+    isPrimary: entity.isPrimary,
+    city: entity.pharmacy.city,
+    department: candidateDepartment(entity.pharmacy.postalCode),
   }
 }

@@ -12,6 +12,7 @@ import { mapContactPharmacyPickerRows } from '@/view-models/contact-pharmacy-pic
 import { toContactPrimaryName } from '@/view-models/contact-primary-warning'
 import { toContactCreateData, type ContactDeps } from '@/server/routers/contact.deps'
 import { idSchema } from '@/lib/schemas/entity-id'
+import { contactListFiltersSchema } from '@/view-models/contact-list-filters.schema'
 
 export type { ContactDeps } from '@/server/routers/contact.deps'
 
@@ -23,8 +24,8 @@ const pharmacyIdsSchema = z.object({ pharmacyIds: z.array(z.string().min(1)) })
 
 export function makeContactRouter(deps: ContactDeps) {
   return router({
-    list: protectedProcedure.query(async () =>
-      (await deps.contacts.list()).map(toContactListRow),
+    list: protectedProcedure.input(contactListFiltersSchema.optional()).query(async ({ input }) =>
+      (await deps.contacts.list(input)).map(toContactListRow),
     ),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const contact = await deps.contacts.findById(input.id)

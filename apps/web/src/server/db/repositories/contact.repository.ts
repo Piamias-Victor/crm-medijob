@@ -1,14 +1,14 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { searchContacts } from './contact-search.repo'
 import { listContactsByPharmacyWithEmail } from './contact-list-by-pharmacy.repo'
 import { findPrimaryContactByPharmacy } from './contact-primary.repo'
+import { buildContactListQueryWhere, contactListInclude } from './contact-list-where'
 
-const listInclude = {
-  pharmacy: { select: { name: true } },
-} satisfies Prisma.ContactInclude
+const listInclude = contactListInclude
 
 const detailInclude = {
   pharmacy: { select: { id: true, name: true } },
@@ -52,9 +52,9 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
           pharmacy: { select: { name: true } },
         },
       }),
-    list: (limit = DEFAULT_LIST_LIMIT) =>
+    list: (filters?: ContactListFilters, limit = DEFAULT_LIST_LIMIT) =>
       db.contact.findMany({
-        where: NOT_DELETED,
+        where: buildContactListQueryWhere(filters),
         include: listInclude,
         orderBy: { createdAt: 'desc' },
         take: limit,
