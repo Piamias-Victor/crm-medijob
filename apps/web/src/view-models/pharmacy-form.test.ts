@@ -3,6 +3,11 @@ import { pharmacyInputSchema } from '@/view-models/pharmacy-form.schema'
 import { toPharmacyFormValues } from '@/view-models/pharmacy-form'
 
 describe('pharmacyInputSchema', () => {
+  it('accepts minimal valid create input with PROSPECT default', () => {
+    const parsed = pharmacyInputSchema.parse({ name: 'Pharmacie Test' })
+    expect(parsed).toMatchObject({ name: 'Pharmacie Test', status: 'PROSPECT' })
+  })
+
   it('rejects an invalid email', () => {
     const result = pharmacyInputSchema.safeParse({ name: 'Test', email: 'not-an-email' })
     expect(result.success).toBe(false)

@@ -30,6 +30,12 @@ describe('pharmacyRouter', () => {
     )
   })
 
+  it('returns the created pharmacy id for client redirect', async () => {
+    const deps = makeDeps()
+    const created = await pharmacyCaller(deps).create({ name: 'Test' })
+    expect(created).toEqual(expect.objectContaining({ id: 'new', name: 'Test' }))
+  })
+
   it('delegates SIRET search to the service', async () => {
     const deps = makeDeps()
     const res = await pharmacyCaller(deps).searchSiret({ query: 'pharmacie' })

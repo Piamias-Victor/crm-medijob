@@ -2,7 +2,6 @@
 
 import { ContactFormModal } from '@/components/molecules/ContactFormModal'
 import { MissionFormModal } from '@/components/molecules/MissionFormModal'
-import { PharmacyFormModal } from '@/components/molecules/PharmacyFormModal'
 import { QuickCreateLoading } from '@/components/molecules/QuickCreateLoading'
 import type { HomeQuickCreateState } from '@/lib/hooks/use-home-quick-create'
 
@@ -27,18 +26,6 @@ export function HomeQuickCreateModals({ state }: Props) {
         onClose={() => setOpen(null)}
         onSubmit={(data) => state.createMission.mutate(data)}
         onCreateJobTitle={(name) => state.newJobTitle.mutateAsync({ name })}
-      />
-      <PharmacyFormModal
-        open={open === 'pharmacy'}
-        groupements={refs.groupements}
-        softwares={refs.softwares}
-        submitting={state.createPharmacy.isPending}
-        errorMessage={state.createPharmacy.error?.message}
-        onClose={() => setOpen(null)}
-        onSubmit={(data) => state.createPharmacy.mutate(data)}
-        onSearchSiret={state.searchSiret}
-        onCreateGroupement={(name) => state.newGroupement.mutateAsync({ name })}
-        onCreateSoftware={(name) => state.newSoftware.mutateAsync({ name })}
       />
       <ContactFormModal
         open={open === 'contact'}
