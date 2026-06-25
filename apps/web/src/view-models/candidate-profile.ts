@@ -1,4 +1,5 @@
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
+import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 
 export type MatchingProfileFields = {
   city: string | null
@@ -21,7 +22,7 @@ export type CandidateFormSource = MatchingProfileFields & {
   contractTypes: string[]
 }
 
-export const DEFAULT_MOBILITY_RADIUS_KM = 30
+export { DEFAULT_MOBILITY_RADIUS_KM }
 
 export function getMissingMatchingFields(profile: MatchingProfileFields): string[] {
   const missing: string[] = []

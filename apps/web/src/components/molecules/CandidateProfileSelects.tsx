@@ -16,6 +16,7 @@ type Props = {
   onReferent: (value: string) => void
   recruiters: ComboboxOption[]
   onCreateJobTitle?: (name: string) => Promise<ComboboxOption>
+  contractOptionList?: ComboboxOption[]
 }
 
 export function CandidateProfileSelects(props: Props) {
@@ -50,7 +51,7 @@ export function CandidateProfileSelects(props: Props) {
       <div className="sm:col-span-2">
         <FormField label="Préférences contractuelles">
           <CheckboxGroup
-            options={contractOptions}
+            options={props.contractOptionList ?? contractOptions}
             values={props.contractTypes}
             onChange={props.onContractTypes}
           />

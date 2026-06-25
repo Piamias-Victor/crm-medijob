@@ -28,3 +28,7 @@ export const createActivityLogSchema = activityEntitySchema.extend({
   content: z.string().trim().optional(),
   date: z.coerce.date(),
 })
+
+export const createActivityLogBatchSchema = z.object({
+  entries: z.array(createActivityLogSchema).min(1),
+})

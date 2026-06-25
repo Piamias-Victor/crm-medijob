@@ -1,0 +1,1 @@
+export const ACTIVITY_LOG_PROMPT_DELAY_MS = 500

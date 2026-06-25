@@ -26,30 +26,62 @@ Le `{slug}` est un résumé court en kebab-case, aligné sur le titre de l'issue
 
 ## Worktrees
 
-- **Un seul worktree par issue** — créé avant tout travail sur l'issue
-- Ne pas réutiliser un worktree d'une issue précédente pour une nouvelle issue
-- Le worktree est créé depuis la branche `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}`
+### Quand utiliser un worktree ?
+
+| Situation | Mode recommandé |
+|-----------|-----------------|
+| **1 issue à la fois**, pas d'autre agent sur le repo | **Mode simple** — branche dans le repo principal, pas de dossier supplémentaire |
+| **Plusieurs issues en parallèle** (agents ou sessions simultanées) | **Mode parallèle** — un worktree par issue |
+
+Le worktree **n'est pas obligatoire**. Il sert uniquement à isoler les checkouts parallèles. Si tu travailles seul sur une issue, reste dans le repo principal :
 
 ```bash
-# Exemple
-git worktree add ../crm-medijob-issue-2 -b feat/issue-2-app-bootstrap origin/dev
+git fetch origin
+git checkout -b feat/issue-{N}-{slug} origin/dev
+# travailler ici — pas de dossier ../crm-medijob-issue-{N}
 ```
+
+### Mode parallèle (worktree)
+
+- **Un seul worktree par issue**
+- Ne pas réutiliser un worktree d'une issue précédente
+- Chemin centralisé (préféré aux dossiers éparpillés) :
+
+```bash
+WORKTREES_ROOT="${WORKTREES_ROOT:-$HOME/Desktop/Dev/ia/.worktrees}"
+mkdir -p "$WORKTREES_ROOT"
+git worktree add "$WORKTREES_ROOT/crm-medijob-issue-{N}" -b feat/issue-{N}-{slug} origin/dev
+cd "$WORKTREES_ROOT/crm-medijob-issue-{N}"
+```
+
+- Symlink `.env` si nécessaire (cf. handoffs #53)
+- `pnpm install` à la première utilisation
+
+### Cleanup worktree (obligatoire — phase 5)
+
+L'agent **doit** exécuter le cleanup après handoff (phase 4) ou quand l'utilisateur confirme le merge — **ne pas laisser de dossiers orphelins**.
+
+```bash
+# Depuis le repo principal (pas depuis le worktree)
+WORKTREES_ROOT="${WORKTREES_ROOT:-$HOME/Desktop/Dev/ia/.worktrees}"
+git worktree remove "$WORKTREES_ROOT/crm-medijob-issue-{N}" --force 2>/dev/null \
+  || git worktree remove "../crm-medijob-issue-{N}" --force
+git worktree prune
+git branch -d feat/issue-{N}-{slug}    # après merge sur dev
+git push origin --delete feat/issue-{N}-{slug}  # après merge, si branche remote encore présente
+```
+
+Lister les worktrees actifs : `git worktree list`
 
 ## Cycle de vie des branches
 
-1. Créer la branche + worktree depuis `dev` à jour
-2. Travailler, committer sur la branche de feature
-3. Pusher la branche de feature sur `origin`
-4. Ouvrir une PR vers `dev` avec `Closes #N`
-5. Merger la PR dans `dev`
-6. **Cleanup de la branche après merge** — pas avant (la branche reste disponible jusqu'au merge)
-
-```bash
-# Cleanup après merge (local + remote)
-git branch -d feat/issue-{N}-{slug}
-git push origin --delete feat/issue-{N}-{slug}
-git worktree remove ../crm-medijob-issue-{N}
-```
+1. Choisir mode simple ou worktree (cf. § Worktrees)
+2. Créer la branche depuis `dev` à jour
+3. Travailler, committer sur la branche de feature
+4. **Phase 3** : pusher + PR + poster commande de test + tests manuels (`docs/prompt-rules.md`)
+5. **Phase 4** : handoff sur demande (`/handoff`)
+6. Merger la PR dans `dev`
+7. **Phase 5** : cleanup worktree + branche (agent) · déplacer prompt `pending/` → `done/`
 
 ## Références
 

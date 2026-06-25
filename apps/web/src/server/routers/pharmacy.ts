@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { Prisma } from '@prisma/client'
-import { router, protectedProcedure, adminProcedure } from '@/server/trpc'
+import { router, protectedProcedure } from '@/server/trpc'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { groupementRepository } from '@/server/db/repositories/groupement.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
@@ -15,12 +15,13 @@ import {
 } from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
+type CreatedPharmacy = { id: string }
 
 export type PharmacyDeps = {
   pharmacies: {
     list: () => Promise<PharmacyListEntity[]>
     findDetailById: (id: string) => Promise<PharmacyDetailEntity | null>
-    create: (data: Prisma.PharmacyUncheckedCreateInput) => Promise<unknown>
+    create: (data: Prisma.PharmacyUncheckedCreateInput) => Promise<CreatedPharmacy>
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) => Promise<unknown>
     softDelete: (id: string) => Promise<unknown>
   }
@@ -48,22 +49,22 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     })),
     create: protectedProcedure
       .input(pharmacyInputSchema)
-      .mutation(({ input }) => deps.pharmacies.create(toPharmacyUpdateData(input))),
+      .mutation(async ({ input }) => deps.pharmacies.create(toPharmacyUpdateData(input))),
     update: protectedProcedure
       .input(updatePharmacySchema)
-      .mutation(({ input }) => deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))),
+      .mutation(async ({ input }) => deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))),
     softDelete: protectedProcedure
       .input(idSchema)
-      .mutation(({ input }) => deps.pharmacies.softDelete(input.id)),
+      .mutation(async ({ input }) => deps.pharmacies.softDelete(input.id)),
     searchSiret: protectedProcedure
       .input(searchSiretSchema)
       .query(({ input }) => deps.searchSiret(input.query)),
-    createGroupement: adminProcedure
+    createGroupement: protectedProcedure
       .input(nameSchema)
-      .mutation(({ input }) => deps.createGroupement(input.name)),
-    createSoftware: adminProcedure
+      .mutation(async ({ input }) => deps.createGroupement(input.name)),
+    createSoftware: protectedProcedure
       .input(nameSchema)
-      .mutation(({ input }) => deps.createSoftware(input.name)),
+      .mutation(async ({ input }) => deps.createSoftware(input.name)),
   })
 }
 

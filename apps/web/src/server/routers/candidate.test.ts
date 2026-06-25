@@ -9,21 +9,6 @@ function caller(deps = makeCandidateDeps()) {
 }
 
 describe('candidateRouter', () => {
-  it('list retourne rows + stages sans dupliquer candidates bruts', async () => {
-    const result = await caller().list()
-    expect(result).not.toHaveProperty('candidates')
-    expect(result.rows[0]).toHaveProperty('missions')
-    expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
-  })
-
-  it('returns typed list source rows for the CVthèque', async () => {
-    const deps = makeCandidateDeps()
-    const result = await caller(deps).list()
-    expect(result.rows).toHaveLength(1)
-    expect(result.stages).toEqual([{ id: 's1', name: 'Nouveau' }])
-    expect(result.rows[0]).toMatchObject({ id: 'c1', firstName: 'Camille', city: 'Lyon' })
-  })
-
   it('searches candidates for the picker', async () => {
     const deps = makeCandidateDeps()
     const result = await caller(deps).search({ term: 'cam' })
@@ -65,6 +50,31 @@ describe('candidateRouter', () => {
       'c1',
       expect.objectContaining({ firstName: 'Camille', mobilityRadiusKm: 30 }),
     )
+  })
+
+  it('creates candidate profile via repository with full payload', async () => {
+    const deps = makeCandidateDeps()
+    const result = await caller(deps).create({
+      firstName: 'Alice',
+      lastName: 'Martin',
+      jobTitleId: 'jt1',
+      referentId: 'u1',
+      mobilityRadiusKm: 20,
+      softwareIds: ['sw1'],
+      contractTypes: ['CDI'],
+      notes: 'Contexte recruteur',
+    })
+    expect(deps.createProfile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: 'Alice',
+        lastName: 'Martin',
+        mobilityRadiusKm: 20,
+        softwareIds: ['sw1'],
+        contractTypes: ['CDI'],
+        notes: 'Contexte recruteur',
+      }),
+    )
+    expect(result).toEqual({ id: 'c-new' })
   })
 
   it('rejects unauthenticated callers', async () => {

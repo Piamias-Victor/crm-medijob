@@ -8,12 +8,33 @@ function normalize(value: string) {
     .trim()
 }
 
+function tokenize(value: string) {
+  return normalize(value).split(/\s+/).filter(Boolean)
+}
+
+function toRoleStem(word: string) {
+  return word.replace(/trice$/, 'teur').replace(/rice$/, 'r')
+}
+
 function scoreMatch(needle: string, haystack: string) {
   if (haystack === needle) return 100
   if (haystack.includes(needle) || needle.includes(haystack)) return 80
-  const words = needle.split(/\s+/).filter(Boolean)
-  const hits = words.filter((word) => haystack.includes(word)).length
-  return hits > 0 ? hits * 20 : 0
+
+  const needleWords = tokenize(needle)
+  const hayWords = tokenize(haystack)
+  const exactHits = needleWords.filter((word) => hayWords.includes(word)).length
+  if (exactHits > 0) {
+    const coversOption = hayWords.every((word) => needleWords.includes(word))
+    return exactHits * 25 + (coversOption ? 30 : 0)
+  }
+
+  const stemHits = needleWords.filter((word) =>
+    hayWords.some((hayWord) => {
+      const stem = toRoleStem(word)
+      return stem === hayWord || word === toRoleStem(hayWord) || stem === toRoleStem(hayWord)
+    }),
+  ).length
+  return stemHits > 0 ? stemHits * 35 : 0
 }
 
 export function matchJobTitles(extracted: string, options: JobTitleOption[], limit = 5) {

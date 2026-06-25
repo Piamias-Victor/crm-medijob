@@ -1,6 +1,7 @@
 'use client'
 
 import { type RefObject } from 'react'
+import { COMBOBOX_OPTION_CLASS } from '@/lib/combobox-option-class'
 import { Check, Plus } from 'lucide-react'
 import { Input } from '@/components/atoms/Input'
 import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
@@ -15,6 +16,7 @@ type Props = {
   showCreate: boolean
   onPick: (value: string) => void
   onCreate: () => void
+  createError?: string | null
 }
 
 export function ComboboxDropdown({
@@ -27,12 +29,13 @@ export function ComboboxDropdown({
   showCreate,
   onPick,
   onCreate,
+  createError,
 }: Props) {
   return (
     <div
       ref={panelRef}
       style={style}
-      className="overflow-hidden rounded-md border border-border bg-white shadow-lg"
+      className="overflow-hidden rounded-md border border-border bg-surface shadow-lg"
     >
       <Input
         type="search"
@@ -52,7 +55,7 @@ export function ComboboxDropdown({
               role="option"
               aria-selected={o.value === value}
               onClick={() => onPick(o.value)}
-              className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-fg hover:bg-surface"
+              className={COMBOBOX_OPTION_CLASS}
             >
               {o.label}
               {o.value === value ? <Check className="size-4 text-accent" /> : null}
@@ -64,10 +67,15 @@ export function ComboboxDropdown({
         <button
           type="button"
           onClick={onCreate}
-          className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent hover:bg-surface"
+          className="flex w-full items-center gap-2 border-t border-border px-3 py-2 text-left text-sm font-medium text-accent transition-colors hover:bg-accent-muted hover:text-accent-hover"
         >
           <Plus className="size-4" /> Créer « {query.trim()} »
         </button>
+      ) : null}
+      {createError ? (
+        <p role="alert" className="border-t border-error/25 bg-error/5 px-3 py-2 text-sm text-error">
+          {createError}
+        </p>
       ) : null}
     </div>
   )

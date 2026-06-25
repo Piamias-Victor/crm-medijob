@@ -1,10 +1,15 @@
+import { randomUUID } from 'node:crypto'
 import type { CvExtraction } from '@/server/ai/cv-extraction.schema'
 import { matchJobTitles, type JobTitleOption } from '@/server/ai/job-title-match'
 import { mapAssistantChatError } from '@/server/ai/router-errors'
 import type { CandidateProfileUpdate } from '@/server/db/repositories/candidate-profile.repo'
 import type { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { toCandidateUpdateData } from '@/view-models/candidate-profile-map'
-import type { ExtractCvInput, ConfirmCvExtractionInput } from '@/server/routers/candidate-cv.schema'
+import type {
+  ExtractCvDraftInput,
+  ExtractCvInput,
+  ConfirmCvExtractionInput,
+} from '@/server/routers/candidate-cv.schema'
 import { TRPCError } from '@trpc/server'
 
 type BlobInput = { pathname: string; body: Buffer; contentType: string }
@@ -20,14 +25,13 @@ export type CandidateCvDeps = {
   confirmCvExtraction: (id: string, data: CandidateProfileUpdate & { cvUrl: string }) => Promise<unknown>
 }
 
-export async function handleExtractCv(deps: CandidateCvDeps, input: ExtractCvInput) {
-  const candidate = await deps.findProfileById(input.candidateId)
-  if (!candidate) throw new TRPCError({ code: 'NOT_FOUND', message: 'Candidat introuvable.' })
-
+async function uploadAndExtractCv(
+  deps: Pick<CandidateCvDeps, 'uploadCvBlob' | 'deleteCvBlob' | 'runCvExtraction' | 'listJobTitles'>,
+  input: { pathname: string; filename: string; mimeType: string; dataBase64: string },
+) {
   const body = Buffer.from(input.dataBase64, 'base64')
-  const pathname = `candidate/${input.candidateId}/cv/${Date.now()}-${input.filename}`
   const blob = await deps.uploadCvBlob({
-    pathname,
+    pathname: input.pathname,
     body,
     contentType: input.mimeType,
   })
@@ -46,6 +50,30 @@ export async function handleExtractCv(deps: CandidateCvDeps, input: ExtractCvInp
     await deps.deleteCvBlob(blob.url).catch(() => undefined)
     throw mapAssistantChatError(error)
   }
+}
+
+export async function handleExtractCvDraft(
+  deps: Pick<CandidateCvDeps, 'uploadCvBlob' | 'deleteCvBlob' | 'runCvExtraction' | 'listJobTitles'>,
+  input: ExtractCvDraftInput,
+) {
+  return uploadAndExtractCv(deps, {
+    pathname: `candidate/import/${randomUUID()}/cv/${Date.now()}-${input.filename}`,
+    filename: input.filename,
+    mimeType: input.mimeType,
+    dataBase64: input.dataBase64,
+  })
+}
+
+export async function handleExtractCv(deps: CandidateCvDeps, input: ExtractCvInput) {
+  const candidate = await deps.findProfileById(input.candidateId)
+  if (!candidate) throw new TRPCError({ code: 'NOT_FOUND', message: 'Candidat introuvable.' })
+
+  return uploadAndExtractCv(deps, {
+    pathname: `candidate/${input.candidateId}/cv/${Date.now()}-${input.filename}`,
+    filename: input.filename,
+    mimeType: input.mimeType,
+    dataBase64: input.dataBase64,
+  })
 }
 
 export async function handleConfirmCvExtraction(

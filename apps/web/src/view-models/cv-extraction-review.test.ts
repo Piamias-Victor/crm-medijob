@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildCvReviewFormValues } from '@/view-models/cv-extraction-review'
+import { buildCvCreateFormValues, buildCvReviewFormValues } from '@/view-models/cv-extraction-review'
 
 const profile = {
   firstName: 'Jean',
@@ -69,5 +69,23 @@ describe('buildCvReviewFormValues', () => {
     )
 
     expect(values.notes).toContain('Préparatrice expérimentée')
+  })
+
+  it('filters VACATION contract type for create flow', () => {
+    const defaults = {
+      firstName: '',
+      lastName: '',
+      jobTitleId: 'jt2',
+      referentId: 'u1',
+      mobilityRadiusKm: 20,
+      softwareIds: [],
+      contractTypes: [] as ('CDI' | 'CDD' | 'INTERIM')[],
+    }
+    const values = buildCvCreateFormValues(
+      { firstName: 'Alice', lastName: 'Martin', preferredContractTypes: ['VACATION', 'CDI'] },
+      defaults,
+      { jobTitles: [], softwares: [] },
+    )
+    expect(values.contractTypes).toEqual(['CDI'])
   })
 })

@@ -7,6 +7,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { HomeQuickCreateKind } from '@/view-models/home-referentials'
+import { candidatsPageHref } from '@/view-models/candidats-tab'
 
 export type HomeActionDef = {
   kind: HomeQuickCreateKind
@@ -61,7 +62,7 @@ export function buildHomeModules(values: {
       icon: Building2,
     },
     {
-      href: '/candidats',
+      href: candidatsPageHref('inbox'),
       label: 'Inbox',
       caption: 'Candidatures',
       value: values.inboxPending,

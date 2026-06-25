@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, Suspense } from 'react'
 import { dsSections } from '@/lib/design-system'
 import { Section } from '@/components/molecules/design-system/Section'
 import { LogoShowcase } from '@/components/molecules/design-system/LogoShowcase'
@@ -13,6 +13,10 @@ import { CandidateShowcase } from '@/components/molecules/design-system/Candidat
 import { EmptyStateShowcase } from '@/components/molecules/design-system/EmptyStateShowcase'
 import { SkeletonShowcase } from '@/components/molecules/design-system/SkeletonShowcase'
 import { ToastShowcase } from '@/components/molecules/design-system/ToastShowcase'
+import { EntityTableShowcase } from '@/components/molecules/design-system/EntityTableShowcase'
+import { SoftDeleteModalShowcase } from '@/components/molecules/design-system/SoftDeleteModalShowcase'
+import { EmailButtonShowcase } from '@/components/molecules/design-system/EmailButtonShowcase'
+import { DuplicateDetectionShowcase } from '@/components/molecules/design-system/DuplicateDetectionShowcase'
 
 const nodes: Record<string, ReactNode> = {
   logo: <LogoShowcase />,
@@ -27,6 +31,14 @@ const nodes: Record<string, ReactNode> = {
   'empty-state': <EmptyStateShowcase />,
   skeleton: <SkeletonShowcase />,
   toast: <ToastShowcase />,
+  tableau: (
+    <Suspense fallback={<p className="text-sm text-fg-muted">Chargement des filtres…</p>}>
+      <EntityTableShowcase />
+    </Suspense>
+  ),
+  'soft-delete': <SoftDeleteModalShowcase />,
+  'email-button': <EmailButtonShowcase />,
+  'duplicate-detection': <DuplicateDetectionShowcase />,
 }
 
 export function DesignSystemSections() {

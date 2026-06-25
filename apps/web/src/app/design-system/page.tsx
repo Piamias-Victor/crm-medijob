@@ -13,7 +13,7 @@ export default function DesignSystemPage() {
       <header className="mb-10">
         <h1 className="text-2xl font-bold text-fg">Design System</h1>
         <p className="mt-1 text-sm text-fg-muted">
-          Charte Medijob — composants de production, 12 sections de référence.
+          Charte Medijob — composants de production, 13 sections de référence.
         </p>
       </header>
       <div className="flex gap-10">

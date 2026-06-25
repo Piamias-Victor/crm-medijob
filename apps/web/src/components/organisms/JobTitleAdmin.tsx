@@ -19,7 +19,7 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
   const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
   const create = trpc.admin.jobTitle.create.useMutation(mutation)
   const update = trpc.admin.jobTitle.update.useMutation(mutation)
-  const remove = trpc.admin.jobTitle.remove.useMutation(mutation)
+  const remove = trpc.admin.jobTitle.remove.useMutation({ onSuccess: () => router.refresh() })
   const setScore = trpc.admin.jobTitle.setCompatibilityScore.useMutation(mutation)
 
   return (
@@ -31,7 +31,7 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
         items={titles}
         onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
         onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}
-        onDelete={(id) => remove.mutate({ id })}
+        onDelete={(id) => remove.mutateAsync({ id }).then(() => undefined)}
       />
       <SectionCard
         variant="glass"

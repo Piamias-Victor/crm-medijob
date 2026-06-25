@@ -1,66 +1,73 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { toCandidateListRows } from '@/view-models/candidate-list'
+import Link from 'next/link'
+import { useCallback, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Users, Plus } from 'lucide-react'
-import { trpc } from '@/lib/trpc/client'
-import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
-import { Button } from '@/components/atoms/Button'
+import { accentButtonClassName } from '@/lib/button-styles'
 import { CandidatTabs, type CandidatsTab } from '@/components/molecules/CandidatTabs'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
-import { CandidateFormModal } from '@/components/molecules/CandidateFormModal'
 import { CvthequeSection } from '@/components/organisms/CvthequeSection'
+import { CreerViaCvButton } from '@/components/molecules/CreerViaCvButton'
 import { tabPanelMotion } from '@/lib/motion/variants'
-import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
+import { buildCandidatsTabHref } from '@/view-models/candidats-tab'
 import type { InboxItem } from '@/view-models/application-inbox'
-
-type Ref = { id: string; name: string }
+import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
+import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 
 type Props = {
   list: { rows: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
-  jobTitles: Ref[]
-  recruiters: Ref[]
+  filterConfig: CvthequeFilterConfig
+  initialTab?: CandidatsTab
 }
 
-export function CandidatsPage({ list, inbox, jobTitles, recruiters }: Props) {
+export function CandidatsPage({ list, inbox, filterConfig, initialTab = 'cvtheque' }: Props) {
   const router = useRouter()
-  const [tab, setTab] = useState<CandidatsTab>('cvtheque')
-  const [open, setOpen] = useState(false)
-  const listRows = useMemo(() => toCandidateListRows(list.rows), [list.rows])
-  const description = useMemo(
-    () =>
-      `${listRows.length} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
-    [listRows.length, inbox.length],
+  const searchParams = useSearchParams()
+  const [tab, setTab] = useState<CandidatsTab>(initialTab)
+  const [cvthequeCount, setCvthequeCount] = useState(list.rows.length)
+
+  const onTabChange = useCallback(
+    (next: CandidatsTab) => {
+      setTab(next)
+      router.replace(buildCandidatsTabHref(next, searchParams.toString()), { scroll: false })
+    },
+    [router, searchParams],
   )
-  const refresh = () => {
-    setOpen(false)
-    router.refresh()
-  }
-  const mutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Candidat créé' })
-  const create = trpc.candidate.create.useMutation(mutation)
+
+  const description = useMemo(
+    () => `${cvthequeCount} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
+    [cvthequeCount, inbox.length],
+  )
 
   return (
     <DashboardPage
       icon={<Users className="size-5" />}
       title="Candidats"
       description={description}
-      nav={<CandidatTabs active={tab} onChange={setTab} inboxCount={inbox.length} />}
+      nav={<CandidatTabs active={tab} onChange={onTabChange} inboxCount={inbox.length} />}
       actions={
-        <Button variant="accent" className="shadow-md shadow-accent/20" onClick={() => setOpen(true)}>
-          <Plus className="size-4" />
-          Nouveau candidat
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <CreerViaCvButton />
+          <Link href="/candidats/new" className={accentButtonClassName}>
+            <Plus className="size-4" />
+            Nouveau candidat
+          </Link>
+        </div>
       }
     >
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
           {tab === 'cvtheque' ? (
-            <CvthequeSection rows={listRows} candidates={list.rows} stages={list.stages} />
+            <CvthequeSection
+              initialList={list}
+              filterConfig={filterConfig}
+              onCountChange={setCvthequeCount}
+            />
           ) : (
             <SectionCard
               variant="glass"
@@ -73,14 +80,6 @@ export function CandidatsPage({ list, inbox, jobTitles, recruiters }: Props) {
           )}
         </motion.div>
       </AnimatePresence>
-      <CandidateFormModal
-        open={open}
-        jobTitles={jobTitles}
-        recruiters={recruiters}
-        submitting={create.isPending}
-        onClose={() => setOpen(false)}
-        onSubmit={(data) => create.mutate(data)}
-      />
     </DashboardPage>
   )
 }

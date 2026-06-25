@@ -1,7 +1,15 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import DesignSystemPage from './page'
 import { dsSections } from '@/lib/design-system'
+
+const mockSearchParams = new URLSearchParams()
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => '/design-system',
+  useSearchParams: () => mockSearchParams,
+}))
 
 describe('Design system page', () => {
   it('announces itself with a top-level heading', () => {
@@ -12,11 +20,11 @@ describe('Design system page', () => {
     ).toBeInTheDocument()
   })
 
-  it('documents the 12 charte sections as labelled regions', () => {
+  it('documents the charte sections as labelled regions', () => {
     render(<DesignSystemPage />)
 
     expect(screen.getAllByRole('region')).toHaveLength(dsSections.length)
-    expect(dsSections).toHaveLength(12)
+    expect(dsSections).toHaveLength(16)
   })
 
   it('anchors every section so the in-page nav can scroll to it', () => {

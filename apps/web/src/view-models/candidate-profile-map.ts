@@ -1,4 +1,4 @@
-import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
+import type { CandidateProfileInput, CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
 
 export function toCandidateUpdateData(data: CandidateProfileInput): CandidateProfileUpdate {
@@ -18,5 +18,12 @@ export function toCandidateUpdateData(data: CandidateProfileInput): CandidatePro
     referentId: data.referentId,
     softwareIds: data.softwareIds ?? [],
     contractTypes: data.contractTypes ?? [],
+  }
+}
+
+export function toCandidateCreateData(data: CandidateCreateInput): CandidateProfileUpdate {
+  return {
+    ...toCandidateUpdateData(data),
+    ...(data.cvUrl ? { cvUrl: data.cvUrl } : {}),
   }
 }

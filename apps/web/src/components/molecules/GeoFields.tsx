@@ -19,7 +19,8 @@ export function GeoFields<T extends FieldValues>({ register, setValue, getValues
 
   const fillCity = async () => {
     const postal = String(getValues(postalCodeName) ?? '').trim()
-    if (!postal || String(getValues(cityName) ?? '').trim()) return
+    if (!/^\d{5}$/.test(postal)) return
+    if (String(getValues(cityName) ?? '').trim()) return
     setGeoHint(null)
     const city = await lookupCityByPostalCode(postal)
     if (city) {
@@ -30,7 +31,9 @@ export function GeoFields<T extends FieldValues>({ register, setValue, getValues
 
   const fillPostal = async () => {
     const city = String(getValues(cityName) ?? '').trim()
-    if (!city || String(getValues(postalCodeName) ?? '').trim()) return
+    if (!city) return
+    const currentPostal = String(getValues(postalCodeName) ?? '').trim()
+    if (currentPostal && /^\d{5}$/.test(currentPostal)) return
     setGeoHint(null)
     const postal = await lookupPostalCodeByCity(city)
     if (postal) {

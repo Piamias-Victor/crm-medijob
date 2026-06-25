@@ -13,4 +13,8 @@ export const dsSections: DsSection[] = [
   { id: 'empty-state', label: 'Empty state' },
   { id: 'skeleton', label: 'Skeleton' },
   { id: 'toast', label: 'Toast' },
+  { id: 'tableau', label: 'Tableau' },
+  { id: 'soft-delete', label: 'Soft delete' },
+  { id: 'email-button', label: 'Email' },
+  { id: 'duplicate-detection', label: 'Doublons' },
 ]

@@ -1,8 +1,15 @@
+import type { Coords } from '@/lib/geo/coords'
+import {
+  createAddressLookup,
+  createCommuneCityLookup,
+  createCommunePostalLookup,
+} from '@/lib/geo/gouv-coords'
+
+export type { Coords } from '@/lib/geo/coords'
+
+export type GeoLookup = (query: string) => Promise<Coords | null>
+
 const EARTH_RADIUS_KM = 6371
-
-export type Coords = { lat: number; lon: number }
-
-export type GeoLookup = (postalCode: string) => Promise<Coords | null>
 
 export function haversineKm(a: Coords, b: Coords): number {
   const toRad = (deg: number) => (deg * Math.PI) / 180
@@ -15,29 +22,14 @@ export function haversineKm(a: Coords, b: Coords): number {
   return 2 * EARTH_RADIUS_KM * Math.asin(Math.sqrt(h))
 }
 
-const cache = new Map<string, Coords | null>()
-
 export function createGeoLookup(fetchFn: typeof fetch = fetch): GeoLookup {
-  return async (postalCode: string) => {
-    const key = postalCode.trim()
-    if (cache.has(key)) return cache.get(key) ?? null
-    const res = await fetchFn(
-      `https://geo.api.gouv.fr/search/?q=${encodeURIComponent(key)}&type=municipality&limit=1`,
-    )
-    if (!res.ok) {
-      cache.set(key, null)
-      return null
-    }
-    const data = (await res.json()) as { features?: { geometry: { coordinates: [number, number] } }[] }
-    const coords = data.features?.[0]?.geometry.coordinates
-    const parsed = coords ? { lon: coords[0], lat: coords[1] } : null
-    cache.set(key, parsed)
-    return parsed
-  }
+  return createCommunePostalLookup(fetchFn)
 }
 
-export function clearGeoLookupCache() {
-  cache.clear()
+export function createGeoQueryLookup(fetchFn: typeof fetch = fetch): GeoLookup {
+  const byCity = createCommuneCityLookup(fetchFn)
+  const byAddress = createAddressLookup(fetchFn)
+  return async (query: string) => (await byAddress(query)) ?? (await byCity(query))
 }
 
 export function createFixedGeoLookup(coords: Coords): GeoLookup {

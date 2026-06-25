@@ -17,4 +17,25 @@ describe('makeCandidateRepository listForKanban', () => {
       }),
     )
   })
+
+  it('applique filtres métier et département', async () => {
+    const findMany = vi.fn().mockResolvedValue([])
+    const repo = makeCandidateRepository({ candidate: { findMany } } as unknown as PrismaClient)
+    await repo.listForKanban({ jobTitleIds: ['jt1'], departments: ['69'] })
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          AND: [
+            { deletedAt: null },
+            {
+              AND: [
+                { jobTitleId: { in: ['jt1'] } },
+                { OR: [{ postalCode: { startsWith: '69' } }] },
+              ],
+            },
+          ],
+        },
+      }),
+    )
+  })
 })

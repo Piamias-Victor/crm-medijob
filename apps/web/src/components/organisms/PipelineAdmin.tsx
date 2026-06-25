@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
+import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import { ReferentialAddForm } from '@/components/molecules/ReferentialAddForm'
 import { PipelineStageRow } from '@/components/molecules/PipelineStageRow'
 import type { RefItem } from '@/view-models/referential'
@@ -20,7 +20,7 @@ export function PipelineAdmin({ items }: { items: RefItem[] }) {
   const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
   const create = trpc.admin.pipeline.create.useMutation(mutation)
   const update = trpc.admin.pipeline.update.useMutation(mutation)
-  const remove = trpc.admin.pipeline.remove.useMutation(mutation)
+  const remove = trpc.admin.pipeline.remove.useMutation({ onSuccess: () => router.refresh() })
   const reorder = trpc.admin.pipeline.reorder.useMutation(mutation)
 
   const persistOrder = (next: RefItem[]) =>
@@ -52,21 +52,16 @@ export function PipelineAdmin({ items }: { items: RefItem[] }) {
           ))}
         </Reorder.Group>
       </SectionCard>
-      <ConfirmDialog
+      <SoftDeleteModal
+        entityName={pendingDelete?.name ?? ''}
         open={Boolean(pendingDelete)}
-        onClose={() => setPendingDelete(null)}
-        onConfirm={() => {
-          if (!pendingDelete) return
-          remove.mutate({ id: pendingDelete.id })
-          setPendingDelete(null)
+        onOpenChange={(next) => {
+          if (!next) setPendingDelete(null)
         }}
-        title="Supprimer cette étape ?"
-        description={
-          pendingDelete
-            ? `« ${pendingDelete.name} » sera retirée du pipeline.`
-            : ''
-        }
-        loading={remove.isPending}
+        onConfirm={async () => {
+          if (!pendingDelete) return
+          await remove.mutateAsync({ id: pendingDelete.id })
+        }}
       />
     </>
   )

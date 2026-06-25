@@ -8,7 +8,7 @@ import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import { Button } from '@/components/atoms/Button'
-import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
+import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 
 type Props = { mission: MissionDetailPayload }
 
@@ -22,7 +22,7 @@ export function MissionStatusActions({ mission }: Props) {
     },
     successMessage: 'Mission annulée',
   })
-  const markAnnulee = trpc.mission.markAnnulee.useMutation(mutation)
+  const markAnnulee = trpc.mission.markAnnulee.useMutation({ onSuccess: mutation.onSuccess })
 
   if (isTerminalMissionStatus(mission.status)) return null
 
@@ -49,14 +49,13 @@ export function MissionStatusActions({ mission }: Props) {
           Annuler la mission
         </Button>
       </div>
-      <ConfirmDialog
+      <SoftDeleteModal
+        entityName={mission.formSource.title}
         open={open}
-        title="Annuler cette mission ?"
-        description="Cette action est définitive pour le recrutement en cours. Les candidats positionnés passeront en « Pas retenu »."
-        confirmLabel={markAnnulee.isPending ? 'Annulation…' : 'Confirmer l’annulation'}
-        loading={markAnnulee.isPending}
-        onClose={() => setOpen(false)}
-        onConfirm={() => markAnnulee.mutate({ id: mission.id })}
+        onOpenChange={setOpen}
+        onConfirm={async () => {
+          await markAnnulee.mutateAsync({ id: mission.id })
+        }}
       />
     </>
   )

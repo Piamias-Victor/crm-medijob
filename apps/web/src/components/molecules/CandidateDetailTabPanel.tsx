@@ -30,6 +30,8 @@ type Props = {
   referentials: Referentials
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  onPresentPharmacy?: () => void
+  onPresentRadius?: () => void
 }
 
 export function CandidateDetailTabPanel({
@@ -38,6 +40,8 @@ export function CandidateDetailTabPanel({
   referentials,
   activities,
   documents,
+  onPresentPharmacy,
+  onPresentRadius,
 }: Props) {
   const meta = CANDIDATE_TAB_META[tab]
   const missionsDescription = useMemo(
@@ -57,7 +61,12 @@ export function CandidateDetailTabPanel({
     >
       {tab === 'profil' ? (
         <div className="flex flex-col gap-8">
-          <CandidateCvPanel profile={profile} referentials={referentials} />
+          <CandidateCvPanel
+            profile={profile}
+            referentials={referentials}
+            onPresentPharmacy={onPresentPharmacy}
+            onPresentRadius={onPresentRadius}
+          />
           <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
           <CandidateCvSummaryPanel profile={profile} />
           {profile.cvUrl ? (

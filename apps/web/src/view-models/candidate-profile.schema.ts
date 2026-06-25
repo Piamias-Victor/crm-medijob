@@ -1,6 +1,8 @@
 import { z } from 'zod'
+import { isAllowedBlobUrl } from '@/server/services/blob'
 
 export const CONTRACT_TYPES = ['CDI', 'CDD', 'INTERIM', 'VACATION'] as const
+export const CREATE_CONTRACT_TYPES = ['CDI', 'CDD', 'INTERIM'] as const
 
 const optionalText = z
   .string()
@@ -27,6 +29,13 @@ export const candidateProfileInputSchema = z.object({
 })
 
 export type CandidateProfileInput = z.infer<typeof candidateProfileInputSchema>
+
+export const candidateCreateInputSchema = candidateProfileInputSchema.extend({
+  contractTypes: z.array(z.enum(CREATE_CONTRACT_TYPES)),
+  cvUrl: z.string().url().refine(isAllowedBlobUrl, 'URL blob non autorisée').optional(),
+})
+
+export type CandidateCreateInput = z.infer<typeof candidateCreateInputSchema>
 
 export const updateCandidateSchema = z.object({
   id: z.string().min(1),

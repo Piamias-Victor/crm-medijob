@@ -13,6 +13,8 @@ export type RawCandidate = {
   firstName: string
   lastName: string
   city: string | null
+  postalCode: string | null
+  availableFrom: Date | null
   jobTitle: { name: string } | null
   referent: { name: string } | null
   missions: RawMissionRow[]

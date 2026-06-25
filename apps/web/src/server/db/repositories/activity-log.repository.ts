@@ -41,6 +41,21 @@ export function makeActivityLogRepository(db: PrismaClient = defaultDb) {
         },
         include: authorInclude,
       }),
+    createBatch: (inputs: CreateInput[]) =>
+      db.$transaction(
+        inputs.map((input) =>
+          db.activityLog.create({
+            data: {
+              ...activityEntityData(input.entityType, input.entityId),
+              authorId: input.authorId,
+              type: input.type,
+              content: input.content,
+              date: input.date ?? new Date(),
+            },
+            include: authorInclude,
+          }),
+        ),
+      ),
   }
 }
 

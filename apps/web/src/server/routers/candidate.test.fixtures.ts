@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 import { mockProvider } from '@/server/ai/mock-provider'
+import { candidateExportFixture } from '@/server/routers/candidate-export.fixture'
 import type { CandidateDeps } from '@/server/routers/candidate'
 
 export const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
@@ -37,11 +38,14 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
         firstName: 'Camille',
         lastName: 'Durand',
         city: 'Lyon',
+        postalCode: '69003',
+        availableFrom: null,
         jobTitle: { name: 'Pharmacien' },
         referent: { name: 'Recruteur' },
         missions: [],
       },
     ]),
+    listForExport: vi.fn().mockResolvedValue([candidateExportFixture]),
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
     search: vi.fn().mockResolvedValue([
       {
@@ -55,7 +59,7 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     ]),
     findProfileById: vi.fn().mockResolvedValue(profileFixture),
     updateProfile: vi.fn().mockResolvedValue(profileFixture),
-    createQuick: vi.fn().mockResolvedValue({ id: 'c-new' }),
+    createProfile: vi.fn().mockResolvedValue({ id: 'c-new' }),
     referentials: vi.fn().mockResolvedValue({
       jobTitles: [{ id: 'jt1', name: 'Pharmacien' }],
       softwares: [],
@@ -67,7 +71,16 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     runCvExtraction: vi.fn(),
     listJobTitles: vi.fn(),
     confirmCvExtraction: vi.fn(),
+    findIdentityByEmail: vi.fn().mockResolvedValue(null),
+    findIdentityByNamePhone: vi.fn().mockResolvedValue(null),
+    mergeCandidates: vi.fn().mockResolvedValue({ id: 'c1' }),
     findDocumentsProfile: vi.fn().mockResolvedValue(null),
+    findPharmacyForContext: vi.fn().mockResolvedValue(null),
+    findContactById: vi.fn().mockResolvedValue(null),
+    findCandidateGeo: vi.fn().mockResolvedValue(null),
+    listPharmaciesForRadius: vi.fn().mockResolvedValue([]),
+    lookupPostal: vi.fn().mockResolvedValue(null),
+    lookupQuery: vi.fn().mockResolvedValue(null),
     updateDerivedFields: vi.fn(),
     provider: mockProvider,
     ...overrides,

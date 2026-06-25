@@ -12,6 +12,7 @@ type Props = {
   pharmacies: Ref[]
   defaultValues?: Partial<ContactInput>
   lockedPharmacyId?: string
+  errorMessage?: string | null
   onClose: () => void
   onSubmit: (data: ContactInput) => void
 }
@@ -22,6 +23,7 @@ export function ContactFormModal({
   pharmacies,
   defaultValues,
   lockedPharmacyId,
+  errorMessage,
   onClose,
   onSubmit,
 }: Props) {
@@ -38,6 +40,7 @@ export function ContactFormModal({
         pharmacies={pharmacies}
         lockedPharmacyId={lockedPharmacyId}
         submitting={submitting}
+        errorMessage={errorMessage}
         onSubmit={onSubmit}
       />
     </GlassModal>

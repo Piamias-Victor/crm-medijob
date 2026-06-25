@@ -6,7 +6,7 @@ import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { DocumentEntityTypeValue } from '@/view-models/activity-log.types'
-import { ConfirmDialog } from '@/components/molecules/ConfirmDialog'
+import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import { DocumentUploadForm } from '@/components/molecules/DocumentUploadForm'
 import { EntityDocumentsList } from '@/components/molecules/EntityDocumentsList'
 
@@ -19,20 +19,20 @@ type Props = {
 
 export function EntityDocumentsTab({ entityType, entityId, documents, emptyLabel }: Props) {
   const router = useRouter()
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<DocumentListRow | null>(null)
   const uploadMutation = useEntityMutation({
     onSuccess: () => router.refresh(),
     successMessage: 'Document téléversé',
   })
   const removeMutation = useEntityMutation({
     onSuccess: () => {
-      setPendingDeleteId(null)
+      setPendingDelete(null)
       router.refresh()
     },
     successMessage: 'Document supprimé',
   })
   const upload = trpc.document.upload.useMutation(uploadMutation)
-  const remove = trpc.document.delete.useMutation(removeMutation)
+  const remove = trpc.document.delete.useMutation({ onSuccess: removeMutation.onSuccess })
 
   const onDownload = (id: string) => {
     window.open(`/api/documents/${id}/download`, '_blank', 'noopener,noreferrer')
@@ -53,17 +53,23 @@ export function EntityDocumentsTab({ entityType, entityId, documents, emptyLabel
       <EntityDocumentsList
         documents={documents}
         emptyLabel={emptyLabel}
-        deletingId={remove.isPending ? (remove.variables?.id ?? pendingDeleteId ?? undefined) : undefined}
+        deletingId={remove.isPending ? (remove.variables?.id ?? pendingDelete?.id ?? undefined) : undefined}
         onDownload={onDownload}
-        onDelete={setPendingDeleteId}
+        onDelete={(id) => {
+          const doc = documents.find((entry) => entry.id === id)
+          if (doc) setPendingDelete(doc)
+        }}
       />
-      <ConfirmDialog
-        open={pendingDeleteId !== null}
-        title="Supprimer le document"
-        description="Ce document sera retiré définitivement. Cette action est irréversible."
-        loading={remove.isPending}
-        onClose={() => setPendingDeleteId(null)}
-        onConfirm={() => pendingDeleteId && remove.mutate({ id: pendingDeleteId })}
+      <SoftDeleteModal
+        entityName={pendingDelete?.name ?? ''}
+        open={pendingDelete !== null}
+        onOpenChange={(next) => {
+          if (!next) setPendingDelete(null)
+        }}
+        onConfirm={async () => {
+          if (!pendingDelete) return
+          await remove.mutateAsync({ id: pendingDelete.id })
+        }}
       />
     </div>
   )
