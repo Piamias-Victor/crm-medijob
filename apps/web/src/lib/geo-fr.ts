@@ -1,12 +1,4 @@
-const BASE = 'https://geo.api.gouv.fr/communes'
-
-async function fetchCommunes(params: Record<string, string>): Promise<unknown[]> {
-  const query = new URLSearchParams({ ...params, limit: '5' })
-  const res = await fetch(`${BASE}?${query}`)
-  if (!res.ok) return []
-  const data: unknown = await res.json()
-  return Array.isArray(data) ? data : []
-}
+import { fetchCommunes } from '@/lib/geo/communes-api'
 
 export async function lookupCityByPostalCode(postalCode: string): Promise<string | null> {
   const code = postalCode.trim()

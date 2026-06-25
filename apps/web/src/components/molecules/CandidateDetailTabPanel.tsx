@@ -31,6 +31,7 @@ type Props = {
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   onPresentPharmacy?: () => void
+  onPresentRadius?: () => void
 }
 
 export function CandidateDetailTabPanel({
@@ -40,6 +41,7 @@ export function CandidateDetailTabPanel({
   activities,
   documents,
   onPresentPharmacy,
+  onPresentRadius,
 }: Props) {
   const meta = CANDIDATE_TAB_META[tab]
   const missionsDescription = useMemo(
@@ -63,6 +65,7 @@ export function CandidateDetailTabPanel({
             profile={profile}
             referentials={referentials}
             onPresentPharmacy={onPresentPharmacy}
+            onPresentRadius={onPresentRadius}
           />
           <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
           <CandidateCvSummaryPanel profile={profile} />

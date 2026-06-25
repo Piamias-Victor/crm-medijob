@@ -10,10 +10,13 @@ import { uploadBlob, deleteBlob, vercelBlobClient } from '@/server/services/blob
 import { createCvExtractionProvider } from '@/server/ai/cv-extraction-provider'
 import { runCvExtraction } from '@/server/ai/cv-extraction'
 import { createAssistantProvider } from '@/server/ai/provider'
+import { createGeoLookup, createGeoQueryLookup } from '@/server/matching/distance'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 
 const cvProvider = createCvExtractionProvider()
 const documentsProvider = createAssistantProvider()
+const lookupPostal = createGeoLookup()
+const lookupQuery = createGeoQueryLookup()
 
 export const candidateRouter = makeCandidateRouter({
   listForKanban: (filters) => candidateRepository.listForKanban(filters),
@@ -28,6 +31,19 @@ export const candidateRouter = makeCandidateRouter({
     if (!contact) return null
     return { id: contact.id, pharmacyId: contact.pharmacyId, email: contact.email }
   },
+  findCandidateGeo: async (id) => {
+    const profile = await candidateRepository.findProfileById(id)
+    if (!profile) return null
+    return {
+      postalCode: profile.postalCode,
+      address: profile.address,
+      city: profile.city,
+    }
+  },
+  listPharmaciesForRadius: (postalCodePrefix) =>
+    pharmacyRepository.listForRadiusSearch(postalCodePrefix),
+  lookupPostal,
+  lookupQuery,
   updateDerivedFields: (id, fields) => candidateRepository.updateDerivedFields(id, fields),
   provider: documentsProvider,
   updateProfile: (id, data) => candidateRepository.updateProfile(id, data),
