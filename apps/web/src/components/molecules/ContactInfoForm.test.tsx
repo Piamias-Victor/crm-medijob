@@ -3,6 +3,16 @@ import { describe, it, expect, vi } from 'vitest'
 import { ContactInfoForm } from '@/components/molecules/ContactInfoForm'
 import type { ContactDetailPayload } from '@/view-models/contact-detail.types'
 
+vi.mock('@/lib/trpc/client', () => ({
+  trpc: {
+    contact: {
+      primaryByPharmacy: {
+        useQuery: () => ({ data: null, isError: false }),
+      },
+    },
+  },
+}))
+
 const contact: ContactDetailPayload = {
   id: 'c1',
   fullName: 'Marie Curie',

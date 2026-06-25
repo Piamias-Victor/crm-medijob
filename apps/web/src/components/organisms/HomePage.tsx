@@ -34,6 +34,10 @@ export function HomePage({ overview }: Props) {
       router.push('/pharmacies/new')
       return
     }
+    if (kind === 'contact') {
+      router.push('/contacts/new')
+      return
+    }
     quickCreate.setOpen(kind)
   }
 
@@ -56,7 +60,7 @@ export function HomePage({ overview }: Props) {
       <SectionCard
         variant="glass"
         title="Création rapide"
-        description="Ajoutez candidats, missions, pharmacies ou contacts sans quitter l'accueil."
+        description="Raccourcis vers les pages de création candidat, mission, pharmacie et contact."
         bodyClassName="p-4 sm:p-5"
       >
         <HomeQuickActions actions={HOME_ACTIONS} onOpen={onQuickAction} />
