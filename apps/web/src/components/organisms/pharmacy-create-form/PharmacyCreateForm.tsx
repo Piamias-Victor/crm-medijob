@@ -25,7 +25,7 @@ export function PharmacyCreateForm({ defaultValues, groupements, softwares }: Pr
   const [softwareOptions, setSoftwareOptions] = useState(softwares)
   const form = usePharmacyCreateForm(defaultValues)
   const { register, handleSubmit, setValue, getValues, watch, formState } = form
-  const { searching, runSiret } = usePharmacySiretSearch(
+  const { searching, runSiret, feedback, candidates, pickMatch } = usePharmacySiretSearch(
     getValues,
     setValue,
     (query) => utils.pharmacy.searchSiret.fetch({ query }),
@@ -51,6 +51,9 @@ export function PharmacyCreateForm({ defaultValues, groupements, softwares }: Pr
         softwares={softwareOptions}
         searching={searching}
         onRunSiret={runSiret}
+        feedback={feedback}
+        candidates={candidates}
+        onPickMatch={pickMatch}
         onCreateGroupement={addRef(setGroupementOptions, createGroupement.mutateAsync)}
         onCreateSoftware={addRef(setSoftwareOptions, createSoftware.mutateAsync)}
       />

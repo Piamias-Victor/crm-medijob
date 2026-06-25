@@ -1,12 +1,13 @@
 import { type ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
-type Variant = 'error' | 'warning' | 'success'
+type Variant = 'error' | 'warning' | 'success' | 'info'
 
 const variants: Record<Variant, string> = {
   error: 'bg-error/10 text-error',
   warning: 'bg-warning/15 text-warning',
   success: 'bg-success/15 text-success',
+  info: 'bg-accent-muted/35 text-fg-muted',
 }
 
 type Props = { variant: Variant; children: ReactNode; className?: string }

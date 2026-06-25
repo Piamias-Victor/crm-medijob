@@ -61,5 +61,37 @@ describe('PharmacyForm SIRET search', () => {
     )
     fireEvent.click(screen.getByRole('button', { name: /rechercher/i }))
     expect(onSearchSiret).not.toHaveBeenCalled()
+    expect(screen.getByRole('alert')).toHaveTextContent('Saisissez un SIRET ou un nom')
+  })
+
+  it('shows a message when the annuaire returns no match', async () => {
+    setup(async () => [])
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent('Aucune officine trouvée dans l’annuaire'),
+    )
+  })
+
+  it('lets the user pick when several matches are returned', async () => {
+    const matches = [
+      {
+        siret: '11111111111111',
+        name: 'PHARMACIE A',
+        address: '1 RUE A',
+        city: 'LYON',
+        postalCode: '69001',
+      },
+      {
+        siret: '22222222222222',
+        name: 'PHARMACIE B',
+        address: '2 RUE B',
+        city: 'LYON',
+        postalCode: '69002',
+      },
+    ]
+    setup(async () => matches)
+    expect(await screen.findByText(/Plusieurs officines trouvées/)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /PHARMACIE B/ }))
+    expect(screen.getByLabelText('Nom')).toHaveValue('PHARMACIE B')
+    expect(screen.getByLabelText('SIRET')).toHaveValue('22222222222222')
   })
 })

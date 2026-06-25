@@ -3,13 +3,13 @@
 import type { FieldErrors, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { FormSection } from '@/components/molecules/FormSection'
 import { PharmacyContactFields } from '@/components/molecules/PharmacyContactFields'
-import { PharmacyLegalFields } from '@/components/molecules/PharmacyLegalFields'
 import { PharmacyProfileBanner } from '@/components/molecules/PharmacyProfileBanner'
 import { PharmacySelects } from '@/components/molecules/PharmacySelects'
-import { SiretSearchButton } from '@/components/molecules/SiretSearchButton'
+import { PharmacySiretSearchPanel } from '@/components/molecules/PharmacySiretSearchPanel'
 import { toSelectOptions } from '@/lib/form-options'
 import { getMissingPharmacyFields } from '@/view-models/pharmacy-profile'
-import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
+import type { SiretSearchFeedback } from '@/hooks/use-pharmacy-siret-search'
+import type { PharmacyInput, PharmacySiretLookup } from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
 type ComboboxOption = { value: string; label: string }
@@ -24,6 +24,9 @@ type Props = {
   softwares: Ref[]
   searching: boolean
   onRunSiret: () => void
+  feedback: SiretSearchFeedback | null
+  candidates: PharmacySiretLookup[]
+  onPickMatch: (match: PharmacySiretLookup) => void
   onCreateGroupement: (name: string) => Promise<ComboboxOption>
   onCreateSoftware: (name: string) => Promise<ComboboxOption>
 }
@@ -38,10 +41,14 @@ export function PharmacyCreateFormSections(props: Props) {
     <>
       <PharmacyProfileBanner missingFields={missingFields} />
       <FormSection title="Identité légale">
-        <PharmacyLegalFields
+        <PharmacySiretSearchPanel
           register={props.register}
           errors={props.errors}
-          siretButton={<SiretSearchButton loading={props.searching} onClick={props.onRunSiret} />}
+          searching={props.searching}
+          onRunSiret={props.onRunSiret}
+          feedback={props.feedback}
+          candidates={props.candidates}
+          onPick={props.onPickMatch}
         />
       </FormSection>
       <FormSection title="Coordonnées">

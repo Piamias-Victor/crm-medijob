@@ -29,6 +29,7 @@ export function PharmacyLegalFields({ register, errors, siretButton }: Props) {
             />
             {siretButton}
           </div>
+          <p className="text-xs text-fg-muted">Recherche annuaire via SIRET ou nom saisi ci-dessus.</p>
         </FormField>
       </div>
       <div className="sm:col-span-2">
