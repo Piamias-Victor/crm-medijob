@@ -15,12 +15,13 @@ import {
 } from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
+type CreatedPharmacy = { id: string }
 
 export type PharmacyDeps = {
   pharmacies: {
     list: () => Promise<PharmacyListEntity[]>
     findDetailById: (id: string) => Promise<PharmacyDetailEntity | null>
-    create: (data: Prisma.PharmacyUncheckedCreateInput) => Promise<unknown>
+    create: (data: Prisma.PharmacyUncheckedCreateInput) => Promise<CreatedPharmacy>
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) => Promise<unknown>
     softDelete: (id: string) => Promise<unknown>
   }

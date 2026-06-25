@@ -30,6 +30,10 @@ export function HomePage({ overview }: Props) {
       router.push('/candidats/new')
       return
     }
+    if (kind === 'pharmacy') {
+      router.push('/pharmacies/new')
+      return
+    }
     quickCreate.setOpen(kind)
   }
 
