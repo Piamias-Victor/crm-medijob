@@ -13,20 +13,12 @@ export function LogoutButton({ expanded = true }: { expanded?: boolean }) {
       aria-label="Se déconnecter"
       title="Se déconnecter"
       className={cn(
-        'flex h-9 w-full items-center rounded-md text-sm font-medium text-fg-muted transition-[color,background-color,gap,padding] duration-300 ease-out hover:bg-surface hover:text-fg',
-        expanded ? 'gap-3 px-3' : 'justify-center gap-0 px-0',
+        'flex h-9 w-full items-center rounded-md text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-fg',
+        expanded ? 'gap-3 px-3' : 'justify-center px-0',
       )}
     >
       <LogOut className="size-5 shrink-0" />
-      <span
-        aria-hidden={!expanded}
-        className={cn(
-          'truncate transition-opacity duration-300 ease-out',
-          expanded ? 'opacity-100' : 'w-0 overflow-hidden opacity-0',
-        )}
-      >
-        Déconnexion
-      </span>
+      {expanded ? <span className="truncate">Déconnexion</span> : null}
     </button>
   )
 }
