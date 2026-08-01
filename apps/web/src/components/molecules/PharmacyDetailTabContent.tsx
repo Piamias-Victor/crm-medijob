@@ -10,7 +10,7 @@ import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
 import { PharmacyInfoForm } from '@/components/molecules/PharmacyInfoForm'
 import { PharmacyContactsTab } from '@/components/molecules/PharmacyContactsTab'
 import { PharmacyBesoinsTab } from '@/components/molecules/PharmacyBesoinsTab'
-import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
+import { PharmacyHistoryTab } from '@/components/molecules/PharmacyHistoryTab'
 
 type Ref = { id: string; name: string }
 type MissionRefs = { jobTitles: Ref[]; recruiters: Ref[] }
@@ -77,9 +77,10 @@ export function PharmacyDetailTabContent(props: PharmacyDetailTabContentProps) {
   }
   if (props.tab === 'historique') {
     return (
-      <EntityActivityLogTab
+      <PharmacyHistoryTab
         scope={{ entityType: 'PHARMACY', entityId: props.pharmacy.id }}
         initialLogs={props.activities}
+        terminalMissions={props.pharmacy.terminalMissions}
       />
     )
   }

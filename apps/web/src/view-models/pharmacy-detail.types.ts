@@ -16,6 +16,7 @@ export type PharmacyMissionEntity = {
   status: MissionStatus
   contractType: ContractType
   startDate: Date
+  updatedAt: Date
   jobTitle: { name: string }
   referent: { name: string } | null
 }
@@ -59,6 +60,7 @@ export type PharmacyMissionRow = {
   status: MissionStatus
   contractType: ContractType
   startDate: Date
+  updatedAt: Date
   jobTitle: string
   referent: string | null
 }
@@ -75,4 +77,5 @@ export type PharmacyDetailPayload = {
   formSource: Omit<PharmacyDetailEntity, 'contacts' | 'missions' | 'groupement' | 'software'>
   contacts: PharmacyContactRow[]
   activeMissions: PharmacyMissionRow[]
+  terminalMissions: PharmacyMissionRow[]
 }
