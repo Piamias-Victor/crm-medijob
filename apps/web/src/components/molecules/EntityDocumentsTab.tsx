@@ -9,6 +9,7 @@ import type { DocumentEntityTypeValue } from '@/view-models/activity-log.types'
 import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import { DocumentUploadForm } from '@/components/molecules/DocumentUploadForm'
 import { EntityDocumentsList } from '@/components/molecules/EntityDocumentsList'
+import { DocumentPreviewModal } from '@/components/molecules/document-preview/DocumentPreviewModal'
 
 type Props = {
   entityType: DocumentEntityTypeValue
@@ -17,9 +18,14 @@ type Props = {
   emptyLabel: string
 }
 
+function openDocumentDownload(id: string) {
+  window.open(`/api/documents/${id}/download`, '_blank', 'noopener,noreferrer')
+}
+
 export function EntityDocumentsTab({ entityType, entityId, documents, emptyLabel }: Props) {
   const router = useRouter()
   const [pendingDelete, setPendingDelete] = useState<DocumentListRow | null>(null)
+  const [previewDoc, setPreviewDoc] = useState<DocumentListRow | null>(null)
   const uploadMutation = useEntityMutation({
     onSuccess: () => router.refresh(),
     successMessage: 'Document téléversé',
@@ -34,30 +40,31 @@ export function EntityDocumentsTab({ entityType, entityId, documents, emptyLabel
   const upload = trpc.document.upload.useMutation(uploadMutation)
   const remove = trpc.document.delete.useMutation({ onSuccess: removeMutation.onSuccess })
 
-  const onDownload = (id: string) => {
-    window.open(`/api/documents/${id}/download`, '_blank', 'noopener,noreferrer')
-  }
-
   return (
     <div className="flex flex-col gap-5">
       <DocumentUploadForm
         submitting={upload.isPending}
-        onUpload={(file) =>
-          upload.mutate({
-            entityType,
-            entityId,
-            ...file,
-          })
-        }
+        onUpload={(file) => upload.mutate({ entityType, entityId, ...file })}
       />
       <EntityDocumentsList
         documents={documents}
         emptyLabel={emptyLabel}
         deletingId={remove.isPending ? (remove.variables?.id ?? pendingDelete?.id ?? undefined) : undefined}
-        onDownload={onDownload}
+        onPreview={(id) => setPreviewDoc(documents.find((entry) => entry.id === id) ?? null)}
+        onDownload={openDocumentDownload}
         onDelete={(id) => {
           const doc = documents.find((entry) => entry.id === id)
           if (doc) setPendingDelete(doc)
+        }}
+      />
+      <DocumentPreviewModal
+        open={previewDoc !== null}
+        filename={previewDoc?.name ?? ''}
+        mimeType={previewDoc?.mimeType ?? null}
+        documentId={previewDoc?.id ?? ''}
+        onClose={() => setPreviewDoc(null)}
+        onDownload={() => {
+          if (previewDoc) openDocumentDownload(previewDoc.id)
         }}
       />
       <SoftDeleteModal

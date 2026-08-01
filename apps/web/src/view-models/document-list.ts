@@ -24,6 +24,7 @@ export type DocumentListRow = {
   categoryLabel: string
   name: string
   url: string
+  mimeType: string | null
   size: number | null
   sizeLabel: string
   createdAt: Date
@@ -38,6 +39,7 @@ export function toDocumentListRow(doc: DocumentRecord): DocumentListRow {
     categoryLabel: DOCUMENT_CATEGORY_LABELS[doc.category],
     name: doc.name,
     url: doc.url,
+    mimeType: doc.mimeType,
     size: doc.size,
     sizeLabel: doc.size == null ? '—' : formatBytes(size),
     createdAt: doc.createdAt,
