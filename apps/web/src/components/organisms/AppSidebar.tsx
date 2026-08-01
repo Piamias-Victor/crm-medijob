@@ -8,6 +8,7 @@ import { can } from '@/server/auth/permissions'
 import { useSidebarStore } from '@/stores/sidebar-store'
 import { NavLink } from '@/components/molecules/NavLink'
 import { SidebarBrand } from '@/components/molecules/SidebarBrand'
+import { GlobalSearchTrigger } from '@/components/molecules/GlobalSearchTrigger'
 import { LogoutButton } from '@/components/molecules/LogoutButton'
 import { cn } from '@/lib/cn'
 
@@ -44,7 +45,10 @@ export function AppSidebar({ role }: { role: AccessRole }) {
         )}
       >
         <SidebarBrand expanded={expanded} />
-        <nav className="mt-4 flex flex-1 flex-col gap-1">
+        <div className="mt-3">
+          <GlobalSearchTrigger expanded={expanded} />
+        </div>
+        <nav className="mt-2 flex flex-1 flex-col gap-1">
           {navItems.map((item) => (
             <NavLink key={item.href} item={item} active={isActive(item.href)} expanded={expanded} />
           ))}

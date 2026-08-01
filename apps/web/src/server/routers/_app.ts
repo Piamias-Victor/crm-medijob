@@ -14,11 +14,13 @@ import { activityLogRouter } from '@/server/routers/activity-log'
 import { documentRouter } from '@/server/routers/document'
 import { matchingRouter } from '@/server/routers/matching'
 import { dashboardRouter } from '@/server/routers/dashboard'
+import { searchRouter } from '@/server/routers/search'
 
 export const appRouter = router({
   health: healthRouter,
   auth: authResetRouter,
   dashboard: dashboardRouter,
+  search: searchRouter,
   admin: adminRouter,
   pharmacy: pharmacyRouter,
   contact: contactRouter,
