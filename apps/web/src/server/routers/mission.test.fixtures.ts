@@ -22,6 +22,7 @@ export const detailEntity = {
   heuresParSemaine: null,
   planning: null,
   tempsPlein: true,
+  profilRecherche: null,
   notes: null,
   pharmacyId: 'p1',
   contactId: null,
@@ -39,6 +40,7 @@ export function makeMissionDeps(overrides: Partial<MissionDeps> = {}): MissionDe
   return {
     list: vi.fn().mockResolvedValue([]),
     findDetailById: vi.fn().mockResolvedValue(detailEntity),
+    findQuickViewById: vi.fn().mockResolvedValue(null),
     update: vi.fn().mockResolvedValue(undefined),
     createQuick: vi.fn().mockResolvedValue({ id: 'm1', status: 'A_POURVOIR' }),
     createJobTitle: vi.fn().mockResolvedValue({ id: 'jt1', name: 'Préparateur' }),

@@ -34,6 +34,7 @@ const missionEntity: MissionDetailEntity = {
   heuresParSemaine: null,
   planning: null,
   tempsPlein: true,
+  profilRecherche: null,
   notes: null,
   pharmacyId: 'p1',
   contactId: null,

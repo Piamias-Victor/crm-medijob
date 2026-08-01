@@ -15,6 +15,7 @@ export function toMissionUpdateData(data: MissionFormValues) {
     heuresParSemaine: data.heuresParSemaine ?? null,
     planning: toNull(data.planning),
     tempsPlein: data.tempsPlein,
+    profilRecherche: toNull(data.profilRecherche),
     notes: toNull(data.notes),
     pharmacyId: data.pharmacyId,
     contactId: toNull(data.contactId),

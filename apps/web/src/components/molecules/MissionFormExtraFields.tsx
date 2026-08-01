@@ -49,6 +49,11 @@ export function MissionFormExtraFields({ register, setValue, watch, errors }: Pr
         </FormField>
       </div>
       <div className="sm:col-span-2">
+        <FormField label="Profil recherché" error={errors.profilRecherche?.message}>
+          <Textarea rows={3} {...register('profilRecherche')} />
+        </FormField>
+      </div>
+      <div className="sm:col-span-2">
         <FormField label="Notes internes" error={errors.notes?.message}>
           <Textarea rows={3} {...register('notes')} />
         </FormField>

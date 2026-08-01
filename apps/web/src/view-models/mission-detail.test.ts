@@ -16,6 +16,7 @@ const entity: MissionDetailEntity = {
   heuresParSemaine: 35,
   planning: 'Jour',
   tempsPlein: true,
+  profilRecherche: 'Profil senior',
   notes: null,
   pharmacyId: 'p1',
   contactId: 'c1',
@@ -61,6 +62,7 @@ describe('toMissionDetail', () => {
     const payload = toMissionDetail(entity)
     expect(payload.pharmacyName).toBe('Pharmacie du Centre')
     expect(payload.formSource.title).toBe('Titulaire CDI')
+    expect(payload.formSource.profilRecherche).toBe('Profil senior')
     expect(payload.formSource.contactId).toBe('c1')
     expect(payload.candidates).toEqual([
       {

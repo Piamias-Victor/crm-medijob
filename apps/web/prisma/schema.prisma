@@ -360,6 +360,7 @@ model Mission {
   heuresParSemaine Float?
   planning         String?
   tempsPlein       Boolean       @default(true)
+  profilRecherche  String?
   notes            String?
   deletedAt        DateTime?
   createdAt        DateTime      @default(now())

@@ -14,6 +14,7 @@ export const missionDetailSelect = {
   heuresParSemaine: true,
   planning: true,
   tempsPlein: true,
+  profilRecherche: true,
   notes: true,
   pharmacyId: true,
   contactId: true,

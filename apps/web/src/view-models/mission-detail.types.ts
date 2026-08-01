@@ -28,6 +28,7 @@ export type MissionDetailEntity = {
   heuresParSemaine: number | null
   planning: string | null
   tempsPlein: boolean
+  profilRecherche: string | null
   notes: string | null
   pharmacyId: string
   contactId: string | null
@@ -64,6 +65,7 @@ export type MissionFormSource = {
   heuresParSemaine: number | null
   planning: string | null
   tempsPlein: boolean
+  profilRecherche: string | null
   notes: string | null
   pharmacyId: string
   contactId: string | null
