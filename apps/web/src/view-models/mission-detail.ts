@@ -38,6 +38,7 @@ export function toMissionDetail(entity: MissionDetailEntity): MissionDetailPaylo
       heuresParSemaine: rest.heuresParSemaine,
       planning: rest.planning,
       tempsPlein: rest.tempsPlein,
+      profilRecherche: rest.profilRecherche,
       notes: rest.notes,
       pharmacyId: rest.pharmacyId,
       contactId: contact?.id ?? rest.contactId,

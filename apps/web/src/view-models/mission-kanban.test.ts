@@ -28,7 +28,7 @@ describe('buildMissionKanbanColumns', () => {
 })
 
 describe('toMissionListItems', () => {
-  it('maps title, jobTitle, pharmacy, city, status, referent, startDate', () => {
+  it('maps CSV columns including createdAt and contractType', () => {
     const items = toMissionListItems([mission()])
     expect(items[0]).toEqual({
       id: 'm1',
@@ -37,8 +37,11 @@ describe('toMissionListItems', () => {
       pharmacyName: 'Pharmacie du Centre',
       city: 'Lyon',
       status: 'A_POURVOIR',
+      contractType: 'CDI',
       referent: 'Référent Demo',
       startDate: new Date('2025-01-15'),
+      createdAt: new Date('2025-01-10'),
+      createdAtLabel: '10/01/2025',
     })
   })
 })

@@ -1,4 +1,5 @@
 import { missionRepository } from '@/server/db/repositories/mission.repository'
+import { findMissionQuickViewById } from '@/server/db/repositories/mission-quick-view.repo'
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
 import { userRepository } from '@/server/db/repositories/user.repository'
 import { runMissionStatusTransition } from '@/server/mission/transition-status.adapter'
@@ -8,8 +9,9 @@ import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { makeMissionRouter } from '@/server/routers/mission'
 
 export const missionRouter = makeMissionRouter({
-  list: () => missionRepository.list(),
+  list: (filters) => missionRepository.list(filters),
   findDetailById: (id) => missionRepository.findDetailById(id),
+  findQuickViewById: (id) => findMissionQuickViewById(id),
   update: (id, data) => missionRepository.update(id, data),
   createQuick: (input) =>
     missionRepository.createQuick({

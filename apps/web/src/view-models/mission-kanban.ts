@@ -1,5 +1,6 @@
 import { MISSION_STATUS_ORDER, STATUS_LABELS } from '@/lib/mission-options'
 import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
+import { formatDateFr } from '@/view-models/format-date-fr'
 import type {
   MissionKanbanCard,
   MissionKanbanColumn,
@@ -42,8 +43,11 @@ export function toMissionListItems(missions: RawMission[]): MissionListItem[] {
     pharmacyName: m.pharmacy.name,
     city: m.pharmacy.city,
     status: m.status,
+    contractType: m.contractType,
     referent: m.referent?.name ?? null,
     startDate: m.startDate,
+    createdAt: m.createdAt,
+    createdAtLabel: formatDateFr(m.createdAt),
   }))
 }
 

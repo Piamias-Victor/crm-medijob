@@ -34,6 +34,7 @@ export const missionFormFieldsSchema = z.object({
   planning: optionalText,
   tempsPlein: z.boolean(),
   description: optionalText,
+  profilRecherche: optionalText,
   notes: optionalText,
 })
 

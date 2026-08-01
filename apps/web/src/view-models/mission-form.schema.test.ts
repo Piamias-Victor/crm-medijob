@@ -29,4 +29,16 @@ describe('missionInputSchema', () => {
       expect(result.data.startDate).toBeInstanceOf(Date)
     }
   })
+
+  it('accepts optional profilRecherche text', () => {
+    const result = missionInputSchema.safeParse({
+      ...base,
+      startDate: new Date('2026-06-19T12:00:00'),
+      profilRecherche: '  Titulaire 5 ans XP  ',
+    })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.profilRecherche).toBe('Titulaire 5 ans XP')
+    }
+  })
 })

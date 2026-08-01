@@ -15,13 +15,18 @@ import {
   updateStatusInput,
   type UpdateMissionStatusInput,
 } from '@/server/routers/mission.router.schema'
+import { missionListFiltersSchema } from '@/view-models/mission-list-filters.schema'
+import type { MissionListFilters } from '@/view-models/mission-list-filters.schema'
+import type { MissionQuickViewEntity } from '@/view-models/mission-quick-view.types'
+import { toMissionQuickView } from '@/view-models/mission-quick-view'
 
 type Ref = { id: string; name: string }
 const nameSchema = z.object({ name: z.string().trim().min(1) })
 
 export type MissionDeps = {
-  list: () => Promise<RawMission[]>
+  list: (filters?: MissionListFilters) => Promise<RawMission[]>
   findDetailById: (id: string) => Promise<MissionDetailEntity | null>
+  findQuickViewById: (id: string) => Promise<MissionQuickViewEntity | null>
   update: (id: string, data: ReturnType<typeof toMissionUpdateData>) => Promise<unknown>
   createQuick: (input: z.output<typeof missionQuickCreateSchema>) => Promise<{ id: string; status: MissionStatus }>
   createJobTitle: (name: string) => Promise<Ref>
@@ -32,10 +37,16 @@ export type MissionDeps = {
 
 export function makeMissionRouter(deps: MissionDeps) {
   return router({
-    list: protectedProcedure.query(async () => ({ rows: await deps.list() })),
+    list: protectedProcedure
+      .input(missionListFiltersSchema.optional())
+      .query(async ({ input }) => ({ rows: await deps.list(input) })),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const mission = await deps.findDetailById(input.id)
       return mission ? toMissionDetail(mission) : null
+    }),
+    quickView: protectedProcedure.input(idSchema).query(async ({ input }) => {
+      const row = await deps.findQuickViewById(input.id)
+      return row ? toMissionQuickView(row) : null
     }),
     referentials: protectedProcedure.query(() => deps.referentials()),
     create: protectedProcedure
