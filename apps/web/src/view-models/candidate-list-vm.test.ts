@@ -19,6 +19,31 @@ describe('candidate-list-vm', () => {
     expect(candidateDepartment(null)).toBeNull()
   })
 
+  it('dérive En mission depuis positionnement actif', () => {
+    const rows = toCandidateTableRows([
+      {
+        id: 'c1',
+        firstName: 'Camille',
+        lastName: 'Durand',
+        city: 'Lyon',
+        postalCode: '69003',
+        availableFrom: null,
+        status: 'QUALIFIE',
+        createdAt: new Date('2026-01-15'),
+        jobTitle: { name: 'Pharmacien' },
+        referent: { name: 'Recruteur' },
+        missions: [
+          {
+            stageId: 's1',
+            stage: { id: 's1', name: 'Contacté', position: 1 },
+            mission: { id: 'm1', title: 'Titulaire', status: 'EN_RECHERCHE' },
+          },
+        ],
+      },
+    ])
+    expect(rows[0]?.status).toBe('EN_MISSION')
+  })
+
   it('mappe lignes tableau', () => {
     const rows = toCandidateTableRows([
       {
@@ -28,6 +53,8 @@ describe('candidate-list-vm', () => {
         city: 'Lyon',
         postalCode: '69003',
         availableFrom: null,
+        status: 'NOUVEAU',
+        createdAt: new Date('2026-01-15'),
         jobTitle: { name: 'Pharmacien' },
         referent: { name: 'Recruteur' },
         missions: [],
@@ -42,6 +69,8 @@ describe('candidate-list-vm', () => {
       department: '69',
       referent: 'Recruteur',
       availability: 'Dès que possible',
+      status: 'NOUVEAU',
+      createdAtLabel: '15/01/2026',
     })
   })
 })

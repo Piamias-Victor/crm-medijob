@@ -5,28 +5,13 @@ import {
   DEFAULT_MOBILITY_RADIUS_KM,
   type CandidateFormSource,
 } from '@/view-models/candidate-profile'
-import { CREATE_CONTRACT_TYPES, type CandidateCreateInput, type CandidateProfileInput } from '@/view-models/candidate-profile.schema'
+import {
+  CREATE_CONTRACT_TYPES,
+  type CandidateCreateInput,
+  type CandidateProfileInput,
+} from '@/view-models/candidate-profile.schema'
 import type { RefItem } from '@/view-models/referential'
-
-function toCreateFormSource(defaults: CandidateCreateInput): CandidateFormSource {
-  return {
-    firstName: defaults.firstName,
-    lastName: defaults.lastName,
-    email: defaults.email ?? null,
-    phone: defaults.phone ?? null,
-    address: defaults.address ?? null,
-    city: defaults.city ?? null,
-    postalCode: defaults.postalCode ?? null,
-    jobTitleId: defaults.jobTitleId,
-    mobilityRadiusKm: defaults.mobilityRadiusKm,
-    mobilityNotes: defaults.mobilityNotes ?? null,
-    availableFrom: defaults.availableFrom ? new Date(defaults.availableFrom) : null,
-    notes: defaults.notes ?? null,
-    referentId: defaults.referentId ?? null,
-    softwareIds: defaults.softwareIds,
-    contractTypes: defaults.contractTypes,
-  }
-}
+import { toCreateFormSource } from '@/view-models/cv-extraction-review-source'
 
 function cleanExtracted(value: string | undefined, fallback?: string | null) {
   if (isExtractedPlaceholder(value)) return fallback ?? undefined
@@ -66,13 +51,19 @@ export function buildCvReviewFormValues(
     city: cleanExtracted(extraction.city, profile.city),
     postalCode: cleanExtracted(extraction.postalCode, profile.postalCode),
     jobTitleId: suggestedJobTitleId ?? profile.jobTitleId,
+    status: profile.status === 'EN_MISSION' ? 'QUALIFIE' : profile.status,
+    salaryExpectations: profile.salaryExpectations ?? undefined,
+    salaryMin: profile.salaryMin,
+    salaryMax: profile.salaryMax,
     softwareIds: matchSoftwareIds(extraction.softwares ?? [], referentials.softwares),
     contractTypes:
       extraction.preferredContractTypes ??
       (profile.contractTypes as CandidateProfileInput['contractTypes']),
     mobilityRadiusKm: profile.mobilityRadiusKm ?? DEFAULT_MOBILITY_RADIUS_KM,
     mobilityNotes:
-      cleanExtracted(extraction.mobilityNotes, profile.mobilityNotes) ?? profile.mobilityNotes ?? undefined,
+      cleanExtracted(extraction.mobilityNotes, profile.mobilityNotes) ??
+      profile.mobilityNotes ??
+      undefined,
     availableFrom: extraction.availableFrom?.slice(0, 10),
     notes:
       cleanExtracted(extraction.profileSummary, profile.notes) ?? profile.notes ?? undefined,
@@ -90,8 +81,8 @@ export function buildCvCreateFormValues(
   const reviewed = buildCvReviewFormValues(extraction, toCreateFormSource(defaults), referentials)
   return {
     ...reviewed,
-    contractTypes: reviewed.contractTypes.filter((type): type is CandidateCreateInput['contractTypes'][number] =>
-      createContractTypes.has(type),
+    contractTypes: reviewed.contractTypes.filter(
+      (type): type is CandidateCreateInput['contractTypes'][number] => createContractTypes.has(type),
     ),
   }
 }

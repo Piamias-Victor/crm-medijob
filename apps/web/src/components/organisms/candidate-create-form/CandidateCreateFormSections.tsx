@@ -4,6 +4,7 @@ import type { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-h
 import { CandidateNotesField } from '@/components/molecules/CandidateNotesField'
 import { CandidateProfileFields } from '@/components/molecules/CandidateProfileFields'
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
+import { CandidateStatusSalaryFields } from '@/components/molecules/CandidateStatusSalaryFields'
 import { FormSection } from '@/components/molecules/FormSection'
 import { createContractOptions } from '@/lib/contract-options'
 import { toSelectOptions } from '@/lib/form-options'
@@ -25,6 +26,14 @@ export function CandidateCreateFormSections(props: Props) {
   const profileRegister = props.register as UseFormRegister<CandidateProfileInput>
   return (
     <>
+      <FormSection title="Statut & prétentions">
+        <CandidateStatusSalaryFields
+          register={profileRegister}
+          errors={props.errors}
+          status={(props.watch('status') as CandidateProfileInput['status']) ?? 'NOUVEAU'}
+          onStatus={(value) => props.setValue('status', value)}
+        />
+      </FormSection>
       <FormSection title="Coordonnées & mobilité">
         <CandidateProfileFields
           register={profileRegister}

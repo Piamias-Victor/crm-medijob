@@ -1,11 +1,7 @@
 import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
-import {
-  candidateIdSchema,
-  candidateCreateInputSchema,
-  updateCandidateSchema,
-} from '@/view-models/candidate-profile.schema'
+import { candidateIdSchema } from '@/view-models/candidate-profile.schema'
 import { toCandidateProfilePayload } from '@/view-models/candidate-profile-payload'
-import { toCandidateCreateData, toCandidateUpdateData } from '@/view-models/candidate-profile-map'
+import { toCandidateQuickView } from '@/view-models/candidate-quick-view'
 import { handleConfirmCvExtraction, handleExtractCv, handleExtractCvDraft } from '@/server/routers/candidate-cv'
 import { handleDiscardCvDraft } from '@/server/routers/candidate-cv-discard'
 import { handleGenerateAnonymized, handleGenerateSummary, handleSaveCvSummary } from '@/server/routers/candidate-documents'
@@ -21,6 +17,10 @@ import { handleDetectDuplicate, handleMergeCandidate } from '@/server/routers/ca
 import { createPresentToPharmacyProcedure } from '@/server/routers/candidate-present-pharmacy.procedure'
 import { createListPharmaciesInRadiusProcedure } from '@/server/routers/candidate-list-in-radius.procedure'
 import { createPresentInRadiusProcedure } from '@/server/routers/candidate-present-radius.procedure'
+import {
+  candidateCreateMutation,
+  candidateUpdateMutation,
+} from '@/server/routers/candidate-mutations'
 
 export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
@@ -33,7 +33,6 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     exportCsv: permissionProcedure('export')
       .input(candidateExportInputSchema)
       .query(({ input }) => handleCandidateExportCsv(deps, input)),
-
     search: protectedProcedure.input(candidateSearchInput).query(async ({ input }) =>
       toCandidateSearchOptions(await deps.search(input.term, input.limit)),
     ),
@@ -42,29 +41,13 @@ export function makeCandidateRouter(deps: CandidateDeps) {
       if (!candidate) return null
       return toCandidateProfilePayload(candidate)
     }),
-    referentials: protectedProcedure.query(() => deps.referentials()),
-    create: protectedProcedure
-      .input(candidateCreateInputSchema)
-      .mutation(async ({ ctx, input }) => {
-        const row = await deps.createProfile(toCandidateCreateData(input))
-        await deps.logLifecycle({
-          action: 'created',
-          entityType: 'CANDIDATE',
-          entityId: row.id,
-          user: ctx.session.user,
-        })
-        return row
-      }),
-    update: protectedProcedure.input(updateCandidateSchema).mutation(async ({ ctx, input }) => {
-      const row = await deps.updateProfile(input.id, toCandidateUpdateData(input.data))
-      await deps.logLifecycle({
-        action: 'updated',
-        entityType: 'CANDIDATE',
-        entityId: input.id,
-        user: ctx.session.user,
-      })
-      return row
+    quickView: protectedProcedure.input(candidateIdSchema).query(async ({ input }) => {
+      const row = await deps.findQuickViewById(input.id)
+      return row ? toCandidateQuickView(row) : null
     }),
+    referentials: protectedProcedure.query(() => deps.referentials()),
+    create: candidateCreateMutation(deps),
+    update: candidateUpdateMutation(deps),
     extractCvDraft: protectedProcedure.input(extractCvDraftSchema).mutation(({ input }) =>
       handleExtractCvDraft(deps, input),
     ),

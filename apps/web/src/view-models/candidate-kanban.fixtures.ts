@@ -27,6 +27,8 @@ export function candidate(over: Partial<RawCandidate> = {}): RawCandidate {
     city: 'Lyon',
     postalCode: null,
     availableFrom: null,
+    status: 'NOUVEAU',
+    createdAt: new Date('2026-01-15'),
     jobTitle: { name: 'Pharmacien' },
     referent: { name: 'Bob Réf' },
     missions: [],

@@ -10,9 +10,10 @@ import {
 import { CvthequeFilterBar } from '@/components/organisms/cvtheque-table/cvtheque-filter-bar'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
+import { CandidateQuickView } from '@/components/organisms/CandidateQuickView'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import type { CvthequeFilterValues } from '@/lib/filters/cvtheque-filter-map'
-import { buildCvthequeReturnPath, cvthequeCandidateHref } from '@/lib/cvtheque-candidate-href'
+import { buildCvthequeReturnPath } from '@/lib/cvtheque-candidate-href'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { CandidateTableRow } from '@/view-models/candidate-list-vm'
 
@@ -39,6 +40,7 @@ export function CvthequeTable({
 }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [quickViewId, setQuickViewId] = useState<string | null>(null)
   const returnPath = useMemo(
     () => buildCvthequeReturnPath(pathname, searchParams.toString()),
     [pathname, searchParams],
@@ -59,13 +61,20 @@ export function CvthequeTable({
         rows={rows}
         columns={cvthequeTableColumns}
         getRowId={(row) => row.id}
-        getRowHref={(row) => cvthequeCandidateHref(row.id, returnPath)}
+        onRowClick={(row) => setQuickViewId(row.id)}
         emptyIcon={Table2}
         emptyTitle="Aucun candidat"
         emptyDescription="Ajustez les filtres pour afficher des résultats."
-        renderActions={(row) => <CvthequeTableActions row={row} returnPath={returnPath} />}
+        renderActions={(row) => (
+          <CvthequeTableActions row={row} returnPath={returnPath} onQuickView={setQuickViewId} />
+        )}
         sort={sort}
         onSortChange={onSortChange}
+      />
+      <CandidateQuickView
+        candidateId={quickViewId}
+        returnPath={returnPath}
+        onClose={() => setQuickViewId(null)}
       />
     </div>
   )

@@ -11,6 +11,7 @@ import type { CandidateSearchRow } from '@/server/routers/candidate-search'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
+import type { CandidateQuickViewEntity } from '@/view-models/candidate-quick-view.types'
 
 export type CandidateDeps = CandidateCvDeps &
   CandidateDocumentsDeps &
@@ -35,5 +36,6 @@ export type CandidateDeps = CandidateCvDeps &
     findIdentityByEmail: typeof candidateRepository.findIdentityByEmail
     findIdentityByNamePhone: typeof candidateRepository.findIdentityByNamePhone
     mergeCandidates: typeof candidateRepository.mergeCandidates
+    findQuickViewById: (id: string) => Promise<CandidateQuickViewEntity | null>
     logLifecycle: LogEntityLifecycle
   }

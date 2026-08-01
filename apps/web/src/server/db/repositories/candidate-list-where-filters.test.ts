@@ -52,4 +52,21 @@ describe('buildCandidateListWhere filters', () => {
       ],
     })
   })
+
+  it('filtre ville contains insensitive', () => {
+    expect(buildCandidateListWhere({ city: 'Lyon' })).toEqual({
+      city: { contains: 'Lyon', mode: 'insensitive' },
+    })
+  })
+
+  it('filtre mobilité max km', () => {
+    expect(buildCandidateListWhere({ maxMobilityKm: 30 })).toEqual({
+      mobilityRadiusKm: { lte: 30 },
+    })
+  })
+
+  it('filtre statut Blacklisté stocké', () => {
+    expect(buildCandidateListWhere({ statuses: ['BLACKLISTE'] })).toEqual({ status: 'BLACKLISTE' })
+  })
 })
+

@@ -5,6 +5,7 @@ import {
   buildAvailableWhere,
   buildProfileIncompleteWhere,
 } from '@/server/db/repositories/candidate-list-where-clauses'
+import { buildEffectiveStatusWhere } from '@/server/db/repositories/candidate-list-status-where'
 import { buildReferentIdWhere } from '@/server/db/repositories/referent-id-where'
 
 export function buildCandidateListWhere(
@@ -29,6 +30,11 @@ export function buildCandidateListWhere(
     clauses.push(buildProfileIncompleteWhere(filters.profileIncomplete))
   }
   if (filters.activeMission != null) clauses.push(buildActiveMissionWhere(filters.activeMission))
+  if (filters.statuses?.length) clauses.push(buildEffectiveStatusWhere(filters.statuses))
+  if (filters.city) clauses.push({ city: { contains: filters.city, mode: 'insensitive' } })
+  if (filters.maxMobilityKm != null) {
+    clauses.push({ mobilityRadiusKm: { lte: filters.maxMobilityKm } })
+  }
 
   if (clauses.length === 0) return {}
   if (clauses.length === 1) return clauses[0]!

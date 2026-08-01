@@ -66,6 +66,7 @@ describe('candidateRouter CV extraction', () => {
         firstName: 'Camille',
         lastName: 'Martin',
         jobTitleId: 'jt1',
+      status: 'NOUVEAU' as const,
         referentId: 'u1',
         mobilityRadiusKm: 30,
         softwareIds: ['sw1'],

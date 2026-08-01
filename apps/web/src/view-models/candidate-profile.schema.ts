@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { isAllowedBlobUrl } from '@/server/services/blob'
 import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
+import { MANUAL_CANDIDATE_STATUSES } from '@/view-models/candidate-status'
 
 export const CONTRACT_TYPES = ['CDI', 'CDD', 'INTERIM', 'VACATION'] as const
 export const CREATE_CONTRACT_TYPES = ['CDI', 'CDD', 'INTERIM'] as const
@@ -11,6 +12,8 @@ const optionalText = z
   .transform((v) => (v === '' ? undefined : v))
   .optional()
 
+const optionalSalary = z.number().int().min(0).nullable().optional()
+
 export const candidateProfileInputSchema = z.object({
   firstName: z.string().trim().min(1, 'Prénom requis'),
   lastName: z.string().trim().min(1, 'Nom requis'),
@@ -20,6 +23,10 @@ export const candidateProfileInputSchema = z.object({
   city: optionalText,
   postalCode: optionalText,
   jobTitleId: z.string().min(1, 'Métier requis'),
+  status: z.enum(MANUAL_CANDIDATE_STATUSES),
+  salaryExpectations: optionalText,
+  salaryMin: optionalSalary,
+  salaryMax: optionalSalary,
   softwareIds: z.array(z.string()),
   contractTypes: z.array(z.enum(CONTRACT_TYPES)),
   mobilityRadiusKm: z.number().int().min(1).max(500),

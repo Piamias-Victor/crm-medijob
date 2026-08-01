@@ -1,4 +1,5 @@
 import type { MissionStatus } from '@prisma/client'
+import type { CandidateStatus } from '@/view-models/candidate-status'
 
 export type RawStage = { id: string; name: string; position: number }
 
@@ -15,6 +16,8 @@ export type RawCandidate = {
   city: string | null
   postalCode: string | null
   availableFrom: Date | null
+  status: CandidateStatus
+  createdAt: Date
   jobTitle: { name: string } | null
   referent: { name: string } | null
   missions: RawMissionRow[]
