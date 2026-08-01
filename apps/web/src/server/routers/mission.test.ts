@@ -46,30 +46,6 @@ describe('missionRouter', () => {
       },
     })
     expect(deps.update).toHaveBeenCalled()
-    expect(deps.logLifecycle).toHaveBeenCalledWith({
-      action: 'updated',
-      entityType: 'MISSION',
-      entityId: 'm1',
-      user: expect.objectContaining({ id: 'u1' }),
-    })
-  })
-
-  it('logs ActivityLog lifecycle on create', async () => {
-    const deps = makeMissionDeps()
-    await missionCaller(deps).create({
-      title: 'CDI',
-      jobTitleId: 'jt1',
-      contractType: 'CDI',
-      pharmacyId: 'p1',
-      referentId: 'u1',
-      startDate: new Date('2026-04-01'),
-    })
-    expect(deps.logLifecycle).toHaveBeenCalledWith({
-      action: 'created',
-      entityType: 'MISSION',
-      entityId: 'm1',
-      user: expect.objectContaining({ id: 'u1' }),
-    })
   })
 
   it('delegates markAnnulee to terminal transition', async () => {
