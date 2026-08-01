@@ -16,7 +16,7 @@ export function MissionDetailHeader({ mission }: Props) {
         name={mission.formSource.title}
         jobTitle={mission.jobTitleName}
         city={mission.city ?? undefined}
-        referentName={mission.referentName}
+        referentName={mission.referentName ?? undefined}
         chips={[
           { icon: Building2, label: mission.pharmacyName },
           ...(mission.city ? [{ icon: MapPin, label: mission.city }] : []),

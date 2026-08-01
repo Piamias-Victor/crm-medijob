@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { GlassModal } from '@/components/molecules/GlassModal'
 import { MissionQuickCreateForm } from '@/components/molecules/MissionQuickCreateForm'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
@@ -29,6 +30,8 @@ export function MissionFormModal({
   onSubmit,
   onCreateJobTitle,
 }: Props) {
+  const { data: session } = useSession()
+
   return (
     <GlassModal
       open={open}
@@ -40,6 +43,7 @@ export function MissionFormModal({
         pharmacies={pharmacies}
         jobTitles={jobTitles}
         recruiters={recruiters}
+        defaultReferentId={session?.user?.id ?? null}
         submitting={submitting}
         errorMessage={errorMessage}
         onSubmit={onSubmit}

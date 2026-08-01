@@ -7,6 +7,7 @@ export const pharmacyListFiltersSchema = z.object({
   softwareIds: z.array(z.string()).optional(),
   departments: z.array(z.string().regex(/^\d{2}$/)).optional(),
   activeMission: z.boolean().nullable().optional(),
+  referentIds: z.array(z.string()).optional(),
 })
 
 export type PharmacyListFilters = z.infer<typeof pharmacyListFiltersSchema>

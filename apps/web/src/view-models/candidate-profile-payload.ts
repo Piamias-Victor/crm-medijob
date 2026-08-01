@@ -29,7 +29,7 @@ export function toCandidateProfilePayload(candidate: CandidateProfileRecord) {
     availableFrom: candidate.availableFrom,
     notes: candidate.notes,
     referentId: candidate.referentId,
-    referentName: candidate.referent.name,
+    referentName: candidate.referent?.name ?? null,
     cvUrl: candidate.cvUrl,
     cvSummary: candidate.cvSummary,
     anonymizedProfile: candidate.anonymizedProfile,

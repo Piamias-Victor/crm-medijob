@@ -65,7 +65,7 @@ export function toDuplicateRowFromInput(
     mobilityNotes: data.mobilityNotes ?? '',
     availableFrom: data.availableFrom ?? '',
     notes: data.notes ?? '',
-    referentId: data.referentId,
+    referentId: data.referentId ?? '',
     cvUrl: cvUrl ?? ('cvUrl' in data ? data.cvUrl ?? '' : ''),
   }
 }

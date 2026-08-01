@@ -10,10 +10,21 @@ export function resolveContactCreatePharmacy(
   return pharmacies.some((pharmacy) => pharmacy.id === pharmacyId) ? pharmacyId : undefined
 }
 
-export function buildContactCreateDefaults(pharmacyId?: string): Partial<ContactInput> {
+export function resolveContactCreateReferent(
+  pharmacyReferentId: string | null | undefined,
+  sessionUserId: string | undefined,
+): string | null {
+  return pharmacyReferentId ?? sessionUserId ?? null
+}
+
+export function buildContactCreateDefaults(opts?: {
+  pharmacyId?: string
+  referentId?: string | null
+}): Partial<ContactInput> {
   return {
     role: 'AUTRE',
     isPrimary: false,
-    ...(pharmacyId ? { pharmacyId } : {}),
+    referentId: opts?.referentId ?? null,
+    ...(opts?.pharmacyId ? { pharmacyId: opts.pharmacyId } : {}),
   }
 }

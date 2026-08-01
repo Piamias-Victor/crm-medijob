@@ -24,7 +24,7 @@ export function toMissionDetail(entity: MissionDetailEntity): MissionDetailPaylo
     pharmacyName: pharmacy.name,
     city: pharmacy.city,
     jobTitleName: jobTitle.name,
-    referentName: referent.name,
+    referentName: referent?.name ?? null,
     updatedAt: entity.updatedAt,
     formSource: {
       title: rest.title,

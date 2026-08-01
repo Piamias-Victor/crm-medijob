@@ -28,7 +28,7 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
       db.user.findMany({
         where: {
           ...NOT_DELETED,
-          role: { in: ['DIRECTION', 'RECRUTEUR', 'COMMUNICATION', 'RH_ADMIN'] },
+          role: { in: ['DIRECTION', 'RECRUTEUR', 'RH_ADMIN'] },
         },
         orderBy: { name: 'asc' },
         select: { id: true, name: true },

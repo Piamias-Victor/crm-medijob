@@ -18,7 +18,11 @@ export type PharmacyDeps = {
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) => Promise<unknown>
     softDelete: (id: string) => Promise<unknown>
   }
-  referentials: { listGroupements: () => Promise<Ref[]>; listSoftwares: () => Promise<Ref[]> }
+  referentials: {
+    listGroupements: () => Promise<Ref[]>
+    listSoftwares: () => Promise<Ref[]>
+    listRecruiters: () => Promise<Ref[]>
+  }
   createGroupement: (name: string) => Promise<Ref>
   createSoftware: (name: string) => Promise<Ref>
   searchSiret: (query: string) => Promise<SiretResult[]>

@@ -44,4 +44,10 @@ describe('buildPharmacyListWhere filters', () => {
       AND: [{ status: { in: ['ACTIF'] } }, { groupementId: { in: ['giphar'] } }],
     })
   })
+
+  it('filtre référent', () => {
+    expect(buildPharmacyListWhere({ referentIds: ['u1'] })).toEqual({
+      referentId: { in: ['u1'] },
+    })
+  })
 })

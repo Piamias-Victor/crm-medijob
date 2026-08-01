@@ -8,14 +8,18 @@ import { ContactIdentityFields } from '@/components/molecules/ContactIdentityFie
 import { ContactPrimaryWarningAlert } from '@/components/molecules/ContactPrimaryWarningAlert'
 import { FormSection } from '@/components/molecules/FormSection'
 import { PrimaryToggle } from '@/components/molecules/PrimaryToggle'
+import { ReferentField } from '@/components/molecules/ReferentField'
 import type { ComboboxOption } from '@/components/molecules/Combobox'
 import type { ContactInput } from '@/view-models/contact-form.schema'
+
+type Ref = { id: string; name: string }
 
 type Props = {
   register: UseFormRegister<ContactInput>
   control: Control<ContactInput>
   errors: FieldErrors<ContactInput>
   pharmacyOptions: ComboboxOption[]
+  recruiters: Ref[]
   pharmacyId?: string
   isPrimary: boolean
   excludeContactId?: string
@@ -27,6 +31,7 @@ export function ContactFormSections({
   control,
   errors,
   pharmacyOptions,
+  recruiters,
   pharmacyId,
   isPrimary,
   excludeContactId,
@@ -41,6 +46,18 @@ export function ContactFormSections({
             pharmacyOptions={pharmacyOptions}
             pharmacyError={errors.pharmacyId?.message}
             lockedPharmacyId={lockedPharmacyId}
+          />
+          <Controller
+            name="referentId"
+            control={control}
+            render={({ field }) => (
+              <ReferentField
+                value={field.value}
+                onChange={field.onChange}
+                recruiters={recruiters}
+                error={errors.referentId?.message}
+              />
+            )}
           />
           <ContactPrimaryWarningAlert
             pharmacyId={pharmacyId}

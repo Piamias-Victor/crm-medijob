@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { Briefcase } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import type { PharmacyMissionRow } from '@/view-models/pharmacy-detail.types'
@@ -30,12 +31,15 @@ export function PharmacyBesoinsTab({
   onCreate,
   onCreateJobTitle,
 }: Props) {
+  const { data: session } = useSession()
+
   return (
     <div className="flex flex-col gap-5">
       <MissionQuickCreateForm
         pharmacyId={pharmacyId}
         jobTitles={jobTitles}
         recruiters={recruiters}
+        defaultReferentId={session?.user?.id ?? null}
         submitting={submitting}
         onSubmit={onCreate}
         onCreateJobTitle={onCreateJobTitle}
@@ -54,7 +58,7 @@ export function PharmacyBesoinsTab({
                 missionId={mission.id}
                 title={mission.title}
                 subtitle={`${mission.jobTitle} · ${STATUS_LABELS[mission.status]} · ${formatDateFr(mission.startDate)}`}
-                meta={`Référent · ${mission.referent}`}
+                meta={mission.referent ? `Référent · ${mission.referent}` : 'Sans référent'}
                 trailing={
                   <MissionStatusBadge status={mission.status} className="px-2 py-0 text-[11px]" />
                 }

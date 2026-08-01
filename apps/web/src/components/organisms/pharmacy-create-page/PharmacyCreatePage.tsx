@@ -13,9 +13,10 @@ type Props = {
   defaultValues: PharmacyInput
   groupements: Ref[]
   softwares: Ref[]
+  recruiters: Ref[]
 }
 
-export function PharmacyCreatePage({ defaultValues, groupements, softwares }: Props) {
+export function PharmacyCreatePage({ defaultValues, groupements, softwares, recruiters }: Props) {
   const meta = PHARMACY_TAB_META.infos
 
   return (
@@ -30,6 +31,7 @@ export function PharmacyCreatePage({ defaultValues, groupements, softwares }: Pr
           defaultValues={defaultValues}
           groupements={groupements}
           softwares={softwares}
+          recruiters={recruiters}
         />
       </SectionCard>
     </EntityDetailShell>

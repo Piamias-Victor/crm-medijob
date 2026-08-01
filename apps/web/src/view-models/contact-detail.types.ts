@@ -10,6 +10,7 @@ export type ContactDetailEntity = {
   isPrimary: boolean
   notes: string | null
   pharmacyId: string
+  referentId: string | null
   updatedAt: Date
   pharmacy: { id: string; name: string }
 }
@@ -27,6 +28,7 @@ export type ContactDetailPayload = {
   pharmacyId: string
   pharmacyName: string
   pharmacy: { id: string; name: string }
+  referentId: string | null
   updatedAt: Date
 }
 

@@ -16,6 +16,12 @@ describe('candidateCreateInputSchema', () => {
     expect(candidateCreateInputSchema.parse(validBase)).toMatchObject(validBase)
   })
 
+  it('accepte création sans référent', () => {
+    expect(candidateCreateInputSchema.parse({ ...validBase, referentId: null }).referentId).toBeNull()
+    const { referentId: _omit, ...without } = validBase
+    expect(candidateCreateInputSchema.parse(without).referentId).toBeUndefined()
+  })
+
   it('rejects missing identity fields', () => {
     expect(candidateCreateInputSchema.safeParse({ ...validBase, firstName: '' }).success).toBe(false)
     expect(candidateCreateInputSchema.safeParse({ ...validBase, lastName: '   ' }).success).toBe(

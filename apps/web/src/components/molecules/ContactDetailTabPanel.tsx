@@ -20,6 +20,7 @@ type Props = {
   contact: ContactDetailPayload
   missions: ContactMissionRow[]
   pharmacies: Ref[]
+  recruiters: Ref[]
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   updating: boolean
@@ -33,6 +34,7 @@ export function ContactDetailTabPanel({
   contact,
   missions,
   pharmacies,
+  recruiters,
   activities,
   documents,
   updating,
@@ -57,7 +59,13 @@ export function ContactDetailTabPanel({
       }
     >
       {tab === 'infos' ? (
-        <ContactInfoForm contact={contact} pharmacies={pharmacies} submitting={updating} onSubmit={onUpdate} />
+        <ContactInfoForm
+          contact={contact}
+          pharmacies={pharmacies}
+          recruiters={recruiters}
+          submitting={updating}
+          onSubmit={onUpdate}
+        />
       ) : null}
       {tab === 'historique' ? (
         <EntityActivityLogTab scope={{ entityType: 'CONTACT', entityId: contact.id }} initialLogs={activities} />

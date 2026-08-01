@@ -41,6 +41,7 @@ export function PharmacyDetailTabContent(props: PharmacyDetailTabContentProps) {
         pharmacy={props.pharmacy}
         groupements={props.groupements}
         softwares={props.softwares}
+        recruiters={props.missionRefs.recruiters}
         submitting={props.submittingInfo}
         errorMessage={props.updateErrorMessage}
         onSubmit={props.onUpdate}
@@ -55,7 +56,9 @@ export function PharmacyDetailTabContent(props: PharmacyDetailTabContentProps) {
       <PharmacyContactsTab
         pharmacyId={props.pharmacy.id}
         pharmacyName={props.pharmacy.name}
+        pharmacyReferentId={props.pharmacy.formSource.referentId}
         contacts={props.pharmacy.contacts}
+        recruiters={props.missionRefs.recruiters}
       />
     )
   }

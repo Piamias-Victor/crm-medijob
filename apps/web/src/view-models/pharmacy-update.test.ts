@@ -6,6 +6,7 @@ describe('toPharmacyUpdateData', () => {
     const update = toPharmacyUpdateData({
       name: 'Pharmacie',
       status: 'ACTIF',
+      referentId: null,
       siret: undefined,
       city: undefined,
       phone: undefined,

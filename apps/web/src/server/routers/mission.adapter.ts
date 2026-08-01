@@ -12,7 +12,11 @@ export const missionRouter = makeMissionRouter({
   findDetailById: (id) => missionRepository.findDetailById(id),
   update: (id, data) => missionRepository.update(id, data),
   createQuick: (input) =>
-    missionRepository.createQuick({ ...input, startDate: input.startDate ?? new Date() }),
+    missionRepository.createQuick({
+      ...input,
+      referentId: input.referentId ?? null,
+      startDate: input.startDate ?? new Date(),
+    }),
   createJobTitle: (name) => jobTitleRepository.create({ name }),
   referentials: () =>
     loadMissionReferentials({

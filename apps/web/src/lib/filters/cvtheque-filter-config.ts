@@ -1,5 +1,6 @@
 import type { FilterConfig } from '@/lib/filters/filter-types'
 import { FRENCH_DEPARTMENT_OPTIONS } from '@/lib/constants/french-department-options'
+import { buildReferentFilterOptions } from '@/lib/filters/referent-filter-options'
 
 type Ref = { id: string; name: string }
 
@@ -36,7 +37,7 @@ export function buildCvthequeFilterConfig(refs: {
       label: 'Référent',
       type: 'multi-select',
       unit: 'référents',
-      options: refs.recruiters.map((item) => ({ value: item.id, label: item.name })),
+      options: buildReferentFilterOptions(refs.recruiters),
     },
     {
       id: 'logiciel',

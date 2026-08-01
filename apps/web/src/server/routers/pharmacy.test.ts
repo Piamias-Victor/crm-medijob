@@ -47,6 +47,19 @@ describe('pharmacyRouter', () => {
     expect(created).toEqual(expect.objectContaining({ id: 'new', name: 'Test' }))
   })
 
+  it('crée une pharmacie sans référent (referentId null)', async () => {
+    const deps = makeDeps()
+    await pharmacyCaller(deps).create({ name: 'Sans ref', referentId: null })
+    expect(deps.pharmacies.create).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'Sans ref', referentId: null }),
+    )
+  })
+
+  it('expose les recruiters dans referentials', async () => {
+    const refs = await pharmacyCaller(makeDeps()).referentials()
+    expect(refs.recruiters).toEqual([{ id: 'u1', name: 'Recruteur' }])
+  })
+
   it('delegates SIRET search to the service', async () => {
     const deps = makeDeps()
     const res = await pharmacyCaller(deps).searchSiret({ query: 'pharmacie' })

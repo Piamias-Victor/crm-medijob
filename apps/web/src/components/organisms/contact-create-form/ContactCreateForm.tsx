@@ -14,9 +14,10 @@ type Ref = { id: string; name: string }
 type Props = {
   defaultValues: Partial<ContactInput>
   pharmacies: Ref[]
+  recruiters: Ref[]
 }
 
-export function ContactCreateForm({ defaultValues, pharmacies }: Props) {
+export function ContactCreateForm({ defaultValues, pharmacies, recruiters }: Props) {
   const { create } = useContactCreateMutations()
   const form = useContactCreateForm(defaultValues)
   const { register, handleSubmit, control, formState } = form
@@ -32,6 +33,7 @@ export function ContactCreateForm({ defaultValues, pharmacies }: Props) {
         control={control}
         errors={formState.errors}
         pharmacyOptions={pharmacyOptions}
+        recruiters={recruiters}
         pharmacyId={pharmacyId}
         isPrimary={isPrimary}
       />

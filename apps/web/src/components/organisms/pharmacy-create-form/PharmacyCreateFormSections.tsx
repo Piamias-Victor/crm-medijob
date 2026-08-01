@@ -6,6 +6,7 @@ import { PharmacyContactFields } from '@/components/molecules/PharmacyContactFie
 import { PharmacyProfileBanner } from '@/components/molecules/PharmacyProfileBanner'
 import { PharmacySelects } from '@/components/molecules/PharmacySelects'
 import { PharmacySiretSearchPanel } from '@/components/molecules/PharmacySiretSearchPanel'
+import { ReferentField } from '@/components/molecules/ReferentField'
 import { toSelectOptions } from '@/lib/form-options'
 import { getMissingPharmacyFields } from '@/view-models/pharmacy-profile'
 import type { AnnuaireSearchSource, SiretSearchFeedback } from '@/hooks/use-pharmacy-siret-search'
@@ -22,6 +23,7 @@ type Props = {
   watch: (name: keyof PharmacyInput) => unknown
   groupements: Ref[]
   softwares: Ref[]
+  recruiters: Ref[]
   searching: boolean
   activeSource: AnnuaireSearchSource | null
   onRunSearch: (source: AnnuaireSearchSource) => void
@@ -76,6 +78,11 @@ export function PharmacyCreateFormSections(props: Props) {
             onSoftware={(v) => props.setValue('softwareId', v)}
             softwares={toSelectOptions(props.softwares)}
             onCreateSoftware={props.onCreateSoftware}
+          />
+          <ReferentField
+            value={props.watch('referentId') as string | null | undefined}
+            onChange={(v) => props.setValue('referentId', v)}
+            recruiters={props.recruiters}
           />
         </div>
       </FormSection>

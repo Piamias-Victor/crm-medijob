@@ -42,4 +42,10 @@ describe('buildContactListWhere filters', () => {
       AND: [{ isPrimary: true }, { pharmacy: { status: { in: ['PROSPECT'] } } }],
     })
   })
+
+  it('filtre référent', () => {
+    expect(buildContactListWhere({ referentIds: ['u1'] })).toEqual({
+      referentId: { in: ['u1'] },
+    })
+  })
 })

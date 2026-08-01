@@ -38,7 +38,7 @@ export function toPharmacyMissionRows(missions: PharmacyMissionEntity[]): Pharma
       contractType: m.contractType,
       startDate: m.startDate,
       jobTitle: m.jobTitle.name,
-      referent: m.referent.name,
+      referent: m.referent?.name ?? null,
     }))
 }
 

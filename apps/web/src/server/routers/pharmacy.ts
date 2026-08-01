@@ -34,6 +34,7 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     referentials: protectedProcedure.query(async () => ({
       groupements: await deps.referentials.listGroupements(),
       softwares: await deps.referentials.listSoftwares(),
+      recruiters: await deps.referentials.listRecruiters(),
     })),
     create: protectedProcedure
       .input(pharmacyInputSchema)

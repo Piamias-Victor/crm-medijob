@@ -21,7 +21,11 @@ describe('prisma error middleware', () => {
           update: vi.fn(),
           softDelete: vi.fn(),
         },
-        referentials: { listGroupements: vi.fn(), listSoftwares: vi.fn() },
+        referentials: {
+          listGroupements: vi.fn(),
+          listSoftwares: vi.fn(),
+          listRecruiters: vi.fn(),
+        },
         createGroupement: vi.fn(),
         createSoftware: vi.fn(),
         searchSiret: vi.fn(),

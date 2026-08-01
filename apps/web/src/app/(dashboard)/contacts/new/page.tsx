@@ -5,6 +5,7 @@ import { ContactCreatePage } from '@/components/organisms/contact-create-page/Co
 import {
   buildContactCreateDefaults,
   resolveContactCreatePharmacy,
+  resolveContactCreateReferent,
 } from '@/view-models/contact-create-defaults'
 
 type Props = { searchParams: Promise<{ pharmacyId?: string }> }
@@ -15,13 +16,27 @@ export default async function Page({ searchParams }: Props) {
 
   const { pharmacyId } = await searchParams
   const caller = await createServerCaller()
-  const pharmacies = await caller.contact.referentials()
+  const [pharmacies, pharmacyRefs] = await Promise.all([
+    caller.contact.referentials(),
+    caller.pharmacy.referentials(),
+  ])
   const resolvedPharmacyId = resolveContactCreatePharmacy(pharmacyId, pharmacies)
+  const pharmacy = resolvedPharmacyId
+    ? await caller.pharmacy.getById({ id: resolvedPharmacyId })
+    : null
+  const referentId = resolveContactCreateReferent(
+    pharmacy?.formSource.referentId,
+    session.user.id,
+  )
 
   return (
     <ContactCreatePage
-      defaultValues={buildContactCreateDefaults(resolvedPharmacyId)}
+      defaultValues={buildContactCreateDefaults({
+        pharmacyId: resolvedPharmacyId,
+        referentId,
+      })}
       pharmacies={pharmacies}
+      recruiters={pharmacyRefs.recruiters}
     />
   )
 }

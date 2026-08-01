@@ -27,6 +27,7 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
     referentials: {
       listGroupements: vi.fn().mockResolvedValue([]),
       listSoftwares: vi.fn().mockResolvedValue([]),
+      listRecruiters: vi.fn().mockResolvedValue([{ id: 'u1', name: 'Recruteur' }]),
     },
     createGroupement: vi.fn().mockResolvedValue({ id: 'g1', name: 'Giphar' }),
     createSoftware: vi.fn().mockResolvedValue({ id: 's1', name: 'Winpharma' }),

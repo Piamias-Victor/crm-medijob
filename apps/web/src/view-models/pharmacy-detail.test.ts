@@ -18,6 +18,7 @@ const entity: PharmacyDetailEntity = {
   softwareId: null,
   paymentConditions: null,
   notes: null,
+  referentId: null,
   updatedAt: new Date('2026-01-15'),
   groupement: { id: 'g1', name: 'Giphar' },
   software: null,

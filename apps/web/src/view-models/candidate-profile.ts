@@ -17,7 +17,7 @@ export type CandidateFormSource = MatchingProfileFields & {
   jobTitleId: string
   mobilityNotes: string | null
   notes: string | null
-  referentId: string
+  referentId: string | null
   softwareIds: string[]
   contractTypes: string[]
 }

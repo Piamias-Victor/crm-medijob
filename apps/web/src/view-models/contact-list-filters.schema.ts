@@ -8,6 +8,7 @@ export const contactListFiltersSchema = z.object({
   departments: z.array(z.string().regex(/^\d{2}$/)).optional(),
   pharmacyStatuses: z.array(z.enum(PHARMACY_STATUSES)).optional(),
   isPrimary: z.boolean().nullable().optional(),
+  referentIds: z.array(z.string()).optional(),
 })
 
 export type ContactListFilters = z.infer<typeof contactListFiltersSchema>

@@ -8,6 +8,7 @@ function setup(onSearchSiret: () => Promise<PharmacySiretLookup[]>) {
     <PharmacyForm
       groupements={[]}
       softwares={[]}
+      recruiters={[]}
       submitting={false}
       onSubmit={() => {}}
       onSearchSiret={onSearchSiret}
@@ -25,6 +26,7 @@ describe('PharmacyForm SIRET search', () => {
       <PharmacyForm
         groupements={[]}
         softwares={[]}
+        recruiters={[]}
         submitting={false}
         errorMessage="Une pharmacie avec ce SIRET existe déjà."
         onSubmit={() => {}}
@@ -53,6 +55,7 @@ describe('PharmacyForm SIRET search', () => {
       <PharmacyForm
         groupements={[]}
         softwares={[]}
+        recruiters={[]}
         submitting={false}
         onSubmit={() => {}}
         onSearchSiret={onSearchSiret}

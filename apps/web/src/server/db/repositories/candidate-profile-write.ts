@@ -14,7 +14,7 @@ export function toCandidateProfileWriteData(data: CandidateProfileUpdate) {
     mobilityNotes: data.mobilityNotes ?? null,
     availableFrom: data.availableFrom ?? null,
     notes: data.notes ?? null,
-    referentId: data.referentId,
+    referentId: data.referentId ?? null,
     softwares: { create: data.softwareIds.map((softwareId) => ({ softwareId })) },
     contractPreferences: {
       create: data.contractTypes.map((contractType) => ({ contractType })),
