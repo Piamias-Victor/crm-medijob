@@ -1,11 +1,8 @@
 import { z } from 'zod'
 import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
-import { contactRepository } from '@/server/db/repositories/contact.repository'
-import { missionRepository } from '@/server/db/repositories/mission.repository'
-import { listContactMissions } from '@/server/read-models/contact-missions'
-import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toContactListRow } from '@/view-models/contact-list'
 import { toContactDetail } from '@/view-models/contact-detail'
+import { toContactQuickView } from '@/view-models/contact-quick-view'
 import { contactInputSchema, updateContactSchema } from '@/view-models/contact-form.schema'
 import { groupContactsByPharmacy } from '@/view-models/contact-by-pharmacy'
 import { mapContactPharmacyPickerRows } from '@/view-models/contact-pharmacy-picker'
@@ -13,7 +10,6 @@ import { toContactPrimaryName } from '@/view-models/contact-primary-warning'
 import { toContactCreateData, type ContactDeps } from '@/server/routers/contact.deps'
 import { idSchema } from '@/lib/schemas/entity-id'
 import { contactListFiltersSchema } from '@/view-models/contact-list-filters.schema'
-import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 
 export type { ContactDeps } from '@/server/routers/contact.deps'
 
@@ -32,9 +28,16 @@ export function makeContactRouter(deps: ContactDeps) {
       const contact = await deps.contacts.findById(input.id)
       return contact ? toContactDetail(contact) : null
     }),
+    quickView: protectedProcedure.input(idSchema).query(async ({ input }) => {
+      const row = await deps.contacts.findQuickViewById(input.id)
+      return row ? toContactQuickView(row) : null
+    }),
     /** @deprecated Use `referentials` — kept for existing callers during migration */
     pharmacyOptions: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
-    referentials: protectedProcedure.query(() => deps.pharmacies.listForPicker()),
+    referentials: protectedProcedure.query(async () => ({
+      pharmacies: await deps.pharmacies.listForPicker(),
+      contactRoles: await deps.contactRoles.list(),
+    })),
     listByPharmacy: protectedProcedure.input(pharmacyIdSchema).query(async ({ input }) =>
       mapContactPharmacyPickerRows(await deps.contacts.listByPharmacy(input.pharmacyId)),
     ),
@@ -79,13 +82,3 @@ export function makeContactRouter(deps: ContactDeps) {
       .mutation(({ input }) => deps.contacts.softDelete(input.id)),
   })
 }
-
-export const contactRouter = makeContactRouter({
-  contacts: contactRepository,
-  listMissions: (contactId) =>
-    listContactMissions(contactId, {
-      listByContact: (id) => missionRepository.listByContact(id),
-    }),
-  pharmacies: { listForPicker: listPharmacyPickerOptions },
-  logLifecycle: defaultLogLifecycle,
-})

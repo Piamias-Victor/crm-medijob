@@ -23,7 +23,7 @@ export function toPharmacyContactRows(contacts: PharmacyContactEntity[]): Pharma
     fullName: `${c.firstName} ${c.lastName}`.trim(),
     email: c.email,
     phone: c.phone,
-    role: c.role,
+    roleName: c.contactRole.name,
     isPrimary: c.isPrimary,
   }))
 }

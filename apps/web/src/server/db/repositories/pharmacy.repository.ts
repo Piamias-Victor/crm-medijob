@@ -24,8 +24,8 @@ const detailInclude = {
       lastName: true,
       email: true,
       phone: true,
-      role: true,
       isPrimary: true,
+      contactRole: { select: { name: true } },
     },
   },
   missions: {

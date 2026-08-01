@@ -5,6 +5,7 @@ const base = {
   pharmacyId: 'p1',
   firstName: 'Marie',
   lastName: 'Curie',
+  contactRoleId: 'r1',
 }
 
 describe('contactInputSchema referent', () => {

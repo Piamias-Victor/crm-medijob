@@ -16,6 +16,8 @@ export async function seedDemo(prisma: PrismaClient) {
     create: { id: 'demo-pharmacy', name: 'Pharmacie du Centre' },
   })
 
+  const titulaire = await prisma.contactRole.findUniqueOrThrow({ where: { name: 'Titulaire' } })
+
   const contact = await prisma.contact.upsert({
     where: { id: 'demo-contact-1' },
     update: {},
@@ -26,7 +28,7 @@ export async function seedDemo(prisma: PrismaClient) {
       lastName: 'Curie',
       email: 'marie.curie@example.com',
       phone: '0102030405',
-      role: 'TITULAIRE',
+      contactRoleId: titulaire.id,
       isPrimary: true,
     },
   })

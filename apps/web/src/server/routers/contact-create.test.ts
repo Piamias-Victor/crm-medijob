@@ -14,7 +14,7 @@ describe('contactRouter mutations and primary lookup', () => {
       pharmacyId: 'p1',
       firstName: 'Paul',
       lastName: 'Bert',
-      role: 'TITULAIRE',
+      contactRoleId: 'r1',
     })
     expect(result).toEqual({ id: 'new-c1' })
     expect(deps.logLifecycle).toHaveBeenCalledWith({
@@ -29,7 +29,7 @@ describe('contactRouter mutations and primary lookup', () => {
     const deps = makeContactDeps()
     await contactCaller(deps).update({
       id: 'c1',
-      data: { pharmacyId: 'p1', firstName: 'Marie', lastName: 'Curie' },
+      data: { pharmacyId: 'p1', firstName: 'Marie', lastName: 'Curie', contactRoleId: 'r1' },
     })
     expect(deps.logLifecycle).toHaveBeenCalledWith({
       action: 'updated',

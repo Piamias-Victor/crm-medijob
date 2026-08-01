@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { User } from 'lucide-react'
 import { ContactFilterBar } from '@/components/organisms/contact-table/contact-filter-bar'
@@ -10,7 +10,8 @@ import {
 } from '@/components/organisms/contact-table/contact-table-columns'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
-import { buildContactReturnPath, contactDetailHref } from '@/lib/contact-href'
+import { ContactQuickView } from '@/components/organisms/ContactQuickView'
+import { buildContactReturnPath } from '@/lib/contact-href'
 import type { ContactFilterConfig } from '@/lib/filters/contact-filter-config'
 import type { ContactFilterValues } from '@/lib/filters/contact-filter-map'
 import type { ContactListRow } from '@/view-models/contact-list'
@@ -36,6 +37,7 @@ export function ContactTable({
 }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [quickViewId, setQuickViewId] = useState<string | null>(null)
   const returnPath = useMemo(
     () => buildContactReturnPath(pathname, searchParams.toString()),
     [pathname, searchParams],
@@ -53,13 +55,24 @@ export function ContactTable({
         rows={rows}
         columns={contactTableColumns}
         getRowId={(row) => row.id}
-        getRowHref={(row) => contactDetailHref(row.id, returnPath)}
+        onRowClick={(row) => setQuickViewId(row.id)}
         emptyIcon={User}
         emptyTitle="Aucun contact"
         emptyDescription="Ajustez les filtres pour afficher des résultats."
-        renderActions={(row) => <ContactTableActions row={row} returnPath={returnPath} />}
+        renderActions={(row) => (
+          <ContactTableActions
+            row={row}
+            returnPath={returnPath}
+            onQuickView={setQuickViewId}
+          />
+        )}
         sort={sort}
         onSortChange={onSortChange}
+      />
+      <ContactQuickView
+        contactId={quickViewId}
+        returnPath={returnPath}
+        onClose={() => setQuickViewId(null)}
       />
     </div>
   )

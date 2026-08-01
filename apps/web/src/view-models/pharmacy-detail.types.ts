@@ -1,4 +1,4 @@
-import type { ContactRole, ContractType, MissionStatus, PharmacyStatus } from '@prisma/client'
+import type { ContractType, MissionStatus, PharmacyStatus } from '@prisma/client'
 
 export type PharmacyContactEntity = {
   id: string
@@ -6,8 +6,8 @@ export type PharmacyContactEntity = {
   lastName: string
   email: string | null
   phone: string | null
-  role: ContactRole
   isPrimary: boolean
+  contactRole: { name: string }
 }
 
 export type PharmacyMissionEntity = {
@@ -50,7 +50,7 @@ export type PharmacyContactRow = {
   fullName: string
   email: string | null
   phone: string | null
-  role: ContactRole
+  roleName: string
   isPrimary: boolean
 }
 

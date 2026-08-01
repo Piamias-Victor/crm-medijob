@@ -1,16 +1,6 @@
 import { z } from 'zod'
 import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
 
-export const CONTACT_ROLES = [
-  'TITULAIRE',
-  'ADJOINT',
-  'PREPARATEUR_REFERENT',
-  'RESPONSABLE_RH',
-  'AUTRE',
-] as const
-
-export type ContactRole = (typeof CONTACT_ROLES)[number]
-
 const optionalText = z
   .string()
   .trim()
@@ -23,7 +13,7 @@ export const contactInputSchema = z.object({
   lastName: z.string().trim().min(1, 'Nom requis'),
   email: optionalText.pipe(z.string().email('Email invalide').optional()),
   phone: optionalText,
-  role: z.enum(CONTACT_ROLES).default('AUTRE'),
+  contactRoleId: z.string().min(1, 'Fonction requise'),
   isPrimary: z.boolean().default(false),
   notes: optionalText,
   referentId: optionalReferentIdSchema,

@@ -8,7 +8,7 @@ export function toContactFormValues(contact: ContactDetailPayload): Partial<Cont
     lastName: contact.lastName,
     email: contact.email ?? undefined,
     phone: contact.phone ?? undefined,
-    role: contact.role,
+    contactRoleId: contact.contactRoleId,
     isPrimary: contact.isPrimary,
     notes: contact.notes ?? undefined,
     referentId: contact.referentId ?? null,

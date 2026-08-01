@@ -1,24 +1,25 @@
 'use client'
 
 import { Controller, type Control } from 'react-hook-form'
-import { CONTACT_ROLES, type ContactInput } from '@/view-models/contact-form.schema'
-import { ROLE_LABELS } from '@/lib/contact-options'
+import type { ContactInput } from '@/view-models/contact-form.schema'
 import { FormField } from '@/components/molecules/FormField'
 import { Combobox, type ComboboxOption } from '@/components/molecules/Combobox'
-
-const ROLE_OPTIONS: ComboboxOption[] = CONTACT_ROLES.map((r) => ({
-  value: r,
-  label: ROLE_LABELS[r],
-}))
 
 type Props = {
   control: Control<ContactInput>
   pharmacyOptions: ComboboxOption[]
+  roleOptions: ComboboxOption[]
   pharmacyError?: string
   lockedPharmacyId?: string
 }
 
-export function ContactAffiliationFields({ control, pharmacyOptions, pharmacyError, lockedPharmacyId }: Props) {
+export function ContactAffiliationFields({
+  control,
+  pharmacyOptions,
+  roleOptions,
+  pharmacyError,
+  lockedPharmacyId,
+}: Props) {
   const lockedPharmacy = lockedPharmacyId
     ? pharmacyOptions.find((option) => option.value === lockedPharmacyId)
     : undefined
@@ -47,10 +48,10 @@ export function ContactAffiliationFields({ control, pharmacyOptions, pharmacyErr
       </FormField>
       <FormField label="Fonction">
         <Controller
-          name="role"
+          name="contactRoleId"
           control={control}
           render={({ field }) => (
-            <Combobox value={field.value} onChange={field.onChange} options={ROLE_OPTIONS} />
+            <Combobox value={field.value} onChange={field.onChange} options={roleOptions} />
           )}
         />
       </FormField>

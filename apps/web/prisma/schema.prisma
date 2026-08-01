@@ -25,14 +25,6 @@ enum PharmacyStatus {
   INACTIF
 }
 
-enum ContactRole {
-  TITULAIRE
-  ADJOINT
-  PREPARATEUR_REFERENT
-  RESPONSABLE_RH
-  AUTRE
-}
-
 enum ContractType {
   CDI
   CDD
@@ -189,6 +181,14 @@ model JobTitle {
   acceptedInCompatibilities JobTitleCompatibility[] @relation("AcceptedCandidateJobTitle")
 }
 
+model ContactRole {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  contacts Contact[]
+}
+
 model JobTitleCompatibility {
   missionJobTitleId   String
   candidateJobTitleId String
@@ -299,28 +299,30 @@ model Pharmacy {
 // ─── Contacts ─────────────────────────────────────────────────
 
 model Contact {
-  id         String      @id @default(cuid())
-  pharmacyId String
-  firstName  String
-  lastName   String
-  email      String?
-  phone      String?
-  role       ContactRole @default(AUTRE)
-  isPrimary  Boolean     @default(false)
-  notes      String?
-  referentId String?
-  deletedAt  DateTime?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id            String    @id @default(cuid())
+  pharmacyId    String
+  firstName     String
+  lastName      String
+  email         String?
+  phone         String?
+  contactRoleId String
+  isPrimary     Boolean   @default(false)
+  notes         String?
+  referentId    String?
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  pharmacy   Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
-  referent   User?         @relation("ReferentContacts", fields: [referentId], references: [id], onDelete: SetNull)
-  missions   Mission[]
-  activities ActivityLog[] @relation("ContactActivities")
-  documents  Document[]    @relation("ContactDocuments")
+  pharmacy    Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  contactRole ContactRole   @relation(fields: [contactRoleId], references: [id])
+  referent    User?         @relation("ReferentContacts", fields: [referentId], references: [id], onDelete: SetNull)
+  missions    Mission[]
+  activities  ActivityLog[] @relation("ContactActivities")
+  documents   Document[]    @relation("ContactDocuments")
 
   @@index([deletedAt])
   @@index([pharmacyId])
+  @@index([contactRoleId])
   @@index([referentId])
 }
 

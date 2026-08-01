@@ -1,17 +1,17 @@
 import type { PrismaClient } from '@prisma/client'
+import { RICH_CANDIDATES, RICH_MISSIONS, RICH_PHARMACIES } from './seed-demo-rich-data'
 import {
-  RICH_CANDIDATES,
-  RICH_CONTACTS,
-  RICH_MISSIONS,
-  RICH_PHARMACIES,
-} from './seed-demo-rich-data'
-import { seedRichInboxApplications, seedRichPipelineLinks } from './seed-demo-rich-extra'
+  seedRichContacts,
+  seedRichInboxApplications,
+  seedRichPipelineLinks,
+} from './seed-demo-rich-extra'
 
 async function resolveRefs(prisma: PrismaClient, referentId: string) {
-  const [groupements, softwares, jobTitles, stages] = await Promise.all([
+  const [groupements, softwares, jobTitles, contactRoles, stages] = await Promise.all([
     prisma.groupement.findMany(),
     prisma.software.findMany(),
     prisma.jobTitle.findMany(),
+    prisma.contactRole.findMany(),
     prisma.pipelineStage.findMany({ orderBy: { position: 'asc' } }),
   ])
   return {
@@ -19,6 +19,7 @@ async function resolveRefs(prisma: PrismaClient, referentId: string) {
     groupementByName: new Map(groupements.map((g) => [g.name, g.id])),
     softwareByName: new Map(softwares.map((s) => [s.name, s.id])),
     jobTitleByName: new Map(jobTitles.map((j) => [j.name, j.id])),
+    contactRoleByName: new Map(contactRoles.map((r) => [r.name, r.id])),
     stages,
   }
 }
@@ -43,9 +44,7 @@ export async function seedDemoRich(prisma: PrismaClient) {
     })
   }
 
-  for (const row of RICH_CONTACTS) {
-    await prisma.contact.upsert({ where: { id: row.id }, update: {}, create: { ...row } })
-  }
+  await seedRichContacts(prisma, refs.contactRoleByName)
 
   for (const row of RICH_CANDIDATES) {
     const jobTitleId = refs.jobTitleByName.get(row.jobTitle)
