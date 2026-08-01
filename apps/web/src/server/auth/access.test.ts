@@ -28,12 +28,17 @@ describe('evaluateAccess', () => {
     )
   })
 
-  it('lets an admin reach admin routes', () => {
-    expect(evaluateAccess({ loggedIn: true, role: 'ADMIN', pathname: '/admin' })).toBe('allow')
+  it('lets Direction and RH-Admin reach admin routes', () => {
+    expect(evaluateAccess({ loggedIn: true, role: 'DIRECTION', pathname: '/admin' })).toBe(
+      'allow',
+    )
+    expect(evaluateAccess({ loggedIn: true, role: 'RH_ADMIN', pathname: '/admin' })).toBe(
+      'allow',
+    )
   })
 
   it('sends a logged-in user away from the login page', () => {
-    expect(evaluateAccess({ loggedIn: true, role: 'ADMIN', pathname: '/login' })).toBe(
+    expect(evaluateAccess({ loggedIn: true, role: 'RH_ADMIN', pathname: '/login' })).toBe(
       'redirect-home',
     )
   })

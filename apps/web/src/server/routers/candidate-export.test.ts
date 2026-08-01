@@ -3,10 +3,17 @@ import { describe, expect, it, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 import { candidateExportFixture } from '@/server/routers/candidate-export.fixture'
-import { makeCandidateDeps, session } from '@/server/routers/candidate.test.fixtures'
+import {
+  directionSession,
+  makeCandidateDeps,
+  session,
+} from '@/server/routers/candidate.test.fixtures'
 
-function caller(deps = makeCandidateDeps()) {
-  return createCallerFactory(makeCandidateRouter(deps))({ session })
+function caller(
+  deps = makeCandidateDeps(),
+  sess: typeof directionSession | typeof session = directionSession,
+) {
+  return createCallerFactory(makeCandidateRouter(deps))({ session: sess })
 }
 
 describe('candidateRouter exportCsv', () => {
@@ -37,5 +44,11 @@ describe('candidateRouter exportCsv', () => {
       {},
       expect.arrayContaining(['firstName', 'lastName', 'email', 'city']),
     )
+  })
+
+  it('forbids export for Recruteur', async () => {
+    await expect(
+      caller(makeCandidateDeps(), session).exportCsv({ columnIds: ['email'] }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' })
   })
 })

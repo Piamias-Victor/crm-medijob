@@ -39,12 +39,12 @@ describe('userRouter', () => {
 
   it('updates name and role without password when omitted', async () => {
     const deps = makeUserDeps()
-    await adminCaller(deps).update({ id: 'u3', name: 'Jane Updated', role: 'ADMIN' })
+    await adminCaller(deps).update({ id: 'u3', name: 'Jane Updated', role: 'RH_ADMIN' })
     expect(deps.hashPassword).not.toHaveBeenCalled()
     expect(deps.update).toHaveBeenCalledWith({
       id: 'u3',
       name: 'Jane Updated',
-      role: 'ADMIN',
+      role: 'RH_ADMIN',
       password: undefined,
     })
   })
@@ -55,9 +55,9 @@ describe('userRouter', () => {
     expect(deps.remove).toHaveBeenCalledWith('u3')
   })
 
-  it('refuses to remove the last ADMIN', async () => {
+  it('refuses to remove the last admin-capable user', async () => {
     const deps = makeUserDeps({
-      findById: vi.fn().mockResolvedValue({ ...sampleUser, role: 'ADMIN' }),
+      findById: vi.fn().mockResolvedValue({ ...sampleUser, role: 'RH_ADMIN' }),
       countAdmins: vi.fn().mockResolvedValue(1),
     })
     await expect(adminCaller(deps).remove({ id: 'u3' })).rejects.toMatchObject({
@@ -65,9 +65,9 @@ describe('userRouter', () => {
     })
   })
 
-  it('refuse de rétrograder le dernier ADMIN', async () => {
+  it('refuse de rétrograder le dernier administrateur', async () => {
     const deps = makeUserDeps({
-      findById: vi.fn().mockResolvedValue({ id: 'a1', role: 'ADMIN' }),
+      findById: vi.fn().mockResolvedValue({ id: 'a1', role: 'DIRECTION' }),
       countAdmins: vi.fn().mockResolvedValue(1),
     })
     await expect(

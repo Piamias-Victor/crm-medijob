@@ -1,4 +1,6 @@
-export type AccessRole = 'RECRUTEUR' | 'ADMIN' | null
+import { can, type UserRole } from '@/server/auth/permissions'
+
+export type AccessRole = UserRole | null
 
 export type AccessDecision = 'allow' | 'redirect-login' | 'redirect-home' | 'forbid-admin'
 
@@ -26,7 +28,7 @@ export function evaluateAccess(input: {
   if (!loggedIn) {
     return 'redirect-login'
   }
-  if (isAdminPath(pathname) && role !== 'ADMIN') {
+  if (isAdminPath(pathname) && (!role || !can(role, 'admin'))) {
     return 'forbid-admin'
   }
   return 'allow'

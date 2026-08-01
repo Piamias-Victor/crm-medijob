@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server'
 import { router, adminProcedure } from '@/server/trpc'
 import { userRepository } from '@/server/db/repositories/user.repository'
 import { hashPassword } from '@/server/auth/password'
+import { can } from '@/server/auth/permissions'
 import {
   createUserSchema,
   updateUserSchema,
@@ -46,8 +47,8 @@ export function makeUserRouter(deps: UserDeps) {
       const user = await deps.findById(input.id)
       if (!user) throw new TRPCError({ code: 'NOT_FOUND' })
       if (
-        user.role === 'ADMIN' &&
-        input.role !== 'ADMIN' &&
+        can(user.role, 'admin') &&
+        !can(input.role, 'admin') &&
         (await deps.countAdmins()) <= 1
       ) {
         throw new TRPCError({
@@ -62,7 +63,7 @@ export function makeUserRouter(deps: UserDeps) {
     remove: adminProcedure.input(idSchema).mutation(async ({ input }) => {
       const user = await deps.findById(input.id)
       if (!user) throw new TRPCError({ code: 'NOT_FOUND' })
-      if (user.role === 'ADMIN' && (await deps.countAdmins()) <= 1) {
+      if (can(user.role, 'admin') && (await deps.countAdmins()) <= 1) {
         throw new TRPCError({
           code: 'CONFLICT',
           message: 'Impossible de supprimer le dernier administrateur',

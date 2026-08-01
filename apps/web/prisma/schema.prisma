@@ -13,8 +13,10 @@ datasource db {
 // ─── Enums ────────────────────────────────────────────────────
 
 enum UserRole {
+  DIRECTION
   RECRUTEUR
-  ADMIN
+  COMMUNICATION
+  RH_ADMIN
 }
 
 enum PharmacyStatus {

@@ -4,6 +4,10 @@ import { candidateExportFixture } from '@/server/routers/candidate-export.fixtur
 import type { CandidateDeps } from '@/server/routers/candidate'
 
 export const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
+export const directionSession = {
+  user: { id: 'u1', role: 'DIRECTION' as const },
+  expires: '2999-01-01',
+}
 
 export const profileFixture = {
   id: 'c1',

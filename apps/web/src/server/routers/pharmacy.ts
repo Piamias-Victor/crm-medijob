@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { Prisma } from '@prisma/client'
-import { router, protectedProcedure } from '@/server/trpc'
+import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { groupementRepository } from '@/server/db/repositories/groupement.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
@@ -55,7 +55,7 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     update: protectedProcedure
       .input(updatePharmacySchema)
       .mutation(async ({ input }) => deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))),
-    softDelete: protectedProcedure
+    softDelete: permissionProcedure('softDelete')
       .input(idSchema)
       .mutation(async ({ input }) => deps.pharmacies.softDelete(input.id)),
     searchSiret: protectedProcedure

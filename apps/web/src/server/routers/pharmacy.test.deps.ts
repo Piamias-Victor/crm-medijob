@@ -3,6 +3,9 @@ import { vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makePharmacyRouter, type PharmacyDeps } from '@/server/routers/pharmacy'
 import { pharmacyDetailEntity, pharmacyListEntity } from '@/server/routers/pharmacy.test.fixtures'
+import type { UserRole } from '@/server/auth/permissions'
+
+type TestSession = { user: { id: string; role: UserRole }; expires: string }
 
 export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
   return {
@@ -24,8 +27,15 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
   }
 }
 
-export const recruteurSession = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
+export const recruteurSession: TestSession = {
+  user: { id: 'u1', role: 'RECRUTEUR' },
+  expires: '2999-01-01',
+}
+export const directionSession: TestSession = {
+  user: { id: 'u1', role: 'DIRECTION' },
+  expires: '2999-01-01',
+}
 
-export function pharmacyCaller(deps: PharmacyDeps, session = recruteurSession) {
+export function pharmacyCaller(deps: PharmacyDeps, session: TestSession = recruteurSession) {
   return createCallerFactory(makePharmacyRouter(deps))({ session })
 }

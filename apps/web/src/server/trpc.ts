@@ -1,6 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import type { Session } from 'next-auth'
+import { can, type PermissionAction } from '@/server/auth/permissions'
 import { mapPrismaError } from '@/server/trpc/prisma-errors'
 
 async function getSession(): Promise<Session | null> {
@@ -37,9 +38,13 @@ export const protectedProcedure = baseProcedure.use(({ ctx, next }) => {
   return next({ ctx: { session: ctx.session } })
 })
 
-export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.session.user.role !== 'ADMIN') {
-    throw new TRPCError({ code: 'FORBIDDEN' })
-  }
-  return next({ ctx })
-})
+export function permissionProcedure(action: PermissionAction) {
+  return protectedProcedure.use(({ ctx, next }) => {
+    if (!can(ctx.session.user.role, action)) {
+      throw new TRPCError({ code: 'FORBIDDEN' })
+    }
+    return next({ ctx })
+  })
+}
+
+export const adminProcedure = permissionProcedure('admin')

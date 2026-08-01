@@ -1,5 +1,6 @@
-export const USER_ROLES = ['RECRUTEUR', 'ADMIN'] as const
-export type UserRole = (typeof USER_ROLES)[number]
+import { USER_ROLES, type UserRole } from '@/server/auth/permissions'
+
+export { USER_ROLES, type UserRole }
 
 export type UserListItem = {
   id: string
@@ -10,8 +11,10 @@ export type UserListItem = {
 }
 
 const roleLabels: Record<UserRole, string> = {
+  DIRECTION: 'Direction',
   RECRUTEUR: 'Recruteur',
-  ADMIN: 'Administrateur',
+  COMMUNICATION: 'Communication',
+  RH_ADMIN: 'RH-Admin',
 }
 
 export function formatUserRole(role: UserRole): string {
