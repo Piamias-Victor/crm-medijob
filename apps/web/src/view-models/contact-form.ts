@@ -11,5 +11,6 @@ export function toContactFormValues(contact: ContactDetailPayload): Partial<Cont
     role: contact.role,
     isPrimary: contact.isPrimary,
     notes: contact.notes ?? undefined,
+    referentId: contact.referentId ?? null,
   }
 }

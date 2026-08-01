@@ -24,6 +24,7 @@ type Props = {
   defaultValues?: Partial<PharmacyInput>
   groupements: Ref[]
   softwares: Ref[]
+  recruiters: Ref[]
   submitting: boolean
   errorMessage?: string | null
   onSubmit: (data: PharmacyInput) => void
@@ -69,11 +70,14 @@ export function PharmacyForm(props: Props) {
           status={watch('status') ?? 'PROSPECT'}
           groupementId={watch('groupementId')}
           softwareId={watch('softwareId')}
+          referentId={watch('referentId')}
           groupements={refs.groupementOptions}
           softwares={refs.softwareOptions}
+          recruiters={props.recruiters}
           onStatus={(value) => setValue('status', value)}
           onGroupement={(value) => setValue('groupementId', value)}
           onSoftware={(value) => setValue('softwareId', value)}
+          onReferent={(value) => setValue('referentId', value)}
           onCreateGroupement={refs.addGroupement(props.onCreateGroupement)}
           onCreateSoftware={refs.addSoftware(props.onCreateSoftware)}
         />

@@ -7,11 +7,12 @@ import { toPharmacyListFilters } from '@/lib/filters/pharmacy-filter-map'
 const config = buildPharmacyFilterConfig({
   groupements: [{ id: 'g1', name: 'Giphar' }],
   softwares: [{ id: 'sw1', name: 'Winpharma' }],
+  recruiters: [{ id: 'u1', name: 'Alice' }],
 })
 const defaults = buildDefaultFilterValues(config)
 
 describe('toPharmacyListFilters', () => {
-  it('mappe statut, département, mission active, groupement et LGO', () => {
+  it('mappe statut, département, mission active, groupement, LGO et référent', () => {
     expect(
       toPharmacyListFilters({
         ...defaults,
@@ -20,6 +21,7 @@ describe('toPharmacyListFilters', () => {
         missionActive: true,
         groupement: ['g1'],
         logiciel: ['sw1'],
+        referent: ['u1'],
       }),
     ).toEqual({
       statuses: ['ACTIF'],
@@ -27,6 +29,7 @@ describe('toPharmacyListFilters', () => {
       activeMission: true,
       groupementIds: ['g1'],
       softwareIds: ['sw1'],
+      referentIds: ['u1'],
     })
   })
 

@@ -13,7 +13,7 @@ export type CandidateProfileUpdate = {
   mobilityNotes?: string
   availableFrom?: Date | null
   notes?: string
-  referentId: string
+  referentId?: string | null
   softwareIds: string[]
   contractTypes: ContractType[]
   cvUrl?: string

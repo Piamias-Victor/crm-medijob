@@ -1,6 +1,7 @@
 import { FormField } from '@/components/molecules/FormField'
 import { Combobox, type ComboboxOption } from '@/components/molecules/Combobox'
 import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
+import { ReferentField } from '@/components/molecules/ReferentField'
 import { contractOptions } from '@/lib/contract-options'
 
 type Props = {
@@ -12,8 +13,8 @@ type Props = {
   softwares: ComboboxOption[]
   contractTypes: string[]
   onContractTypes: (values: string[]) => void
-  referentId?: string
-  onReferent: (value: string) => void
+  referentId?: string | null
+  onReferent: (value: string | null) => void
   recruiters: ComboboxOption[]
   onCreateJobTitle?: (name: string) => Promise<ComboboxOption>
   contractOptionList?: ComboboxOption[]
@@ -31,14 +32,11 @@ export function CandidateProfileSelects(props: Props) {
           onCreate={props.onCreateJobTitle}
         />
       </FormField>
-      <FormField label="Référent">
-        <Combobox
-          value={props.referentId}
-          onChange={props.onReferent}
-          options={props.recruiters}
-          placeholder="Choisir un référent"
-        />
-      </FormField>
+      <ReferentField
+        value={props.referentId}
+        onChange={props.onReferent}
+        recruiters={props.recruiters.map((r) => ({ id: r.value, name: r.label }))}
+      />
       <div className="sm:col-span-2">
         <FormField label="Logiciels">
           <CheckboxGroup

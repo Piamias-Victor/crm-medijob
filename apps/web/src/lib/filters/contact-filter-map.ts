@@ -22,6 +22,7 @@ export function toContactListFilters(values: ContactFilterValues): ContactListFi
     departments: values.departement.length ? values.departement : undefined,
     pharmacyStatuses: pharmacyStatuses.length ? pharmacyStatuses : undefined,
     isPrimary: values.principal ?? undefined,
+    referentIds: values.referent.length ? values.referent : undefined,
   }
 }
 

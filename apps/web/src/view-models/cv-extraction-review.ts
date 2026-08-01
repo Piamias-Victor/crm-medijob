@@ -22,7 +22,7 @@ function toCreateFormSource(defaults: CandidateCreateInput): CandidateFormSource
     mobilityNotes: defaults.mobilityNotes ?? null,
     availableFrom: defaults.availableFrom ? new Date(defaults.availableFrom) : null,
     notes: defaults.notes ?? null,
-    referentId: defaults.referentId,
+    referentId: defaults.referentId ?? null,
     softwareIds: defaults.softwareIds,
     contractTypes: defaults.contractTypes,
   }

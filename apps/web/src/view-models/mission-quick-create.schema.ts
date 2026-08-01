@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { CONTRACT_TYPES } from '@/view-models/candidate-profile.schema'
+import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
 
 export const missionQuickCreateSchema = z.object({
   pharmacyId: z.string().min(1),
@@ -7,7 +8,7 @@ export const missionQuickCreateSchema = z.object({
   jobTitleId: z.string().min(1, 'Métier requis'),
   contractType: z.enum(CONTRACT_TYPES),
   startDate: z.date().optional(),
-  referentId: z.string().min(1, 'Référent requis'),
+  referentId: optionalReferentIdSchema,
 })
 
 export type MissionQuickCreateInput = z.infer<typeof missionQuickCreateSchema>

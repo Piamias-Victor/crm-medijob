@@ -10,13 +10,23 @@ import { Button } from '@/components/atoms/Button'
 import { ContactFormModal } from '@/components/molecules/ContactFormModal'
 import { PharmacyContactsList } from '@/components/molecules/PharmacyContactsList'
 
+type Ref = { id: string; name: string }
+
 type Props = {
   pharmacyId: string
   pharmacyName: string
+  pharmacyReferentId?: string | null
   contacts: PharmacyContactRow[]
+  recruiters: Ref[]
 }
 
-export function PharmacyContactsTab({ pharmacyId, pharmacyName, contacts }: Props) {
+export function PharmacyContactsTab({
+  pharmacyId,
+  pharmacyName,
+  pharmacyReferentId,
+  contacts,
+  recruiters,
+}: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const mutation = useEntityMutation({
@@ -41,7 +51,8 @@ export function PharmacyContactsTab({ pharmacyId, pharmacyName, contacts }: Prop
         open={open}
         submitting={create.isPending}
         pharmacies={[{ id: pharmacyId, name: pharmacyName }]}
-        defaultValues={{ pharmacyId }}
+        recruiters={recruiters}
+        defaultValues={{ pharmacyId, referentId: pharmacyReferentId ?? null }}
         lockedPharmacyId={pharmacyId}
         onClose={() => setOpen(false)}
         onSubmit={(data) => create.mutate(data)}

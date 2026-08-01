@@ -14,6 +14,7 @@ type Ref = { id: string; name: string }
 type Props = {
   defaultValues?: Partial<ContactInput>
   pharmacies: Ref[]
+  recruiters: Ref[]
   lockedPharmacyId?: string
   excludeContactId?: string
   submitting: boolean
@@ -24,6 +25,7 @@ type Props = {
 export function ContactForm({
   defaultValues,
   pharmacies,
+  recruiters,
   lockedPharmacyId,
   excludeContactId,
   submitting,
@@ -32,7 +34,7 @@ export function ContactForm({
 }: Props) {
   const { register, handleSubmit, control, formState } = useForm<ContactInput>({
     resolver: zodResolver(contactInputSchema),
-    defaultValues: { role: 'AUTRE', isPrimary: false, ...defaultValues },
+    defaultValues: { role: 'AUTRE', isPrimary: false, referentId: null, ...defaultValues },
   })
   const pharmacyId = useWatchedPharmacyId(control, defaultValues?.pharmacyId)
   const isPrimary = useWatchedPrimaryFlag(control, defaultValues?.isPrimary)
@@ -47,6 +49,7 @@ export function ContactForm({
         control={control}
         errors={formState.errors}
         pharmacyOptions={pharmacyOptions}
+        recruiters={recruiters}
         pharmacyId={pharmacyId}
         isPrimary={isPrimary}
         excludeContactId={excludeContactId}

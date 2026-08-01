@@ -1,5 +1,6 @@
 import type { FilterConfig } from '@/lib/filters/filter-types'
 import { FRENCH_DEPARTMENT_OPTIONS } from '@/lib/constants/french-department-options'
+import { buildReferentFilterOptions } from '@/lib/filters/referent-filter-options'
 import { STATUS_LABELS } from '@/lib/pharmacy-options'
 import { PHARMACY_STATUSES } from '@/view-models/pharmacy-form.schema'
 
@@ -7,7 +8,11 @@ type Ref = { id: string; name: string }
 
 export const PHARMACY_ADVANCED_FILTER_IDS = ['groupement', 'logiciel'] as const
 
-export function buildPharmacyFilterConfig(refs: { groupements: Ref[]; softwares: Ref[] }) {
+export function buildPharmacyFilterConfig(refs: {
+  groupements: Ref[]
+  softwares: Ref[]
+  recruiters: Ref[]
+}) {
   return [
     {
       id: 'statut',
@@ -22,6 +27,13 @@ export function buildPharmacyFilterConfig(refs: { groupements: Ref[]; softwares:
       type: 'multi-select',
       unit: 'dpt',
       options: FRENCH_DEPARTMENT_OPTIONS,
+    },
+    {
+      id: 'referent',
+      label: 'Référent',
+      type: 'multi-select',
+      unit: 'référents',
+      options: buildReferentFilterOptions(refs.recruiters),
     },
     { id: 'missionActive', label: 'Missions actives', type: 'boolean' },
     {

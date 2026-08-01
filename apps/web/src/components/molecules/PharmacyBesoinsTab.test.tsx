@@ -8,6 +8,10 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push, refresh: vi.fn() }),
 }))
 
+vi.mock('next-auth/react', () => ({
+  useSession: () => ({ data: { user: { id: 'u1' } } }),
+}))
+
 describe('PharmacyBesoinsTab', () => {
   it('navigates to the mission detail when a row is clicked', () => {
     render(

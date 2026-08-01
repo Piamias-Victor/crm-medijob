@@ -12,9 +12,10 @@ type Ref = { id: string; name: string }
 type Props = {
   defaultValues: Partial<ContactInput>
   pharmacies: Ref[]
+  recruiters: Ref[]
 }
 
-export function ContactCreatePage({ defaultValues, pharmacies }: Props) {
+export function ContactCreatePage({ defaultValues, pharmacies, recruiters }: Props) {
   const meta = CONTACT_TAB_META.infos
 
   return (
@@ -23,7 +24,11 @@ export function ContactCreatePage({ defaultValues, pharmacies }: Props) {
       tabKey="infos"
     >
       <SectionCard variant="glass" title={meta.title} description={meta.description} bodyClassName="p-5 sm:p-6">
-        <ContactCreateForm defaultValues={defaultValues} pharmacies={pharmacies} />
+        <ContactCreateForm
+          defaultValues={defaultValues}
+          pharmacies={pharmacies}
+          recruiters={recruiters}
+        />
       </SectionCard>
     </EntityDetailShell>
   )

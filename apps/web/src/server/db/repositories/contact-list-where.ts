@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
+import { buildReferentIdWhere } from '@/server/db/repositories/referent-id-where'
 import { NOT_DELETED } from './soft-delete'
 
 export const contactListInclude = {
@@ -13,6 +14,7 @@ export function buildContactListWhere(filters: ContactListFilters = {}): Prisma.
   if (filters.roles?.length) clauses.push({ role: { in: filters.roles } })
   if (filters.pharmacyIds?.length) clauses.push({ pharmacyId: { in: filters.pharmacyIds } })
   if (filters.isPrimary != null) clauses.push({ isPrimary: filters.isPrimary })
+  if (filters.referentIds?.length) clauses.push(buildReferentIdWhere(filters.referentIds))
   if (filters.pharmacyStatuses?.length) {
     pharmacyClauses.push({ status: { in: filters.pharmacyStatuses } })
   }

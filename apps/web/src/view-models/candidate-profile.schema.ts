@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { isAllowedBlobUrl } from '@/server/services/blob'
+import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
 
 export const CONTRACT_TYPES = ['CDI', 'CDD', 'INTERIM', 'VACATION'] as const
 export const CREATE_CONTRACT_TYPES = ['CDI', 'CDD', 'INTERIM'] as const
@@ -25,7 +26,7 @@ export const candidateProfileInputSchema = z.object({
   mobilityNotes: optionalText,
   availableFrom: optionalText,
   notes: optionalText,
-  referentId: z.string().min(1, 'Référent requis'),
+  referentId: optionalReferentIdSchema,
 })
 
 export type CandidateProfileInput = z.infer<typeof candidateProfileInputSchema>

@@ -11,6 +11,7 @@ const entity = {
   isPrimary: true,
   notes: null,
   pharmacyId: 'p1',
+  referentId: null,
   updatedAt: new Date('2026-01-15'),
   pharmacy: { id: 'p1', name: 'Pharmacie du Centre' },
 }

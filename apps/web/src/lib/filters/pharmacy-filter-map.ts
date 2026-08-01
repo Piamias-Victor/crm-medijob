@@ -17,6 +17,7 @@ export function toPharmacyListFilters(values: PharmacyFilterValues): PharmacyLis
     activeMission: values.missionActive ?? undefined,
     groupementIds: values.groupement.length ? values.groupement : undefined,
     softwareIds: values.logiciel.length ? values.logiciel : undefined,
+    referentIds: values.referent.length ? values.referent : undefined,
   }
 }
 

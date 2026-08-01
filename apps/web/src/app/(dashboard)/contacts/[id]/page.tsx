@@ -12,10 +12,11 @@ export default async function Page({ params, searchParams }: Props) {
   const { id } = await params
   const { back } = await searchParams
   const caller = await createServerCaller()
-  const [contact, missions, pharmacies, activities, documents] = await Promise.all([
+  const [contact, missions, pharmacies, pharmacyRefs, activities, documents] = await Promise.all([
     caller.contact.getById({ id }),
     caller.contact.missions({ id }),
     caller.contact.pharmacyOptions(),
+    caller.pharmacy.referentials(),
     caller.activityLog.listByEntity({ entityType: 'CONTACT', entityId: id }),
     caller.document.listByEntity({ entityType: 'CONTACT', entityId: id }),
   ])
@@ -27,6 +28,7 @@ export default async function Page({ params, searchParams }: Props) {
       contact={contact}
       missions={missions}
       pharmacies={pharmacies}
+      recruiters={pharmacyRefs.recruiters}
       activities={activities}
       documents={documents}
       backHref={parseContactBackHref(back)}

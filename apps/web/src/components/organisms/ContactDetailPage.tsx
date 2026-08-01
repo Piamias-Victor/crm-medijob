@@ -18,6 +18,7 @@ type Props = {
   contact: ContactDetailPayload
   missions: ContactMissionRow[]
   pharmacies: RefItem[]
+  recruiters: RefItem[]
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   backHref?: string
@@ -27,6 +28,7 @@ export function ContactDetailPage({
   contact,
   missions,
   pharmacies,
+  recruiters,
   activities,
   documents,
   backHref = '/contacts',
@@ -63,6 +65,7 @@ export function ContactDetailPage({
         contact={contact}
         missions={missions}
         pharmacies={pharmacies}
+        recruiters={recruiters}
         activities={activities}
         documents={documents}
         updating={update.isPending}

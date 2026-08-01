@@ -6,6 +6,7 @@ import type { ContactListEntity } from '@/view-models/contact-list'
 import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
 import type { ContactDetailEntity } from '@/view-models/contact-detail'
 import type { contactInputSchema } from '@/view-models/contact-form.schema'
+import { toReferentIdOrNull } from '@/view-models/optional-referent-id.schema'
 
 type PharmacyRef = { id: string; name: string }
 export type CreatedContact = { id: string }
@@ -48,5 +49,6 @@ export function toContactCreateData(
     role: input.role,
     isPrimary: input.isPrimary,
     notes: input.notes,
+    referentId: toReferentIdOrNull(input.referentId),
   }
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildContactCreateDefaults,
   resolveContactCreatePharmacy,
+  resolveContactCreateReferent,
 } from '@/view-models/contact-create-defaults'
 
 describe('buildContactCreateDefaults', () => {
@@ -9,13 +10,15 @@ describe('buildContactCreateDefaults', () => {
     expect(buildContactCreateDefaults()).toEqual({
       role: 'AUTRE',
       isPrimary: false,
+      referentId: null,
     })
   })
 
-  it('pre-fills pharmacyId when provided', () => {
-    expect(buildContactCreateDefaults('p1')).toEqual({
+  it('pre-fills pharmacyId and referent when provided', () => {
+    expect(buildContactCreateDefaults({ pharmacyId: 'p1', referentId: 'u1' })).toEqual({
       role: 'AUTRE',
       isPrimary: false,
+      referentId: 'u1',
       pharmacyId: 'p1',
     })
   })
@@ -34,5 +37,15 @@ describe('resolveContactCreatePharmacy', () => {
 
   it('ignores empty pharmacyId', () => {
     expect(resolveContactCreatePharmacy(undefined, pharmacies)).toBeUndefined()
+  })
+})
+
+describe('resolveContactCreateReferent', () => {
+  it('préfère le référent pharmacie au user courant', () => {
+    expect(resolveContactCreateReferent('pharma-ref', 'session-user')).toBe('pharma-ref')
+  })
+
+  it('fallback user courant si pharmacie sans référent', () => {
+    expect(resolveContactCreateReferent(null, 'session-user')).toBe('session-user')
   })
 })

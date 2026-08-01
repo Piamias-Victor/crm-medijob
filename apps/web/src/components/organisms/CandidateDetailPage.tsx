@@ -51,7 +51,7 @@ export function CandidateDetailPage({
           name={name}
           jobTitle={profile.jobTitleName}
           city={profile.city ?? undefined}
-          referentName={profile.referentName}
+          referentName={profile.referentName ?? undefined}
         />
       }
       tabs={

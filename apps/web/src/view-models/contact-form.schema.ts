@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
 
 export const CONTACT_ROLES = [
   'TITULAIRE',
@@ -25,6 +26,7 @@ export const contactInputSchema = z.object({
   role: z.enum(CONTACT_ROLES).default('AUTRE'),
   isPrimary: z.boolean().default(false),
   notes: optionalText,
+  referentId: optionalReferentIdSchema,
 })
 
 export type ContactInput = z.input<typeof contactInputSchema>

@@ -1,6 +1,7 @@
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { groupementRepository } from '@/server/db/repositories/groupement.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
+import { userRepository } from '@/server/db/repositories/user.repository'
 import { findPharmacyQuickViewById } from '@/server/db/repositories/pharmacy-quick-view.repo'
 import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { searchSiret as searchSiretService } from '@/server/services/siret'
@@ -18,6 +19,7 @@ export const pharmacyRouter = makePharmacyRouter({
   referentials: {
     listGroupements: () => groupementRepository.list(),
     listSoftwares: () => softwareRepository.list(),
+    listRecruiters: () => userRepository.listRecruiters(),
   },
   createGroupement: (name) => groupementRepository.create({ name }),
   createSoftware: (name) => softwareRepository.create({ name }),

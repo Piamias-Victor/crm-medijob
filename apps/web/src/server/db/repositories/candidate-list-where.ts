@@ -5,6 +5,7 @@ import {
   buildAvailableWhere,
   buildProfileIncompleteWhere,
 } from '@/server/db/repositories/candidate-list-where-clauses'
+import { buildReferentIdWhere } from '@/server/db/repositories/referent-id-where'
 
 export function buildCandidateListWhere(
   filters: CandidateListFilters = {},
@@ -16,7 +17,7 @@ export function buildCandidateListWhere(
   if (filters.departments?.length) {
     clauses.push({ OR: filters.departments.map((d) => ({ postalCode: { startsWith: d } })) })
   }
-  if (filters.referentIds?.length) clauses.push({ referentId: { in: filters.referentIds } })
+  if (filters.referentIds?.length) clauses.push(buildReferentIdWhere(filters.referentIds))
   if (filters.softwareIds?.length) {
     clauses.push({ softwares: { some: { softwareId: { in: filters.softwareIds } } } })
   }

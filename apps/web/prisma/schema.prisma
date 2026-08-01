@@ -135,11 +135,13 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  referents   Candidate[]   @relation("ReferentCandidates")
-  missionRefs Mission[]     @relation("ReferentMissions")
-  activities  ActivityLog[]
-  accounts    Account[]
-  sessions    Session[]
+  referents     Candidate[] @relation("ReferentCandidates")
+  missionRefs   Mission[]   @relation("ReferentMissions")
+  pharmacyRefs  Pharmacy[]  @relation("ReferentPharmacies")
+  contactRefs   Contact[]   @relation("ReferentContacts")
+  activities    ActivityLog[]
+  accounts      Account[]
+  sessions      Session[]
 
   @@index([deletedAt])
 }
@@ -217,12 +219,12 @@ model Candidate {
   cvSummary         String?
   anonymizedProfile String?
   notes             String?
-  referentId        String
+  referentId        String?
   deletedAt         DateTime?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  referent            User                          @relation("ReferentCandidates", fields: [referentId], references: [id])
+  referent            User?                         @relation("ReferentCandidates", fields: [referentId], references: [id], onDelete: SetNull)
   jobTitle            JobTitle                      @relation(fields: [jobTitleId], references: [id])
   softwares           CandidateSoftware[]
   contractPreferences CandidateContractPreference[]
@@ -273,12 +275,14 @@ model Pharmacy {
   softwareId        String?
   paymentConditions String?
   notes             String?
+  referentId        String?
   deletedAt         DateTime?
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
   groupement Groupement?   @relation(fields: [groupementId], references: [id])
   software   Software?     @relation(fields: [softwareId], references: [id])
+  referent   User?         @relation("ReferentPharmacies", fields: [referentId], references: [id], onDelete: SetNull)
   contacts   Contact[]
   missions   Mission[]
   activities ActivityLog[] @relation("PharmacyActivities")
@@ -289,6 +293,7 @@ model Pharmacy {
   @@index([status])
   @@index([softwareId])
   @@index([postalCode])
+  @@index([referentId])
 }
 
 // ─── Contacts ─────────────────────────────────────────────────
@@ -303,17 +308,20 @@ model Contact {
   role       ContactRole @default(AUTRE)
   isPrimary  Boolean     @default(false)
   notes      String?
+  referentId String?
   deletedAt  DateTime?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
   pharmacy   Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  referent   User?         @relation("ReferentContacts", fields: [referentId], references: [id], onDelete: SetNull)
   missions   Mission[]
   activities ActivityLog[] @relation("ContactActivities")
   documents  Document[]    @relation("ContactDocuments")
 
   @@index([deletedAt])
   @@index([pharmacyId])
+  @@index([referentId])
 }
 
 // ─── Missions ─────────────────────────────────────────────────
@@ -322,7 +330,7 @@ model Mission {
   id               String        @id @default(cuid())
   pharmacyId       String
   contactId        String?
-  referentId       String
+  referentId       String?
   jobTitleId       String
   title            String
   description      String?
@@ -343,7 +351,7 @@ model Mission {
 
   pharmacy   Pharmacy           @relation(fields: [pharmacyId], references: [id])
   contact    Contact?           @relation(fields: [contactId], references: [id])
-  referent   User               @relation("ReferentMissions", fields: [referentId], references: [id])
+  referent   User?              @relation("ReferentMissions", fields: [referentId], references: [id], onDelete: SetNull)
   jobTitle   JobTitle           @relation(fields: [jobTitleId], references: [id])
   candidates MissionCandidate[]
   jobOffer   JobOffer?

@@ -10,16 +10,18 @@ type Ref = { id: string; name: string }
 type Props = {
   contact: ContactDetailPayload
   pharmacies: Ref[]
+  recruiters: Ref[]
   submitting: boolean
   onSubmit: (data: ContactInput) => void
 }
 
-export function ContactInfoForm({ contact, pharmacies, submitting, onSubmit }: Props) {
+export function ContactInfoForm({ contact, pharmacies, recruiters, submitting, onSubmit }: Props) {
   return (
     <ContactForm
       key={contact.id + contact.updatedAt.toISOString()}
       defaultValues={toContactFormValues(contact)}
       pharmacies={pharmacies}
+      recruiters={recruiters}
       excludeContactId={contact.id}
       submitting={submitting}
       onSubmit={onSubmit}

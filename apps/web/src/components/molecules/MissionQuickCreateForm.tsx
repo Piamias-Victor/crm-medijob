@@ -18,6 +18,7 @@ type Props = {
   pharmacies?: Ref[]
   jobTitles: Ref[]
   recruiters: Ref[]
+  defaultReferentId?: string | null
   submitting: boolean
   errorMessage?: string | null
   onSubmit: (data: MissionQuickCreateInput) => void
@@ -29,6 +30,7 @@ export function MissionQuickCreateForm({
   pharmacies,
   jobTitles: initialJobTitles,
   recruiters,
+  defaultReferentId = null,
   submitting,
   errorMessage,
   onSubmit,
@@ -40,7 +42,7 @@ export function MissionQuickCreateForm({
     defaultValues: {
       pharmacyId: pharmacyId ?? pharmacies?.[0]?.id,
       contractType: 'CDI',
-      referentId: recruiters[0]?.id,
+      referentId: defaultReferentId,
       jobTitleId: initialJobTitles[0]?.id,
     },
   })

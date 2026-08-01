@@ -26,6 +26,7 @@ export function toContactDetail(entity: ContactDetailEntity): ContactDetailPaylo
     pharmacyId: entity.pharmacyId,
     pharmacyName: entity.pharmacy.name,
     pharmacy: entity.pharmacy,
+    referentId: entity.referentId,
     updatedAt: entity.updatedAt,
   }
 }

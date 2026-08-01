@@ -17,7 +17,7 @@ export type PharmacyMissionEntity = {
   contractType: ContractType
   startDate: Date
   jobTitle: { name: string }
-  referent: { name: string }
+  referent: { name: string } | null
 }
 
 export type PharmacyDetailEntity = {
@@ -36,6 +36,7 @@ export type PharmacyDetailEntity = {
   softwareId: string | null
   paymentConditions: string | null
   notes: string | null
+  referentId: string | null
   updatedAt: Date
   groupement: { id: string; name: string } | null
   software: { id: string; name: string } | null
@@ -59,7 +60,7 @@ export type PharmacyMissionRow = {
   contractType: ContractType
   startDate: Date
   jobTitle: string
-  referent: string
+  referent: string | null
 }
 
 export type PharmacyDetailPayload = {

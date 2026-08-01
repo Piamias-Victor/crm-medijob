@@ -31,12 +31,12 @@ export type MissionDetailEntity = {
   notes: string | null
   pharmacyId: string
   contactId: string | null
-  referentId: string
+  referentId: string | null
   jobTitleId: string
   updatedAt: Date
   pharmacy: { name: string; city: string | null }
   jobTitle: { name: string }
-  referent: { name: string }
+  referent: { name: string } | null
   contact: { id: string; firstName: string; lastName: string } | null
   candidates: MissionCandidateEntity[]
 }
@@ -67,7 +67,7 @@ export type MissionFormSource = {
   notes: string | null
   pharmacyId: string
   contactId: string | null
-  referentId: string
+  referentId: string | null
   jobTitleId: string
 }
 
@@ -77,7 +77,7 @@ export type MissionDetailPayload = {
   pharmacyName: string
   city: string | null
   jobTitleName: string
-  referentName: string
+  referentName: string | null
   updatedAt: Date
   formSource: MissionFormSource
   candidates: MissionCandidateRow[]
