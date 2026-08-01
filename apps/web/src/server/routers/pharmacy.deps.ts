@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client'
+import type { LogEntityLifecycle } from '@/server/activity-log/log-entity-lifecycle'
 import type { SiretResult } from '@/server/services/siret'
 import type { PharmacyListEntity } from '@/view-models/pharmacy-list'
 import type { PharmacyListFilters } from '@/view-models/pharmacy-list-filters.schema'
@@ -21,4 +22,5 @@ export type PharmacyDeps = {
   createGroupement: (name: string) => Promise<Ref>
   createSoftware: (name: string) => Promise<Ref>
   searchSiret: (query: string) => Promise<SiretResult[]>
+  logLifecycle: LogEntityLifecycle
 }

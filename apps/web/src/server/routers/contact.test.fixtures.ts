@@ -52,6 +52,7 @@ export function makeContactDeps(overrides: Partial<ContactDeps> = {}): ContactDe
     pharmacies: {
       listForPicker: vi.fn().mockResolvedValue([{ id: 'p1', name: 'Pharmacie du Centre' }]),
     },
+    logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
 }

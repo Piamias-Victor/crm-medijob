@@ -75,6 +75,34 @@ describe('candidateRouter', () => {
       }),
     )
     expect(result).toEqual({ id: 'c-new' })
+    expect(deps.logLifecycle).toHaveBeenCalledWith({
+      action: 'created',
+      entityType: 'CANDIDATE',
+      entityId: 'c-new',
+      user: expect.objectContaining({ id: 'u1' }),
+    })
+  })
+
+  it('logs ActivityLog lifecycle on update', async () => {
+    const deps = makeCandidateDeps()
+    await caller(deps).update({
+      id: 'c1',
+      data: {
+        firstName: 'Camille',
+        lastName: 'Durand',
+        jobTitleId: 'jt1',
+        referentId: 'u1',
+        mobilityRadiusKm: 30,
+        softwareIds: [],
+        contractTypes: [],
+      },
+    })
+    expect(deps.logLifecycle).toHaveBeenCalledWith({
+      action: 'updated',
+      entityType: 'CANDIDATE',
+      entityId: 'c1',
+      user: expect.objectContaining({ id: 'u1' }),
+    })
   })
 
   it('rejects unauthenticated callers', async () => {

@@ -13,6 +13,7 @@ import { toContactPrimaryName } from '@/view-models/contact-primary-warning'
 import { toContactCreateData, type ContactDeps } from '@/server/routers/contact.deps'
 import { idSchema } from '@/lib/schemas/entity-id'
 import { contactListFiltersSchema } from '@/view-models/contact-list-filters.schema'
+import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 
 export type { ContactDeps } from '@/server/routers/contact.deps'
 
@@ -48,13 +49,26 @@ export function makeContactRouter(deps: ContactDeps) {
     listByPharmacyIds: protectedProcedure.input(pharmacyIdsSchema).query(async ({ input }) =>
       groupContactsByPharmacy(await deps.contacts.listByPharmacyIds(input.pharmacyIds)),
     ),
-    create: protectedProcedure.input(contactInputSchema).mutation(async ({ input }) => {
+    create: protectedProcedure.input(contactInputSchema).mutation(async ({ ctx, input }) => {
       const contact = await deps.contacts.create(toContactCreateData(input))
+      await deps.logLifecycle({
+        action: 'created',
+        entityType: 'CONTACT',
+        entityId: contact.id,
+        user: ctx.session.user,
+      })
       return { id: contact.id }
     }),
-    update: protectedProcedure
-      .input(updateContactSchema)
-      .mutation(({ input }) => deps.contacts.update(input.id, toContactCreateData(input.data))),
+    update: protectedProcedure.input(updateContactSchema).mutation(async ({ ctx, input }) => {
+      const row = await deps.contacts.update(input.id, toContactCreateData(input.data))
+      await deps.logLifecycle({
+        action: 'updated',
+        entityType: 'CONTACT',
+        entityId: input.id,
+        user: ctx.session.user,
+      })
+      return row
+    }),
     setPrimary: protectedProcedure.input(idSchema).mutation(async ({ input }) => {
       const contact = await deps.contacts.setPrimary(input.id)
       return contact ? toContactDetail(contact) : null
@@ -73,4 +87,5 @@ export const contactRouter = makeContactRouter({
       listByContact: (id) => missionRepository.listByContact(id),
     }),
   pharmacies: { listForPicker: listPharmacyPickerOptions },
+  logLifecycle: defaultLogLifecycle,
 })

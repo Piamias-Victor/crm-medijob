@@ -47,6 +47,31 @@ describe('pharmacyRouter', () => {
     expect(created).toEqual(expect.objectContaining({ id: 'new', name: 'Test' }))
   })
 
+  it('logs ActivityLog lifecycle on create', async () => {
+    const deps = makeDeps()
+    await pharmacyCaller(deps).create({ name: 'Test' })
+    expect(deps.logLifecycle).toHaveBeenCalledWith({
+      action: 'created',
+      entityType: 'PHARMACY',
+      entityId: 'new',
+      user: expect.objectContaining({ id: 'u1' }),
+    })
+  })
+
+  it('logs ActivityLog lifecycle on update', async () => {
+    const deps = makeDeps()
+    await pharmacyCaller(deps).update({
+      id: 'p1',
+      data: { name: 'Pharmacie', status: 'ACTIF' },
+    })
+    expect(deps.logLifecycle).toHaveBeenCalledWith({
+      action: 'updated',
+      entityType: 'PHARMACY',
+      entityId: 'p1',
+      user: expect.objectContaining({ id: 'u1' }),
+    })
+  })
+
   it('delegates SIRET search to the service', async () => {
     const deps = makeDeps()
     const res = await pharmacyCaller(deps).searchSiret({ query: 'pharmacie' })

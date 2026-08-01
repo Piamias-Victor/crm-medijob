@@ -1,16 +1,12 @@
 import { z } from 'zod'
 import type { MissionStatus } from '@prisma/client'
 import { router, protectedProcedure } from '@/server/trpc'
-import { missionRepository } from '@/server/db/repositories/mission.repository'
-import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
-import { userRepository } from '@/server/db/repositories/user.repository'
-import { runMissionStatusTransition } from '@/server/mission/transition-status.adapter'
-import { loadMissionReferentials } from '@/server/read-models/mission-referentials'
-import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { toMissionDetail, type MissionDetailEntity } from '@/view-models/mission-detail'
 import { toMissionUpdateData } from '@/view-models/mission-update'
 import { missionQuickCreateSchema } from '@/view-models/mission-quick-create.schema'
 import type { RawMission } from '@/view-models/mission-kanban.types'
+import type { LogEntityLifecycle } from '@/server/activity-log/log-entity-lifecycle'
+import type { loadMissionReferentials } from '@/server/read-models/mission-referentials'
 import {
   idSchema,
   markAnnuleeSchema,
@@ -31,6 +27,7 @@ export type MissionDeps = {
   createJobTitle: (name: string) => Promise<Ref>
   referentials: () => ReturnType<typeof loadMissionReferentials>
   updateStatus: (input: UpdateMissionStatusInput) => Promise<{ id: string; status: UpdateMissionStatusInput['status'] }>
+  logLifecycle: LogEntityLifecycle
 }
 
 export function makeMissionRouter(deps: MissionDeps) {
@@ -41,16 +38,31 @@ export function makeMissionRouter(deps: MissionDeps) {
       return mission ? toMissionDetail(mission) : null
     }),
     referentials: protectedProcedure.query(() => deps.referentials()),
-    /** Quick-create from pharmacy fiche — delegates to missionRepository.createQuick. */
     create: protectedProcedure
       .input(missionQuickCreateSchema)
-      .mutation(({ input }) => deps.createQuick(input)),
+      .mutation(async ({ ctx, input }) => {
+        const row = await deps.createQuick(input)
+        await deps.logLifecycle({
+          action: 'created',
+          entityType: 'MISSION',
+          entityId: row.id,
+          user: ctx.session.user,
+        })
+        return row
+      }),
     createJobTitle: protectedProcedure
       .input(nameSchema)
       .mutation(({ input }) => deps.createJobTitle(input.name)),
-    update: protectedProcedure
-      .input(updateMissionSchema)
-      .mutation(({ input }) => deps.update(input.id, toMissionUpdateData(input.data))),
+    update: protectedProcedure.input(updateMissionSchema).mutation(async ({ ctx, input }) => {
+      const row = await deps.update(input.id, toMissionUpdateData(input.data))
+      await deps.logLifecycle({
+        action: 'updated',
+        entityType: 'MISSION',
+        entityId: input.id,
+        user: ctx.session.user,
+      })
+      return row
+    }),
     markPourvu: protectedProcedure
       .input(markPourvuSchema)
       .mutation(({ input }) =>
@@ -64,26 +76,5 @@ export function makeMissionRouter(deps: MissionDeps) {
       .mutation(({ input }) => deps.updateStatus(input)),
   })
 }
-
-export const missionRouter = makeMissionRouter({
-  list: () => missionRepository.list(),
-  findDetailById: (id) => missionRepository.findDetailById(id),
-  update: (id, data) => missionRepository.update(id, data),
-  createQuick: (input) =>
-    missionRepository.createQuick({ ...input, startDate: input.startDate ?? new Date() }),
-  createJobTitle: (name) => jobTitleRepository.create({ name }),
-  referentials: () =>
-    loadMissionReferentials({
-      listJobTitles: () => jobTitleRepository.list(),
-      listRecruiters: () => userRepository.listRecruiters(),
-      listPharmacies: listPharmacyPickerOptions,
-    }),
-  updateStatus: (input) =>
-    runMissionStatusTransition({
-      missionId: input.id,
-      status: input.status,
-      placedCandidateId: input.placedCandidateId,
-    }),
-})
 
 export type { UpdateMissionStatusInput } from '@/server/routers/mission.router.schema'
