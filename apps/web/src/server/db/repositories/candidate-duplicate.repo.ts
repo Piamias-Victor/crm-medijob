@@ -23,6 +23,19 @@ export function makeCandidateDuplicateRepository(db: PrismaClient) {
         where: { ...NOT_DELETED, email: { equals: email.trim(), mode: 'insensitive' } },
         select: identitySelect,
       }),
+    findIdentityByEmailAny: (email: string) =>
+      db.candidate.findFirst({
+        where: { email: { equals: email.trim(), mode: 'insensitive' } },
+        select: identitySelect,
+      }),
+    findIdentityByPhoneAny: async (phone: string) => {
+      const rows = await db.candidate.findMany({
+        where: { phone: phoneContainsFilter(phone) },
+        select: identitySelect,
+        take: 25,
+      })
+      return rows.find((row) => row.phone && phonesMatch(row.phone, phone)) ?? null
+    },
     findIdentityByNamePhone: async (firstName: string, lastName: string, phone: string) => {
       const rows = await db.candidate.findMany({
         where: {

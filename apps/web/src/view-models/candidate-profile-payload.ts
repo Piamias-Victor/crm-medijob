@@ -4,6 +4,7 @@ import {
   toCandidateFormValues,
 } from '@/view-models/candidate-profile'
 import { toCandidateMissionRows } from '@/view-models/candidate-missions'
+import { toCandidateHistoryPositionings } from '@/view-models/candidate-history'
 import type { CandidateProfileRecord } from '@/server/db/repositories/candidate-profile.repository'
 import { filterActivePositionings } from '@/lib/kanban-active-positionings'
 import { toEffectiveCandidateStatus } from '@/view-models/candidate-status'
@@ -45,6 +46,7 @@ export function toCandidateProfilePayload(candidate: CandidateProfileRecord) {
     softwareIds: candidate.softwares.map((s) => s.softwareId),
     contractTypes: candidate.contractPreferences.map((p) => p.contractType),
     missions: toCandidateMissionRows(candidate.missions),
+    historyPositionings: toCandidateHistoryPositionings(candidate.missions),
     formValues: toCandidateFormValues({
       firstName: candidate.firstName,
       lastName: candidate.lastName,

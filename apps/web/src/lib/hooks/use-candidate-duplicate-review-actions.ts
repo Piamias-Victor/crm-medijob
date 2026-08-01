@@ -11,6 +11,10 @@ import {
 import { clearCandidateDuplicateDraft } from '@/lib/candidate-duplicate-draft-storage'
 import { useCandidateDuplicateDraft } from '@/lib/hooks/use-candidate-duplicate-draft'
 import {
+  cancelCandidateImportReview,
+  finishCandidateImportReview,
+} from '@/lib/candidate-import-finish-navigation'
+import {
   toProfileInputFromDuplicateRow,
   type CandidateDuplicateRow,
 } from '@/view-models/candidate-duplicate-compare'
@@ -21,19 +25,25 @@ export function useCandidateDuplicateReviewActions(existingId: string) {
   const mergeToast = useEntityMutation({ successMessage: DUPLICATE_MERGE_SUCCESS })
   const createToast = useEntityMutation({ successMessage: DUPLICATE_CREATE_SUCCESS })
   const updateToast = useEntityMutation({ successMessage: DUPLICATE_UPDATE_SUCCESS })
+  const finish = (id?: string) => {
+    if (draft?.mode === 'import') {
+      finishCandidateImportReview((href) => router.push(href), id)
+      return
+    }
+    clearCandidateDuplicateDraft()
+    router.push(id ? `/candidats/${id}` : '/candidats')
+  }
   const merge = trpc.candidate.merge.useMutation({
     onSuccess: (result) => {
-      clearCandidateDuplicateDraft()
       mergeToast.onSuccess()
-      router.push(`/candidats/${result.id}`)
+      finish(result.id)
     },
     onError: mergeToast.onError,
   })
   const create = trpc.candidate.create.useMutation({
     onSuccess: (result) => {
-      clearCandidateDuplicateDraft()
       createToast.onSuccess()
-      router.push(`/candidats/${result.id}`)
+      finish(result.id)
     },
     onError: createToast.onError,
   })
@@ -48,11 +58,10 @@ export function useCandidateDuplicateReviewActions(existingId: string) {
 
   async function onMerge(row: CandidateDuplicateRow) {
     if (!draft) return
-    const data = toProfileInputFromDuplicateRow(row)
     await merge.mutateAsync({
       keptId: existingId,
       absorbedId: draft.mode === 'edit' ? draft.absorbedId : undefined,
-      data,
+      data: toProfileInputFromDuplicateRow(row),
       cvUrl: row.cvUrl || draft.cvUrl || undefined,
     })
   }
@@ -67,11 +76,11 @@ export function useCandidateDuplicateReviewActions(existingId: string) {
   }
 
   function onCancel() {
-    if (!draft) {
-      router.push('/candidats')
+    if (draft?.mode === 'import') {
+      cancelCandidateImportReview((href) => router.push(href), draft.returnPath)
       return
     }
-    router.push(draft.returnPath)
+    router.push(draft?.returnPath ?? '/candidats')
   }
 
   return { draft, onMerge, onIgnore, onCancel }
