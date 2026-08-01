@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useCallback, useMemo, useState } from 'react'
-import { Building2, Plus } from 'lucide-react'
+import { Building2, Plus, Upload } from 'lucide-react'
 import { accentButtonClassName } from '@/lib/button-styles'
 import { EntityListPageShell } from '@/components/molecules/EntityListPageShell'
 import { PharmacyTable } from '@/components/organisms/pharmacy-table/pharmacy-table'
@@ -38,10 +38,19 @@ export function PharmaciesPage({ initialRows, serverFilters, filterConfig }: Pro
       sectionTitle="Portefeuille client"
       sectionDescription="Officines, groupements, contacts et missions en cours."
       action={
-        <Link href="/pharmacies/new" className={accentButtonClassName}>
-          <Plus className="size-4" />
-          Nouvelle pharmacie
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/pharmacies/import"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface"
+          >
+            <Upload className="size-4" />
+            Importer CSV
+          </Link>
+          <Link href="/pharmacies/new" className={accentButtonClassName}>
+            <Plus className="size-4" />
+            Nouvelle pharmacie
+          </Link>
+        </div>
       }
     >
       <PharmacyTable

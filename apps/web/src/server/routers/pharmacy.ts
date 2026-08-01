@@ -13,6 +13,7 @@ import {
 import { pharmacyListFiltersSchema } from '@/view-models/pharmacy-list-filters.schema'
 import { idSchema } from '@/lib/schemas/entity-id'
 import type { PharmacyDeps } from '@/server/routers/pharmacy.deps'
+import { pharmacyDuplicateRoutes } from '@/server/routers/pharmacy-duplicate-routes'
 
 export type { PharmacyDeps } from '@/server/routers/pharmacy.deps'
 
@@ -72,5 +73,6 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     createSoftware: protectedProcedure
       .input(nameSchema)
       .mutation(async ({ input }) => deps.createSoftware(input.name)),
+    ...pharmacyDuplicateRoutes(deps),
   })
 }

@@ -13,6 +13,7 @@ export type PharmacyFormSource = {
   status: PharmacyStatus
   groupementId: string | null
   softwareId: string | null
+  notes?: string | null
   referentId?: string | null
 }
 
@@ -30,6 +31,7 @@ export function toPharmacyFormValues(p: PharmacyFormSource): Partial<PharmacyInp
     status: p.status,
     groupementId: p.groupementId ?? undefined,
     softwareId: p.softwareId ?? undefined,
+    notes: p.notes ?? undefined,
     referentId: p.referentId ?? null,
   }
 }
