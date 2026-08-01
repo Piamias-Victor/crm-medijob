@@ -44,6 +44,7 @@ export function makeMissionDeps(overrides: Partial<MissionDeps> = {}): MissionDe
     createJobTitle: vi.fn().mockResolvedValue({ id: 'jt1', name: 'Préparateur' }),
     referentials: vi.fn().mockResolvedValue({ jobTitles: [], recruiters: [], pharmacies: [] }),
     updateStatus: vi.fn().mockResolvedValue({ id: 'm1', status: 'EN_RECHERCHE' }),
+    logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
 }

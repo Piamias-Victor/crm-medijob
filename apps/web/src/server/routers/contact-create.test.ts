@@ -17,6 +17,26 @@ describe('contactRouter mutations and primary lookup', () => {
       role: 'TITULAIRE',
     })
     expect(result).toEqual({ id: 'new-c1' })
+    expect(deps.logLifecycle).toHaveBeenCalledWith({
+      action: 'created',
+      entityType: 'CONTACT',
+      entityId: 'new-c1',
+      user: expect.objectContaining({ id: 'u1' }),
+    })
+  })
+
+  it('logs ActivityLog lifecycle on update', async () => {
+    const deps = makeContactDeps()
+    await contactCaller(deps).update({
+      id: 'c1',
+      data: { pharmacyId: 'p1', firstName: 'Marie', lastName: 'Curie' },
+    })
+    expect(deps.logLifecycle).toHaveBeenCalledWith({
+      action: 'updated',
+      entityType: 'CONTACT',
+      entityId: 'c1',
+      user: expect.objectContaining({ id: 'u1' }),
+    })
   })
 
   it('returns primary contact name for pharmacy', async () => {

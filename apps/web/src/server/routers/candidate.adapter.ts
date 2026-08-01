@@ -11,6 +11,7 @@ import { createCvExtractionProvider } from '@/server/ai/cv-extraction-provider'
 import { runCvExtraction } from '@/server/ai/cv-extraction'
 import { createAssistantProvider } from '@/server/ai/provider'
 import { createGeoLookup, createGeoQueryLookup } from '@/server/matching/distance'
+import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 
 const cvProvider = createCvExtractionProvider()
@@ -65,4 +66,5 @@ export const candidateRouter = makeCandidateRouter({
     candidateRepository.findIdentityByNamePhone(firstName, lastName, phone),
   mergeCandidates: (keptId, absorbedId, data) =>
     candidateRepository.mergeCandidates(keptId, absorbedId, data),
+  logLifecycle: defaultLogLifecycle,
 })

@@ -25,6 +25,7 @@ describe('prisma error middleware', () => {
         createGroupement: vi.fn(),
         createSoftware: vi.fn(),
         searchSiret: vi.fn(),
+        logLifecycle: vi.fn().mockResolvedValue(undefined),
       }),
     )({
       session: { user: { id: 'u1', role: 'RECRUTEUR' }, expires: '2999-01-01' },

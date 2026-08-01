@@ -45,10 +45,26 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     referentials: protectedProcedure.query(() => deps.referentials()),
     create: protectedProcedure
       .input(candidateCreateInputSchema)
-      .mutation(({ input }) => deps.createProfile(toCandidateCreateData(input))),
-    update: protectedProcedure.input(updateCandidateSchema).mutation(({ input }) =>
-      deps.updateProfile(input.id, toCandidateUpdateData(input.data)),
-    ),
+      .mutation(async ({ ctx, input }) => {
+        const row = await deps.createProfile(toCandidateCreateData(input))
+        await deps.logLifecycle({
+          action: 'created',
+          entityType: 'CANDIDATE',
+          entityId: row.id,
+          user: ctx.session.user,
+        })
+        return row
+      }),
+    update: protectedProcedure.input(updateCandidateSchema).mutation(async ({ ctx, input }) => {
+      const row = await deps.updateProfile(input.id, toCandidateUpdateData(input.data))
+      await deps.logLifecycle({
+        action: 'updated',
+        entityType: 'CANDIDATE',
+        entityId: input.id,
+        user: ctx.session.user,
+      })
+      return row
+    }),
     extractCvDraft: protectedProcedure.input(extractCvDraftSchema).mutation(({ input }) =>
       handleExtractCvDraft(deps, input),
     ),

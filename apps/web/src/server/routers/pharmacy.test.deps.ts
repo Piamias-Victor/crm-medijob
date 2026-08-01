@@ -9,7 +9,10 @@ import {
 } from '@/server/routers/pharmacy.test.fixtures'
 import type { UserRole } from '@/server/auth/permissions'
 
-type TestSession = { user: { id: string; role: UserRole }; expires: string }
+type TestSession = {
+  user: { id: string; role: UserRole; name?: string | null; email?: string | null }
+  expires: string
+}
 
 export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
   return {
@@ -28,12 +31,13 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
     createGroupement: vi.fn().mockResolvedValue({ id: 'g1', name: 'Giphar' }),
     createSoftware: vi.fn().mockResolvedValue({ id: 's1', name: 'Winpharma' }),
     searchSiret: vi.fn().mockResolvedValue([{ siret: '1', name: 'X', address: '', city: '', postalCode: '' }]),
+    logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
 }
 
 export const recruteurSession: TestSession = {
-  user: { id: 'u1', role: 'RECRUTEUR' },
+  user: { id: 'u1', role: 'RECRUTEUR', name: 'Recruteur Demo' },
   expires: '2999-01-01',
 }
 export const directionSession: TestSession = {

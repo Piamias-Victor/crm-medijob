@@ -1,4 +1,5 @@
 import type { candidateRepository } from '@/server/db/repositories/candidate.repository'
+import type { LogEntityLifecycle } from '@/server/activity-log/log-entity-lifecycle'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
 import type { CandidateCvDeps } from '@/server/routers/candidate-cv'
@@ -34,4 +35,5 @@ export type CandidateDeps = CandidateCvDeps &
     findIdentityByEmail: typeof candidateRepository.findIdentityByEmail
     findIdentityByNamePhone: typeof candidateRepository.findIdentityByNamePhone
     mergeCandidates: typeof candidateRepository.mergeCandidates
+    logLifecycle: LogEntityLifecycle
   }

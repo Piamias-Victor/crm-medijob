@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import type { z } from 'zod'
+import type { LogEntityLifecycle } from '@/server/activity-log/log-entity-lifecycle'
 import type { listContactMissions } from '@/server/read-models/contact-missions'
 import type { ContactListEntity } from '@/view-models/contact-list'
 import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
@@ -32,6 +33,7 @@ export type ContactDeps = {
   }
   listMissions: (contactId: string) => ReturnType<typeof listContactMissions>
   pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
+  logLifecycle: LogEntityLifecycle
 }
 
 export function toContactCreateData(

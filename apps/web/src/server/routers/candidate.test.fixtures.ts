@@ -87,6 +87,7 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     lookupQuery: vi.fn().mockResolvedValue(null),
     updateDerivedFields: vi.fn(),
     provider: mockProvider,
+    logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
 }

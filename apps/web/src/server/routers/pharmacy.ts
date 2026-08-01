@@ -1,10 +1,5 @@
 import { z } from 'zod'
 import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
-import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
-import { groupementRepository } from '@/server/db/repositories/groupement.repository'
-import { softwareRepository } from '@/server/db/repositories/software.repository'
-import { searchSiret as searchSiretService } from '@/server/services/siret'
-import { findPharmacyQuickViewById } from '@/server/db/repositories/pharmacy-quick-view.repo'
 import { toPharmacyListRow } from '@/view-models/pharmacy-list'
 import { toPharmacyDetail } from '@/view-models/pharmacy-detail'
 import { toPharmacyQuickViewEntity } from '@/view-models/pharmacy-quick-view-entity'
@@ -42,10 +37,28 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     })),
     create: protectedProcedure
       .input(pharmacyInputSchema)
-      .mutation(async ({ input }) => deps.pharmacies.create(toPharmacyUpdateData(input))),
+      .mutation(async ({ ctx, input }) => {
+        const row = await deps.pharmacies.create(toPharmacyUpdateData(input))
+        await deps.logLifecycle({
+          action: 'created',
+          entityType: 'PHARMACY',
+          entityId: row.id,
+          user: ctx.session.user,
+        })
+        return row
+      }),
     update: protectedProcedure
       .input(updatePharmacySchema)
-      .mutation(async ({ input }) => deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))),
+      .mutation(async ({ ctx, input }) => {
+        const row = await deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))
+        await deps.logLifecycle({
+          action: 'updated',
+          entityType: 'PHARMACY',
+          entityId: input.id,
+          user: ctx.session.user,
+        })
+        return row
+      }),
     softDelete: permissionProcedure('softDelete')
       .input(idSchema)
       .mutation(async ({ input }) => deps.pharmacies.softDelete(input.id)),
@@ -60,21 +73,3 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
       .mutation(async ({ input }) => deps.createSoftware(input.name)),
   })
 }
-
-export const pharmacyRouter = makePharmacyRouter({
-  pharmacies: {
-    list: (filters) => pharmacyRepository.list(filters),
-    findDetailById: (id) => pharmacyRepository.findDetailById(id),
-    findQuickViewById: (id) => findPharmacyQuickViewById(id),
-    create: (data) => pharmacyRepository.create(data),
-    update: (id, data) => pharmacyRepository.update(id, data),
-    softDelete: (id) => pharmacyRepository.softDelete(id),
-  },
-  referentials: {
-    listGroupements: () => groupementRepository.list(),
-    listSoftwares: () => softwareRepository.list(),
-  },
-  createGroupement: (name) => groupementRepository.create({ name }),
-  createSoftware: (name) => softwareRepository.create({ name }),
-  searchSiret: (query) => searchSiretService(query),
-})
