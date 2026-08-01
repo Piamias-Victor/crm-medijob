@@ -15,7 +15,7 @@ export function NavLink({ item, active, gated = false, expanded = true }: Props)
       title={item.label}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'flex items-center rounded-md py-2 text-sm font-medium transition-colors',
+        'flex h-9 items-center rounded-md text-sm font-medium transition-colors',
         expanded ? 'gap-3 px-3' : 'justify-center px-0',
         active
           ? 'bg-accent-muted text-accent-hover'

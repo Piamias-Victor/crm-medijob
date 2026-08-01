@@ -5,6 +5,7 @@ import { Menu } from 'lucide-react'
 import { AppAtmosphere } from '@/components/molecules/AppAtmosphere'
 import { AppSidebar } from '@/components/organisms/AppSidebar'
 import { Button } from '@/components/atoms/Button'
+import { MedijobLogo } from '@/components/atoms/MedijobLogo'
 import type { AccessRole } from '@/server/auth/access'
 import { ToastViewport } from '@/components/molecules/ToastViewport'
 import { useSidebarStore } from '@/stores/sidebar-store'
@@ -26,7 +27,7 @@ export function DashboardShell({ children, role }: { children: ReactNode; role: 
           >
             <Menu className="size-5" />
           </Button>
-          <span className="font-bold tracking-tight">MEDIJOB</span>
+          <MedijobLogo className="h-7 w-auto" />
         </header>
     <AppAtmosphere className="flex flex-1 flex-col">
           <main className="relative flex-1 p-6">{children}</main>

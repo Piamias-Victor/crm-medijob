@@ -36,8 +36,8 @@ export function AppSidebar({ role }: { role: AccessRole }) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-border bg-white transition-[width,box-shadow,padding] duration-200 ease-out',
-          expanded ? 'p-3 shadow-lg' : 'p-2 shadow-sm',
+          'fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-border bg-white p-2 transition-[width,box-shadow] duration-300 ease-out',
+          expanded ? 'shadow-lg' : 'shadow-sm',
           open ? 'flex' : 'hidden md:flex',
           expanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH,
         )}

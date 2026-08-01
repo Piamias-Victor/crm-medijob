@@ -1,14 +1,11 @@
 import { navItems } from '@/lib/navigation'
-import { MedicalCross } from '@/components/atoms/MedicalCross'
+import { SidebarBrand } from '@/components/molecules/SidebarBrand'
 
 export function SidebarShowcase() {
   return (
     <div className="flex w-60 flex-col gap-1 rounded-lg border border-border bg-white p-3">
-      <div className="mb-2 flex items-center gap-2 px-2">
-        <span className="grid size-8 place-items-center rounded-md bg-accent text-accent-fg">
-          <MedicalCross className="size-5" />
-        </span>
-        <span className="text-lg font-bold tracking-tight text-fg">MEDIJOB</span>
+      <div className="mb-2">
+        <SidebarBrand />
       </div>
       {navItems.map((item, index) => {
         const Icon = item.icon

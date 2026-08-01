@@ -19,10 +19,10 @@ const THEMES: PipelineStageTheme[] = [
     badge: 'bg-accent-muted/80 text-accent-hover/90',
   },
   {
-    columnBorder: 'border-warning/15',
-    columnBg: 'bg-warning/6',
-    dot: 'bg-warning/45',
-    badge: 'bg-warning/10 text-warning/90',
+    columnBorder: 'border-sky/15',
+    columnBg: 'bg-sky-muted/45',
+    dot: 'bg-sky/45',
+    badge: 'bg-sky-muted text-sky-fg',
   },
   {
     columnBorder: 'border-success/15',
@@ -31,10 +31,10 @@ const THEMES: PipelineStageTheme[] = [
     badge: 'bg-success/10 text-success/90',
   },
   {
-    columnBorder: 'border-primary/12',
-    columnBg: 'bg-primary-muted/20',
-    dot: 'bg-primary-hover/40',
-    badge: 'bg-primary-muted/60 text-primary-hover/80',
+    columnBorder: 'border-rose/12',
+    columnBg: 'bg-rose-muted/40',
+    dot: 'bg-rose/40',
+    badge: 'bg-rose-muted text-rose-fg',
   },
   {
     columnBorder: 'border-error/12',

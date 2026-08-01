@@ -1,6 +1,6 @@
 import type { MissionStatus } from '@prisma/client'
 
-type BadgeVariant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'error'
+type BadgeVariant = 'default' | 'primary' | 'accent' | 'sky' | 'rose' | 'success' | 'warning' | 'error'
 
 export type MissionStatusTheme = {
   badge: BadgeVariant
@@ -12,11 +12,11 @@ export type MissionStatusTheme = {
 
 export const MISSION_STATUS_THEME: Record<MissionStatus, MissionStatusTheme> = {
   A_POURVOIR: {
-    badge: 'warning',
-    dot: 'bg-warning/45',
-    columnBorder: 'border-warning/15',
-    columnBg: 'bg-warning/5',
-    countBadge: 'bg-warning/10 text-warning/90',
+    badge: 'rose',
+    dot: 'bg-rose/45',
+    columnBorder: 'border-rose/15',
+    columnBg: 'bg-rose-muted/40',
+    countBadge: 'bg-rose-muted text-rose-fg',
   },
   EN_RECHERCHE: {
     badge: 'accent',
@@ -26,11 +26,11 @@ export const MISSION_STATUS_THEME: Record<MissionStatus, MissionStatusTheme> = {
     countBadge: 'bg-accent-muted/80 text-accent-hover/90',
   },
   CANDIDATS_PRESENTES: {
-    badge: 'primary',
-    dot: 'bg-primary/45',
-    columnBorder: 'border-primary/15',
-    columnBg: 'bg-primary-muted/25',
-    countBadge: 'bg-primary-muted/70 text-primary/80',
+    badge: 'sky',
+    dot: 'bg-sky/45',
+    columnBorder: 'border-sky/15',
+    columnBg: 'bg-sky-muted/40',
+    countBadge: 'bg-sky-muted text-sky-fg',
   },
   ENTRETIEN_EN_COURS: {
     badge: 'success',
