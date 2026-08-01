@@ -15,17 +15,30 @@ export function NavLink({ item, active, gated = false, expanded = true }: Props)
       title={item.label}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'flex items-center rounded-md py-2 text-sm font-medium transition-colors',
-        expanded ? 'gap-3 px-3' : 'justify-center px-0',
+        'flex h-9 items-center rounded-md text-sm font-medium transition-[color,background-color,gap,padding] duration-300 ease-out',
+        expanded ? 'gap-3 px-3' : 'justify-center gap-0 px-0',
         active
           ? 'bg-accent-muted text-accent-hover'
           : 'text-fg-muted hover:bg-surface hover:text-fg',
       )}
     >
       <Icon className="size-5 shrink-0" />
-      {expanded ? <span className="truncate">{item.label}</span> : null}
-      {gated && expanded ? (
-        <Lock aria-hidden="true" className="ml-auto size-4 shrink-0 text-fg-muted" />
+      <span
+        className={cn(
+          'truncate transition-opacity duration-300 ease-out',
+          expanded ? 'opacity-100' : 'w-0 overflow-hidden opacity-0',
+        )}
+      >
+        {item.label}
+      </span>
+      {gated ? (
+        <Lock
+          aria-hidden="true"
+          className={cn(
+            'ml-auto size-4 shrink-0 text-fg-muted transition-opacity duration-300',
+            expanded ? 'opacity-100' : 'w-0 overflow-hidden opacity-0',
+          )}
+        />
       ) : null}
     </Link>
   )
