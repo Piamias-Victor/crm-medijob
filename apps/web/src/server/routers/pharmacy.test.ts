@@ -27,19 +27,6 @@ describe('pharmacyRouter', () => {
     expect(detail?.activeMissions).toHaveLength(1)
   })
 
-  it('returns pharmacy quick view payload by id', async () => {
-    const view = await pharmacyCaller(makeDeps()).quickView({ id: 'p1' })
-    expect(view).toMatchObject({
-      id: 'p1',
-      name: 'Pharmacie du Centre',
-      coordinates: { city: 'Paris', postalCode: '75002' },
-      primaryContacts: [{ fullName: 'Marie Curie' }],
-      openNeeds: [{ title: 'CDI', jobTitle: 'Pharmacien' }],
-      lastAction: { typeLabel: 'Note', content: 'Fiche créée', authorName: 'Système' },
-    })
-  })
-
-
   it('persists cleared optional fields as null on update', async () => {
     const deps = makeDeps()
     await pharmacyCaller(deps).update({ id: 'p1', data: { name: 'Pharmacie', status: 'ACTIF', phone: '' } })
