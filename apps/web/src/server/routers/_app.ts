@@ -1,5 +1,6 @@
 import { router } from '@/server/trpc'
 import { healthRouter } from '@/server/routers/health'
+import { authResetRouter } from '@/server/routers/auth-reset'
 import { adminRouter } from '@/server/routers/admin'
 import { pharmacyRouter } from '@/server/routers/pharmacy'
 import { contactRouter } from '@/server/routers/contact'
@@ -16,6 +17,7 @@ import { dashboardRouter } from '@/server/routers/dashboard'
 
 export const appRouter = router({
   health: healthRouter,
+  auth: authResetRouter,
   dashboard: dashboardRouter,
   admin: adminRouter,
   pharmacy: pharmacyRouter,

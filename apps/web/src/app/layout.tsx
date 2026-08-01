@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { AuthSessionProvider } from '@/components/providers/AuthSessionProvider'
 import { TrpcProvider } from '@/components/providers/TrpcProvider'
 import './globals.css'
 
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className={inter.variable}>
       <body>
-        <TrpcProvider>{children}</TrpcProvider>
+        <AuthSessionProvider>
+          <TrpcProvider>{children}</TrpcProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   )
