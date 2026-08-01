@@ -1,5 +1,6 @@
 import type { FilterConfig } from '@/lib/filters/filter-types'
 import { FRENCH_DEPARTMENT_OPTIONS } from '@/lib/constants/french-department-options'
+import { FRENCH_REGION_OPTIONS } from '@/lib/constants/french-region-departments'
 import { buildReferentFilterOptions } from '@/lib/filters/referent-filter-options'
 import { STATUS_LABELS } from '@/lib/pharmacy-options'
 import { PHARMACY_STATUSES } from '@/view-models/pharmacy-form.schema'
@@ -20,6 +21,14 @@ export function buildPharmacyFilterConfig(refs: {
       type: 'multi-select',
       unit: 'statuts',
       options: PHARMACY_STATUSES.map((status) => ({ value: status, label: STATUS_LABELS[status] })),
+    },
+    { id: 'ville', label: 'Ville', type: 'text', placeholder: 'Ville…' },
+    {
+      id: 'region',
+      label: 'Région',
+      type: 'multi-select',
+      unit: 'régions',
+      options: FRENCH_REGION_OPTIONS,
     },
     {
       id: 'departement',

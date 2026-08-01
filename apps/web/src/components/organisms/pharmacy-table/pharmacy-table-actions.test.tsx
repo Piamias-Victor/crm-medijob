@@ -8,11 +8,14 @@ const row: PharmacyListRow = {
   id: 'p1',
   name: 'Pharmacie du Centre',
   city: 'Paris',
+  postalCode: '75001',
+  createdAtLabel: '15/03/2026',
   groupementName: null,
   status: 'ACTIF',
   primaryContactName: null,
   missionCount: 0,
   softwareName: null,
+  referentName: null,
 }
 
 describe('PharmacyTableActions', () => {

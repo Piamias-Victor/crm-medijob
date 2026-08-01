@@ -6,9 +6,12 @@ export const pharmacyListEntity: PharmacyListEntity = {
   id: 'p1',
   name: 'Pharmacie du Centre',
   city: 'Paris',
+  postalCode: '75001',
+  createdAt: new Date('2026-03-15T12:00:00Z'),
   status: 'ACTIF',
   groupement: { name: 'Giphar' },
   software: { name: 'Winpharma' },
+  referent: { name: 'Alice' },
   contacts: [{ firstName: 'Marie', lastName: 'Curie', isPrimary: true }],
   _count: { missions: 2 },
 }
