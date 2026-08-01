@@ -1,4 +1,5 @@
 import type { ContractType } from '@prisma/client'
+import type { ManualCandidateStatus } from '@/view-models/candidate-status'
 
 export type CandidateProfileUpdate = {
   firstName: string
@@ -9,6 +10,10 @@ export type CandidateProfileUpdate = {
   city?: string
   postalCode?: string
   jobTitleId: string
+  status?: ManualCandidateStatus
+  salaryExpectations?: string
+  salaryMin?: number | null
+  salaryMax?: number | null
   mobilityRadiusKm: number
   mobilityNotes?: string
   availableFrom?: Date | null

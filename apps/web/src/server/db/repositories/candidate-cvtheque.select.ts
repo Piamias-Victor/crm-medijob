@@ -7,6 +7,8 @@ export const candidateCvthequeSelect = {
   city: true,
   postalCode: true,
   availableFrom: true,
+  status: true,
+  createdAt: true,
   jobTitle: { select: { name: true } },
   referent: { select: { name: true } },
   missions: {

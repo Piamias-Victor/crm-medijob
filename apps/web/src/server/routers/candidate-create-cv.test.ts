@@ -16,6 +16,7 @@ describe('candidateRouter create from CV', () => {
       firstName: 'Alice',
       lastName: 'Martin',
       jobTitleId: 'jt1',
+      status: 'NOUVEAU' as const,
       referentId: 'u1',
       mobilityRadiusKm: 20,
       softwareIds: [],

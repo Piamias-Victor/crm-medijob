@@ -19,6 +19,7 @@ describe('assertMergeDuplicateAllowed', () => {
       lastName: 'Martin',
       email: 'alice@x.fr',
       jobTitleId: 'jt1',
+      status: 'NOUVEAU' as const,
       referentId: 'u1',
       mobilityRadiusKm: 20,
       softwareIds: [],

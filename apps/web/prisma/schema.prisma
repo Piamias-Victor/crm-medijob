@@ -25,6 +25,15 @@ enum PharmacyStatus {
   INACTIF
 }
 
+enum CandidateStatus {
+  NOUVEAU
+  A_QUALIFIER
+  QUALIFIE
+  EN_MISSION
+  INACTIF
+  BLACKLISTE
+}
+
 enum ContractType {
   CDI
   CDD
@@ -203,26 +212,30 @@ model JobTitleCompatibility {
 // ─── Candidates ───────────────────────────────────────────────
 
 model Candidate {
-  id                String    @id @default(cuid())
-  firstName         String
-  lastName          String
-  email             String?
-  phone             String?
-  address           String?
-  city              String?
-  postalCode        String?
-  jobTitleId        String
-  mobilityRadiusKm  Int?
-  mobilityNotes     String?
-  availableFrom     DateTime?
-  cvUrl             String?
-  cvSummary         String?
-  anonymizedProfile String?
-  notes             String?
-  referentId        String?
-  deletedAt         DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id                 String          @id @default(cuid())
+  firstName          String
+  lastName           String
+  email              String?
+  phone              String?
+  address            String?
+  city               String?
+  postalCode         String?
+  jobTitleId         String
+  status             CandidateStatus @default(NOUVEAU)
+  salaryExpectations String?
+  salaryMin          Int?
+  salaryMax          Int?
+  mobilityRadiusKm   Int?
+  mobilityNotes      String?
+  availableFrom      DateTime?
+  cvUrl              String?
+  cvSummary          String?
+  anonymizedProfile  String?
+  notes              String?
+  referentId         String?
+  deletedAt          DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
 
   referent            User?                         @relation("ReferentCandidates", fields: [referentId], references: [id], onDelete: SetNull)
   jobTitle            JobTitle                      @relation(fields: [jobTitleId], references: [id])
@@ -236,6 +249,7 @@ model Candidate {
   @@index([deletedAt])
   @@index([jobTitleId])
   @@index([referentId])
+  @@index([status])
 }
 
 model CandidateContractPreference {

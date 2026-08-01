@@ -1,4 +1,5 @@
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
+import { findCandidateQuickViewById } from '@/server/db/repositories/candidate-quick-view.repo'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage.repository'
@@ -25,6 +26,7 @@ export const candidateRouter = makeCandidateRouter({
   listStages: () => pipelineStageRepository.list(),
   search: (term, limit) => candidateRepository.search(term, limit),
   findProfileById: (id) => candidateRepository.findProfileById(id),
+  findQuickViewById: (id) => findCandidateQuickViewById(id),
   findDocumentsProfile: (id) => candidateRepository.findDocumentsProfile(id),
   findPharmacyForContext: (id) => pharmacyRepository.findForContext(id),
   findContactById: async (id) => {

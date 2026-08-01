@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Button } from '@/components/atoms/Button'
 import { CandidateProfileFields } from '@/components/molecules/CandidateProfileFields'
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
+import { CandidateStatusSalaryFields } from '@/components/molecules/CandidateStatusSalaryFields'
+import { CandidateStatusBadge } from '@/components/molecules/CandidateStatusBadge'
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
 import { FormSection } from '@/components/molecules/FormSection'
 import { useCandidateProfileMutations } from '@/lib/hooks/use-candidate-profile-mutations'
@@ -50,6 +52,15 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
   return (
     <form onSubmit={handleSubmit(submitProfile)} className="flex flex-col gap-8" noValidate>
       <CandidateProfileBanner missingFields={missingFields} />
+      <FormSection title="Statut & prétentions">
+        <CandidateStatusBadge status={profile.effectiveStatus} />
+        <CandidateStatusSalaryFields
+          register={register}
+          errors={formState.errors}
+          status={watch('status')}
+          onStatus={(v) => setValue('status', v)}
+        />
+      </FormSection>
       <FormSection title="Coordonnées & mobilité">
         <CandidateProfileFields
           register={register}
