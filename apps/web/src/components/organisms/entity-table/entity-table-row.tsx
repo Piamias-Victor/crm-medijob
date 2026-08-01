@@ -9,6 +9,7 @@ type Props<TRow> = {
   hasActions: boolean
   renderActions?: (row: TRow) => ReactNode
   getRowHref?: (row: TRow) => string
+  onRowClick?: (row: TRow) => void
 }
 
 export function EntityTableRow<TRow>({
@@ -17,12 +18,17 @@ export function EntityTableRow<TRow>({
   hasActions,
   renderActions,
   getRowHref,
+  onRowClick,
 }: Props<TRow>) {
   const router = useRouter()
   const href = getRowHref?.(row)
-  const clickable = Boolean(href)
+  const clickable = Boolean(onRowClick) || Boolean(href)
 
-  const navigate = () => {
+  const activate = () => {
+    if (onRowClick) {
+      onRowClick(row)
+      return
+    }
     if (href) router.push(href)
   }
 
@@ -30,19 +36,19 @@ export function EntityTableRow<TRow>({
     if (!clickable) return
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
-      navigate()
+      activate()
     }
   }
 
   return (
     <tr
-      role={clickable ? 'link' : undefined}
+      role={clickable ? 'button' : undefined}
       tabIndex={clickable ? 0 : undefined}
-      aria-label={clickable ? 'Ouvrir la fiche candidat' : undefined}
+      aria-label={clickable ? (onRowClick ? 'Ouvrir l’aperçu' : 'Ouvrir la fiche') : undefined}
       className={`border-t border-border/70 transition-colors hover:bg-surface/60 ${
         clickable ? 'cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent' : ''
       }`}
-      onClick={clickable ? navigate : undefined}
+      onClick={clickable ? activate : undefined}
       onKeyDown={onKeyDown}
     >
       {columns.map((column) => (
@@ -51,7 +57,10 @@ export function EntityTableRow<TRow>({
         </td>
       ))}
       {hasActions ? (
-        <td className="px-3 py-2 text-right" onClick={(event) => event.stopPropagation()}>
+        <td
+          className="sticky right-0 bg-surface/95 px-3 py-2 text-right shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.12)]"
+          onClick={(event) => event.stopPropagation()}
+        >
           {renderActions?.(row)}
         </td>
       ) : null}

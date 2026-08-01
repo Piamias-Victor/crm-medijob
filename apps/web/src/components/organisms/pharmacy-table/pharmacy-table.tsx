@@ -11,7 +11,7 @@ import {
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
 import { PharmacyQuickView } from '@/components/organisms/PharmacyQuickView'
-import { buildPharmacyReturnPath, pharmacyDetailHref } from '@/lib/pharmacy-href'
+import { buildPharmacyReturnPath } from '@/lib/pharmacy-href'
 import type { PharmacyFilterConfig } from '@/lib/filters/pharmacy-filter-config'
 import type { PharmacyFilterValues } from '@/lib/filters/pharmacy-filter-map'
 import type { PharmacyListRow } from '@/view-models/pharmacy-list'
@@ -55,7 +55,7 @@ export function PharmacyTable({
         rows={rows}
         columns={pharmacyTableColumns}
         getRowId={(row) => row.id}
-        getRowHref={(row) => pharmacyDetailHref(row.id, returnPath)}
+        onRowClick={(row) => setQuickViewId(row.id)}
         emptyIcon={Building2}
         emptyTitle="Aucune pharmacie"
         emptyDescription="Ajustez les filtres pour afficher des résultats."

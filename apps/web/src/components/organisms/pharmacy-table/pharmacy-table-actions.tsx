@@ -15,11 +15,11 @@ export function PharmacyTableActions({
   onQuickView: (id: string) => void
 }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center justify-end gap-1.5">
       <Button
         type="button"
-        variant="ghost"
-        className="size-7 p-0"
+        variant="outline"
+        className="h-7 gap-1 px-2 text-xs"
         aria-label={PHARMACY_QUICK_VIEW_TRIGGER}
         onClick={(event) => {
           event.preventDefault()
@@ -27,7 +27,8 @@ export function PharmacyTableActions({
           onQuickView(row.id)
         }}
       >
-        <Eye className="size-4" />
+        <Eye className="size-3.5" />
+        Aperçu
       </Button>
       <Link
         href={pharmacyDetailHref(row.id, returnPath)}
