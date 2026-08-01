@@ -1,18 +1,28 @@
 import { type HTMLAttributes } from 'react'
 import { cn } from '@/lib/cn'
 
-type Variant = 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'error'
+export type BadgeVariant =
+  | 'default'
+  | 'primary'
+  | 'accent'
+  | 'sky'
+  | 'rose'
+  | 'success'
+  | 'warning'
+  | 'error'
 
-const variants: Record<Variant, string> = {
+const variants: Record<BadgeVariant, string> = {
   default: 'bg-surface text-fg-muted',
   primary: 'bg-primary-muted text-primary',
   accent: 'bg-accent-muted text-accent-hover',
+  sky: 'bg-sky-muted text-sky-fg',
+  rose: 'bg-rose-muted text-rose-fg',
   success: 'bg-success/15 text-success',
   warning: 'bg-warning/15 text-warning',
   error: 'bg-error/15 text-error',
 }
 
-type Props = HTMLAttributes<HTMLSpanElement> & { variant?: Variant }
+type Props = HTMLAttributes<HTMLSpanElement> & { variant?: BadgeVariant }
 
 export function Badge({ variant = 'default', className, ...props }: Props) {
   return (
