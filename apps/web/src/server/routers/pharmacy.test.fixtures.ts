@@ -54,6 +54,7 @@ export const pharmacyDetailEntity: PharmacyDetailEntity = {
       status: 'A_POURVOIR',
       contractType: 'CDI',
       startDate: new Date(),
+      updatedAt: new Date(),
       jobTitle: { name: 'Pharmacien' },
       referent: { name: 'Réf' },
     },

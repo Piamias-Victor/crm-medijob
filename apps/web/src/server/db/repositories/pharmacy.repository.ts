@@ -38,6 +38,7 @@ const detailInclude = {
       status: true,
       contractType: true,
       startDate: true,
+      updatedAt: true,
       jobTitle: { select: { name: true } },
       referent: { select: { name: true } },
     },
