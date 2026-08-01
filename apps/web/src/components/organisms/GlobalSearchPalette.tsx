@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/atoms/Input'
 import { GlobalSearchResults } from '@/components/molecules/GlobalSearchResults'
+import { GlobalSearchIdle } from '@/components/molecules/GlobalSearchIdle'
+import { GlobalSearchFooter } from '@/components/molecules/GlobalSearchFooter'
 import { useGlobalSearchQuery } from '@/lib/hooks/use-global-search-query'
 import { useGlobalSearchStore } from '@/stores/global-search-store'
 
@@ -30,35 +32,40 @@ export function GlobalSearchPalette() {
 
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-start bg-black/40 p-4 pt-[15vh]"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-primary/40 px-4 pt-[12vh] backdrop-blur-[2px] md:pl-20"
       role="dialog"
       aria-modal="true"
       aria-label="Recherche globale"
       onClick={closePalette}
     >
       <div
-        className="w-full max-w-lg overflow-hidden rounded-lg border border-border bg-white shadow-lg"
+        className="flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-border bg-white shadow-2xl ring-1 ring-primary/10"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative border-b border-border">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-muted" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-primary" />
           <Input
             autoFocus
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            placeholder="Rechercher une pharmacie, contact, candidat, mission…"
+            placeholder="Rechercher dans le CRM…"
             aria-label="Recherche globale"
-            className="h-12 rounded-none border-0 pl-9 focus:ring-0"
+            className="h-14 rounded-none border-0 bg-transparent pl-12 pr-4 text-base focus:ring-0"
           />
         </div>
-        {hasQuery ? (
-          <GlobalSearchResults
-            results={results}
-            isLoading={isLoading}
-            isEmpty={isEmpty}
-            onNavigate={closePalette}
-          />
-        ) : null}
+        <div className="min-h-48">
+          {hasQuery ? (
+            <GlobalSearchResults
+              results={results}
+              isLoading={isLoading}
+              isEmpty={isEmpty}
+              onNavigate={closePalette}
+            />
+          ) : (
+            <GlobalSearchIdle />
+          )}
+        </div>
+        <GlobalSearchFooter />
       </div>
     </div>
   )
