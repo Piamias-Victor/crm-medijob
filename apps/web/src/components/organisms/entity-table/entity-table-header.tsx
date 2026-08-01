@@ -37,7 +37,7 @@ export function EntityTableHeader<TRow>({ columns, sort, onSort, hasActions }: P
         {hasActions ? (
           <th
             scope="col"
-            className="sticky right-0 bg-primary-muted/90 px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-accent-hover shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.12)]"
+            className="sticky right-0 bg-accent-muted/70 px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-primary shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.08)]"
           >
             Actions
           </th>

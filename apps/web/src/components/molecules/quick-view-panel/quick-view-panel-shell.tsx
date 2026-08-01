@@ -56,19 +56,27 @@ export function QuickViewPanelShell({
           SURFACE_GLASS,
         )}
       >
-        <header className="flex items-start justify-between gap-3 border-b border-border/80 px-5 py-4">
+        <header className="flex items-start justify-between gap-3 border-b border-border/80 bg-gradient-to-r from-primary-muted/70 via-accent-muted/45 to-white px-5 py-4">
           <h2 id={titleId} className="text-lg font-semibold tracking-tight text-fg">
             {title}
           </h2>
-          <Button type="button" variant="ghost" className="size-8 p-0" onClick={onClose} aria-label={QUICK_VIEW_CLOSE_LABEL}>
+          <Button
+            type="button"
+            variant="ghost"
+            className="size-8 shrink-0 p-0"
+            onClick={onClose}
+            aria-label={QUICK_VIEW_CLOSE_LABEL}
+          >
             <X className="size-4" />
           </Button>
         </header>
-        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
-        <footer className="border-t border-border/80 px-5 py-4">
+        <div className="flex-1 overflow-y-auto bg-gradient-to-b from-white/40 to-primary-muted/15 px-4 py-4">
+          {children}
+        </div>
+        <footer className="border-t border-border/80 bg-white/70 px-5 py-4">
           <Link
             href={footerHref}
-            className="inline-flex h-9 items-center rounded-md bg-accent px-3 text-sm font-medium text-accent-fg shadow-sm shadow-accent/20 transition-colors hover:bg-accent-hover"
+            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-accent px-3 text-sm font-medium text-accent-fg shadow-sm shadow-accent/20 transition-colors hover:bg-accent-hover"
           >
             {QUICK_VIEW_DETAIL_LINK}
           </Link>
