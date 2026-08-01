@@ -2,7 +2,7 @@
 
 ## État
 
-**Prêt merge** (après fix types PNG CI). Branche `feat/issue-211-medijob-palette`
+**Prêt merge.** Branche `feat/issue-211-medijob-palette`
 
 - Issue : https://github.com/Piamias-Victor/crm-medijob/issues/211
 - PR : https://github.com/Piamias-Victor/crm-medijob/pull/236
@@ -12,7 +12,7 @@
 ## Livré
 
 - Tokens CSS CSV : teal `#0C2F37`, mint `#5AE2A1`, sky `#73C6EF`, rose `#FE7CCA` (+ success/warning/error dérivés)
-- Atom `MedijobLogo` + assets bundlés `src/assets/brand/` (login hors middleware)
+- Atom `MedijobLogo` + assets `public/brand/` (middleware exclut `/brand` → login OK)
 - Sidebar : mark compact + wordmark, crossfade slot fixe `h-9`, expand 300ms
 - Sky/rose discrets : badges mission, pipeline themes, orbs, Alert info
 - `/design-system` + PDF brand colors alignés
