@@ -6,6 +6,7 @@ import {
   buildContactCreateDefaults,
   resolveContactCreatePharmacy,
   resolveContactCreateReferent,
+  resolveDefaultContactRoleId,
 } from '@/view-models/contact-create-defaults'
 
 type Props = { searchParams: Promise<{ pharmacyId?: string }> }
@@ -16,11 +17,11 @@ export default async function Page({ searchParams }: Props) {
 
   const { pharmacyId } = await searchParams
   const caller = await createServerCaller()
-  const [pharmacies, pharmacyRefs] = await Promise.all([
+  const [contactRefs, pharmacyRefs] = await Promise.all([
     caller.contact.referentials(),
     caller.pharmacy.referentials(),
   ])
-  const resolvedPharmacyId = resolveContactCreatePharmacy(pharmacyId, pharmacies)
+  const resolvedPharmacyId = resolveContactCreatePharmacy(pharmacyId, contactRefs.pharmacies)
   const pharmacy = resolvedPharmacyId
     ? await caller.pharmacy.getById({ id: resolvedPharmacyId })
     : null
@@ -34,8 +35,10 @@ export default async function Page({ searchParams }: Props) {
       defaultValues={buildContactCreateDefaults({
         pharmacyId: resolvedPharmacyId,
         referentId,
+        contactRoleId: resolveDefaultContactRoleId(contactRefs.contactRoles),
       })}
-      pharmacies={pharmacies}
+      pharmacies={contactRefs.pharmacies}
+      contactRoles={contactRefs.contactRoles}
       recruiters={pharmacyRefs.recruiters}
     />
   )

@@ -18,21 +18,22 @@ describe('contactRouter', () => {
         pharmacyId: '',
         firstName: 'Paul',
         lastName: 'Bert',
+        contactRoleId: 'r1',
       }),
     ).rejects.toThrow()
     expect(deps.contacts.create).not.toHaveBeenCalled()
   })
 
-  it('creates with pharmacyId', async () => {
+  it('creates with pharmacyId and contactRoleId', async () => {
     const deps = makeContactDeps()
     await contactCaller(deps).create({
       pharmacyId: 'p1',
       firstName: 'Paul',
       lastName: 'Bert',
-      role: 'TITULAIRE',
+      contactRoleId: 'r1',
     })
     expect(deps.contacts.create).toHaveBeenCalledWith(
-      expect.objectContaining({ pharmacyId: 'p1', firstName: 'Paul' }),
+      expect.objectContaining({ pharmacyId: 'p1', firstName: 'Paul', contactRoleId: 'r1' }),
     )
   })
 
@@ -68,14 +69,20 @@ describe('contactRouter', () => {
     expect(missions[0]?.title).toBe('Titulaire CDI')
   })
 
-  it('exposes pharmacy referentials under referentials and legacy pharmacyOptions', async () => {
+  it('exposes pharmacies and Contact roles under referentials', async () => {
     const deps = makeContactDeps({
       pharmacies: {
         listForPicker: vi.fn().mockResolvedValue([{ id: 'p1', name: 'Pharmacie du Centre' }]),
       },
+      contactRoles: {
+        list: vi.fn().mockResolvedValue([{ id: 'r1', name: 'Titulaire' }]),
+      },
     })
     const caller = contactCaller(deps)
-    await expect(caller.referentials()).resolves.toEqual([{ id: 'p1', name: 'Pharmacie du Centre' }])
+    await expect(caller.referentials()).resolves.toEqual({
+      pharmacies: [{ id: 'p1', name: 'Pharmacie du Centre' }],
+      contactRoles: [{ id: 'r1', name: 'Titulaire' }],
+    })
     await expect(caller.pharmacyOptions()).resolves.toEqual([{ id: 'p1', name: 'Pharmacie du Centre' }])
   })
 

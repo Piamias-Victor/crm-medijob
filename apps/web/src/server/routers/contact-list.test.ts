@@ -6,9 +6,10 @@ describe('contactRouter list', () => {
   it('returns list rows mapped to SPEC columns', async () => {
     const rows = await contactCaller(makeContactDeps()).list()
     expect(rows[0]).toMatchObject({
-      fullName: 'Marie Curie',
+      firstName: 'Marie',
+      lastName: 'Curie',
       pharmacyName: 'Pharmacie du Centre',
-      role: 'TITULAIRE',
+      roleName: 'Titulaire',
       isPrimary: true,
       department: '69',
     })

@@ -3,15 +3,21 @@ import { describe, it, expect } from 'vitest'
 import { buildContactListWhere } from '@/server/db/repositories/contact-list-where'
 
 describe('buildContactListWhere filters', () => {
-  it('filtre par rôles', () => {
-    expect(buildContactListWhere({ roles: ['TITULAIRE', 'ADJOINT'] })).toEqual({
-      role: { in: ['TITULAIRE', 'ADJOINT'] },
+  it('filtre par Contact roles', () => {
+    expect(buildContactListWhere({ contactRoleIds: ['r1', 'r2'] })).toEqual({
+      contactRoleId: { in: ['r1', 'r2'] },
     })
   })
 
   it('filtre pharmacie', () => {
     expect(buildContactListWhere({ pharmacyIds: ['p1'] })).toEqual({
       pharmacyId: { in: ['p1'] },
+    })
+  })
+
+  it('filtre ville pharmacie', () => {
+    expect(buildContactListWhere({ city: 'Lyon' })).toEqual({
+      pharmacy: { city: { contains: 'Lyon', mode: 'insensitive' } },
     })
   })
 

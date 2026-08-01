@@ -3,6 +3,7 @@ import { pipelineRouter } from '@/server/routers/admin/pipeline'
 import { softwareRouter } from '@/server/routers/admin/software'
 import { groupementRouter } from '@/server/routers/admin/groupement'
 import { jobTitleRouter } from '@/server/routers/admin/job-title'
+import { contactRoleRouter } from '@/server/routers/admin/contact-role'
 import { userRouter } from '@/server/routers/admin/user'
 
 export const adminRouter = router({
@@ -10,5 +11,6 @@ export const adminRouter = router({
   software: softwareRouter,
   groupement: groupementRouter,
   jobTitle: jobTitleRouter,
+  contactRole: contactRoleRouter,
   user: userRouter,
 })

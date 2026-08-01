@@ -44,8 +44,8 @@ export const pharmacyDetailEntity: PharmacyDetailEntity = {
       lastName: 'Curie',
       email: null,
       phone: null,
-      role: 'TITULAIRE',
       isPrimary: true,
+      contactRole: { name: 'Titulaire' },
     },
   ],
   missions: [

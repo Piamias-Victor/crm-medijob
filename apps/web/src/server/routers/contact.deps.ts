@@ -5,10 +5,12 @@ import type { listContactMissions } from '@/server/read-models/contact-missions'
 import type { ContactListEntity } from '@/view-models/contact-list'
 import type { ContactListFilters } from '@/view-models/contact-list-filters.schema'
 import type { ContactDetailEntity } from '@/view-models/contact-detail'
+import type { ContactQuickViewEntity } from '@/view-models/contact-quick-view.types'
 import type { contactInputSchema } from '@/view-models/contact-form.schema'
 import { toReferentIdOrNull } from '@/view-models/optional-referent-id.schema'
 
 type PharmacyRef = { id: string; name: string }
+type ContactRoleRef = { id: string; name: string }
 export type CreatedContact = { id: string }
 
 export type ContactDeps = {
@@ -31,9 +33,11 @@ export type ContactDeps = {
     update: (id: string, data: Prisma.ContactUncheckedUpdateInput) => Promise<unknown>
     setPrimary: (id: string) => Promise<ContactDetailEntity | null>
     softDelete: (id: string) => Promise<unknown>
+    findQuickViewById: (id: string) => Promise<ContactQuickViewEntity | null>
   }
   listMissions: (contactId: string) => ReturnType<typeof listContactMissions>
   pharmacies: { listForPicker: () => Promise<PharmacyRef[]> }
+  contactRoles: { list: () => Promise<ContactRoleRef[]> }
   logLifecycle: LogEntityLifecycle
 }
 
@@ -46,7 +50,7 @@ export function toContactCreateData(
     lastName: input.lastName,
     email: input.email,
     phone: input.phone,
-    role: input.role,
+    contactRoleId: input.contactRoleId,
     isPrimary: input.isPrimary,
     notes: input.notes,
     referentId: toReferentIdOrNull(input.referentId),

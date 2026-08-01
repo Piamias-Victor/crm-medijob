@@ -10,7 +10,7 @@ function usePharmacyIdUnderTest(fallback?: string) {
       pharmacyId: fallback ?? '',
       firstName: '',
       lastName: '',
-      role: 'AUTRE',
+      contactRoleId: 'r1',
       isPrimary: false,
     },
   })

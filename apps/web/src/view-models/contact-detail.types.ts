@@ -1,4 +1,4 @@
-import type { ContactRole, MissionStatus } from '@prisma/client'
+import type { MissionStatus } from '@prisma/client'
 
 export type ContactDetailEntity = {
   id: string
@@ -6,13 +6,14 @@ export type ContactDetailEntity = {
   lastName: string
   email: string | null
   phone: string | null
-  role: ContactRole
+  contactRoleId: string
   isPrimary: boolean
   notes: string | null
   pharmacyId: string
   referentId: string | null
   updatedAt: Date
   pharmacy: { id: string; name: string }
+  contactRole: { id: string; name: string }
 }
 
 export type ContactDetailPayload = {
@@ -22,7 +23,8 @@ export type ContactDetailPayload = {
   lastName: string
   email: string | null
   phone: string | null
-  role: ContactRole
+  contactRoleId: string
+  roleName: string
   isPrimary: boolean
   notes: string | null
   pharmacyId: string

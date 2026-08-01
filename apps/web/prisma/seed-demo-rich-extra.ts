@@ -1,4 +1,21 @@
 import type { PrismaClient } from '@prisma/client'
+import { RICH_CONTACTS } from './seed-demo-rich-data'
+
+export async function seedRichContacts(
+  prisma: PrismaClient,
+  contactRoleByName: Map<string, string>,
+) {
+  for (const row of RICH_CONTACTS) {
+    const contactRoleId = contactRoleByName.get(row.roleName)
+    if (!contactRoleId) continue
+    const { roleName: _roleName, ...data } = row
+    await prisma.contact.upsert({
+      where: { id: row.id },
+      update: {},
+      create: { ...data, contactRoleId },
+    })
+  }
+}
 
 export async function seedRichPipelineLinks(
   prisma: PrismaClient,

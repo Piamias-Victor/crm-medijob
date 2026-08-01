@@ -19,6 +19,7 @@ type Props = {
   control: Control<ContactInput>
   errors: FieldErrors<ContactInput>
   pharmacyOptions: ComboboxOption[]
+  roleOptions: ComboboxOption[]
   recruiters: Ref[]
   pharmacyId?: string
   isPrimary: boolean
@@ -31,6 +32,7 @@ export function ContactFormSections({
   control,
   errors,
   pharmacyOptions,
+  roleOptions,
   recruiters,
   pharmacyId,
   isPrimary,
@@ -44,6 +46,7 @@ export function ContactFormSections({
           <ContactAffiliationFields
             control={control}
             pharmacyOptions={pharmacyOptions}
+            roleOptions={roleOptions}
             pharmacyError={errors.pharmacyId?.message}
             lockedPharmacyId={lockedPharmacyId}
           />

@@ -3,24 +3,41 @@ import {
   buildContactCreateDefaults,
   resolveContactCreatePharmacy,
   resolveContactCreateReferent,
+  resolveDefaultContactRoleId,
 } from '@/view-models/contact-create-defaults'
 
 describe('buildContactCreateDefaults', () => {
-  it('returns role AUTRE and isPrimary false without pharmacy', () => {
+  it('returns isPrimary false without pharmacy', () => {
     expect(buildContactCreateDefaults()).toEqual({
-      role: 'AUTRE',
       isPrimary: false,
       referentId: null,
     })
   })
 
-  it('pre-fills pharmacyId and referent when provided', () => {
-    expect(buildContactCreateDefaults({ pharmacyId: 'p1', referentId: 'u1' })).toEqual({
-      role: 'AUTRE',
+  it('pre-fills pharmacyId, referent and contactRoleId when provided', () => {
+    expect(
+      buildContactCreateDefaults({
+        pharmacyId: 'p1',
+        referentId: 'u1',
+        contactRoleId: 'r-autre',
+      }),
+    ).toEqual({
       isPrimary: false,
       referentId: 'u1',
       pharmacyId: 'p1',
+      contactRoleId: 'r-autre',
     })
+  })
+})
+
+describe('resolveDefaultContactRoleId', () => {
+  it('prefers Autre then first role', () => {
+    expect(
+      resolveDefaultContactRoleId([
+        { id: 'r1', name: 'Titulaire' },
+        { id: 'r2', name: 'Autre' },
+      ]),
+    ).toBe('r2')
   })
 })
 

@@ -20,6 +20,7 @@ type Props = {
   contact: ContactDetailPayload
   missions: ContactMissionRow[]
   pharmacies: Ref[]
+  contactRoles: Ref[]
   recruiters: Ref[]
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
@@ -34,6 +35,7 @@ export function ContactDetailTabPanel({
   contact,
   missions,
   pharmacies,
+  contactRoles,
   recruiters,
   activities,
   documents,
@@ -62,6 +64,7 @@ export function ContactDetailTabPanel({
         <ContactInfoForm
           contact={contact}
           pharmacies={pharmacies}
+          contactRoles={contactRoles}
           recruiters={recruiters}
           submitting={updating}
           onSubmit={onUpdate}

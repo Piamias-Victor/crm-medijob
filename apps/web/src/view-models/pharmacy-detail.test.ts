@@ -29,8 +29,8 @@ const entity: PharmacyDetailEntity = {
       lastName: 'Curie',
       email: 'marie@example.com',
       phone: '0102030405',
-      role: 'TITULAIRE',
       isPrimary: true,
+      contactRole: { name: 'Titulaire' },
     },
   ],
   missions: [
