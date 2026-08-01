@@ -1,12 +1,13 @@
 import { verifyPassword } from './password'
 import { userRepository } from '@/server/db/repositories/user.repository'
+import type { UserRole } from '@/server/auth/permissions'
 import type { LoginInput } from './schema'
 
 export interface AuthUser {
   id: string
   email: string
   name: string
-  role: 'RECRUTEUR' | 'ADMIN'
+  role: UserRole
 }
 
 type StoredUser = AuthUser & { password: string }

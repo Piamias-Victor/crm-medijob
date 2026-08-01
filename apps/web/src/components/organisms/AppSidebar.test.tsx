@@ -45,7 +45,7 @@ describe('AppSidebar hover expand', () => {
 
 describe('AppSidebar admin gating', () => {
   it('shows the Admin entry for admins', () => {
-    render(<AppSidebar role="ADMIN" />)
+    render(<AppSidebar role="RH_ADMIN" />)
 
     expect(screen.getByRole('link', { name: 'Admin' })).toBeInTheDocument()
   })

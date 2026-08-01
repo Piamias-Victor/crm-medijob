@@ -1,4 +1,4 @@
-import { router, protectedProcedure } from '@/server/trpc'
+import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import {
   candidateIdSchema,
   candidateCreateInputSchema,
@@ -30,9 +30,10 @@ export function makeCandidateRouter(deps: CandidateDeps) {
       const [rows, stages] = await Promise.all([deps.listForKanban(input), deps.listStages()])
       return { rows, stages }
     }),
-    exportCsv: protectedProcedure.input(candidateExportInputSchema).query(({ input }) =>
-      handleCandidateExportCsv(deps, input),
-    ),
+    exportCsv: permissionProcedure('export')
+      .input(candidateExportInputSchema)
+      .query(({ input }) => handleCandidateExportCsv(deps, input)),
+
     search: protectedProcedure.input(candidateSearchInput).query(async ({ input }) =>
       toCandidateSearchOptions(await deps.search(input.term, input.limit)),
     ),

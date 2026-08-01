@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { navItems, adminNavItem } from '@/lib/navigation'
 import type { AccessRole } from '@/server/auth/access'
+import { can } from '@/server/auth/permissions'
 import { useSidebarStore } from '@/stores/sidebar-store'
 import { NavLink } from '@/components/molecules/NavLink'
 import { SidebarBrand } from '@/components/molecules/SidebarBrand'
@@ -49,7 +50,7 @@ export function AppSidebar({ role }: { role: AccessRole }) {
           ))}
         </nav>
         <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
-          {role === 'ADMIN' ? (
+          {role && can(role, 'admin') ? (
             <NavLink item={adminNavItem} active={isActive(adminNavItem.href)} expanded={expanded} />
           ) : null}
           <LogoutButton expanded={expanded} />

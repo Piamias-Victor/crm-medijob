@@ -9,6 +9,7 @@ import { ListCardMeta } from '@/components/molecules/ListCardMeta'
 import { ListCardChip } from '@/components/molecules/ListCardChip'
 import { ListCardShell } from '@/components/molecules/ListCardShell'
 import { LIST_CARD_MEDIA_CLASS } from '@/lib/constants/list-card'
+import { can } from '@/server/auth/permissions'
 import {
   formatUserCreatedAt,
   formatUserRole,
@@ -29,7 +30,7 @@ export function UserListCard({ user, onEdit, onDelete }: Props) {
         title={user.name}
         subtitle={user.email}
         trailing={
-          <Badge variant={user.role === 'ADMIN' ? 'accent' : 'default'} className="text-[11px]">
+          <Badge variant={can(user.role, 'admin') ? 'accent' : 'default'} className="text-[11px]">
             {formatUserRole(user.role)}
           </Badge>
         }

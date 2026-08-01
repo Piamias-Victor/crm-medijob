@@ -10,14 +10,14 @@ function baseSession(): Session {
 }
 
 describe('applyTokenToSession', () => {
-  it('maps ADMIN role from JWT token to session user (middleware gate)', () => {
+  it('maps RH_ADMIN role from JWT token to session user (middleware gate)', () => {
     const session = applyTokenToSession(baseSession(), {
       sub: 'u1',
       id: 'u1',
-      role: 'ADMIN',
+      role: 'RH_ADMIN',
     })
 
-    expect(session.user.role).toBe('ADMIN')
+    expect(session.user.role).toBe('RH_ADMIN')
     expect(session.user.id).toBe('u1')
   })
 

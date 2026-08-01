@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, protectedProcedure } from '@/server/trpc'
+import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { listContactMissions } from '@/server/read-models/contact-missions'
@@ -60,7 +60,7 @@ export function makeContactRouter(deps: ContactDeps) {
       return contact ? toContactDetail(contact) : null
     }),
     missions: protectedProcedure.input(idSchema).query(({ input }) => deps.listMissions(input.id)),
-    softDelete: protectedProcedure
+    softDelete: permissionProcedure('softDelete')
       .input(idSchema)
       .mutation(({ input }) => deps.contacts.softDelete(input.id)),
   })

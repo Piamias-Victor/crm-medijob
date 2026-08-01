@@ -26,7 +26,10 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
       db.user.findFirst({ where: { id, ...NOT_DELETED } }),
     listRecruiters: () =>
       db.user.findMany({
-        where: { ...NOT_DELETED, role: { in: ['RECRUTEUR', 'ADMIN'] } },
+        where: {
+          ...NOT_DELETED,
+          role: { in: ['DIRECTION', 'RECRUTEUR', 'COMMUNICATION', 'RH_ADMIN'] },
+        },
         orderBy: { name: 'asc' },
         select: { id: true, name: true },
       }),
@@ -65,7 +68,9 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
       await db.user.update({ where: { id }, data: { deletedAt: new Date() } })
     },
     countAdmins: () =>
-      db.user.count({ where: { role: 'ADMIN', ...NOT_DELETED } }),
+      db.user.count({
+        where: { role: { in: ['DIRECTION', 'RH_ADMIN'] }, ...NOT_DELETED },
+      }),
   }
 }
 
