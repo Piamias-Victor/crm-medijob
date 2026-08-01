@@ -10,7 +10,7 @@ export async function GET(_request: Request, { params }: Params) {
   const { id } = await params
   return documentFileResponse({
     id,
-    disposition: 'attachment',
+    disposition: 'inline',
     session,
     deps: {
       findById: (docId) => documentRepository.findById(docId),

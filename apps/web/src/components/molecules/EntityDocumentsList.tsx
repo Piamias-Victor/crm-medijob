@@ -1,20 +1,29 @@
 'use client'
 
-import { Download, FileText, Trash2 } from 'lucide-react'
+import { Download, Eye, FileText, Trash2 } from 'lucide-react'
 import type { DocumentListRow } from '@/view-models/document-list'
 import { Badge } from '@/components/atoms/Badge'
 import { Button } from '@/components/atoms/Button'
 import { EmptyState } from '@/components/atoms/EmptyState'
+import { DOCUMENT_PREVIEW_ACTION } from '@/components/molecules/document-preview/document-preview-copy'
 
 type Props = {
   documents: DocumentListRow[]
   emptyLabel: string
   deletingId?: string
+  onPreview: (id: string) => void
   onDownload: (id: string) => void
   onDelete: (id: string) => void
 }
 
-export function EntityDocumentsList({ documents, emptyLabel, deletingId, onDownload, onDelete }: Props) {
+export function EntityDocumentsList({
+  documents,
+  emptyLabel,
+  deletingId,
+  onPreview,
+  onDownload,
+  onDelete,
+}: Props) {
   if (documents.length === 0) {
     return <EmptyState icon={FileText} title={emptyLabel} variant="compact" />
   }
@@ -36,6 +45,10 @@ export function EntityDocumentsList({ documents, emptyLabel, deletingId, onDownl
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={() => onPreview(doc.id)}>
+              <Eye className="size-4" />
+              {DOCUMENT_PREVIEW_ACTION}
+            </Button>
             <Button variant="ghost" onClick={() => onDownload(doc.id)}>
               <Download className="size-4" />
               Télécharger
