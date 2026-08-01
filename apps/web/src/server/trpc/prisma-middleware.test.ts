@@ -29,6 +29,9 @@ describe('prisma error middleware', () => {
         createGroupement: vi.fn(),
         createSoftware: vi.fn(),
         searchSiret: vi.fn(),
+        findIdentityBySiret: vi.fn().mockResolvedValue(null),
+        findIdentityByNameCityPostal: vi.fn().mockResolvedValue(null),
+        mergePharmacies: vi.fn().mockResolvedValue({ id: 'p1' }),
         logLifecycle: vi.fn().mockResolvedValue(undefined),
       }),
     )({

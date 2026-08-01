@@ -3,9 +3,15 @@ import { groupementRepository } from '@/server/db/repositories/groupement.reposi
 import { softwareRepository } from '@/server/db/repositories/software.repository'
 import { userRepository } from '@/server/db/repositories/user.repository'
 import { findPharmacyQuickViewById } from '@/server/db/repositories/pharmacy-quick-view.repo'
+import { makePharmacyDuplicateRepository } from '@/server/db/repositories/pharmacy-duplicate.repo'
+import { makePharmacyMergeRepository } from '@/server/db/repositories/pharmacy-merge.repo'
+import { prisma } from '@/server/db/repositories/client'
 import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { searchSiret as searchSiretService } from '@/server/services/siret'
 import { makePharmacyRouter } from '@/server/routers/pharmacy'
+
+const pharmacyDuplicates = makePharmacyDuplicateRepository(prisma)
+const pharmacyMerge = makePharmacyMergeRepository(prisma)
 
 export const pharmacyRouter = makePharmacyRouter({
   pharmacies: {
@@ -24,5 +30,9 @@ export const pharmacyRouter = makePharmacyRouter({
   createGroupement: (name) => groupementRepository.create({ name }),
   createSoftware: (name) => softwareRepository.create({ name }),
   searchSiret: (query) => searchSiretService(query),
+  findIdentityBySiret: (siret) => pharmacyDuplicates.findIdentityBySiret(siret),
+  findIdentityByNameCityPostal: (name, city, postalCode) =>
+    pharmacyDuplicates.findIdentityByNameCityPostal(name, city, postalCode),
+  mergePharmacies: (keptId, absorbedId, data) => pharmacyMerge.merge(keptId, absorbedId, data),
   logLifecycle: defaultLogLifecycle,
 })

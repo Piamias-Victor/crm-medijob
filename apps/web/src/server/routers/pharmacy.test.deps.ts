@@ -32,6 +32,9 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
     createGroupement: vi.fn().mockResolvedValue({ id: 'g1', name: 'Giphar' }),
     createSoftware: vi.fn().mockResolvedValue({ id: 's1', name: 'Winpharma' }),
     searchSiret: vi.fn().mockResolvedValue([{ siret: '1', name: 'X', address: '', city: '', postalCode: '' }]),
+    findIdentityBySiret: vi.fn().mockResolvedValue(null),
+    findIdentityByNameCityPostal: vi.fn().mockResolvedValue(null),
+    mergePharmacies: vi.fn().mockResolvedValue({ id: 'p1' }),
     logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
