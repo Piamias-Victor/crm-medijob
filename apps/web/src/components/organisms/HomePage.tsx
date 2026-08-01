@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { LayoutDashboard } from 'lucide-react'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
+import { HomeAlertsCenter } from '@/components/molecules/HomeAlertsCenter'
 import { HomeNavPills } from '@/components/molecules/HomeNavPills'
 import { HomeOverviewStats } from '@/components/molecules/HomeOverviewStats'
 import { HomeQuickActions } from '@/components/molecules/HomeQuickActions'
@@ -21,8 +22,8 @@ export function HomePage({ overview }: Props) {
   const quickCreate = useHomeQuickCreate()
   const description = useMemo(
     () =>
-      `${overview.missionsActive} mission(s) à pourvoir · ${overview.candidates} candidat(s) · ${overview.inboxPending} candidature(s) en attente`,
-    [overview.candidates, overview.inboxPending, overview.missionsActive],
+      `${overview.missionsActive} à pourvoir · ${overview.missionsUrgent} urgente(s) · ${overview.inboxPending} candidature(s) · remplissage ${overview.fillRate} %`,
+    [overview.fillRate, overview.inboxPending, overview.missionsActive, overview.missionsUrgent],
   )
 
   const onQuickAction = (kind: HomeQuickCreateKind) => {
@@ -51,11 +52,19 @@ export function HomePage({ overview }: Props) {
     >
       <SectionCard
         variant="glass"
-        title="Vue d'ensemble"
-        description="Indicateurs clés et accès direct aux modules du CRM."
+        title="Indicateurs clés"
+        description="Pression quotidienne : missions, urgences, candidatures et remplissage."
         bodyClassName="p-4 sm:p-5"
       >
         <HomeOverviewStats overview={overview} />
+      </SectionCard>
+      <SectionCard
+        variant="glass"
+        title="Centre d'alertes"
+        description="Missions non couvertes, candidatures en attente et relances en retard (7 j)."
+        bodyClassName="p-4 sm:p-5"
+      >
+        <HomeAlertsCenter overview={overview} />
       </SectionCard>
       <SectionCard
         variant="glass"
