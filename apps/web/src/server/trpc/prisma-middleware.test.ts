@@ -16,6 +16,7 @@ describe('prisma error middleware', () => {
         pharmacies: {
           list: vi.fn(),
           findDetailById: vi.fn(),
+          findQuickViewById: vi.fn(),
           create: vi.fn().mockRejectedValue(prismaError),
           update: vi.fn(),
           softDelete: vi.fn(),

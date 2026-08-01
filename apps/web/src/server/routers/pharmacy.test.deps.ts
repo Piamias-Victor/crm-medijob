@@ -2,7 +2,11 @@
 import { vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makePharmacyRouter, type PharmacyDeps } from '@/server/routers/pharmacy'
-import { pharmacyDetailEntity, pharmacyListEntity } from '@/server/routers/pharmacy.test.fixtures'
+import {
+  pharmacyDetailEntity,
+  pharmacyListEntity,
+  pharmacyQuickViewRepoRow,
+} from '@/server/routers/pharmacy.test.fixtures'
 import type { UserRole } from '@/server/auth/permissions'
 
 type TestSession = { user: { id: string; role: UserRole }; expires: string }
@@ -12,6 +16,7 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
     pharmacies: {
       list: vi.fn().mockResolvedValue([pharmacyListEntity]),
       findDetailById: vi.fn().mockResolvedValue(pharmacyDetailEntity),
+      findQuickViewById: vi.fn().mockResolvedValue(pharmacyQuickViewRepoRow),
       create: vi.fn().mockImplementation((data) => Promise.resolve({ id: 'new', ...data })),
       update: vi.fn().mockResolvedValue({ id: 'p1' }),
       softDelete: vi.fn().mockResolvedValue({ id: 'p1' }),

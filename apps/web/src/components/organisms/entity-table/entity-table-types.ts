@@ -27,6 +27,7 @@ export type EntityTableProps<TRow> = {
   emptyDescription: string
   renderActions?: (row: TRow) => ReactNode
   getRowHref?: (row: TRow) => string
+  onRowClick?: (row: TRow) => void
   pageSize?: number
   pageSizeOptions?: number[]
   sort?: EntityTableSortState | null
