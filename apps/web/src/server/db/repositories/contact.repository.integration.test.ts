@@ -13,7 +13,11 @@ beforeAll(async () => {
   repo = makeContactRepository(db.prisma)
   const [pharmacy, role] = await Promise.all([
     db.prisma.pharmacy.create({ data: { name: 'Pharma' } }),
-    db.prisma.contactRole.create({ data: { name: 'Titulaire' } }),
+    db.prisma.contactRole.upsert({
+      where: { name: 'Titulaire' },
+      update: {},
+      create: { name: 'Titulaire' },
+    }),
   ])
   pharmacyId = pharmacy.id
   contactRoleId = role.id
