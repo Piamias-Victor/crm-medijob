@@ -11,3 +11,11 @@ declare module 'next-auth' {
     user: { id: string; role: AppRole } & DefaultSession['user']
   }
 }
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id?: string
+    role?: AppRole
+    lastActivity?: number
+  }
+}
