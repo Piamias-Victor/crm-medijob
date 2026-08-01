@@ -5,7 +5,7 @@ import type { CandidateDetailTab } from '@/components/molecules/CandidateDetailT
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
 import { CandidateCvStoredPreview } from '@/components/molecules/CandidateCvStoredPreview'
-import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
+import { CandidateHistoryTab } from '@/components/molecules/CandidateHistoryTab'
 import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
 import { CandidateCvSummaryPanel } from '@/components/organisms/CandidateCvSummaryPanel'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
@@ -75,9 +75,10 @@ export function CandidateDetailTabPanel({
         </div>
       ) : null}
       {tab === 'historique' ? (
-        <EntityActivityLogTab
+        <CandidateHistoryTab
           scope={{ entityType: 'CANDIDATE', entityId: profile.id }}
           initialLogs={activities}
+          positionings={profile.historyPositionings}
         />
       ) : null}
       {tab === 'missions' ? (

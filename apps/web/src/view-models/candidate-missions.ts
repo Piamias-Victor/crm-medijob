@@ -2,6 +2,7 @@ import type { MissionStatus } from '@prisma/client'
 import { filterActivePositionings } from '@/lib/kanban-active-positionings'
 
 export type RawCandidateMissionRow = {
+  updatedAt: Date
   stage: { id: string; name: string; position: number }
   mission: { id: string; title: string; status: MissionStatus }
 }

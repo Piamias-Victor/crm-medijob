@@ -34,6 +34,8 @@ export type CandidateDeps = CandidateCvDeps &
     ) => ReturnType<typeof candidateRepository.createProfile>
     referentials: () => ReturnType<typeof loadCandidateReferentials>
     findIdentityByEmail: typeof candidateRepository.findIdentityByEmail
+    findIdentityByEmailAny: typeof candidateRepository.findIdentityByEmailAny
+    findIdentityByPhoneAny: typeof candidateRepository.findIdentityByPhoneAny
     findIdentityByNamePhone: typeof candidateRepository.findIdentityByNamePhone
     mergeCandidates: typeof candidateRepository.mergeCandidates
     findQuickViewById: (id: string) => Promise<CandidateQuickViewEntity | null>

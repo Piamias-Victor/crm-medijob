@@ -11,6 +11,7 @@ export const candidateProfileInclude = {
   missions: {
     take: DEFAULT_LIST_LIMIT,
     select: {
+      updatedAt: true,
       stage: { select: { id: true, name: true, position: true } },
       mission: { select: { id: true, title: true, status: true } },
     },

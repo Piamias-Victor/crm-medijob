@@ -64,6 +64,8 @@ export const candidateRouter = makeCandidateRouter({
   listJobTitles: () => jobTitleRepository.list(),
   confirmCvExtraction: (id, data) => candidateRepository.updateProfile(id, data),
   findIdentityByEmail: (email) => candidateRepository.findIdentityByEmail(email),
+  findIdentityByEmailAny: (email) => candidateRepository.findIdentityByEmailAny(email),
+  findIdentityByPhoneAny: (phone) => candidateRepository.findIdentityByPhoneAny(phone),
   findIdentityByNamePhone: (firstName, lastName, phone) =>
     candidateRepository.findIdentityByNamePhone(firstName, lastName, phone),
   mergeCandidates: (keptId, absorbedId, data) =>

@@ -14,6 +14,7 @@ import { handleCandidateExportCsv } from '@/server/routers/candidate-export'
 import type { CandidateDeps } from '@/server/routers/candidate.deps'
 import { detectDuplicateInputSchema, candidateMergeInputSchema } from '@/view-models/candidate-duplicate.schema'
 import { handleDetectDuplicate, handleMergeCandidate } from '@/server/routers/candidate-duplicate-handlers'
+import { candidateImportRoutes } from '@/server/routers/candidate-import-routes'
 import { createPresentToPharmacyProcedure } from '@/server/routers/candidate-present-pharmacy.procedure'
 import { createListPharmaciesInRadiusProcedure } from '@/server/routers/candidate-list-in-radius.procedure'
 import { createPresentInRadiusProcedure } from '@/server/routers/candidate-present-radius.procedure'
@@ -73,6 +74,7 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     merge: protectedProcedure.input(candidateMergeInputSchema).mutation(({ input }) =>
       handleMergeCandidate(deps, input),
     ),
+    ...candidateImportRoutes(deps),
     presentToPharmacy: createPresentToPharmacyProcedure(deps),
     listPharmaciesInRadius: createListPharmaciesInRadiusProcedure(deps),
     presentInRadius: createPresentInRadiusProcedure(deps),

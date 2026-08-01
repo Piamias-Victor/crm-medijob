@@ -46,6 +46,7 @@ const baseProfile: CandidateProfilePayload = {
   softwareIds: [],
   contractTypes: [],
   missions: [],
+  historyPositionings: [],
   formValues: {
     firstName: 'Camille',
     lastName: 'Durand',

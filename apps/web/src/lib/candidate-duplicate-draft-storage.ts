@@ -10,7 +10,7 @@ export const CANDIDATE_DUPLICATE_DRAFT_KEY = 'candidate-duplicate-draft'
 
 const matchSchema = z.object({
   candidateId: z.string(),
-  reason: z.enum(['email', 'name_phone']),
+  reason: z.enum(['email', 'name_phone', 'phone']),
   firstName: z.string(),
   lastName: z.string(),
   email: z.string().nullable(),
@@ -35,6 +35,12 @@ const cvDraftSchema = z.object({
   ...draftShared,
 })
 
+const importDraftSchema = z.object({
+  mode: z.literal('import'),
+  incoming: candidateCreateInputSchema,
+  ...draftShared,
+})
+
 const editDraftSchema = z.object({
   mode: z.literal('edit'),
   incoming: candidateProfileInputSchema,
@@ -45,6 +51,7 @@ const editDraftSchema = z.object({
 export const candidateDuplicateDraftSchema = z.discriminatedUnion('mode', [
   createDraftSchema,
   cvDraftSchema,
+  importDraftSchema,
   editDraftSchema,
 ])
 

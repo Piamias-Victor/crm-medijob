@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Users, Plus } from 'lucide-react'
+import { Users, Plus, Upload } from 'lucide-react'
 import { accentButtonClassName } from '@/lib/button-styles'
 import { CandidatTabs, type CandidatsTab } from '@/components/molecules/CandidatTabs'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
@@ -54,6 +54,13 @@ export function CandidatsPage({ list, inbox, serverFilters, filterConfig, initia
       nav={<CandidatTabs active={tab} onChange={onTabChange} inboxCount={inbox.length} />}
       actions={
         <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/candidats/import"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface"
+          >
+            <Upload className="size-4" />
+            Importer CSV
+          </Link>
           <CreerViaCvButton />
           <Link href="/candidats/new" className={accentButtonClassName}>
             <Plus className="size-4" />
