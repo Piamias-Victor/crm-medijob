@@ -9,9 +9,12 @@ describe('SidebarBrand', () => {
     expect(screen.getByRole('img', { name: 'Medijob' })).toBeInTheDocument()
   })
 
-  it('keeps an accessible logo when collapsed', () => {
+  it('uses the heart mark when collapsed', () => {
     render(<SidebarBrand expanded={false} />)
 
-    expect(screen.getByRole('img', { name: 'Medijob' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Medijob' })).toHaveAttribute(
+      'src',
+      '/brand/medijob-mark.png',
+    )
   })
 })

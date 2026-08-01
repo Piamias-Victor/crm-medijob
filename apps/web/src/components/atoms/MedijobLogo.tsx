@@ -1,8 +1,11 @@
 import { cn } from '@/lib/cn'
 
+const LOGO_FULL = '/brand/medijob-logo.png'
+const LOGO_MARK = '/brand/medijob-mark.png'
+
 type Props = {
   className?: string
-  /** Square crop on the heart « m » for collapsed sidebar. */
+  /** Heart-m mark for collapsed sidebar — avoids wordmark crop jump. */
   compact?: boolean
 }
 
@@ -10,10 +13,11 @@ export function MedijobLogo({ className, compact = false }: Props) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- static brand asset in /public
     <img
-      src="/brand/medijob-logo.png"
+      src={compact ? LOGO_MARK : LOGO_FULL}
       alt="Medijob"
       className={cn(
-        compact ? 'size-8 object-cover object-left' : 'h-8 w-auto object-contain',
+        'object-contain',
+        compact ? 'size-8' : 'h-8 w-auto',
         className,
       )}
     />

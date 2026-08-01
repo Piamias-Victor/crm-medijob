@@ -9,4 +9,13 @@ describe('MedijobLogo', () => {
     const img = screen.getByRole('img', { name: 'Medijob' })
     expect(img).toHaveAttribute('src', '/brand/medijob-logo.png')
   })
+
+  it('uses the heart mark asset when compact', () => {
+    render(<MedijobLogo compact />)
+
+    expect(screen.getByRole('img', { name: 'Medijob' })).toHaveAttribute(
+      'src',
+      '/brand/medijob-mark.png',
+    )
+  })
 })
