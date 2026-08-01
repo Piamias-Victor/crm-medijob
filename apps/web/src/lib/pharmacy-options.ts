@@ -2,7 +2,7 @@ import type { PharmacyStatus } from '@prisma/client'
 
 export const STATUS_LABELS: Record<PharmacyStatus, string> = {
   PROSPECT: 'Prospect',
-  ACTIF: 'Actif',
+  ACTIF: 'Client',
   INACTIF: 'Inactif',
 }
 

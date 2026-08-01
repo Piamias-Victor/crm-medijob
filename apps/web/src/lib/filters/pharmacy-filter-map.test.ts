@@ -12,11 +12,13 @@ const config = buildPharmacyFilterConfig({
 const defaults = buildDefaultFilterValues(config)
 
 describe('toPharmacyListFilters', () => {
-  it('mappe statut, département, mission active, groupement, LGO et référent', () => {
+  it('mappe statut, ville, région, département, mission, groupement, LGO et référent', () => {
     expect(
       toPharmacyListFilters({
         ...defaults,
         statut: ['ACTIF'],
+        ville: '  Lyon  ',
+        region: ['ARA'],
         departement: ['69'],
         missionActive: true,
         groupement: ['g1'],
@@ -25,6 +27,8 @@ describe('toPharmacyListFilters', () => {
       }),
     ).toEqual({
       statuses: ['ACTIF'],
+      city: 'Lyon',
+      regionIds: ['ARA'],
       departments: ['69'],
       activeMission: true,
       groupementIds: ['g1'],
@@ -33,7 +37,7 @@ describe('toPharmacyListFilters', () => {
     })
   })
 
-  it('omet les tableaux vides et booléens null', () => {
-    expect(toPharmacyListFilters(defaults)).toEqual({})
+  it('omet les tableaux vides, ville blanche et booléens null', () => {
+    expect(toPharmacyListFilters({ ...defaults, ville: '   ' })).toEqual({})
   })
 })

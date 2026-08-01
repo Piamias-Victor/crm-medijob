@@ -5,14 +5,17 @@ import { makePharmacyRouter } from '@/server/routers/pharmacy'
 import { makeDeps, pharmacyCaller, directionSession } from '@/server/routers/pharmacy.test.deps'
 
 describe('pharmacyRouter', () => {
-  it('returns list rows mapped to SPEC columns', async () => {
+  it('returns list rows mapped to CSV columns', async () => {
     const rows = await pharmacyCaller(makeDeps()).list()
     expect(rows[0]).toMatchObject({
       name: 'Pharmacie du Centre',
+      postalCode: '75001',
+      referentName: 'Alice',
       groupementName: 'Giphar',
       missionCount: 2,
       softwareName: 'Winpharma',
     })
+    expect(rows[0]?.createdAtLabel).toBeTruthy()
   })
 
   it('forwards list filters to repository', async () => {
