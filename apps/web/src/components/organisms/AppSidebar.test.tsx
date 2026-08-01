@@ -21,7 +21,7 @@ describe('AppSidebar hover expand', () => {
   it('hides labels while collapsed', () => {
     render(<AppSidebar role="RECRUTEUR" />)
 
-    expect(screen.queryByText('Candidats')).not.toBeInTheDocument()
+    expect(screen.getByText('Candidats')).not.toBeVisible()
   })
 
   it('reveals labels on hover', () => {
@@ -29,7 +29,7 @@ describe('AppSidebar hover expand', () => {
 
     fireEvent.mouseEnter(screen.getByRole('complementary'))
 
-    expect(screen.getByText('Candidats')).toBeInTheDocument()
+    expect(screen.getByText('Candidats')).toBeVisible()
   })
 
   it('hides labels again when the mouse leaves', () => {
@@ -39,7 +39,7 @@ describe('AppSidebar hover expand', () => {
     fireEvent.mouseEnter(sidebar)
     fireEvent.mouseLeave(sidebar)
 
-    expect(screen.queryByText('Candidats')).not.toBeInTheDocument()
+    expect(screen.getByText('Candidats')).not.toBeVisible()
   })
 })
 

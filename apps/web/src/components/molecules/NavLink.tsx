@@ -24,6 +24,7 @@ export function NavLink({ item, active, gated = false, expanded = true }: Props)
     >
       <Icon className="size-5 shrink-0" />
       <span
+        aria-hidden={!expanded}
         className={cn(
           'truncate transition-opacity duration-300 ease-out',
           expanded ? 'opacity-100' : 'w-0 overflow-hidden opacity-0',

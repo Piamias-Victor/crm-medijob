@@ -19,6 +19,7 @@ export function LogoutButton({ expanded = true }: { expanded?: boolean }) {
     >
       <LogOut className="size-5 shrink-0" />
       <span
+        aria-hidden={!expanded}
         className={cn(
           'truncate transition-opacity duration-300 ease-out',
           expanded ? 'opacity-100' : 'w-0 overflow-hidden opacity-0',
