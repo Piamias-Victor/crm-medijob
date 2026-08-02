@@ -7,6 +7,7 @@ import type { CandidateMatchingRow } from '@/server/db/repositories/candidate-ma
 import { exclusionReasonLabel } from '@/server/matching/exclusion-reasons'
 import type { MatchingCandidateInput } from '@/server/matching/matching-input.types'
 import type { PrefilterResult } from '@/server/matching/prefilter'
+import { formatSalaryExpectations } from '@/view-models/format-salary-expectations'
 import type { MissionMatchingPayload } from '@/view-models/mission-matching.types'
 
 function profileFlags(row: CandidateMatchingRow) {
@@ -19,6 +20,14 @@ function profileFlags(row: CandidateMatchingRow) {
   return {
     isProfileIncomplete: isProfileIncompleteForMatching(matching),
     missingMatchingFields: getMissingMatchingFields(matching),
+  }
+}
+
+function contactFields(row: CandidateMatchingRow) {
+  return {
+    email: row.email,
+    phone: row.phone,
+    salaryLabel: formatSalaryExpectations(row),
   }
 }
 
@@ -39,6 +48,7 @@ export function toMissionMatchingPayload(
       city: row.city,
       score: score.score,
       justification: score.justification,
+      ...contactFields(row),
       ...profileFlags(row),
     })
   }

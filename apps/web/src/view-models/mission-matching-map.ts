@@ -19,6 +19,9 @@ export function toMatchingCandidateInput(row: CandidateMatchingRow): MatchingCan
     mobilityRadiusKm: row.mobilityRadiusKm,
     availableFrom: row.availableFrom,
     preferredContractTypes: row.contractPreferences.map((pref) => pref.contractType),
+    salaryExpectations: row.salaryExpectations,
+    salaryMin: row.salaryMin,
+    salaryMax: row.salaryMax,
   }
 }
 

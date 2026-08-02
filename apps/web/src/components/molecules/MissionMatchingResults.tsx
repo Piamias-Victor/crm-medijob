@@ -1,12 +1,16 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, UserX } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
-import { MissionMatchingExcludedCard } from '@/components/molecules/MissionMatchingExcludedCard'
+import { MissionMatchingContactPanel } from '@/components/molecules/MissionMatchingContactPanel'
+import { MissionMatchingExcludedSection } from '@/components/molecules/MissionMatchingExcludedSection'
 import { MissionMatchingScoredCard } from '@/components/molecules/MissionMatchingScoredCard'
 import { MissionMatchingStats } from '@/components/molecules/MissionMatchingStats'
 import { listContainer } from '@/lib/motion/variants'
+import { matchingContactSubject } from '@/view-models/matching-contact-subject'
+import { toggleSelectedId } from '@/view-models/toggle-selected-id'
 import type {
   MissionMatchingExcludedRow,
   MissionMatchingScoredRow,
@@ -14,6 +18,8 @@ import type {
 
 type Props = {
   missionId: string
+  missionTitle: string
+  pharmacyName: string
   positionedIds: string[]
   pipelineLocked?: boolean
   onPositioned: (candidateId: string) => void
@@ -23,15 +29,30 @@ type Props = {
 
 export function MissionMatchingResults({
   missionId,
+  missionTitle,
+  pharmacyName,
   positionedIds,
   pipelineLocked,
   onPositioned,
   scored,
   excluded,
 }: Props) {
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const selected = useMemo(
+    () => scored.filter((row) => selectedIds.includes(row.candidateId)),
+    [scored, selectedIds],
+  )
+  const subject = matchingContactSubject(missionTitle, pharmacyName)
+
   return (
     <div className="flex flex-col gap-6">
       <MissionMatchingStats scoredCount={scored.length} excludedCount={excluded.length} />
+      <MissionMatchingContactPanel
+        missionId={missionId}
+        subject={subject}
+        selected={selected}
+        onClear={() => setSelectedIds([])}
+      />
 
       <section className="space-y-3">
         <div className="flex items-center gap-2">
@@ -59,6 +80,10 @@ export function MissionMatchingResults({
                 rank={index + 1}
                 index={index}
                 missionId={missionId}
+                selected={selectedIds.includes(row.candidateId)}
+                onToggleSelect={() =>
+                  setSelectedIds((ids) => toggleSelectedId(ids, row.candidateId))
+                }
                 positioned={positionedIds.includes(row.candidateId)}
                 pipelineLocked={pipelineLocked}
                 onPositioned={onPositioned}
@@ -68,24 +93,7 @@ export function MissionMatchingResults({
         )}
       </section>
 
-      {excluded.length > 0 ? (
-        <section className="space-y-3 rounded-2xl border border-border/40 bg-muted/15 p-4">
-          <div className="flex items-center gap-2">
-            <UserX className="size-4 text-fg-muted" aria-hidden />
-            <h3 className="text-sm font-semibold text-fg">Exclus ({excluded.length})</h3>
-          </div>
-          <motion.ul
-            variants={listContainer}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col gap-2"
-          >
-            {excluded.map((row, index) => (
-              <MissionMatchingExcludedCard key={row.candidateId} row={row} index={index} />
-            ))}
-          </motion.ul>
-        </section>
-      ) : null}
+      <MissionMatchingExcludedSection excluded={excluded} />
     </div>
   )
 }
