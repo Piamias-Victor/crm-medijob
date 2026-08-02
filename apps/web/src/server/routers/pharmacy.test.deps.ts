@@ -16,10 +16,12 @@ type TestSession = {
 
 export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
   return {
+    lookupGeo: vi.fn().mockResolvedValue(null),
     pharmacies: {
       list: vi.fn().mockResolvedValue([pharmacyListEntity]),
       findDetailById: vi.fn().mockResolvedValue(pharmacyDetailEntity),
       findQuickViewById: vi.fn().mockResolvedValue(pharmacyQuickViewRepoRow),
+      findAddressById: vi.fn().mockResolvedValue(null),
       create: vi.fn().mockImplementation((data) => Promise.resolve({ id: 'new', ...data })),
       update: vi.fn().mockResolvedValue({ id: 'p1' }),
       softDelete: vi.fn().mockResolvedValue({ id: 'p1' }),

@@ -11,7 +11,12 @@ export type RawMission = {
   startDate: Date
   createdAt: Date
   jobTitle: { name: string } | null
-  pharmacy: { name: string; city: string | null }
+  pharmacy: {
+    name: string
+    city: string | null
+    latitude: number | null
+    longitude: number | null
+  }
   referent: { name: string | null } | null
 }
 

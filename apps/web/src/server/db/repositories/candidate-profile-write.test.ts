@@ -29,6 +29,8 @@ describe('toCandidateProfileWriteData', () => {
       address: null,
       city: null,
       postalCode: null,
+      latitude: null,
+      longitude: null,
       jobTitleId: 'jt1',
       status: 'NOUVEAU',
       salaryExpectations: '45k',

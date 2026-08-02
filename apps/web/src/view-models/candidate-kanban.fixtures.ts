@@ -26,6 +26,8 @@ export function candidate(over: Partial<RawCandidate> = {}): RawCandidate {
     lastName: 'Martin',
     city: 'Lyon',
     postalCode: null,
+    latitude: null,
+    longitude: null,
     availableFrom: null,
     status: 'NOUVEAU',
     createdAt: new Date('2026-01-15'),

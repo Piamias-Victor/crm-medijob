@@ -8,6 +8,8 @@ export const pharmacyListEntity: PharmacyListEntity = {
   name: 'Pharmacie du Centre',
   city: 'Paris',
   postalCode: '75001',
+  latitude: 48.85,
+  longitude: 2.35,
   createdAt: new Date('2026-03-15T12:00:00Z'),
   status: 'ACTIF',
   groupement: { name: 'Giphar' },

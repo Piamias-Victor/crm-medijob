@@ -7,6 +7,8 @@ export const profileFixture = {
   address: null,
   city: 'Lyon',
   postalCode: null,
+  latitude: null,
+  longitude: null,
   jobTitleId: 'jt1',
   status: 'NOUVEAU' as const,
   salaryExpectations: null,

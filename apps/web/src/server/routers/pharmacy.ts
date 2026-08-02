@@ -4,16 +4,15 @@ import { toPharmacyListRow } from '@/view-models/pharmacy-list'
 import { toPharmacyDetail } from '@/view-models/pharmacy-detail'
 import { toPharmacyQuickViewEntity } from '@/view-models/pharmacy-quick-view-entity'
 import { toPharmacyQuickView } from '@/view-models/pharmacy-quick-view'
-import { toPharmacyUpdateData } from '@/view-models/pharmacy-update'
-import {
-  pharmacyInputSchema,
-  updatePharmacySchema,
-  searchSiretSchema,
-} from '@/view-models/pharmacy-form.schema'
+import { searchSiretSchema } from '@/view-models/pharmacy-form.schema'
 import { pharmacyListFiltersSchema } from '@/view-models/pharmacy-list-filters.schema'
 import { idSchema } from '@/lib/schemas/entity-id'
 import type { PharmacyDeps } from '@/server/routers/pharmacy.deps'
 import { pharmacyDuplicateRoutes } from '@/server/routers/pharmacy-duplicate-routes'
+import {
+  pharmacyCreateMutation,
+  pharmacyUpdateMutation,
+} from '@/server/routers/pharmacy-mutations'
 
 export type { PharmacyDeps } from '@/server/routers/pharmacy.deps'
 
@@ -37,30 +36,8 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
       softwares: await deps.referentials.listSoftwares(),
       recruiters: await deps.referentials.listRecruiters(),
     })),
-    create: protectedProcedure
-      .input(pharmacyInputSchema)
-      .mutation(async ({ ctx, input }) => {
-        const row = await deps.pharmacies.create(toPharmacyUpdateData(input))
-        await deps.logLifecycle({
-          action: 'created',
-          entityType: 'PHARMACY',
-          entityId: row.id,
-          user: ctx.session.user,
-        })
-        return row
-      }),
-    update: protectedProcedure
-      .input(updatePharmacySchema)
-      .mutation(async ({ ctx, input }) => {
-        const row = await deps.pharmacies.update(input.id, toPharmacyUpdateData(input.data))
-        await deps.logLifecycle({
-          action: 'updated',
-          entityType: 'PHARMACY',
-          entityId: input.id,
-          user: ctx.session.user,
-        })
-        return row
-      }),
+    create: pharmacyCreateMutation(deps),
+    update: pharmacyUpdateMutation(deps),
     softDelete: permissionProcedure('softDelete')
       .input(idSchema)
       .mutation(async ({ input }) => deps.pharmacies.softDelete(input.id)),

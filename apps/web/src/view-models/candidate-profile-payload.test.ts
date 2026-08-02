@@ -14,6 +14,8 @@ const baseProfile = {
   address: null,
   city: null,
   postalCode: '69001',
+  latitude: null,
+  longitude: null,
   jobTitleId: 'jt1',
   status: 'NOUVEAU',
   salaryExpectations: null,

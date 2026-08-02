@@ -15,6 +15,8 @@ export type RawCandidate = {
   lastName: string
   city: string | null
   postalCode: string | null
+  latitude: number | null
+  longitude: number | null
   availableFrom: Date | null
   status: CandidateStatus
   createdAt: Date

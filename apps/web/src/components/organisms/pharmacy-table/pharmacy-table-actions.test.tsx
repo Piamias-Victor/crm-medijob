@@ -9,6 +9,8 @@ const row: PharmacyListRow = {
   name: 'Pharmacie du Centre',
   city: 'Paris',
   postalCode: '75001',
+  latitude: null,
+  longitude: null,
   createdAtLabel: '15/03/2026',
   groupementName: null,
   status: 'ACTIF',

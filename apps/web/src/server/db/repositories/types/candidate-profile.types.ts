@@ -22,4 +22,6 @@ export type CandidateProfileUpdate = {
   softwareIds: string[]
   contractTypes: ContractType[]
   cvUrl?: string
+  latitude?: number | null
+  longitude?: number | null
 }

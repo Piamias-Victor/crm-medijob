@@ -20,6 +20,8 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
         lastName: 'Durand',
         city: 'Lyon',
         postalCode: '69003',
+        latitude: null,
+        longitude: null,
         availableFrom: null,
         status: 'NOUVEAU',
         createdAt: new Date('2026-01-15'),

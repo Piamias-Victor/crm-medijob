@@ -8,6 +8,8 @@ export type PharmacyListEntity = {
   name: string
   city: string | null
   postalCode: string | null
+  latitude: number | null
+  longitude: number | null
   createdAt: Date
   status: PharmacyStatus
   groupement: { name: string } | null
@@ -22,6 +24,8 @@ export type PharmacyListRow = {
   name: string
   city: string | null
   postalCode: string | null
+  latitude: number | null
+  longitude: number | null
   createdAtLabel: string
   groupementName: string | null
   status: PharmacyStatus
@@ -38,6 +42,8 @@ export function toPharmacyListRow(entity: PharmacyListEntity): PharmacyListRow {
     name: entity.name,
     city: entity.city,
     postalCode: entity.postalCode,
+    latitude: entity.latitude,
+    longitude: entity.longitude,
     createdAtLabel: formatDateFr(entity.createdAt),
     groupementName: entity.groupement?.name ?? null,
     status: entity.status,

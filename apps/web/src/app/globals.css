@@ -80,3 +80,18 @@
     animation: none;
   }
 }
+
+.medijob-map-pin {
+  background: transparent;
+  border: none;
+}
+
+.medijob-map-pin__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-accent);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
