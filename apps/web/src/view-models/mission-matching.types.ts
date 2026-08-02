@@ -7,6 +7,9 @@ export type MissionMatchingScoredRow = {
   fullName: string
   jobTitle: string
   city: string | null
+  email: string | null
+  phone: string | null
+  salaryLabel: string | null
   score: number
   justification: string
   isProfileIncomplete: boolean

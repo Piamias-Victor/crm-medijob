@@ -26,6 +26,9 @@ const candidate = (id: string): MatchingCandidateInput => ({
   mobilityRadiusKm: 30,
   availableFrom: null,
   preferredContractTypes: ['CDI'],
+  salaryExpectations: null,
+  salaryMin: null,
+  salaryMax: null,
 })
 
 describe('scoreMatchingCandidates', () => {

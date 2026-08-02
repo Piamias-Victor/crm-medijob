@@ -1,42 +1,40 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
+import { toMatchingCandidateInput } from '@/view-models/mission-matching-map'
 import { toMissionMatchingPayload } from '@/view-models/mission-matching-payload'
-import type { CandidateMatchingRow } from '@/server/db/repositories/candidate-matching.select'
-import type { PrefilterResult } from '@/server/matching/prefilter'
+import {
+  matchingCandidateInput,
+  matchingRow,
+} from '@/view-models/mission-matching-map.test.fixtures'
 
-function row(id: string): CandidateMatchingRow {
-  return {
-    id,
-    firstName: 'Camille',
-    lastName: 'Durand',
-    jobTitleId: 'jt1',
-    city: 'Lyon',
-    postalCode: '69003',
-    mobilityRadiusKm: 30,
-    availableFrom: null,
-    jobTitle: { name: 'Pharmacien' },
-    contractPreferences: [{ contractType: 'CDI' }],
-  }
-}
-
-const candidateInput = {
-  id: 'c1',
-  firstName: 'Camille',
-  lastName: 'Durand',
-  jobTitleId: 'jt1',
-  jobTitleName: 'Pharmacien',
-  city: 'Lyon',
-  postalCode: '69003',
-  mobilityRadiusKm: 30,
-  availableFrom: null,
-  preferredContractTypes: ['CDI' as const],
-}
+describe('toMatchingCandidateInput', () => {
+  it('expose prétentions salariales pour le scoring', () => {
+    expect(toMatchingCandidateInput(matchingRow('c1'))).toMatchObject({
+      salaryExpectations: '45k',
+      salaryMin: 40000,
+      salaryMax: 50000,
+    })
+  })
+})
 
 describe('toMissionMatchingPayload', () => {
+  it('expose email, téléphone et prétentions sur le classement', () => {
+    const payload = toMissionMatchingPayload(
+      new Map([['c1', matchingRow('c1')]]),
+      { eligible: [matchingCandidateInput], excluded: [] },
+      [{ candidateId: 'c1', score: 88, justification: 'ok' }],
+    )
+    expect(payload.scored[0]).toMatchObject({
+      email: 'camille@example.com',
+      phone: '0612345678',
+      salaryLabel: '45k',
+    })
+  })
+
   it('ignore un score IA pour un id inconnu', () => {
     const payload = toMissionMatchingPayload(
-      new Map([['c1', row('c1')]]),
-      { eligible: [candidateInput], excluded: [] },
+      new Map([['c1', matchingRow('c1')]]),
+      { eligible: [matchingCandidateInput], excluded: [] },
       [{ candidateId: 'unknown', score: 90, justification: 'ghost' }],
     )
     expect(payload.scored).toHaveLength(0)
@@ -47,7 +45,13 @@ describe('toMissionMatchingPayload', () => {
       new Map(),
       {
         eligible: [],
-        excluded: [{ candidateId: 'missing', candidate: candidateInput, reasons: ['geo'] }],
+        excluded: [
+          {
+            candidateId: 'missing',
+            candidate: matchingCandidateInput,
+            reasons: ['geo'],
+          },
+        ],
       },
       [],
     )
@@ -56,13 +60,13 @@ describe('toMissionMatchingPayload', () => {
 
   it('ajoute éligibles non scorés dans excluded avec not_scored', () => {
     const eligible = [
-      candidateInput,
-      { ...candidateInput, id: 'c2', firstName: 'Paul', lastName: 'Bert' },
+      matchingCandidateInput,
+      { ...matchingCandidateInput, id: 'c2', firstName: 'Paul', lastName: 'Bert' },
     ]
     const payload = toMissionMatchingPayload(
       new Map([
-        ['c1', row('c1')],
-        ['c2', row('c2')],
+        ['c1', matchingRow('c1')],
+        ['c2', matchingRow('c2')],
       ]),
       { eligible, excluded: [] },
       [{ candidateId: 'c1', score: 80, justification: 'ok' }],

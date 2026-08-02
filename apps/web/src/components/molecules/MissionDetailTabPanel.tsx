@@ -63,6 +63,7 @@ export function MissionDetailTabPanel(props: Props) {
         <MissionMatchingTab
           missionId={props.mission.id}
           missionStatus={props.mission.status}
+          missionTitle={props.mission.formSource.title}
           jobTitleName={props.mission.jobTitleName}
           pharmacyName={props.mission.pharmacyName}
           positionedIds={props.mission.candidates.map((candidate) => candidate.id)}

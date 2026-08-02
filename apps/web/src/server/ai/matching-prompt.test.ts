@@ -24,6 +24,9 @@ const candidate: MatchingCandidateInput = {
   mobilityRadiusKm: 30,
   availableFrom: null,
   preferredContractTypes: ['CDI'],
+  salaryExpectations: null,
+  salaryMin: null,
+  salaryMax: null,
 }
 
 describe('buildMatchingPrompt', () => {
@@ -31,5 +34,19 @@ describe('buildMatchingPrompt', () => {
     const prompt = buildMatchingPrompt(mission, [candidate])
     expect(prompt).toContain('"scores"')
     expect(prompt).toContain('candidateId')
+  })
+
+  it('inclut les prétentions salariales du candidat quand renseignées', () => {
+    const prompt = buildMatchingPrompt(mission, [
+      {
+        ...candidate,
+        salaryExpectations: '45k brut',
+        salaryMin: 40000,
+        salaryMax: 50000,
+      },
+    ])
+    expect(prompt).toContain('Prétentions: 45k brut')
+    expect(prompt).toContain('40000')
+    expect(prompt).toContain('50000')
   })
 })

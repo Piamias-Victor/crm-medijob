@@ -21,6 +21,9 @@ export const baseCandidate = (
   mobilityRadiusKm: 30,
   availableFrom: null,
   preferredContractTypes: ['CDI'],
+  salaryExpectations: null,
+  salaryMin: null,
+  salaryMax: null,
   ...overrides,
 })
 
