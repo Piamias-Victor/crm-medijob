@@ -1,6 +1,5 @@
 'use client'
 
-import { Construction } from 'lucide-react'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
@@ -8,7 +7,6 @@ import type { MissionTab } from '@/view-models/mission-tabs'
 import type { MissionFormValues } from '@/view-models/mission-form.schema'
 import type { PipelineStageRef } from '@/view-models/mission-pipeline.types'
 import { MISSION_TAB_META } from '@/view-models/mission-tab-meta'
-import { EmptyState } from '@/components/atoms/EmptyState'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
 import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
@@ -16,6 +14,7 @@ import { MissionInfoForm } from '@/components/molecules/MissionInfoForm'
 import { MissionStatusActions } from '@/components/molecules/MissionStatusActions'
 import { MissionPipelineSection } from '@/components/organisms/MissionPipelineSection'
 import { MissionMatchingTab } from '@/components/organisms/MissionMatchingTab'
+import { MissionOffreTab } from '@/components/organisms/MissionOffreTab'
 
 type Ref = { id: string; name: string }
 type ContactRef = { id: string; label: string }
@@ -69,6 +68,7 @@ export function MissionDetailTabPanel(props: Props) {
           positionedIds={props.mission.candidates.map((candidate) => candidate.id)}
         />
       ) : null}
+      {props.tab === 'offre' ? <MissionOffreTab missionId={props.mission.id} /> : null}
       {props.tab === 'historique' ? (
         <EntityActivityLogTab
           scope={{ entityType: 'MISSION', entityId: props.mission.id }}
@@ -81,17 +81,6 @@ export function MissionDetailTabPanel(props: Props) {
           entityId={props.mission.id}
           documents={props.documents}
           emptyLabel="Aucun document pour cette mission."
-        />
-      ) : null}
-      {props.tab !== 'infos' &&
-      props.tab !== 'pipeline' &&
-      props.tab !== 'matching' &&
-      props.tab !== 'historique' &&
-      props.tab !== 'documents' ? (
-        <EmptyState
-          icon={Construction}
-          title="Bientôt disponible"
-          description={`Onglet ${meta.title} — issue ultérieure.`}
         />
       ) : null}
     </SectionCard>
