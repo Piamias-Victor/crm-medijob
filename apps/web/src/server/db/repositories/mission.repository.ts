@@ -15,7 +15,7 @@ const listSelect = {
   startDate: true,
   createdAt: true,
   jobTitle: { select: { name: true } },
-  pharmacy: { select: { name: true, city: true } },
+  pharmacy: { select: { name: true, city: true, latitude: true, longitude: true } },
   referent: { select: { name: true } },
 } as const
 

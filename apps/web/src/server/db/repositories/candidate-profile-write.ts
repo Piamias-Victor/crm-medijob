@@ -9,6 +9,8 @@ export function toCandidateProfileWriteData(data: CandidateProfileUpdate) {
     address: data.address ?? null,
     city: data.city ?? null,
     postalCode: data.postalCode ?? null,
+    latitude: data.latitude ?? null,
+    longitude: data.longitude ?? null,
     jobTitleId: data.jobTitleId,
     status: data.status ?? 'NOUVEAU',
     salaryExpectations: data.salaryExpectations ?? null,

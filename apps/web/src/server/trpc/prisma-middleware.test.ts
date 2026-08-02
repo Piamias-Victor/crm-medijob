@@ -13,10 +13,12 @@ describe('prisma error middleware', () => {
     })
     const caller = createCallerFactory(
       makePharmacyRouter({
+        lookupGeo: vi.fn().mockResolvedValue(null),
         pharmacies: {
           list: vi.fn(),
           findDetailById: vi.fn(),
           findQuickViewById: vi.fn(),
+          findAddressById: vi.fn().mockResolvedValue(null),
           create: vi.fn().mockRejectedValue(prismaError),
           update: vi.fn(),
           softDelete: vi.fn(),

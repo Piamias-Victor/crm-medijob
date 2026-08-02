@@ -220,6 +220,8 @@ model Candidate {
   address            String?
   city               String?
   postalCode         String?
+  latitude           Float?
+  longitude          Float?
   jobTitleId         String
   status             CandidateStatus @default(NOUVEAU)
   salaryExpectations String?
@@ -281,6 +283,8 @@ model Pharmacy {
   address           String?
   city              String?
   postalCode        String?
+  latitude          Float?
+  longitude         Float?
   phone             String?
   email             String?
   website           String?

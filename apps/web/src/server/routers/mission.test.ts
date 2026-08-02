@@ -18,7 +18,12 @@ describe('missionRouter', () => {
         startDate: new Date('2026-03-01'),
         createdAt: new Date('2026-02-01'),
         jobTitle: { name: 'Pharmacien' },
-        pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon' },
+        pharmacy: {
+          name: 'Pharmacie du Centre',
+          city: 'Lyon',
+          latitude: null,
+          longitude: null,
+        },
         referent: { name: 'Réf Demo' },
       },
     ]

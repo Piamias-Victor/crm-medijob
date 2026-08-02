@@ -10,7 +10,7 @@ export function mission(over: Partial<RawMission> = {}): RawMission {
     startDate: new Date('2025-01-15'),
     createdAt: new Date('2025-01-10'),
     jobTitle: { name: 'Pharmacien' },
-    pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon' },
+    pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon', latitude: null, longitude: null },
     referent: { name: 'Référent Demo' },
     ...over,
   }
