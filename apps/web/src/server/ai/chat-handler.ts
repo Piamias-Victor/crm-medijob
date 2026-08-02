@@ -1,5 +1,9 @@
 import { findShortcut } from './shortcuts'
 import { loadContextText, type ContextRepos } from './context-loader'
+import {
+  loadShortcutExtraContext,
+  type ShortcutContextDeps,
+} from './assistant-shortcut-context'
 import { buildPrompt } from './prompt'
 import { parseAssistantResponse } from './parse'
 import { renderResponse } from './render'
@@ -10,11 +14,16 @@ import type { ResponseKind } from './schemas'
 export type AssistantDeps = {
   provider: AssistantProvider
   repos: ContextRepos
-}
+} & ShortcutContextDeps
 
 export type AssistantResult = {
   kind: ResponseKind
   text: string
+}
+
+function mergeContext(base: string | null, extra: string | null): string | null {
+  if (base && extra) return `${base}\n\n${extra}`
+  return base ?? extra
 }
 
 export async function runAssistantChat(
@@ -25,12 +34,13 @@ export async function runAssistantChat(
   if (input.shortcutId && !shortcut) throw new Error('UNKNOWN_SHORTCUT')
 
   const kind: ResponseKind = shortcut?.kind ?? 'chat'
-  const contextText = await loadContextText(input.context, deps.repos)
+  const entityText = await loadContextText(input.context, deps.repos)
+  const extraText = await loadShortcutExtraContext(shortcut, input.context, deps)
   const prompt = buildPrompt({
     kind,
     message: input.message,
     instruction: shortcut?.instruction,
-    contextText,
+    contextText: mergeContext(entityText, extraText),
   })
 
   const raw = await deps.provider.complete({ prompt, kind })

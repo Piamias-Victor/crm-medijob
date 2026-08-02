@@ -50,7 +50,16 @@ export const SHORTCUTS: readonly Shortcut[] = [
     id: 'week-report',
     label: 'Rapport semaine',
     kind: 'report',
-    instruction: 'Rédige un rapport hebdomadaire synthétique de l’activité de recrutement.',
+    instruction:
+      'Rédige un compte rendu hebdomadaire en français à partir UNIQUEMENT des métriques fournies : missions ouvertes/pourvues, candidats contactés, candidatures, offres, actions commerciales, puis points bloquants et priorités semaine suivante.',
+  },
+  {
+    id: 'best-profiles',
+    label: 'Meilleurs profils',
+    kind: 'summary',
+    entityType: 'mission',
+    instruction:
+      'À partir du matching fourni, présente les meilleurs profils pour cette mission (ordre de score, points forts). N’invente aucun candidat hors liste.',
   },
 ] as const
 

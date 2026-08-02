@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart3, FileText, Mail, Megaphone, type LucideIcon } from 'lucide-react'
+import { BarChart3, FileText, Mail, Megaphone, Users, type LucideIcon } from 'lucide-react'
 import { SHORTCUTS, type Shortcut } from '@/lib/assistant-shortcuts'
 import { FormSection } from '@/components/molecules/FormSection'
 import { cn } from '@/lib/cn'
@@ -12,6 +12,7 @@ const ICONS: Record<string, LucideIcon> = {
   'pharmacy-email': Mail,
   'generate-offer': Megaphone,
   'week-report': BarChart3,
+  'best-profiles': Users,
 }
 
 type Props = {

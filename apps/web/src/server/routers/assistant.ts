@@ -11,6 +11,8 @@ import { createAssistantProvider } from '@/server/ai/provider'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
+import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
+import { weekReportCountsLoader } from '@/server/db/repositories/week-report.repository'
 import { assistantContextRepos } from '@/server/ai/context-repos.adapter'
 
 const searchRepos = {
@@ -19,16 +21,24 @@ const searchRepos = {
   mission: missionRepository,
 }
 
+const matchingDeps = {
+  findMission: (id: string) => missionRepository.findForMatching(id),
+  listCandidates: () => candidateRepository.listForMatching(),
+  listCompatibilities: (missionJobTitleId: string) =>
+    jobTitleRepository.listCompatibleCandidateTitles(missionJobTitleId),
+  provider: createAssistantProvider(),
+}
+
 export type AssistantRouterDeps = {
-  runChat: (input: ChatInput) => Promise<AssistantResult>
+  runChat: (input: ChatInput, userId: string) => Promise<AssistantResult>
   searchEntities: (entityType: ShortcutEntityType, term: string) => Promise<EntityOption[]>
 }
 
 export function makeAssistantRouter(deps: AssistantRouterDeps) {
   return router({
-    chat: protectedProcedure.input(chatInputSchema).mutation(async ({ input }) => {
+    chat: protectedProcedure.input(chatInputSchema).mutation(async ({ ctx, input }) => {
       try {
-        return await deps.runChat(input)
+        return await deps.runChat(input, ctx.session.user.id)
       } catch (error) {
         throw mapAssistantChatError(error)
       }
@@ -40,7 +50,13 @@ export function makeAssistantRouter(deps: AssistantRouterDeps) {
 }
 
 export const assistantRouter = makeAssistantRouter({
-  runChat: (input) =>
-    runAssistantChat(input, { provider: createAssistantProvider(), repos: assistantContextRepos }),
+  runChat: (input, userId) =>
+    runAssistantChat(input, {
+      provider: createAssistantProvider(),
+      repos: assistantContextRepos,
+      weekReport: weekReportCountsLoader,
+      matching: matchingDeps,
+      referentId: userId,
+    }),
   searchEntities: (entityType, term) => searchEntities(entityType, term, searchRepos),
 })
