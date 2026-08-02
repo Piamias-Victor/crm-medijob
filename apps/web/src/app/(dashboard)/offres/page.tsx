@@ -1,10 +1,15 @@
-import { PagePlaceholder } from '@/components/molecules/PagePlaceholder'
+import { Suspense } from 'react'
+import { createServerCaller } from '@/lib/trpc/server'
+import { OffresPage } from '@/components/organisms/OffresPage'
+import { EntityListPageSkeleton } from '@/components/molecules/skeletons/EntityListPageSkeleton'
 
-export default function OffresPage() {
+export default async function Page() {
+  const caller = await createServerCaller()
+  const rows = await caller.jobOffer.list()
+
   return (
-    <PagePlaceholder
-      title="Offres"
-      description="Les offres d'emploi publiées arriveront dans un prochain lot."
-    />
+    <Suspense fallback={<EntityListPageSkeleton />}>
+      <OffresPage initialRows={rows} />
+    </Suspense>
   )
 }
