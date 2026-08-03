@@ -14,9 +14,10 @@ function activeCandidates(rows: PipelineCandidateRow[]) {
 export function buildMissionPipelineColumns(
   stages: PipelineStageRef[],
   candidates: PipelineCandidateRow[],
+  options: { includeTerminal?: boolean } = {},
 ): MissionPipelineColumn[] {
   const ordered = [...stages].sort((a, b) => a.position - b.position)
-  const visible = activeCandidates(candidates)
+  const visible = options.includeTerminal ? candidates : activeCandidates(candidates)
 
   return ordered.map((stage) => ({
     stage,

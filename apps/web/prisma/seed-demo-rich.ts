@@ -31,13 +31,22 @@ export async function seedDemoRich(prisma: PrismaClient) {
   for (const row of RICH_PHARMACIES) {
     await prisma.pharmacy.upsert({
       where: { id: row.id },
-      update: { name: row.name, city: row.city, postalCode: row.postalCode, status: row.status },
+      update: {
+        name: row.name,
+        city: row.city,
+        postalCode: row.postalCode,
+        status: row.status,
+        latitude: row.latitude,
+        longitude: row.longitude,
+      },
       create: {
         id: row.id,
         name: row.name,
         city: row.city,
         postalCode: row.postalCode,
         status: row.status,
+        latitude: row.latitude,
+        longitude: row.longitude,
         groupementId: row.groupement ? refs.groupementByName.get(row.groupement) : undefined,
         softwareId: row.software ? refs.softwareByName.get(row.software) : undefined,
       },
@@ -51,7 +60,12 @@ export async function seedDemoRich(prisma: PrismaClient) {
     if (!jobTitleId) continue
     await prisma.candidate.upsert({
       where: { id: row.id },
-      update: { city: row.city, postalCode: row.postalCode },
+      update: {
+        city: row.city,
+        postalCode: row.postalCode,
+        latitude: row.latitude,
+        longitude: row.longitude,
+      },
       create: {
         id: row.id,
         firstName: row.firstName,
@@ -60,6 +74,8 @@ export async function seedDemoRich(prisma: PrismaClient) {
         phone: row.phone,
         city: row.city,
         postalCode: row.postalCode,
+        latitude: row.latitude,
+        longitude: row.longitude,
         mobilityRadiusKm: row.mobilityRadiusKm,
         jobTitleId,
         referentId: refs.referentId,

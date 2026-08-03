@@ -38,7 +38,7 @@ export function MissionMatchingContactPanel({ missionId, subject, selected, onCl
 
   function handleEmail() {
     if (!actions.mailtoUrl) return
-    openEmailCompose(actions.mailtoUrl)
+    openEmailCompose(actions.mailtoUrl, 'gmail')
     cleanupRef.current?.()
     cleanupRef.current = scheduleActivityLogPrompt(() => setPromptOpen(true))
   }

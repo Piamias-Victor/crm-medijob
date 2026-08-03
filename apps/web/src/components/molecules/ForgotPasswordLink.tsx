@@ -3,12 +3,12 @@ import { FORGOT_PASSWORD_PATH } from '@/server/auth/constants'
 
 export function ForgotPasswordLink() {
   return (
-    <p className="text-center text-sm">
+    <p className="mt-1 text-center text-sm">
       <Link
         href={FORGOT_PASSWORD_PATH}
-        className="font-medium text-accent-hover underline-offset-4 hover:underline"
+        className="font-semibold text-accent-hover underline underline-offset-4 hover:text-fg"
       >
-        Mot de passe oublié ?
+        Mot de passe oublié ? Réinitialiser
       </Link>
     </p>
   )

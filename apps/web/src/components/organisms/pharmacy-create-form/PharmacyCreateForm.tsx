@@ -8,6 +8,7 @@ import { PharmacyCreateFormSections } from '@/components/organisms/pharmacy-crea
 import { usePharmacySiretSearch } from '@/hooks/use-pharmacy-siret-search'
 import { usePharmacyCreateForm } from '@/lib/hooks/use-pharmacy-create-form'
 import { usePharmacyCreateMutations } from '@/lib/hooks/use-pharmacy-create-mutations'
+import { usePharmacyCreateDuplicateGuard } from '@/lib/hooks/use-pharmacy-create-duplicate-guard'
 import type { PharmacyInput } from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
@@ -22,6 +23,7 @@ type Props = {
 export function PharmacyCreateForm({ defaultValues, groupements, softwares, recruiters }: Props) {
   const utils = trpc.useUtils()
   const { create, createGroupement, createSoftware } = usePharmacyCreateMutations()
+  const guardDuplicate = usePharmacyCreateDuplicateGuard()
   const [groupementOptions, setGroupementOptions] = useState(groupements)
   const [softwareOptions, setSoftwareOptions] = useState(softwares)
   const form = usePharmacyCreateForm(defaultValues)
@@ -40,8 +42,14 @@ export function PharmacyCreateForm({ defaultValues, groupements, softwares, recr
       return { value: ref.id, label: ref.name }
     }
 
+  async function onSubmit(data: PharmacyInput) {
+    const blocked = await guardDuplicate(data)
+    if (blocked) return
+    create.mutate(data)
+  }
+
   return (
-    <form onSubmit={handleSubmit((data) => create.mutate(data))} className="flex flex-col gap-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
       {create.error ? <FormErrorBanner message={create.error.message} /> : null}
       <PharmacyCreateFormSections
         register={register}

@@ -1,0 +1,1295 @@
+{
+  "meta": {
+    "exportedAt": "2026-08-03T14:04:34.062Z",
+    "tool": "medijob-testing-manual-v1-1"
+  },
+  "session": {
+    "date": "2026-08-03",
+    "url": "https://crm-medijob-web.vercel.app/login?callbackUrl=https%3A%2F%2Fcrm-medijob-web.vercel.app%2F",
+    "tester": "Victor",
+    "seed": "Oui",
+    "ai": "Réel",
+    "verdict": "GO",
+    "notes": "Les loaders sont encore adaptes aud esign card alors que maitnenant on est ne design tableau "
+  },
+  "items": [
+    {
+      "id": "env-0",
+      "section": "0. Bon environnement (lire avant tout)",
+      "text": "J’utilise l’URL DEV (branche dev), PAS la prod crm-medijob-web.vercel.app (main trop vieux)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "env-1",
+      "section": "0. Bon environnement (lire avant tout)",
+      "text": "Je peux ouvrir /login sur cette URL (SSO Vercel OK si demandé)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "env-2",
+      "section": "0. Bon environnement (lire avant tout)",
+      "text": "Après login Recruteur, je vois le CRM (pas seulement la page login)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-0",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Login Recruteur OK — recruteur@medijob.fr / recruteur-medijob-2026",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-1",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Login Direction OK — direction@medijob.fr / direction-medijob-2026",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-2",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Login Communication OK — communication@medijob.fr / communication-medijob-2026",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-3",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Login RH-Admin OK — admin@medijob.fr / admin-medijob-2026",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-4",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Login testeur perso OK — victorpiamiaspro@gmail.com / tester-medijob-2026",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-5",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Mauvais mot de passe → message « Identifiants invalides »",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "login-6",
+      "section": "1. Connexion (faire en premier)",
+      "text": "Logout → retour /login",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "forgot-0",
+      "section": "1b. Mot de passe oublié (seulement sur DEV)",
+      "text": "Sous le bouton « Se connecter », je vois le lien « Mot de passe oublié ? Réinitialiser »",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "forgot-1",
+      "section": "1b. Mot de passe oublié (seulement sur DEV)",
+      "text": "Clic → page /forgot-password (formulaire email, PAS redirect vers login)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "forgot-2",
+      "section": "1b. Mot de passe oublié (seulement sur DEV)",
+      "text": "Je soumets mon email seed → message de confirmation affiché (même si le mail n’arrive pas)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "forgot-3",
+      "section": "1b. Mot de passe oublié (seulement sur DEV)",
+      "text": "Si j’ai reçu le mail : lien reset → nouveau MDP → login OK — sinon N/A",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "mail arrive pas "
+    },
+    {
+      "id": "post-login-smoke-0",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Sidebar visible : Accueil, Candidats, Pharmacies, Contacts, Missions, Offres, Assistant",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-1",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Pas d’entrée Admin (compte Recruteur)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-2",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Au moins 5 pharmacies seed (Bellecour, Marais, Vieux-Port…)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-3",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Statut pharmacie affiché « Client » (pas « Actif »)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-4",
+      "section": "2. Smoke après login (données seed)",
+      "text": "≥ 8 candidats en CVthèque",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-5",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Missions : ≥1 À pourvoir, 1 Pourvu, 1 Annulée",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-6",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Recherche « Bellecour » → Pharmacie",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "post-login-smoke-7",
+      "section": "2. Smoke après login (données seed)",
+      "text": "Recherche « Camille » → Candidat",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "accueil-0",
+      "section": "3. Accueil / Dashboard",
+      "text": "KPI visibles (missions, urgentes, candidatures, taux…)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "accueil-1",
+      "section": "3. Accueil / Dashboard",
+      "text": "Chiffres cohérents avec les listes",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "accueil-2",
+      "section": "3. Accueil / Dashboard",
+      "text": "Centre d’alertes présent",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "accueil-3",
+      "section": "3. Accueil / Dashboard",
+      "text": "Clic alerte → écran pertinent",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "accueil-4",
+      "section": "3. Accueil / Dashboard",
+      "text": "Actions rapides OK (si présentes)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-liste-0",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Tableau (pas seulement cartes)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-liste-1",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Colonnes : nom, ville, CP, statut, groupement, date, référent, œil",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-liste-2",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Statut Client / Prospect / Inactif",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-liste-3",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Filtres statut, dpt, groupement, LGO, ville, référent…",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "quand je chosiie region et que j enleve ca saute et ca remet le filtre ca enleve ca remet en bouvcle pareil pour d'autres filtre "
+    },
+    {
+      "id": "pharmacies-liste-4",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Filtrer Client → Bellecour ; Prospect → Vieux-Port",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-liste-5",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Vue rapide (œil) + lien fiche",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-liste-6",
+      "section": "4.1 Pharmacies — Liste",
+      "text": "Toggle carte : pins + filtres",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "Aucun point géolocalisé pour ces filtres."
+    },
+    {
+      "id": "pharmacies-crud-0",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "SIRENE/SIRET préremplit nom, SIRET, adresse, ville, CP",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-crud-1",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Référent prérempli mais optionnel",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-crud-2",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Création → fiche + historique « Fiche créée »",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-crud-3",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Import CSV : mapping + preview",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": "Ca donne moi fichier pour test "
+    },
+    {
+      "id": "pharmacies-crud-4",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Doublon SIRET ou nom+ville+CP → fusion",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "il me dit juste ca Une pharmacie avec ce SIRET existe déjà."
+    },
+    {
+      "id": "pharmacies-crud-5",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Import final OK",
+      "deferred": false,
+      "status": "deferred",
+      "checked": false,
+      "comment": "ca je vois aps ce que tu veux "
+    },
+    {
+      "id": "pharmacies-crud-6",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Onglets Infos, Contacts, Besoins, Historique, Documents",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-crud-7",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Édition Infos → « Fiche modifiée » dans historique",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-crud-8",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Besoins : missions non terminales + type contrat",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "pas comrpsu ca "
+    },
+    {
+      "id": "pharmacies-crud-9",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Historique : ActivityLog + missions Pourvu/Annulée",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "pas comrpsu ca "
+    },
+    {
+      "id": "pharmacies-crud-10",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Documents : upload + aperçu + téléchargement",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "pharmacies-crud-11",
+      "section": "4.2 Pharmacies — Création / Import / Fiche",
+      "text": "Soft delete : Recruteur bloqué ; Direction/RH-Admin OK",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "je vois pas bouton pour delete en testeur et en admin non plus "
+    },
+    {
+      "id": "contacts-0",
+      "section": "5. Contacts",
+      "text": "Colonnes nom et prénom séparés",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-1",
+      "section": "5. Contacts",
+      "text": "Fonction, pharmacie, tél, email, date, principal, œil",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-2",
+      "section": "5. Contacts",
+      "text": "Filtres rôle / pharmacie / ville / référent / principal",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-3",
+      "section": "5. Contacts",
+      "text": "Vue rapide OK",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-4",
+      "section": "5. Contacts",
+      "text": "Création : pharmacie obligatoire",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-5",
+      "section": "5. Contacts",
+      "text": "Rôle depuis référentiel",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-6",
+      "section": "5. Contacts",
+      "text": "Référent optionnel",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "contacts-7",
+      "section": "5. Contacts",
+      "text": "Fiche : édition + historique + documents + soft delete selon rôle",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "candidats-liste-0",
+      "section": "6.1 Candidats — Liste",
+      "text": "Colonnes identité + métier + ville + statut + date + œil",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "candidats-liste-1",
+      "section": "6.1 Candidats — Liste",
+      "text": "Filtres métier / dispo / ville / mobilité / statut / référent",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "meem soucis filtre que pharmacie "
+    },
+    {
+      "id": "candidats-liste-2",
+      "section": "6.1 Candidats — Liste",
+      "text": "Vue rapide + toggle carte",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "carte meme soucis aussi que pharmacie "
+    },
+    {
+      "id": "candidats-liste-3",
+      "section": "6.1 Candidats — Liste",
+      "text": "Export CSV des lignes filtrées (si bouton)",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "candidats-liste-4",
+      "section": "6.1 Candidats — Liste",
+      "text": "Zone candidatures reçues visible",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "oui met a mettre sous forme liste comme onglet candidat"
+    },
+    {
+      "id": "candidats-crud-0",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Création : statut Nouveau + prétentions salaire",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "faios que cette case Consentement au traitement des données personnelles enregistré (optionnel à la création manuelle).\n soit coche par defaut "
+    },
+    {
+      "id": "candidats-crud-1",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Doublon email / nom+tél → alerte ou fusion",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "de la https://crm-medijob-web.vercel.app/candidats/duplicate-review?existingId=cmqs81oal0003mstoel1sohr8 quand j appuie sur fusionner il se passe rien ignorer marche "
+    },
+    {
+      "id": "candidats-crud-2",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Import CV PDF → revue → création",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "import csv doit accepter jpeg etc... comme document et sinon dis ca Réponse IA non valide. Réessaie. sur pdf marche bien mais ne me dis aps si doublon dej existant \n\n"
+    },
+    {
+      "id": "candidats-crud-3",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Import CSV candidats OK",
+      "deferred": false,
+      "status": "deferred",
+      "checked": false,
+      "comment": "donn efichier pour tester "
+    },
+    {
+      "id": "candidats-crud-4",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Édition profil complète",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "candidats-crud-5",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Bandeau profil incomplet si champs manquants",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "candidats-crud-6",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Positionnement mission → statut En mission (auto)",
+      "deferred": false,
+      "status": "deferred",
+      "checked": false,
+      "comment": "pas comprius "
+    },
+    {
+      "id": "candidats-crud-7",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Blacklisté reste blacklisté",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "je vois pas blackliste "
+    },
+    {
+      "id": "candidats-crud-8",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Résumé IA générer / éditer / sauver",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "Bouron enregistrert toujorus griser a l air de pas marcher mais finaleemnt ca enregistre quand meme "
+    },
+    {
+      "id": "candidats-crud-9",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Profil anonymisé + export PDF",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "je vois pas profil anaonymyser "
+    },
+    {
+      "id": "candidats-crud-10",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Présenter à une pharmacie (mailto)",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "ok mais ne met pas le nom des gens  pareil dans rpesentation dasn perimetre "
+    },
+    {
+      "id": "candidats-crud-11",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Historique + onglet missions",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "candidats-crud-12",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Documents upload + aperçu",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "la met le cv axcesible d'ici aussi stp "
+    },
+    {
+      "id": "candidats-crud-13",
+      "section": "6.2 Candidats — Création / Fiche",
+      "text": "Effacement RGPD : Direction/RH-Admin only",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "Effacement RGPD bouton hyper miche "
+    },
+    {
+      "id": "missions-0",
+      "section": "7. Missions & Matching",
+      "text": "Tableau missions + colonnes attendues",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-1",
+      "section": "7. Missions & Matching",
+      "text": "Toggle kanban optionnel",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-2",
+      "section": "7. Missions & Matching",
+      "text": "Filtres contrat / statut / métier / ville / période",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-3",
+      "section": "7. Missions & Matching",
+      "text": "Vue rapide + carte",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "comme autre carte marche pas "
+    },
+    {
+      "id": "missions-4",
+      "section": "7. Missions & Matching",
+      "text": "Création avec profil recherché",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "pas compris mais quand je cree rmsisiuon ca mouvre meme pas la apgfe de la mission "
+    },
+    {
+      "id": "missions-5",
+      "section": "7. Missions & Matching",
+      "text": "Édition + pipeline candidats",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-6",
+      "section": "7. Missions & Matching",
+      "text": "Statut → Pourvu / Annulée",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "quand je emt coadnida dans place ca pass ebien en pouvur mais plus rien ne st affiche dasn pipeline candidast "
+    },
+    {
+      "id": "missions-7",
+      "section": "7. Missions & Matching",
+      "text": "Documents + historique + soft delete selon rôle",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-8",
+      "section": "7. Missions & Matching",
+      "text": "Matching : suggestions scorées",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "la https://crm-medijob-web.vercel.app/missions/rich-mi-6?back=%2F la Email bouton doit ouvrir gmail comme pahrma \n b"
+    },
+    {
+      "id": "missions-9",
+      "section": "7. Missions & Matching",
+      "text": "Prétentions prises en compte / score cohérent",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-10",
+      "section": "7. Missions & Matching",
+      "text": "Multi-select 2 candidats",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "missions-11",
+      "section": "7. Missions & Matching",
+      "text": "Deep links email / SMS / WhatsApp",
+      "deferred": false,
+      "status": "ko",
+      "checked": true,
+      "comment": "non pas bon la Email bouton doit ouvrir gmail comme pahrma "
+    },
+    {
+      "id": "missions-12",
+      "section": "7. Missions & Matching",
+      "text": "Ajouter au pipeline → stage initial",
+      "deferred": false,
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    {
+      "id": "offres-0",
+      "section": "8. Offres",
+      "text": "Vraie liste (plus de placeholder)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "offres-1",
+      "section": "8. Offres",
+      "text": "Colonnes titre, statut, mission, nb candidatures",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "offres-2",
+      "section": "8. Offres",
+      "text": "Générer offre IA depuis mission → brouillon",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "offres-3",
+      "section": "8. Offres",
+      "text": "Publier → PUBLIEE ; Dépublier → DEPUBLIEE",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "assistant-0",
+      "section": "9. Assistant IA",
+      "text": "Chat libre répond (mock OK)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "assistant-1",
+      "section": "9. Assistant IA",
+      "text": "Raccourcis résumé candidat / pharmacie",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "assistant-2",
+      "section": "9. Assistant IA",
+      "text": "Raccourcis mail candidat / pharmacie",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "assistant-3",
+      "section": "9. Assistant IA",
+      "text": "Générer offre (contexte mission)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "assistant-4",
+      "section": "9. Assistant IA",
+      "text": "Rapport semaine : chiffres cohérents",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "assistant-5",
+      "section": "9. Assistant IA",
+      "text": "Meilleurs profils s’appuie sur matching",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-0",
+      "section": "10. Admin & RGPD",
+      "text": "Recruteur/Communication : Admin interdit",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-1",
+      "section": "10. Admin & RGPD",
+      "text": "CRUD Pipeline (+ ordre)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-2",
+      "section": "10. Admin & RGPD",
+      "text": "CRUD Logiciels LGO",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-3",
+      "section": "10. Admin & RGPD",
+      "text": "CRUD Groupements",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-4",
+      "section": "10. Admin & RGPD",
+      "text": "CRUD Métiers + matrice compatibilité",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-5",
+      "section": "10. Admin & RGPD",
+      "text": "CRUD Rôles contact",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-6",
+      "section": "10. Admin & RGPD",
+      "text": "Utilisateurs : créer / rôle / soft delete (garder ≥1 admin)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-7",
+      "section": "10. Admin & RGPD",
+      "text": "Page RGPD accessible",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-8",
+      "section": "10. Admin & RGPD",
+      "text": "Lien registre externe si configuré",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "admin-9",
+      "section": "10. Admin & RGPD",
+      "text": "Trace effacements visible si UI",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-0",
+      "section": "11. Matrice des rôles",
+      "text": "Direction : voit Admin",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-1",
+      "section": "11. Matrice des rôles",
+      "text": "RH-Admin / Testeur : voit Admin",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-2",
+      "section": "11. Matrice des rôles",
+      "text": "Recruteur : PAS Admin",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-3",
+      "section": "11. Matrice des rôles",
+      "text": "Communication : PAS Admin",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-4",
+      "section": "11. Matrice des rôles",
+      "text": "Soft delete : Direction OK",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-5",
+      "section": "11. Matrice des rôles",
+      "text": "Soft delete : RH-Admin OK",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-6",
+      "section": "11. Matrice des rôles",
+      "text": "Soft delete : Recruteur NON",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-7",
+      "section": "11. Matrice des rôles",
+      "text": "Soft delete : Communication NON",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-8",
+      "section": "11. Matrice des rôles",
+      "text": "RGPD erase : Direction/RH-Admin OK ; autres NON",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-9",
+      "section": "11. Matrice des rôles",
+      "text": "Publier offre : les rôles métier OK (ou noter écart)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-10",
+      "section": "11. Matrice des rôles",
+      "text": "Communication write CRM : noter comportement réel vs lecture seule",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "roles-11",
+      "section": "11. Matrice des rôles",
+      "text": "Matching+rattacher Communication : attendu NON — vérifier",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-0",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Ouvrir/créer pharmacie Client",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-1",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Vérifier/ajouter contact titulaire",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-2",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Créer mission CDI + profil recherché",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-3",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Matching → choisir candidat",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-4",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Rattacher au pipeline (+ mailto optionnel)",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-5",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Avancer d’un stage pipeline",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-6",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Générer offre IA → publier CRM",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-7",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Passer mission Pourvu",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-8",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Pharmacie : besoin disparu + historique",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-a-9",
+      "section": "12.A E2E — Staffing classique",
+      "text": "Candidat : En mission + historique",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-b-0",
+      "section": "12.B E2E — CVthèque",
+      "text": "Import CV PDF → revue → création",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-b-1",
+      "section": "12.B E2E — CVthèque",
+      "text": "Compléter mobilité/ville si bandeau",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-b-2",
+      "section": "12.B E2E — CVthèque",
+      "text": "Résumé IA + PDF anonymisé",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-b-3",
+      "section": "12.B E2E — CVthèque",
+      "text": "Présenter à une pharmacie",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-c-0",
+      "section": "12.C E2E — Qualité données",
+      "text": "Doublon email candidat géré",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "e2e-c-1",
+      "section": "12.C E2E — Qualité données",
+      "text": "Import CSV pharmacie SIRET doublon → fusion",
+      "deferred": false,
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-0",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#226 Section entretien sur création/fiche",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-1",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#226 Champs entretien sauvegardés",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-2",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#230 Publish crée/maj item site (Webflow)",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-3",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#230 Unpublish retire côté site",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-4",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#231 Webhook → Application inbox",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-5",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#231 Accept → Candidate+CV ; Refus → REFUSEE",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-6",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#234 Écrans finance / factu / devis",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    {
+      "id": "deferred-7",
+      "section": "13. Différé (pas encore livré)",
+      "text": "#234 CA/Marge : Direction+RH-Admin only",
+      "deferred": true,
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    }
+  ]
+}

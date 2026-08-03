@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
@@ -34,15 +34,17 @@ export function useHomeQuickCreate() {
 
   const refsLoading = queries.mission && missionRefs.isLoading
 
-  const refresh = useCallback(() => {
-    setOpen(null)
-    router.refresh()
-  }, [router])
-
-  const missionMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Mission créée' })
+  const missionToast = useEntityMutation({ successMessage: 'Mission créée' })
   const refMutation = useEntityMutation()
 
-  const createMission = trpc.mission.create.useMutation(missionMutation)
+  const createMission = trpc.mission.create.useMutation({
+    onSuccess: (row) => {
+      missionToast.onSuccess()
+      setOpen(null)
+      router.push(`/missions/${row.id}`)
+    },
+    onError: missionToast.onError,
+  })
   const newJobTitle = trpc.mission.createJobTitle.useMutation(refMutation)
 
   return {
