@@ -35,7 +35,6 @@ export function useMissionPipelineMutations({
       {
         onSuccess: () => {
           toast.onSuccess()
-          onRowsChange([])
         },
         onError: toast.onError,
       },

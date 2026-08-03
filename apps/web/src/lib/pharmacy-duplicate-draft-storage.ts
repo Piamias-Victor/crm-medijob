@@ -14,7 +14,7 @@ const matchSchema = z.object({
 })
 
 export const pharmacyDuplicateDraftSchema = z.object({
-  mode: z.literal('import'),
+  mode: z.enum(['import', 'create']),
   incoming: pharmacyInputSchema,
   returnPath: z.string().min(1),
   matches: z.array(matchSchema),

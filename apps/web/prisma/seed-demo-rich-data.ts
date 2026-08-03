@@ -6,6 +6,8 @@ export type RichPharmacySeed = {
   city: string
   postalCode: string
   status: PharmacyStatus
+  latitude: number
+  longitude: number
   groupement?: string
   software?: string
 }
@@ -29,6 +31,8 @@ export type RichCandidateSeed = {
   phone: string
   city: string
   postalCode: string
+  latitude: number
+  longitude: number
   jobTitle: string
   mobilityRadiusKm: number
 }
@@ -44,11 +48,11 @@ export type RichMissionSeed = {
 }
 
 export const RICH_PHARMACIES: RichPharmacySeed[] = [
-  { id: 'rich-ph-lyon-centre', name: 'Pharmacie Bellecour', city: 'Lyon', postalCode: '69002', status: 'ACTIF', groupement: 'Giphar', software: 'Winpharma' },
-  { id: 'rich-ph-lyon-gare', name: 'Grande Pharmacie de la Gare', city: 'Lyon', postalCode: '69003', status: 'ACTIF', groupement: 'Alphega', software: 'LGPI' },
-  { id: 'rich-ph-paris-marais', name: 'Pharmacie du Marais', city: 'Paris', postalCode: '75004', status: 'ACTIF', groupement: 'Leadersanté', software: 'Smart Rx' },
-  { id: 'rich-ph-marseille-vieux', name: 'Pharmacie du Vieux-Port', city: 'Marseille', postalCode: '13001', status: 'PROSPECT', software: 'Pharmaland' },
-  { id: 'rich-ph-toulouse-cap', name: 'Pharmacie Capitole', city: 'Toulouse', postalCode: '31000', status: 'ACTIF', groupement: 'Pharmavie', software: 'Crystal' },
+  { id: 'rich-ph-lyon-centre', name: 'Pharmacie Bellecour', city: 'Lyon', postalCode: '69002', status: 'ACTIF', latitude: 45.7578, longitude: 4.832, groupement: 'Giphar', software: 'Winpharma' },
+  { id: 'rich-ph-lyon-gare', name: 'Grande Pharmacie de la Gare', city: 'Lyon', postalCode: '69003', status: 'ACTIF', latitude: 45.7606, longitude: 4.86, groupement: 'Alphega', software: 'LGPI' },
+  { id: 'rich-ph-paris-marais', name: 'Pharmacie du Marais', city: 'Paris', postalCode: '75004', status: 'ACTIF', latitude: 48.8559, longitude: 2.36, groupement: 'Leadersanté', software: 'Smart Rx' },
+  { id: 'rich-ph-marseille-vieux', name: 'Pharmacie du Vieux-Port', city: 'Marseille', postalCode: '13001', status: 'PROSPECT', latitude: 43.2965, longitude: 5.3698, software: 'Pharmaland' },
+  { id: 'rich-ph-toulouse-cap', name: 'Pharmacie Capitole', city: 'Toulouse', postalCode: '31000', status: 'ACTIF', latitude: 43.6045, longitude: 1.444, groupement: 'Pharmavie', software: 'Crystal' },
 ]
 
 export const RICH_CONTACTS: RichContactSeed[] = [
@@ -60,14 +64,14 @@ export const RICH_CONTACTS: RichContactSeed[] = [
 ]
 
 export const RICH_CANDIDATES: RichCandidateSeed[] = [
-  { id: 'rich-ca-1', firstName: 'Camille', lastName: 'Durand', email: 'camille.durand@email.fr', phone: '06 11 22 33 01', city: 'Lyon', postalCode: '69003', jobTitle: 'Pharmacien', mobilityRadiusKm: 30 },
-  { id: 'rich-ca-2', firstName: 'Lucas', lastName: 'Martin', email: 'lucas.martin@email.fr', phone: '06 11 22 33 02', city: 'Villeurbanne', postalCode: '69100', jobTitle: 'Préparateur', mobilityRadiusKm: 25 },
-  { id: 'rich-ca-3', firstName: 'Léa', lastName: 'Bernard', email: 'lea.bernard@email.fr', phone: '06 11 22 33 03', city: 'Paris', postalCode: '75011', jobTitle: 'Pharmacien', mobilityRadiusKm: 40 },
-  { id: 'rich-ca-4', firstName: 'Hugo', lastName: 'Petit', email: 'hugo.petit@email.fr', phone: '06 11 22 33 04', city: 'Marseille', postalCode: '13008', jobTitle: 'Préparateur', mobilityRadiusKm: 35 },
-  { id: 'rich-ca-5', firstName: 'Manon', lastName: 'Roux', email: 'manon.roux@email.fr', phone: '06 11 22 33 05', city: 'Toulouse', postalCode: '31000', jobTitle: 'Pharmacien', mobilityRadiusKm: 30 },
-  { id: 'rich-ca-6', firstName: 'Nathan', lastName: 'Faure', email: 'nathan.faure@email.fr', phone: '06 11 22 33 06', city: 'Lyon', postalCode: '69007', jobTitle: 'Étudiant pharma', mobilityRadiusKm: 20 },
-  { id: 'rich-ca-7', firstName: 'Chloé', lastName: 'Lambert', email: 'chloe.lambert@email.fr', phone: '06 11 22 33 07', city: 'Nantes', postalCode: '44000', jobTitle: 'Rayoniste', mobilityRadiusKm: 30 },
-  { id: 'rich-ca-8', firstName: 'Antoine', lastName: 'Mercier', email: 'antoine.mercier@email.fr', phone: '06 11 22 33 08', city: 'Lyon', postalCode: '69006', jobTitle: 'Pharmacien', mobilityRadiusKm: 45 },
+  { id: 'rich-ca-1', firstName: 'Camille', lastName: 'Durand', email: 'camille.durand@email.fr', phone: '06 11 22 33 01', city: 'Lyon', postalCode: '69003', latitude: 45.76, longitude: 4.855, jobTitle: 'Pharmacien', mobilityRadiusKm: 30 },
+  { id: 'rich-ca-2', firstName: 'Lucas', lastName: 'Martin', email: 'lucas.martin@email.fr', phone: '06 11 22 33 02', city: 'Villeurbanne', postalCode: '69100', latitude: 45.766, longitude: 4.879, jobTitle: 'Préparateur', mobilityRadiusKm: 25 },
+  { id: 'rich-ca-3', firstName: 'Léa', lastName: 'Bernard', email: 'lea.bernard@email.fr', phone: '06 11 22 33 03', city: 'Paris', postalCode: '75011', latitude: 48.858, longitude: 2.38, jobTitle: 'Pharmacien', mobilityRadiusKm: 40 },
+  { id: 'rich-ca-4', firstName: 'Hugo', lastName: 'Petit', email: 'hugo.petit@email.fr', phone: '06 11 22 33 04', city: 'Marseille', postalCode: '13008', latitude: 43.27, longitude: 5.38, jobTitle: 'Préparateur', mobilityRadiusKm: 35 },
+  { id: 'rich-ca-5', firstName: 'Manon', lastName: 'Roux', email: 'manon.roux@email.fr', phone: '06 11 22 33 05', city: 'Toulouse', postalCode: '31000', latitude: 43.6045, longitude: 1.444, jobTitle: 'Pharmacien', mobilityRadiusKm: 30 },
+  { id: 'rich-ca-6', firstName: 'Nathan', lastName: 'Faure', email: 'nathan.faure@email.fr', phone: '06 11 22 33 06', city: 'Lyon', postalCode: '69007', latitude: 45.748, longitude: 4.845, jobTitle: 'Étudiant pharma', mobilityRadiusKm: 20 },
+  { id: 'rich-ca-7', firstName: 'Chloé', lastName: 'Lambert', email: 'chloe.lambert@email.fr', phone: '06 11 22 33 07', city: 'Nantes', postalCode: '44000', latitude: 47.2184, longitude: -1.5536, jobTitle: 'Rayoniste', mobilityRadiusKm: 30 },
+  { id: 'rich-ca-8', firstName: 'Antoine', lastName: 'Mercier', email: 'antoine.mercier@email.fr', phone: '06 11 22 33 08', city: 'Lyon', postalCode: '69006', latitude: 45.769, longitude: 4.85, jobTitle: 'Pharmacien', mobilityRadiusKm: 45 },
 ]
 
 export const RICH_MISSIONS: RichMissionSeed[] = [

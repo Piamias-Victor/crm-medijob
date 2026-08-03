@@ -23,13 +23,16 @@ export function MissionsPageCreate({
   recruiters,
 }: Props) {
   const router = useRouter()
-  const refresh = () => {
-    onOpenChange(false)
-    router.refresh()
-  }
-  const createMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Mission créée' })
+  const toast = useEntityMutation({ successMessage: 'Mission créée' })
   const refMutation = useEntityMutation()
-  const create = trpc.mission.create.useMutation(createMutation)
+  const create = trpc.mission.create.useMutation({
+    onSuccess: (row) => {
+      toast.onSuccess()
+      onOpenChange(false)
+      router.push(`/missions/${row.id}`)
+    },
+    onError: toast.onError,
+  })
   const newJobTitle = trpc.mission.createJobTitle.useMutation(refMutation)
 
   return (

@@ -4,6 +4,7 @@ import {
   type CandidateProfileInput,
 } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
+import type { ManualCandidateStatus } from '@/view-models/candidate-status'
 
 export type CandidateDuplicateRow = Record<string, unknown> & {
   firstName: string
@@ -14,6 +15,7 @@ export type CandidateDuplicateRow = Record<string, unknown> & {
   city: string
   postalCode: string
   jobTitleId: string
+  status: ManualCandidateStatus
   softwareIds: string[]
   contractTypes: string[]
   mobilityRadiusKm: number
@@ -34,9 +36,10 @@ function emptyRow(): CandidateDuplicateRow {
     city: '',
     postalCode: '',
     jobTitleId: '',
+    status: 'NOUVEAU',
     softwareIds: [],
     contractTypes: [],
-    mobilityRadiusKm: 0,
+    mobilityRadiusKm: 1,
     mobilityNotes: '',
     availableFrom: '',
     notes: '',
@@ -59,6 +62,7 @@ export function toDuplicateRowFromInput(
     city: data.city ?? '',
     postalCode: data.postalCode ?? '',
     jobTitleId: data.jobTitleId,
+    status: data.status,
     softwareIds: data.softwareIds ?? [],
     contractTypes: data.contractTypes ?? [],
     mobilityRadiusKm: data.mobilityRadiusKm,
@@ -84,12 +88,13 @@ export function toProfileInputFromDuplicateRow(row: CandidateDuplicateRow) {
     city: row.city || undefined,
     postalCode: row.postalCode || undefined,
     jobTitleId: row.jobTitleId,
+    status: row.status,
     softwareIds: row.softwareIds,
     contractTypes: row.contractTypes,
-    mobilityRadiusKm: row.mobilityRadiusKm,
+    mobilityRadiusKm: Math.max(1, row.mobilityRadiusKm || 1),
     mobilityNotes: row.mobilityNotes || undefined,
     availableFrom: row.availableFrom || undefined,
     notes: row.notes || undefined,
-    referentId: row.referentId,
+    referentId: row.referentId || null,
   })
 }

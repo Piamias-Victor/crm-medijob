@@ -18,7 +18,8 @@ const KNOWN_ERRORS: Record<string, { code: TRPCError['code']; message: string }>
   MISSION_NOT_FOUND: { code: 'NOT_FOUND', message: 'Mission introuvable.' },
   AI_RESPONSE_NOT_JSON: {
     code: 'BAD_REQUEST',
-    message: 'Réponse IA non valide. Réessaie.',
+    message:
+      'Réponse IA non valide. Réessaie avec un PDF net ou une image (JPG/PNG/WEBP) plus lisible.',
   },
   ANONYMIZED_CONTAINS_PII: {
     code: 'BAD_REQUEST',

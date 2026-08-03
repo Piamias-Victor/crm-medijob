@@ -1,7 +1,7 @@
+import { buildComposeUrl } from '@/lib/mailto/build-compose-url'
 import { buildSmsUrl } from '@/lib/phone/build-sms-url'
 import { buildWhatsAppUrl } from '@/lib/phone/build-whatsapp-url'
 import { isValidEmailRecipient } from '@/lib/mailto/is-valid-email-recipient'
-import { buildMatchingContactMailto } from '@/view-models/matching-contact-mailto'
 
 export type MatchingContactCandidate = {
   candidateId: string
@@ -37,9 +37,20 @@ export function resolveMatchingContactActions({
   const whatsappUrls = selected
     .map((row) => buildWhatsAppUrl(row.phone))
     .filter((url): url is string => Boolean(url))
+  const [to, ...rest] = emails
 
   return {
-    mailtoUrl: buildMatchingContactMailto({ emails, subject, body }),
+    mailtoUrl: to
+      ? buildComposeUrl(
+          {
+            to,
+            bcc: rest.length > 0 ? rest.join(',') : undefined,
+            subject,
+            body,
+          },
+          'gmail',
+        )
+      : null,
     smsUrls,
     whatsappUrls,
     emailCount: emails.length,

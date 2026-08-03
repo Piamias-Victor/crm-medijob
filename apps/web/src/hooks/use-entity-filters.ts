@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import type { FilterConfig, FilterValues } from '@/lib/filters/filter-types'
 import { buildDefaultFilterValues } from '@/lib/filters/filter-types'
 import { deserializeFilters, serializeFilters } from '@/lib/filters/serialize'
+import { filterQueriesEqual } from '@/lib/filters/filter-query-equal'
 
 type Options<TConfigs extends readonly FilterConfig[]> = {
   syncUrl?: boolean
@@ -13,16 +14,19 @@ type Options<TConfigs extends readonly FilterConfig[]> = {
   onValuesChange?: (values: FilterValues<TConfigs>) => void
 }
 
+const EMPTY_PRESERVE: readonly string[] = []
+
 export function useEntityFilters<TConfigs extends readonly FilterConfig[]>(
   config: TConfigs,
   options: Options<TConfigs> = {},
 ) {
-  const { syncUrl = true, onValuesChange, preserveSearchParams = [] } = options
+  const { syncUrl = true, onValuesChange, preserveSearchParams = EMPTY_PRESERVE } = options
   const searchParams = useSearchParams()
   const searchKey = searchParams.toString()
   const pathname = usePathname()
   const router = useRouter()
   const defaults = useMemo(() => buildDefaultFilterValues(config), [config])
+  const skipNextUrlRead = useRef(false)
 
   const readFromUrl = useCallback(
     () => deserializeFilters(config, searchParams),
@@ -40,9 +44,12 @@ export function useEntityFilters<TConfigs extends readonly FilterConfig[]>(
 
   useEffect(() => {
     if (!syncUrl) return
-    const fromUrl = readFromUrl()
-    setValues(fromUrl)
-  }, [config, readFromUrl, searchKey, syncUrl])
+    if (skipNextUrlRead.current) {
+      skipNextUrlRead.current = false
+      return
+    }
+    setValues(readFromUrl())
+  }, [readFromUrl, searchKey, syncUrl])
 
   useEffect(() => {
     if (!syncUrl) return
@@ -52,10 +59,10 @@ export function useEntityFilters<TConfigs extends readonly FilterConfig[]>(
       if (preserved) params.set(key, preserved)
     }
     const query = params.toString()
-    const current = searchParams.toString()
-    if (query === current) return
+    if (filterQueriesEqual(query, searchParams.toString())) return
+    skipNextUrlRead.current = true
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
-  }, [config, pathname, preserveSearchParams, router, searchKey, searchParams, syncUrl, values])
+  }, [config, pathname, preserveSearchParams, router, searchParams, syncUrl, values])
 
   const onChange = useCallback(
     (next: FilterValues<TConfigs>) => {
