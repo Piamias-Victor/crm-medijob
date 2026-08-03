@@ -22,6 +22,7 @@ import {
   candidateCreateMutation,
   candidateUpdateMutation,
 } from '@/server/routers/candidate-mutations'
+import { createGdprEraseCandidateProcedure } from '@/server/routers/candidate-gdpr-erase.procedure'
 
 export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
@@ -78,5 +79,6 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     presentToPharmacy: createPresentToPharmacyProcedure(deps),
     listPharmaciesInRadius: createListPharmaciesInRadiusProcedure(deps),
     presentInRadius: createPresentInRadiusProcedure(deps),
+    gdprErase: createGdprEraseCandidateProcedure(deps.gdprErase),
   })
 }

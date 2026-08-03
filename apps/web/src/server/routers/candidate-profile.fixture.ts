@@ -22,6 +22,8 @@ export const profileFixture = {
   cvUrl: null,
   cvSummary: null,
   anonymizedProfile: null,
+  consentGivenAt: null,
+  consentSource: null,
   createdAt: new Date('2026-01-15'),
   updatedAt: new Date('2026-01-15'),
   deletedAt: null,

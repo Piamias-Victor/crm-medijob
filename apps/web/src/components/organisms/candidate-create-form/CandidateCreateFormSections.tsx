@@ -2,6 +2,7 @@
 
 import type { UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { CandidateNotesField } from '@/components/molecules/CandidateNotesField'
+import { CandidateConsentCheckbox } from '@/components/molecules/CandidateConsentCheckbox'
 import { CandidateProfileFields } from '@/components/molecules/CandidateProfileFields'
 import { CandidateProfileSelects } from '@/components/molecules/CandidateProfileSelects'
 import { CandidateStatusSalaryFields } from '@/components/molecules/CandidateStatusSalaryFields'
@@ -66,6 +67,12 @@ export function CandidateCreateFormSections(props: Props) {
       </FormSection>
       <FormSection title="Notes internes">
         <CandidateNotesField register={profileRegister} />
+      </FormSection>
+      <FormSection title="RGPD">
+        <CandidateConsentCheckbox
+          checked={Boolean(props.watch('consentGiven'))}
+          onChange={(checked) => props.setValue('consentGiven', checked)}
+        />
       </FormSection>
     </>
   )

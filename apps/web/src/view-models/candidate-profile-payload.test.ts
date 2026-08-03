@@ -29,6 +29,8 @@ const baseProfile = {
   cvUrl: null,
   cvSummary: null,
   anonymizedProfile: null,
+  consentGivenAt: null,
+  consentSource: null,
   jobTitle: { id: 'jt1', name: 'Pharmacien' },
   referent: { id: 'u1', name: 'Bob Réf' },
   softwares: [],

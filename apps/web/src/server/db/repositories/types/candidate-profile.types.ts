@@ -24,4 +24,6 @@ export type CandidateProfileUpdate = {
   cvUrl?: string
   latitude?: number | null
   longitude?: number | null
+  consentGivenAt?: Date | null
+  consentSource?: 'SITE' | 'MANUAL' | 'IMPORT' | null
 }

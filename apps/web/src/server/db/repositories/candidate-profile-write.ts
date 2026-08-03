@@ -30,9 +30,15 @@ export function toCandidateProfileWriteData(data: CandidateProfileUpdate) {
 
 export function toCandidateProfileUpdateData(
   data: CandidateProfileUpdate,
-): ReturnType<typeof toCandidateProfileWriteData> & { cvUrl?: string } {
+): ReturnType<typeof toCandidateProfileWriteData> & {
+  cvUrl?: string
+  consentGivenAt?: Date | null
+  consentSource?: 'SITE' | 'MANUAL' | 'IMPORT' | null
+} {
   return {
     ...toCandidateProfileWriteData(data),
     ...(data.cvUrl ? { cvUrl: data.cvUrl } : {}),
+    ...(data.consentGivenAt !== undefined ? { consentGivenAt: data.consentGivenAt } : {}),
+    ...(data.consentSource !== undefined ? { consentSource: data.consentSource } : {}),
   }
 }

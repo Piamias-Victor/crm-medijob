@@ -14,5 +14,6 @@ export function buildCandidateCreateDefaults(
     mobilityRadiusKm: CREATE_DEFAULT_MOBILITY_RADIUS_KM,
     softwareIds: [],
     contractTypes: [],
+    consentGiven: false,
   }
 }

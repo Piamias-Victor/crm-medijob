@@ -72,6 +72,14 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     updateDerivedFields: vi.fn(),
     provider: mockProvider,
     logLifecycle: vi.fn().mockResolvedValue(undefined),
+    gdprErase: {
+      findCandidateForErase: vi.fn().mockResolvedValue(null),
+      listDocumentUrls: vi.fn().mockResolvedValue([]),
+      listApplicationCvUrls: vi.fn().mockResolvedValue([]),
+      deleteBlobs: vi.fn().mockResolvedValue(undefined),
+      hardDeleteCandidateCascade: vi.fn().mockResolvedValue(undefined),
+      createAudit: vi.fn().mockResolvedValue(undefined),
+    },
     ...overrides,
   }
 }
