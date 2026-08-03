@@ -21,8 +21,18 @@ describe('candidateCreateInputSchema', () => {
 
   it('accepte création sans référent', () => {
     expect(candidateCreateInputSchema.parse({ ...validBase, referentId: null }).referentId).toBeNull()
-    const { referentId: _omit, ...without } = validBase
-    expect(candidateCreateInputSchema.parse(without).referentId).toBeUndefined()
+    const withoutReferent = {
+      firstName: validBase.firstName,
+      lastName: validBase.lastName,
+      jobTitleId: validBase.jobTitleId,
+      status: validBase.status,
+      salaryMin: validBase.salaryMin,
+      salaryMax: validBase.salaryMax,
+      mobilityRadiusKm: validBase.mobilityRadiusKm,
+      softwareIds: validBase.softwareIds,
+      contractTypes: validBase.contractTypes,
+    }
+    expect(candidateCreateInputSchema.parse(withoutReferent).referentId).toBeUndefined()
   })
 
   it('rejects missing identity fields', () => {

@@ -6,10 +6,7 @@ import { CANDIDATE_STATUSES, type CandidateStatus } from '@/view-models/candidat
 
 export type CvthequeFilterValues = FilterValues<CvthequeFilterConfig>
 
-export function normalizeCvthequeFilterValues(
-  values: CvthequeFilterValues,
-  _defaults: CvthequeFilterValues,
-): CvthequeFilterValues {
+export function normalizeCvthequeFilterValues(values: CvthequeFilterValues): CvthequeFilterValues {
   if (values.disponible !== true) return values
   return values.missionActive === true ? { ...values, missionActive: null } : values
 }
@@ -30,7 +27,7 @@ function toStatuses(values: string[]): CandidateStatus[] | undefined {
 }
 
 export function toCandidateListFilters(values: CvthequeFilterValues): CandidateListFilters {
-  const normalized = normalizeCvthequeFilterValues(values, values)
+  const normalized = normalizeCvthequeFilterValues(values)
   const contractTypes = normalized.contrat.filter(
     (value): value is 'CDI' | 'CDD' | 'INTERIM' =>
       value === 'CDI' || value === 'CDD' || value === 'INTERIM',

@@ -1,8 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  assertMergeCandidatesValid,
-  CandidateMergeError,
-} from '@/server/candidate/validate-merge-candidates'
+import { assertMergeCandidatesValid } from '@/server/candidate/validate-merge-candidates'
 
 describe('assertMergeCandidatesValid', () => {
   const findFirst = (kept: unknown, absorbed: unknown) =>

@@ -8,7 +8,6 @@ import { useEntityFilters } from '@/hooks/use-entity-filters'
 import {
   normalizeCvthequeFilterValues,
   toCandidateListFilters,
-  buildCvthequeFilterDefaults,
   type CvthequeFilterValues,
 } from '@/lib/filters/cvtheque-filter-map'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
@@ -24,19 +23,18 @@ export function useCvthequeListQuery(
   filterConfig: CvthequeFilterConfig,
   onCountChange?: (count: number) => void,
 ) {
-  const defaults = useMemo(() => buildCvthequeFilterDefaults(filterConfig), [filterConfig])
   const { values, filters, onChange, reset } = useEntityFilters(filterConfig, {
     preserveSearchParams: ['tab'],
   })
 
   const setFilters = useCallback(
-    (next: CvthequeFilterValues) => onChange(normalizeCvthequeFilterValues(next, defaults)),
-    [defaults, onChange],
+    (next: CvthequeFilterValues) => onChange(normalizeCvthequeFilterValues(next)),
+    [onChange],
   )
 
   const apiFilters = useMemo(
-    () => toCandidateListFilters(normalizeCvthequeFilterValues(filters, defaults)),
-    [defaults, filters],
+    () => toCandidateListFilters(normalizeCvthequeFilterValues(filters)),
+    [filters],
   )
   const listQuery = trpc.candidate.list.useQuery(apiFilters, {
     placeholderData: keepPreviousData,

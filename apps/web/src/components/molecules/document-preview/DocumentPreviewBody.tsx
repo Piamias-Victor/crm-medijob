@@ -38,6 +38,8 @@ export function DocumentPreviewBody({ previewUrl, mimeType, filename, onDownload
       {isPdfDocument({ mimeType, filename }) ? (
         <embed src={src} type="application/pdf" title={title} className="h-full w-full" />
       ) : (
+        // Blob / API preview URLs — next/image not suitable
+        // eslint-disable-next-line @next/next/no-img-element
         <img src={src} alt={title} className="h-full w-full object-contain" />
       )}
     </div>

@@ -25,6 +25,8 @@ export function CandidateCvPreview({ previewUrl, mimeType, filename, size = 'sto
         {isPdfPreview(mimeType, filename) ? (
           <embed src={src} type="application/pdf" title={`CV ${filename}`} className="h-full w-full" />
         ) : (
+          // Blob / dynamic preview URLs — next/image not suitable
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={src} alt={`CV ${filename}`} className="h-full w-full object-contain" />
         )}
       </div>

@@ -41,7 +41,8 @@ export function enrichCvExtraction(extraction: CvExtractionAi): CvExtraction {
   const rawText = extraction.rawText ?? ''
   const postalCode = pickValue(extraction.postalCode, findPostalCode(rawText))
 
-  const { rawText: _ignored, ...rest } = extraction
+  const { rawText: unusedRawText, ...rest } = extraction
+  void unusedRawText
   return {
     ...rest,
     email: pickValue(extraction.email, findEmail(rawText)),
