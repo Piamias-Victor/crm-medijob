@@ -3,6 +3,19 @@ import { ZodError } from 'zod'
 
 const KNOWN_ERRORS: Record<string, { code: TRPCError['code']; message: string }> = {
   UNKNOWN_SHORTCUT: { code: 'NOT_FOUND', message: 'Raccourci inconnu.' },
+  WEEK_REPORT_UNAVAILABLE: {
+    code: 'INTERNAL_SERVER_ERROR',
+    message: 'Rapport semaine indisponible.',
+  },
+  BEST_PROFILES_MISSION_REQUIRED: {
+    code: 'BAD_REQUEST',
+    message: 'Sélectionne une mission pour les meilleurs profils.',
+  },
+  BEST_PROFILES_UNAVAILABLE: {
+    code: 'INTERNAL_SERVER_ERROR',
+    message: 'Matching meilleurs profils indisponible.',
+  },
+  MISSION_NOT_FOUND: { code: 'NOT_FOUND', message: 'Mission introuvable.' },
   AI_RESPONSE_NOT_JSON: {
     code: 'BAD_REQUEST',
     message: 'Réponse IA non valide. Réessaie.',

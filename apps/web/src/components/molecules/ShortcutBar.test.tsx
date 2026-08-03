@@ -3,10 +3,12 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { ShortcutBar } from '@/components/molecules/ShortcutBar'
 
 describe('ShortcutBar', () => {
-  it('renders the six predefined shortcuts', () => {
+  it('renders the predefined shortcuts including week report and best profiles', () => {
     render(<ShortcutBar onSelect={vi.fn()} />)
-    expect(screen.getAllByRole('button')).toHaveLength(6)
+    expect(screen.getAllByRole('button')).toHaveLength(7)
     expect(screen.getByRole('button', { name: 'Résumer candidat' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Rapport semaine' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Meilleurs profils' })).toBeInTheDocument()
   })
 
   it('calls onSelect with the clicked shortcut', () => {
