@@ -9,7 +9,6 @@ import {
   setCachedRadiusList,
 } from '@/server/routers/candidate-list-in-radius-cache'
 import type { ListPharmaciesInRadiusInput } from '@/server/routers/candidate-list-in-radius.schema'
-import type { PharmacyInRadiusRow } from '@/view-models/present-candidate-radius'
 
 export type { PharmacyInRadiusRow } from '@/view-models/present-candidate-radius'
 

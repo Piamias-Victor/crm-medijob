@@ -8,7 +8,8 @@ export async function seedRichContacts(
   for (const row of RICH_CONTACTS) {
     const contactRoleId = contactRoleByName.get(row.roleName)
     if (!contactRoleId) continue
-    const { roleName: _roleName, ...data } = row
+    const { roleName, ...data } = row
+    void roleName
     await prisma.contact.upsert({
       where: { id: row.id },
       update: {},

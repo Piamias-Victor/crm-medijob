@@ -24,7 +24,7 @@ export function usePresentCandidateRadius(candidateId: string, defaultRadiusKm: 
     { enabled: radiusKm > 0, staleTime: 30_000 },
   )
 
-  const pharmacies = list.data?.pharmacies ?? []
+  const pharmacies = useMemo(() => list.data?.pharmacies ?? [], [list.data?.pharmacies])
   const pharmacyListKey = pharmacies.map((row) => row.id).join(',')
 
   useEffect(() => {

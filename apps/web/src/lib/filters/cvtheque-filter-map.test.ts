@@ -16,10 +16,11 @@ const defaults = buildDefaultFilterValues(config)
 
 describe('normalizeCvthequeFilterValues', () => {
   it('efface mission active si disponible oui', () => {
-    const next = normalizeCvthequeFilterValues(
-      { ...defaults, disponible: true, missionActive: true },
-      defaults,
-    )
+    const next = normalizeCvthequeFilterValues({
+      ...defaults,
+      disponible: true,
+      missionActive: true,
+    })
     expect(next.missionActive).toBeNull()
   })
 })

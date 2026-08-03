@@ -49,6 +49,8 @@ export function useCandidateEarlyDuplicateAlert(probe: DuplicateProbe, options: 
     }, 350)
 
     return () => window.clearTimeout(timeout)
+    // Intentional: depend on probe field values, not object identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- probe serialized via fields above
   }, [probe.firstName, probe.lastName, probe.email, probe.phone, options.checkOnMount, enabled, utils, push])
 
   function dismiss() {
