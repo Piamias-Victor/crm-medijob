@@ -13,7 +13,7 @@ export function LogoutButton({ expanded = true }: { expanded?: boolean }) {
       aria-label="Se déconnecter"
       title="Se déconnecter"
       className={cn(
-        'flex w-full items-center rounded-md py-2 text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-fg',
+        'flex h-9 w-full items-center rounded-md text-sm font-medium text-fg-muted transition-colors hover:bg-surface hover:text-fg',
         expanded ? 'gap-3 px-3' : 'justify-center px-0',
       )}
     >

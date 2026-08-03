@@ -1,13 +1,25 @@
 import { cn } from '@/lib/cn'
-import { MedicalCross } from '@/components/atoms/MedicalCross'
+import { MedijobLogo } from '@/components/atoms/MedijobLogo'
 
 export function SidebarBrand({ expanded = true }: { expanded?: boolean }) {
   return (
-    <div className={cn('flex items-center', expanded ? 'gap-2 px-2' : 'justify-center px-0')}>
-      <span className="grid size-8 shrink-0 place-items-center rounded-md bg-accent text-accent-fg">
-        <MedicalCross className="size-5" />
-      </span>
-      {expanded ? <span className="truncate text-lg font-bold tracking-tight">MEDIJOB</span> : null}
+    <div className="relative h-9 w-full shrink-0">
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ease-out',
+          expanded ? 'pointer-events-none opacity-0' : 'opacity-100',
+        )}
+      >
+        <MedijobLogo compact decorative={expanded} />
+      </div>
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center px-1 transition-opacity duration-300 ease-out',
+          expanded ? 'opacity-100' : 'pointer-events-none opacity-0',
+        )}
+      >
+        <MedijobLogo className="h-8 w-auto max-w-full" decorative={!expanded} />
+      </div>
     </div>
   )
 }

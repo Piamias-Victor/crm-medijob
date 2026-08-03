@@ -2,17 +2,20 @@
 import { describe, it, expect } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makePharmacyRouter } from '@/server/routers/pharmacy'
-import { makeDeps, pharmacyCaller, recruteurSession } from '@/server/routers/pharmacy.test.deps'
+import { makeDeps, pharmacyCaller, directionSession } from '@/server/routers/pharmacy.test.deps'
 
 describe('pharmacyRouter', () => {
-  it('returns list rows mapped to SPEC columns', async () => {
+  it('returns list rows mapped to CSV columns', async () => {
     const rows = await pharmacyCaller(makeDeps()).list()
     expect(rows[0]).toMatchObject({
       name: 'Pharmacie du Centre',
+      postalCode: '75001',
+      referentName: 'Alice',
       groupementName: 'Giphar',
       missionCount: 2,
       softwareName: 'Winpharma',
     })
+    expect(rows[0]?.createdAtLabel).toBeTruthy()
   })
 
   it('forwards list filters to repository', async () => {
@@ -54,10 +57,17 @@ describe('pharmacyRouter', () => {
     expect(res[0].siret).toBe('1')
   })
 
-  it('soft deletes by id', async () => {
+  it('soft deletes by id for Direction', async () => {
     const deps = makeDeps()
-    await pharmacyCaller(deps).softDelete({ id: 'p1' })
+    await pharmacyCaller(deps, directionSession).softDelete({ id: 'p1' })
     expect(deps.pharmacies.softDelete).toHaveBeenCalledWith('p1')
+  })
+
+  it('forbids soft delete for Recruteur', async () => {
+    const deps = makeDeps()
+    await expect(pharmacyCaller(deps).softDelete({ id: 'p1' })).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    })
   })
 
   it('creates a groupement referential for recruiters', async () => {

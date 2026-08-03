@@ -2,13 +2,26 @@
 import { vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makePharmacyRouter, type PharmacyDeps } from '@/server/routers/pharmacy'
-import { pharmacyDetailEntity, pharmacyListEntity } from '@/server/routers/pharmacy.test.fixtures'
+import {
+  pharmacyDetailEntity,
+  pharmacyListEntity,
+  pharmacyQuickViewRepoRow,
+} from '@/server/routers/pharmacy.test.fixtures'
+import type { UserRole } from '@/server/auth/permissions'
+
+type TestSession = {
+  user: { id: string; role: UserRole; name?: string | null; email?: string | null }
+  expires: string
+}
 
 export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
   return {
+    lookupGeo: vi.fn().mockResolvedValue(null),
     pharmacies: {
       list: vi.fn().mockResolvedValue([pharmacyListEntity]),
       findDetailById: vi.fn().mockResolvedValue(pharmacyDetailEntity),
+      findQuickViewById: vi.fn().mockResolvedValue(pharmacyQuickViewRepoRow),
+      findAddressById: vi.fn().mockResolvedValue(null),
       create: vi.fn().mockImplementation((data) => Promise.resolve({ id: 'new', ...data })),
       update: vi.fn().mockResolvedValue({ id: 'p1' }),
       softDelete: vi.fn().mockResolvedValue({ id: 'p1' }),
@@ -16,16 +29,28 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
     referentials: {
       listGroupements: vi.fn().mockResolvedValue([]),
       listSoftwares: vi.fn().mockResolvedValue([]),
+      listRecruiters: vi.fn().mockResolvedValue([{ id: 'u1', name: 'Recruteur' }]),
     },
     createGroupement: vi.fn().mockResolvedValue({ id: 'g1', name: 'Giphar' }),
     createSoftware: vi.fn().mockResolvedValue({ id: 's1', name: 'Winpharma' }),
     searchSiret: vi.fn().mockResolvedValue([{ siret: '1', name: 'X', address: '', city: '', postalCode: '' }]),
+    findIdentityBySiret: vi.fn().mockResolvedValue(null),
+    findIdentityByNameCityPostal: vi.fn().mockResolvedValue(null),
+    mergePharmacies: vi.fn().mockResolvedValue({ id: 'p1' }),
+    logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
 }
 
-export const recruteurSession = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
+export const recruteurSession: TestSession = {
+  user: { id: 'u1', role: 'RECRUTEUR', name: 'Recruteur Demo' },
+  expires: '2999-01-01',
+}
+export const directionSession: TestSession = {
+  user: { id: 'u1', role: 'DIRECTION' },
+  expires: '2999-01-01',
+}
 
-export function pharmacyCaller(deps: PharmacyDeps, session = recruteurSession) {
+export function pharmacyCaller(deps: PharmacyDeps, session: TestSession = recruteurSession) {
   return createCallerFactory(makePharmacyRouter(deps))({ session })
 }

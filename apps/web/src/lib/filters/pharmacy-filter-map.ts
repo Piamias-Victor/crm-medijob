@@ -10,13 +10,17 @@ export function toPharmacyListFilters(values: PharmacyFilterValues): PharmacyLis
   const statuses = values.statut.filter((value): value is (typeof PHARMACY_STATUSES)[number] =>
     (PHARMACY_STATUSES as readonly string[]).includes(value),
   )
+  const city = values.ville.trim()
 
   return {
     statuses: statuses.length ? statuses : undefined,
     departments: values.departement.length ? values.departement : undefined,
+    regionIds: values.region.length ? values.region : undefined,
+    city: city.length ? city : undefined,
     activeMission: values.missionActive ?? undefined,
     groupementIds: values.groupement.length ? values.groupement : undefined,
     softwareIds: values.logiciel.length ? values.logiciel : undefined,
+    referentIds: values.referent.length ? values.referent : undefined,
   }
 }
 

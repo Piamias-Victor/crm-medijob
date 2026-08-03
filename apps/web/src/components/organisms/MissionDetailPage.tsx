@@ -26,6 +26,7 @@ type Props = {
   documents: DocumentListRow[]
   activityCount: number
   documentCount: number
+  initialTab?: MissionTab
 }
 
 export function MissionDetailPage({
@@ -39,8 +40,9 @@ export function MissionDetailPage({
   documents,
   activityCount,
   documentCount,
+  initialTab = 'infos',
 }: Props) {
-  const [tab, setTab] = useState<MissionTab>('infos')
+  const [tab, setTab] = useState<MissionTab>(initialTab)
   const { update, createJobTitle, onPharmacyChange } = useMissionDetailMutations()
 
   return (

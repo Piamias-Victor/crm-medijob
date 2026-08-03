@@ -1,6 +1,5 @@
 import { SkeletonPageShell } from '@/components/molecules/skeletons/SkeletonPageShell'
 import { PageHeaderSkeleton } from '@/components/molecules/skeletons/PageHeaderSkeleton'
-import { PillTabsSkeleton } from '@/components/molecules/skeletons/PillTabsSkeleton'
 import { SectionCardSkeleton } from '@/components/molecules/skeletons/SectionCardSkeleton'
 import { EntityGridSkeleton } from '@/components/molecules/skeletons/EntityGridSkeleton'
 

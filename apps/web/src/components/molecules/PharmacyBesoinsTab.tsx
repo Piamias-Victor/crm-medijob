@@ -1,10 +1,13 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { Briefcase } from 'lucide-react'
+import { Badge } from '@/components/atoms/Badge'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import type { PharmacyMissionRow } from '@/view-models/pharmacy-detail.types'
 import type { MissionQuickCreateInput } from '@/view-models/mission-quick-create.schema'
 import type { RefItem } from '@/view-models/referential'
+import { CONTRACT_TYPE_LABELS } from '@/lib/candidate-options'
 import { STATUS_LABELS } from '@/lib/mission-options'
 import { formatDateFr } from '@/view-models/format-date-fr'
 import { MissionQuickCreateForm } from '@/components/molecules/MissionQuickCreateForm'
@@ -30,12 +33,15 @@ export function PharmacyBesoinsTab({
   onCreate,
   onCreateJobTitle,
 }: Props) {
+  const { data: session } = useSession()
+
   return (
     <div className="flex flex-col gap-5">
       <MissionQuickCreateForm
         pharmacyId={pharmacyId}
         jobTitles={jobTitles}
         recruiters={recruiters}
+        defaultReferentId={session?.user?.id ?? null}
         submitting={submitting}
         onSubmit={onCreate}
         onCreateJobTitle={onCreateJobTitle}
@@ -54,9 +60,14 @@ export function PharmacyBesoinsTab({
                 missionId={mission.id}
                 title={mission.title}
                 subtitle={`${mission.jobTitle} · ${STATUS_LABELS[mission.status]} · ${formatDateFr(mission.startDate)}`}
-                meta={`Référent · ${mission.referent}`}
+                meta={mission.referent ? `Référent · ${mission.referent}` : 'Sans référent'}
                 trailing={
-                  <MissionStatusBadge status={mission.status} className="px-2 py-0 text-[11px]" />
+                  <>
+                    <Badge variant="sky" className="px-2 py-0 text-[11px]">
+                      {CONTRACT_TYPE_LABELS[mission.contractType]}
+                    </Badge>
+                    <MissionStatusBadge status={mission.status} className="px-2 py-0 text-[11px]" />
+                  </>
                 }
               />
             </li>

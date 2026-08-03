@@ -17,6 +17,7 @@ import type { MissionMatchingPayload } from '@/view-models/mission-matching'
 type Props = {
   missionId: string
   missionStatus: MissionStatus
+  missionTitle: string
   jobTitleName: string
   pharmacyName: string
   positionedIds: string[]
@@ -25,6 +26,7 @@ type Props = {
 export function MissionMatchingTab({
   missionId,
   missionStatus,
+  missionTitle,
   jobTitleName,
   pharmacyName,
   positionedIds,
@@ -71,6 +73,8 @@ export function MissionMatchingTab({
           <motion.div key="results" {...tabPanelMotion}>
             <MissionMatchingResults
               missionId={missionId}
+              missionTitle={missionTitle}
+              pharmacyName={pharmacyName}
               positionedIds={knownPositioned}
               pipelineLocked={pipelineLocked}
               onPositioned={handlePositioned}

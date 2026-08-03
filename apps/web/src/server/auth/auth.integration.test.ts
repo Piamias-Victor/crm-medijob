@@ -4,7 +4,7 @@ import { hashPassword, verifyPassword } from './password'
 import { authorizeCredentials } from './authorize'
 import { evaluateAccess } from './access'
 
-type Row = { id: string; email: string; name: string; password: string; role: 'RECRUTEUR' | 'ADMIN'; deletedAt: Date | null }
+type Row = { id: string; email: string; name: string; password: string; role: 'DIRECTION' | 'RECRUTEUR' | 'COMMUNICATION' | 'RH_ADMIN'; deletedAt: Date | null }
 
 const rows: Row[] = []
 
@@ -15,7 +15,7 @@ const fakeRepo = {
 
 beforeAll(async () => {
   rows.push(
-    { id: 'a', email: 'admin@medijob.fr', name: 'Admin', password: await hashPassword('admin-pw'), role: 'ADMIN', deletedAt: null },
+    { id: 'a', email: 'admin@medijob.fr', name: 'Admin', password: await hashPassword('admin-pw'), role: 'RH_ADMIN', deletedAt: null },
     { id: 'r', email: 'recruteur@medijob.fr', name: 'Recruteur', password: await hashPassword('recruteur-pw'), role: 'RECRUTEUR', deletedAt: null },
     { id: 'x', email: 'gone@medijob.fr', name: 'Gone', password: await hashPassword('gone-pw'), role: 'RECRUTEUR', deletedAt: new Date() },
   )
@@ -26,7 +26,7 @@ const deps = { findByEmail: fakeRepo.findByEmail, verify: verifyPassword }
 describe('login + role gate', () => {
   it('admin logs in and reaches admin routes', async () => {
     const user = await authorizeCredentials({ email: 'admin@medijob.fr', password: 'admin-pw' }, deps)
-    expect(user?.role).toBe('ADMIN')
+    expect(user?.role).toBe('RH_ADMIN')
     expect(evaluateAccess({ loggedIn: true, role: user!.role, pathname: '/admin' })).toBe('allow')
   })
 

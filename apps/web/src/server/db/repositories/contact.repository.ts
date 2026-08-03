@@ -12,6 +12,7 @@ const listInclude = contactListInclude
 
 const detailInclude = {
   pharmacy: { select: { id: true, name: true } },
+  contactRole: { select: { id: true, name: true } },
 } satisfies Prisma.ContactInclude
 
 type Tx = Prisma.TransactionClient
@@ -47,8 +48,8 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
           lastName: true,
           email: true,
           phone: true,
-          role: true,
           isPrimary: true,
+          contactRole: { select: { name: true } },
           pharmacy: { select: { name: true } },
         },
       }),

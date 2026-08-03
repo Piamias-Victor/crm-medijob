@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
 
 export const PHARMACY_STATUSES = ['PROSPECT', 'ACTIF', 'INACTIF'] as const
 export type PharmacyStatus = (typeof PHARMACY_STATUSES)[number]
@@ -24,6 +25,7 @@ export const pharmacyInputSchema = z.object({
   softwareId: optionalText,
   paymentConditions: optionalText,
   notes: optionalText,
+  referentId: optionalReferentIdSchema,
 })
 
 export type PharmacyInput = z.input<typeof pharmacyInputSchema>

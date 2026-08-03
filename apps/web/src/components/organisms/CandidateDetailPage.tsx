@@ -6,6 +6,7 @@ import { CandidateDetailTabPanel } from '@/components/molecules/CandidateDetailT
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { CandidatePresentModals } from '@/components/organisms/CandidatePresentModals'
+import { CandidateGdprEraseButton } from '@/components/molecules/CandidateGdprEraseButton'
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import type { ActivityLogRow } from '@/view-models/activity-log'
@@ -51,8 +52,13 @@ export function CandidateDetailPage({
           name={name}
           jobTitle={profile.jobTitleName}
           city={profile.city ?? undefined}
-          referentName={profile.referentName}
+          referentName={profile.referentName ?? undefined}
         />
+      }
+      meta={
+        <div className="flex justify-end">
+          <CandidateGdprEraseButton candidateId={profile.id} candidateName={name} />
+        </div>
       }
       tabs={
         <CandidateDetailTabs

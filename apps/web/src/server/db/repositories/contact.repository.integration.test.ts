@@ -6,12 +6,21 @@ import { makeContactRepository } from './contact.repository'
 let db: TestDb
 let repo: ReturnType<typeof makeContactRepository>
 let pharmacyId: string
+let contactRoleId: string
 
 beforeAll(async () => {
   db = await startTestDb()
   repo = makeContactRepository(db.prisma)
-  const pharmacy = await db.prisma.pharmacy.create({ data: { name: 'Pharma' } })
+  const [pharmacy, role] = await Promise.all([
+    db.prisma.pharmacy.create({ data: { name: 'Pharma' } }),
+    db.prisma.contactRole.upsert({
+      where: { name: 'Titulaire' },
+      update: {},
+      create: { name: 'Titulaire' },
+    }),
+  ])
   pharmacyId = pharmacy.id
+  contactRoleId = role.id
 }, 120_000)
 
 afterAll(async () => {
@@ -19,7 +28,13 @@ afterAll(async () => {
 })
 
 function newContact(firstName: string) {
-  return { firstName, lastName: 'Doe', pharmacyId, email: `${firstName.toLowerCase()}@example.com` }
+  return {
+    firstName,
+    lastName: 'Doe',
+    pharmacyId,
+    contactRoleId,
+    email: `${firstName.toLowerCase()}@example.com`,
+  }
 }
 
 describe('contactRepository', () => {
@@ -66,17 +81,13 @@ describe('contactRepository', () => {
   it('findPrimaryByPharmacy can exclude the current contact', async () => {
     const pharmacy = await db.prisma.pharmacy.create({ data: { name: 'Primary lookup pharma' } })
     const primary = await repo.create({
-      firstName: 'Claire',
-      lastName: 'Doe',
+      ...newContact('Claire'),
       pharmacyId: pharmacy.id,
-      email: 'claire@example.com',
       isPrimary: true,
     })
     const other = await repo.create({
-      firstName: 'Denis',
-      lastName: 'Doe',
+      ...newContact('Denis'),
       pharmacyId: pharmacy.id,
-      email: 'denis@example.com',
       isPrimary: false,
     })
     expect(await repo.findPrimaryByPharmacy(pharmacy.id)).toMatchObject({ firstName: 'Claire' })

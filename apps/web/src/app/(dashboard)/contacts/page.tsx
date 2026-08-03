@@ -12,8 +12,15 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 export default async function Page({ searchParams }: Props) {
   const params = await searchParams
   const caller = await createServerCaller()
-  const pharmacies = await caller.contact.referentials()
-  const filterConfig = buildContactFilterConfig(pharmacies)
+  const [contactRefs, pharmacyRefs] = await Promise.all([
+    caller.contact.referentials(),
+    caller.pharmacy.referentials(),
+  ])
+  const filterConfig = buildContactFilterConfig(
+    contactRefs.pharmacies,
+    contactRefs.contactRoles,
+    pharmacyRefs.recruiters,
+  )
   const serverFilters = toContactListFilters(
     deserializeFilters(filterConfig, toUrlSearchParams(params)),
   )

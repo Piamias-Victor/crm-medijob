@@ -1,6 +1,7 @@
 import type { ContactInput } from '@/view-models/contact-form.schema'
 
 type PharmacyRef = { id: string; name: string }
+type ContactRoleRef = { id: string; name: string }
 
 export function resolveContactCreatePharmacy(
   pharmacyId: string | undefined,
@@ -10,10 +11,29 @@ export function resolveContactCreatePharmacy(
   return pharmacies.some((pharmacy) => pharmacy.id === pharmacyId) ? pharmacyId : undefined
 }
 
-export function buildContactCreateDefaults(pharmacyId?: string): Partial<ContactInput> {
+export function resolveContactCreateReferent(
+  pharmacyReferentId: string | null | undefined,
+  sessionUserId: string | undefined,
+): string | null {
+  return pharmacyReferentId ?? sessionUserId ?? null
+}
+
+export function resolveDefaultContactRoleId(
+  contactRoles: readonly ContactRoleRef[],
+  preferredName = 'Autre',
+): string | undefined {
+  return contactRoles.find((role) => role.name === preferredName)?.id ?? contactRoles[0]?.id
+}
+
+export function buildContactCreateDefaults(opts?: {
+  pharmacyId?: string
+  referentId?: string | null
+  contactRoleId?: string
+}): Partial<ContactInput> {
   return {
-    role: 'AUTRE',
     isPrimary: false,
-    ...(pharmacyId ? { pharmacyId } : {}),
+    referentId: opts?.referentId ?? null,
+    ...(opts?.contactRoleId ? { contactRoleId: opts.contactRoleId } : {}),
+    ...(opts?.pharmacyId ? { pharmacyId: opts.pharmacyId } : {}),
   }
 }

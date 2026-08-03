@@ -21,9 +21,11 @@ const contact: ContactDetailPayload = {
   lastName: 'Curie',
   email: 'marie@example.com',
   phone: '0102030405',
-  role: 'TITULAIRE',
+  contactRoleId: 'r1',
+  roleName: 'Titulaire',
   isPrimary: true,
   notes: null,
+  referentId: null,
   updatedAt: new Date(),
   pharmacyName: 'Pharmacie du Centre',
   pharmacy: { id: 'p1', name: 'Pharmacie du Centre' },
@@ -35,6 +37,8 @@ describe('ContactInfoForm', () => {
       <ContactInfoForm
         contact={contact}
         pharmacies={[{ id: 'p1', name: 'Pharmacie du Centre' }]}
+        contactRoles={[{ id: 'r1', name: 'Titulaire' }]}
+        recruiters={[]}
         submitting={false}
         onSubmit={vi.fn()}
       />,

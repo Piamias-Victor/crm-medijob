@@ -4,7 +4,6 @@ import { CandidatsPage } from '@/components/organisms/CandidatsPage'
 import { parseCandidatsTab } from '@/view-models/candidats-tab'
 import { buildCvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import {
-  buildCvthequeFilterDefaults,
   normalizeCvthequeFilterValues,
   toCandidateListFilters,
 } from '@/lib/filters/cvtheque-filter-map'
@@ -19,12 +18,8 @@ export default async function Page({ searchParams }: Props) {
   const caller = await createServerCaller()
   const referentials = await caller.candidate.referentials()
   const filterConfig = buildCvthequeFilterConfig(referentials)
-  const defaults = buildCvthequeFilterDefaults(filterConfig)
   const listFilters = toCandidateListFilters(
-    normalizeCvthequeFilterValues(
-      deserializeFilters(filterConfig, toUrlSearchParams(params)),
-      defaults,
-    ),
+    normalizeCvthequeFilterValues(deserializeFilters(filterConfig, toUrlSearchParams(params))),
   )
   const [list, inbox] = await Promise.all([
     caller.candidate.list(listFilters),

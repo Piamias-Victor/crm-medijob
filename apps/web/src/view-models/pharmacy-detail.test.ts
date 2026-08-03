@@ -18,6 +18,7 @@ const entity: PharmacyDetailEntity = {
   softwareId: null,
   paymentConditions: null,
   notes: null,
+  referentId: null,
   updatedAt: new Date('2026-01-15'),
   groupement: { id: 'g1', name: 'Giphar' },
   software: null,
@@ -28,8 +29,8 @@ const entity: PharmacyDetailEntity = {
       lastName: 'Curie',
       email: 'marie@example.com',
       phone: '0102030405',
-      role: 'TITULAIRE',
       isPrimary: true,
+      contactRole: { name: 'Titulaire' },
     },
   ],
   missions: [
@@ -39,6 +40,7 @@ const entity: PharmacyDetailEntity = {
       status: 'A_POURVOIR',
       contractType: 'CDI',
       startDate: new Date('2026-02-01'),
+      updatedAt: new Date('2026-02-01'),
       jobTitle: { name: 'Pharmacien' },
       referent: { name: 'Réf Demo' },
     },
@@ -48,6 +50,7 @@ const entity: PharmacyDetailEntity = {
       status: 'POURVU',
       contractType: 'CDD',
       startDate: new Date('2026-01-01'),
+      updatedAt: new Date('2026-03-10'),
       jobTitle: { name: 'Préparateur' },
       referent: { name: 'Réf Demo' },
     },
@@ -61,6 +64,17 @@ describe('toPharmacyDetail', () => {
     expect(payload.groupementName).toBe('Giphar')
     expect(payload.activeMissions).toHaveLength(1)
     expect(payload.activeMissions[0]?.title).toBe('Titulaire CDI')
+  })
+
+  it('exposes terminal missions separately from besoins', () => {
+    const payload = toPharmacyDetail(entity)
+    expect(payload.terminalMissions.map((m) => m.id)).toEqual(['m2'])
+    expect(payload.terminalMissions[0]).toMatchObject({
+      title: 'Pourvu',
+      status: 'POURVU',
+      contractType: 'CDD',
+      jobTitle: 'Préparateur',
+    })
   })
 })
 

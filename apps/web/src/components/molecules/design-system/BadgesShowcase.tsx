@@ -5,6 +5,8 @@ export function BadgesShowcase() {
     <div className="flex flex-wrap items-center gap-3">
       <Badge>Brouillon</Badge>
       <Badge variant="accent">Pharmacien</Badge>
+      <Badge variant="sky">Présenté</Badge>
+      <Badge variant="rose">À pourvoir</Badge>
       <Badge variant="success">Placé</Badge>
       <Badge variant="warning">En cours</Badge>
       <Badge variant="error">Annulée</Badge>

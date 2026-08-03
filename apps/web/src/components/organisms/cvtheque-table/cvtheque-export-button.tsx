@@ -5,6 +5,7 @@ import { Download } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { CvthequeExportModal } from '@/components/organisms/cvtheque-table/cvtheque-export-modal'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
+import { useCan } from '@/lib/hooks/use-can'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 
 type Props = {
@@ -15,6 +16,8 @@ type Props = {
 
 export function CvthequeExportButton({ filters, sort, disabled = false }: Props) {
   const [open, setOpen] = useState(false)
+  const canExport = useCan('export')
+  if (!canExport) return null
 
   return (
     <>

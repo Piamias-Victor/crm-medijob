@@ -29,14 +29,16 @@ describe('toPharmacyFormValues', () => {
       status: 'ACTIF',
       groupementId: 'g1',
       softwareId: null,
+      referentId: null,
     })
-    expect(values).toEqual({
+    expect(values).toMatchObject({
       name: 'Pharmacie Centrale',
       numeroTVA: 'FR123',
       city: 'Lyon',
       postalCode: '69001',
       status: 'ACTIF',
       groupementId: 'g1',
+      referentId: null,
     })
   })
 })

@@ -11,6 +11,7 @@ type Props = {
   pharmacy: PharmacyDetailPayload
   groupements: Ref[]
   softwares: Ref[]
+  recruiters: Ref[]
   submitting: boolean
   errorMessage?: string | null
   onSubmit: (data: PharmacyInput) => void
@@ -27,6 +28,7 @@ export function PharmacyInfoForm(props: Props) {
       defaultValues={toPharmacyFormValues(pharmacy.formSource)}
       groupements={props.groupements}
       softwares={props.softwares}
+      recruiters={props.recruiters}
       submitting={props.submitting}
       errorMessage={props.errorMessage}
       onSubmit={props.onSubmit}

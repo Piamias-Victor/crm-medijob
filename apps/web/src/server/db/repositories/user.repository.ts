@@ -15,13 +15,21 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
   return {
     findByEmail: (email: string) =>
       db.user.findFirst({ where: { email, ...NOT_DELETED } }),
+    findActiveIdByEmailInsensitive: (email: string) =>
+      db.user.findFirst({
+        where: { email: { equals: email, mode: 'insensitive' }, ...NOT_DELETED },
+        select: { id: true },
+      }),
     findByEmailAny: (email: string) =>
       db.user.findUnique({ where: { email }, select: { id: true } }),
     findById: (id: string) =>
       db.user.findFirst({ where: { id, ...NOT_DELETED } }),
     listRecruiters: () =>
       db.user.findMany({
-        where: { ...NOT_DELETED, role: { in: ['RECRUTEUR', 'ADMIN'] } },
+        where: {
+          ...NOT_DELETED,
+          role: { in: ['DIRECTION', 'RECRUTEUR', 'RH_ADMIN'] },
+        },
         orderBy: { name: 'asc' },
         select: { id: true, name: true },
       }),
@@ -50,11 +58,19 @@ export function makeUserRepository(db: PrismaClient = defaultDb) {
         select: listSelect,
       })
     },
+    updatePassword: (id: string, password: string) =>
+      db.user.update({
+        where: { id },
+        data: { password },
+        select: { id: true },
+      }),
     softDelete: async (id: string) => {
       await db.user.update({ where: { id }, data: { deletedAt: new Date() } })
     },
     countAdmins: () =>
-      db.user.count({ where: { role: 'ADMIN', ...NOT_DELETED } }),
+      db.user.count({
+        where: { role: { in: ['DIRECTION', 'RH_ADMIN'] }, ...NOT_DELETED },
+      }),
   }
 }
 

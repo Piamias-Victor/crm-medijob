@@ -10,6 +10,8 @@ type Props = {
   open: boolean
   submitting: boolean
   pharmacies: Ref[]
+  contactRoles: Ref[]
+  recruiters: Ref[]
   defaultValues?: Partial<ContactInput>
   lockedPharmacyId?: string
   errorMessage?: string | null
@@ -21,6 +23,8 @@ export function ContactFormModal({
   open,
   submitting,
   pharmacies,
+  contactRoles,
+  recruiters,
   defaultValues,
   lockedPharmacyId,
   errorMessage,
@@ -38,6 +42,8 @@ export function ContactFormModal({
         key={lockedPharmacyId ?? 'new'}
         defaultValues={defaultValues}
         pharmacies={pharmacies}
+        contactRoles={contactRoles}
+        recruiters={recruiters}
         lockedPharmacyId={lockedPharmacyId}
         submitting={submitting}
         errorMessage={errorMessage}

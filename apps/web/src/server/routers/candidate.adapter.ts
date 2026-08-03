@@ -1,4 +1,5 @@
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
+import { findCandidateQuickViewById } from '@/server/db/repositories/candidate-quick-view.repo'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
 import { pharmacyRepository } from '@/server/db/repositories/pharmacy.repository'
 import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage.repository'
@@ -11,6 +12,8 @@ import { createCvExtractionProvider } from '@/server/ai/cv-extraction-provider'
 import { runCvExtraction } from '@/server/ai/cv-extraction'
 import { createAssistantProvider } from '@/server/ai/provider'
 import { createGeoLookup, createGeoQueryLookup } from '@/server/matching/distance'
+import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
+import { makeEraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate.deps'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 
 const cvProvider = createCvExtractionProvider()
@@ -24,6 +27,7 @@ export const candidateRouter = makeCandidateRouter({
   listStages: () => pipelineStageRepository.list(),
   search: (term, limit) => candidateRepository.search(term, limit),
   findProfileById: (id) => candidateRepository.findProfileById(id),
+  findQuickViewById: (id) => findCandidateQuickViewById(id),
   findDocumentsProfile: (id) => candidateRepository.findDocumentsProfile(id),
   findPharmacyForContext: (id) => pharmacyRepository.findForContext(id),
   findContactById: async (id) => {
@@ -61,8 +65,12 @@ export const candidateRouter = makeCandidateRouter({
   listJobTitles: () => jobTitleRepository.list(),
   confirmCvExtraction: (id, data) => candidateRepository.updateProfile(id, data),
   findIdentityByEmail: (email) => candidateRepository.findIdentityByEmail(email),
+  findIdentityByEmailAny: (email) => candidateRepository.findIdentityByEmailAny(email),
+  findIdentityByPhoneAny: (phone) => candidateRepository.findIdentityByPhoneAny(phone),
   findIdentityByNamePhone: (firstName, lastName, phone) =>
     candidateRepository.findIdentityByNamePhone(firstName, lastName, phone),
   mergeCandidates: (keptId, absorbedId, data) =>
     candidateRepository.mergeCandidates(keptId, absorbedId, data),
+  logLifecycle: defaultLogLifecycle,
+  gdprErase: makeEraseCandidateGdprDeps(),
 })

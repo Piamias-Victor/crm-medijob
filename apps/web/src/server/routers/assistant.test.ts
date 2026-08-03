@@ -25,6 +25,7 @@ describe('assistant.chat', () => {
     const result = await caller(runChat).chat({ message: 'Bonjour' })
     expect(result.kind).toBe('chat')
     expect(result.text).toContain('Bonjour')
+    expect(runChat).toHaveBeenCalledWith({ message: 'Bonjour' }, 'u1')
   })
 
   it('surfaces an unknown shortcut as NOT_FOUND', async () => {

@@ -13,9 +13,10 @@ export default async function Page() {
 
   return (
     <PharmacyCreatePage
-      defaultValues={buildPharmacyCreateDefaults()}
+      defaultValues={buildPharmacyCreateDefaults(session.user.id)}
       groupements={referentials.groupements}
       softwares={referentials.softwares}
+      recruiters={referentials.recruiters}
     />
   )
 }

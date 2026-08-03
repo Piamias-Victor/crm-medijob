@@ -7,7 +7,7 @@ const user = {
   email: 'admin@medijob.fr',
   name: 'Admin',
   password: 'hashed',
-  role: 'ADMIN' as const,
+  role: 'RH_ADMIN' as const,
 }
 
 function deps(overrides = {}) {
@@ -28,7 +28,7 @@ describe('authorizeCredentials', () => {
       id: 'u1',
       email: 'admin@medijob.fr',
       name: 'Admin',
-      role: 'ADMIN',
+      role: 'RH_ADMIN',
     })
   })
 

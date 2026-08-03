@@ -13,17 +13,28 @@ describe('prisma error middleware', () => {
     })
     const caller = createCallerFactory(
       makePharmacyRouter({
+        lookupGeo: vi.fn().mockResolvedValue(null),
         pharmacies: {
           list: vi.fn(),
           findDetailById: vi.fn(),
+          findQuickViewById: vi.fn(),
+          findAddressById: vi.fn().mockResolvedValue(null),
           create: vi.fn().mockRejectedValue(prismaError),
           update: vi.fn(),
           softDelete: vi.fn(),
         },
-        referentials: { listGroupements: vi.fn(), listSoftwares: vi.fn() },
+        referentials: {
+          listGroupements: vi.fn(),
+          listSoftwares: vi.fn(),
+          listRecruiters: vi.fn(),
+        },
         createGroupement: vi.fn(),
         createSoftware: vi.fn(),
         searchSiret: vi.fn(),
+        findIdentityBySiret: vi.fn().mockResolvedValue(null),
+        findIdentityByNameCityPostal: vi.fn().mockResolvedValue(null),
+        mergePharmacies: vi.fn().mockResolvedValue({ id: 'p1' }),
+        logLifecycle: vi.fn().mockResolvedValue(undefined),
       }),
     )({
       session: { user: { id: 'u1', role: 'RECRUTEUR' }, expires: '2999-01-01' },

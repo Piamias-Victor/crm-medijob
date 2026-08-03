@@ -59,7 +59,7 @@ describe('userRepository', () => {
       data: { email: 'rec@medijob.fr', password: 'hash', name: 'Rec', role: 'RECRUTEUR' },
     })
     await db.prisma.user.create({
-      data: { email: 'adm2@medijob.fr', password: 'hash', name: 'Admin2', role: 'ADMIN' },
+      data: { email: 'adm2@medijob.fr', password: 'hash', name: 'Admin2', role: 'RH_ADMIN' },
     })
     const recruiters = await repo.listRecruiters()
     expect(recruiters.some((u) => u.name === 'Rec')).toBe(true)
@@ -68,7 +68,7 @@ describe('userRepository', () => {
 
   it('counts active admins', async () => {
     await db.prisma.user.create({
-      data: { email: 'adm@medijob.fr', password: 'hash', name: 'Admin', role: 'ADMIN' },
+      data: { email: 'adm@medijob.fr', password: 'hash', name: 'Admin', role: 'RH_ADMIN' },
     })
     expect(await repo.countAdmins()).toBeGreaterThanOrEqual(1)
   })

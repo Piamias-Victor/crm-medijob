@@ -1,13 +1,20 @@
 import type { PharmacyDetailEntity } from '@/view-models/pharmacy-detail.types'
 import type { PharmacyListEntity } from '@/view-models/pharmacy-list'
 
+export { pharmacyQuickViewRepoRow } from '@/server/routers/pharmacy-quick-view.test.fixtures'
+
 export const pharmacyListEntity: PharmacyListEntity = {
   id: 'p1',
   name: 'Pharmacie du Centre',
   city: 'Paris',
+  postalCode: '75001',
+  latitude: 48.85,
+  longitude: 2.35,
+  createdAt: new Date('2026-03-15T12:00:00Z'),
   status: 'ACTIF',
   groupement: { name: 'Giphar' },
   software: { name: 'Winpharma' },
+  referent: { name: 'Alice' },
   contacts: [{ firstName: 'Marie', lastName: 'Curie', isPrimary: true }],
   _count: { missions: 2 },
 }
@@ -28,6 +35,7 @@ export const pharmacyDetailEntity: PharmacyDetailEntity = {
   softwareId: null,
   paymentConditions: null,
   notes: null,
+  referentId: null,
   updatedAt: new Date('2026-01-15'),
   groupement: { id: 'g1', name: 'Giphar' },
   software: null,
@@ -38,8 +46,8 @@ export const pharmacyDetailEntity: PharmacyDetailEntity = {
       lastName: 'Curie',
       email: null,
       phone: null,
-      role: 'TITULAIRE',
       isPrimary: true,
+      contactRole: { name: 'Titulaire' },
     },
   ],
   missions: [
@@ -49,6 +57,7 @@ export const pharmacyDetailEntity: PharmacyDetailEntity = {
       status: 'A_POURVOIR',
       contractType: 'CDI',
       startDate: new Date(),
+      updatedAt: new Date(),
       jobTitle: { name: 'Pharmacien' },
       referent: { name: 'Réf' },
     },

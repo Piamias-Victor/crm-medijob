@@ -7,6 +7,7 @@ import { Input } from '@/components/atoms/Input'
 import { Combobox } from '@/components/molecules/Combobox'
 import { DatePicker } from '@/components/molecules/DatePicker'
 import { FormField } from '@/components/molecules/FormField'
+import { ReferentField } from '@/components/molecules/ReferentField'
 import { CLEAR_DATE_LABEL, formatIsoDate, SELECT_DATE_LABEL } from '@/lib/date-picker-utils'
 
 type Ref = { id: string; name: string }
@@ -78,13 +79,12 @@ export function MissionQuickCreateFields({
           }
         />
       </FormField>
-      <FormField label="Référent" error={errors.referentId?.message}>
-        <Combobox
-          value={watch('referentId')}
-          onChange={(value) => setValue('referentId', value, { shouldValidate: true })}
-          options={recruiters.map((r) => ({ value: r.id, label: r.name }))}
-        />
-      </FormField>
+      <ReferentField
+        value={watch('referentId')}
+        onChange={(value) => setValue('referentId', value, { shouldValidate: true })}
+        recruiters={recruiters}
+        error={errors.referentId?.message}
+      />
     </>
   )
 }

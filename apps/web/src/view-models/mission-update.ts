@@ -1,4 +1,5 @@
 import type { MissionFormValues } from '@/view-models/mission-form.schema'
+import { toReferentIdOrNull } from '@/view-models/optional-referent-id.schema'
 import { toNull } from '@/view-models/to-null'
 
 export function toMissionUpdateData(data: MissionFormValues) {
@@ -14,10 +15,11 @@ export function toMissionUpdateData(data: MissionFormValues) {
     heuresParSemaine: data.heuresParSemaine ?? null,
     planning: toNull(data.planning),
     tempsPlein: data.tempsPlein,
+    profilRecherche: toNull(data.profilRecherche),
     notes: toNull(data.notes),
     pharmacyId: data.pharmacyId,
     contactId: toNull(data.contactId),
-    referentId: data.referentId,
+    referentId: toReferentIdOrNull(data.referentId),
     jobTitleId: data.jobTitleId,
   }
 }

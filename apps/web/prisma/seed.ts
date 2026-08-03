@@ -1,5 +1,12 @@
 import { PrismaClient } from '@prisma/client'
-import { PIPELINE_STAGES, SOFTWARES, GROUPEMENTS, JOB_TITLES, COMPATIBILITY } from './seed-data'
+import {
+  PIPELINE_STAGES,
+  SOFTWARES,
+  GROUPEMENTS,
+  JOB_TITLES,
+  CONTACT_ROLES,
+  COMPATIBILITY,
+} from './seed-data'
 import { seedUsers } from './seed-users'
 import { seedDemo } from './seed-demo'
 import { seedDemoRich } from './seed-demo-rich'
@@ -59,6 +66,9 @@ async function main() {
   )
   await seedByName(JOB_TITLES, (name) =>
     prisma.jobTitle.upsert({ where: { name }, update: {}, create: { name } }),
+  )
+  await seedByName(CONTACT_ROLES, (name) =>
+    prisma.contactRole.upsert({ where: { name }, update: {}, create: { name } }),
   )
   await seedCompatibility()
   await seedDemo(prisma)

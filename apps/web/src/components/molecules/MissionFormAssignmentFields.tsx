@@ -4,6 +4,7 @@ import type { UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form
 import type { MissionInput } from '@/view-models/mission-form.schema'
 import { Combobox } from '@/components/molecules/Combobox'
 import { FormField } from '@/components/molecules/FormField'
+import { ReferentField } from '@/components/molecules/ReferentField'
 
 type Ref = { id: string; name: string }
 type ContactRef = { id: string; label: string }
@@ -41,13 +42,12 @@ export function MissionFormAssignmentFields(props: Props) {
           options={props.contacts.map((c) => ({ value: c.id, label: c.label }))}
         />
       </FormField>
-      <FormField label="Référent" error={errors.referentId?.message}>
-        <Combobox
-          value={watch('referentId')}
-          onChange={(value) => setValue('referentId', value, { shouldValidate: true })}
-          options={props.recruiters.map((r) => ({ value: r.id, label: r.name }))}
-        />
-      </FormField>
+      <ReferentField
+        value={watch('referentId')}
+        onChange={(value) => setValue('referentId', value, { shouldValidate: true })}
+        recruiters={props.recruiters}
+        error={errors.referentId?.message}
+      />
     </>
   )
 }

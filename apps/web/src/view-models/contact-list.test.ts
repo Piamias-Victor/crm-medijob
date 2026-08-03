@@ -5,20 +5,21 @@ const entity: ContactListEntity = {
   id: 'c1',
   firstName: 'Marie',
   lastName: 'Curie',
-  role: 'TITULAIRE',
   phone: '0102030405',
   email: 'marie@example.com',
   isPrimary: true,
   createdAt: new Date('2026-01-15'),
+  contactRole: { id: 'r1', name: 'Titulaire' },
   pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon', postalCode: '69003' },
 }
 
 describe('toContactListRow', () => {
-  it('maps SPEC list columns', () => {
+  it('maps SPEC list columns with split name and role label', () => {
     const row = toContactListRow(entity)
     expect(row).toMatchObject({
-      fullName: 'Marie Curie',
-      role: 'TITULAIRE',
+      firstName: 'Marie',
+      lastName: 'Curie',
+      roleName: 'Titulaire',
       pharmacyName: 'Pharmacie du Centre',
       phone: '0102030405',
       email: 'marie@example.com',

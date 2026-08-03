@@ -1,17 +1,21 @@
 import type { MissionStatus, PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import type { MissionListFilters } from '@/view-models/mission-list-filters.schema'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { missionDetailSelect } from './mission.repository.selects'
+import { buildMissionListQueryWhere } from './mission-list-where'
 import { missionMatchingSelect, type MissionMatchingRow } from './mission-matching.select'
 
 const listSelect = {
   id: true,
   title: true,
   status: true,
+  contractType: true,
   startDate: true,
+  createdAt: true,
   jobTitle: { select: { name: true } },
-  pharmacy: { select: { name: true, city: true } },
+  pharmacy: { select: { name: true, city: true, latitude: true, longitude: true } },
   referent: { select: { name: true } },
 } as const
 
@@ -38,9 +42,9 @@ export function makeMissionRepository(db: PrismaClient = defaultDb) {
           notes: true,
         },
       }),
-    list: (limit = DEFAULT_LIST_LIMIT) =>
+    list: (filters?: MissionListFilters, limit = DEFAULT_LIST_LIMIT) =>
       db.mission.findMany({
-        where: NOT_DELETED,
+        where: buildMissionListQueryWhere(filters),
         orderBy: { createdAt: 'desc' },
         select: listSelect,
         take: limit,

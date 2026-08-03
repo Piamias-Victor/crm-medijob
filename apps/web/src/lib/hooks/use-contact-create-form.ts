@@ -9,6 +9,6 @@ export function useContactCreateForm(
 ): UseFormReturn<ContactInput> {
   return useForm<ContactInput>({
     resolver: zodResolver(contactInputSchema),
-    defaultValues: { role: 'AUTRE', isPrimary: false, ...defaultValues },
+    defaultValues: { isPrimary: false, ...defaultValues },
   })
 }

@@ -6,6 +6,9 @@ const validBase = {
   lastName: 'Durand',
   jobTitleId: 'jt1',
   referentId: 'u1',
+  status: 'NOUVEAU' as const,
+  salaryMin: null,
+  salaryMax: null,
   mobilityRadiusKm: 20,
   softwareIds: [] as string[],
   contractTypes: [] as ('CDI' | 'CDD' | 'INTERIM')[],
@@ -14,6 +17,22 @@ const validBase = {
 describe('candidateCreateInputSchema', () => {
   it('accepts minimal valid create input with empty optional collections', () => {
     expect(candidateCreateInputSchema.parse(validBase)).toMatchObject(validBase)
+  })
+
+  it('accepte création sans référent', () => {
+    expect(candidateCreateInputSchema.parse({ ...validBase, referentId: null }).referentId).toBeNull()
+    const withoutReferent = {
+      firstName: validBase.firstName,
+      lastName: validBase.lastName,
+      jobTitleId: validBase.jobTitleId,
+      status: validBase.status,
+      salaryMin: validBase.salaryMin,
+      salaryMax: validBase.salaryMax,
+      mobilityRadiusKm: validBase.mobilityRadiusKm,
+      softwareIds: validBase.softwareIds,
+      contractTypes: validBase.contractTypes,
+    }
+    expect(candidateCreateInputSchema.parse(withoutReferent).referentId).toBeUndefined()
   })
 
   it('rejects missing identity fields', () => {

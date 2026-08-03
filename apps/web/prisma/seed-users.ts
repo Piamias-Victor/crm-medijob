@@ -3,11 +3,11 @@ import { hashPassword } from '../src/server/auth/password'
 
 const SEED_USERS = [
   {
-    email: 'admin@medijob.fr',
-    name: 'Admin Medijob',
-    role: UserRole.ADMIN,
-    envKey: 'SEED_ADMIN_PASSWORD',
-    fallback: 'admin-medijob-2026',
+    email: 'direction@medijob.fr',
+    name: 'Direction Medijob',
+    role: UserRole.DIRECTION,
+    envKey: 'SEED_DIRECTION_PASSWORD',
+    fallback: 'direction-medijob-2026',
   },
   {
     email: 'recruteur@medijob.fr',
@@ -15,6 +15,20 @@ const SEED_USERS = [
     role: UserRole.RECRUTEUR,
     envKey: 'SEED_RECRUTEUR_PASSWORD',
     fallback: 'recruteur-medijob-2026',
+  },
+  {
+    email: 'communication@medijob.fr',
+    name: 'Communication Medijob',
+    role: UserRole.COMMUNICATION,
+    envKey: 'SEED_COMMUNICATION_PASSWORD',
+    fallback: 'communication-medijob-2026',
+  },
+  {
+    email: 'admin@medijob.fr',
+    name: 'RH-Admin Medijob',
+    role: UserRole.RH_ADMIN,
+    envKey: 'SEED_RH_ADMIN_PASSWORD',
+    fallback: 'admin-medijob-2026',
   },
 ] as const
 

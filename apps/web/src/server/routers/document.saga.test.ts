@@ -1,6 +1,5 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest'
-import { makeDocumentRouter } from '@/server/routers/document'
 import { documentCaller, documentRecord, makeDocumentDeps } from '@/server/routers/document.test.fixtures'
 
 describe('documentRouter saga', () => {

@@ -1,33 +1,14 @@
 import { vi } from 'vitest'
 import { mockProvider } from '@/server/ai/mock-provider'
 import { candidateExportFixture } from '@/server/routers/candidate-export.fixture'
+import { profileFixture } from '@/server/routers/candidate-profile.fixture'
 import type { CandidateDeps } from '@/server/routers/candidate'
 
+export { profileFixture }
 export const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
-
-export const profileFixture = {
-  id: 'c1',
-  firstName: 'Camille',
-  lastName: 'Durand',
-  email: null,
-  phone: null,
-  address: null,
-  city: 'Lyon',
-  postalCode: null,
-  jobTitleId: 'jt1',
-  mobilityRadiusKm: null,
-  mobilityNotes: null,
-  availableFrom: null,
-  notes: null,
-  referentId: 'u1',
-  cvUrl: null,
-  cvSummary: null,
-  anonymizedProfile: null,
-  jobTitle: { id: 'jt1', name: 'Pharmacien' },
-  referent: { id: 'u1', name: 'Recruteur' },
-  softwares: [],
-  contractPreferences: [],
-  missions: [],
+export const directionSession = {
+  user: { id: 'u1', role: 'DIRECTION' as const },
+  expires: '2999-01-01',
 }
 
 export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): CandidateDeps {
@@ -39,12 +20,17 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
         lastName: 'Durand',
         city: 'Lyon',
         postalCode: '69003',
+        latitude: null,
+        longitude: null,
         availableFrom: null,
+        status: 'NOUVEAU',
+        createdAt: new Date('2026-01-15'),
         jobTitle: { name: 'Pharmacien' },
         referent: { name: 'Recruteur' },
         missions: [],
       },
     ]),
+    findQuickViewById: vi.fn().mockResolvedValue(null),
     listForExport: vi.fn().mockResolvedValue([candidateExportFixture]),
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
     search: vi.fn().mockResolvedValue([
@@ -72,6 +58,8 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     listJobTitles: vi.fn(),
     confirmCvExtraction: vi.fn(),
     findIdentityByEmail: vi.fn().mockResolvedValue(null),
+    findIdentityByEmailAny: vi.fn().mockResolvedValue(null),
+    findIdentityByPhoneAny: vi.fn().mockResolvedValue(null),
     findIdentityByNamePhone: vi.fn().mockResolvedValue(null),
     mergeCandidates: vi.fn().mockResolvedValue({ id: 'c1' }),
     findDocumentsProfile: vi.fn().mockResolvedValue(null),
@@ -83,6 +71,15 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
     lookupQuery: vi.fn().mockResolvedValue(null),
     updateDerivedFields: vi.fn(),
     provider: mockProvider,
+    logLifecycle: vi.fn().mockResolvedValue(undefined),
+    gdprErase: {
+      findCandidateForErase: vi.fn().mockResolvedValue(null),
+      listDocumentUrls: vi.fn().mockResolvedValue([]),
+      listApplicationCvUrls: vi.fn().mockResolvedValue([]),
+      deleteBlobs: vi.fn().mockResolvedValue(undefined),
+      hardDeleteCandidateCascade: vi.fn().mockResolvedValue(undefined),
+      createAudit: vi.fn().mockResolvedValue(undefined),
+    },
     ...overrides,
   }
 }

@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeSoftwareRouter, type SoftwareDeps } from '@/server/routers/admin/software'
 
-const session = { user: { id: 'u1', role: 'ADMIN' as const }, expires: '2999-01-01' }
+const session = { user: { id: 'u1', role: 'RH_ADMIN' as const }, expires: '2999-01-01' }
 
 function makeDeps(overrides: Partial<SoftwareDeps> = {}): SoftwareDeps {
   return {

@@ -1,9 +1,10 @@
 'use client'
 
 import { Suspense, useState } from 'react'
-import { ListKanbanShell } from '@/components/molecules/ListKanbanShell'
+import { EntityViewShell } from '@/components/molecules/EntityViewShell'
 import { CvthequeKanban } from '@/components/organisms/CvthequeKanban'
 import { CvthequeTable } from '@/components/organisms/cvtheque-table/cvtheque-table'
+import { CandidateMapView } from '@/components/organisms/CandidateMapView'
 import { CvthequeTableSkeleton } from '@/components/molecules/skeletons/CvthequeTableSkeleton'
 import type { CvthequeView } from '@/components/molecules/ViewToggle'
 import { cvthequeViewOptions } from '@/components/molecules/ViewToggle'
@@ -31,30 +32,40 @@ export function CvthequeSection({ initialList, serverFilters, filterConfig, onCo
   )
 
   return (
-    <ListKanbanShell
+    <EntityViewShell
       view={view}
-      primaryView="table"
       onViewChange={setView}
       viewOptions={cvthequeViewOptions}
-      listTitle="CVthèque"
-      kanbanTitle="CVthèque"
-      listDescription="Parcourez tous les profils de la CVthèque."
-      kanbanDescription="Suivez la progression par mission et étape de pipeline."
-      listView={
-        <Suspense fallback={<CvthequeTableSkeleton />}>
-          <CvthequeTable
-            filterConfig={filterConfig}
-            values={values}
-            onChange={setFilters}
-            onReset={reset}
-            rows={tableRows}
-            exportFilters={apiFilters}
-            sort={sort}
-            onSortChange={setSort}
-          />
-        </Suspense>
-      }
-      kanbanView={<CvthequeKanban candidates={candidates} stages={stages} />}
+      panels={{
+        table: {
+          title: 'CVthèque',
+          description: 'Parcourez tous les profils de la CVthèque.',
+          content: (
+            <Suspense fallback={<CvthequeTableSkeleton />}>
+              <CvthequeTable
+                filterConfig={filterConfig}
+                values={values}
+                onChange={setFilters}
+                onReset={reset}
+                rows={tableRows}
+                exportFilters={apiFilters}
+                sort={sort}
+                onSortChange={setSort}
+              />
+            </Suspense>
+          ),
+        },
+        kanban: {
+          title: 'CVthèque',
+          description: 'Suivez la progression par mission et étape de pipeline.',
+          content: <CvthequeKanban candidates={candidates} stages={stages} />,
+        },
+        map: {
+          title: 'Carte candidats',
+          description: 'Localisez les profils géocodés selon les filtres actifs.',
+          content: <CandidateMapView candidates={candidates} />,
+        },
+      }}
     />
   )
 }

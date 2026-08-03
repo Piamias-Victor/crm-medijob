@@ -14,6 +14,7 @@ export function toMissionFormValues(source: MissionFormSource): Partial<MissionI
     heuresParSemaine: source.heuresParSemaine ?? undefined,
     planning: source.planning ?? undefined,
     tempsPlein: source.tempsPlein,
+    profilRecherche: source.profilRecherche ?? undefined,
     notes: source.notes ?? undefined,
     pharmacyId: source.pharmacyId,
     contactId: source.contactId ?? undefined,

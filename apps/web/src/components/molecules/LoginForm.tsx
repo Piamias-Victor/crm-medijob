@@ -12,6 +12,7 @@ import { Input } from '@/components/atoms/Input'
 import { PasswordInput } from '@/components/molecules/PasswordInput'
 import { Button } from '@/components/atoms/Button'
 import { Spinner } from '@/components/atoms/Spinner'
+import { ForgotPasswordLink } from '@/components/molecules/ForgotPasswordLink'
 
 export function LoginForm() {
   const router = useRouter()
@@ -82,6 +83,7 @@ export function LoginForm() {
       >
         {isSubmitting ? 'Connexion…' : 'Se connecter'}
       </Button>
+      <ForgotPasswordLink />
     </form>
   )
 }

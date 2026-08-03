@@ -9,6 +9,9 @@ export type MatchingCandidateInput = {
   mobilityRadiusKm: number | null
   availableFrom: Date | null
   preferredContractTypes: string[]
+  salaryExpectations: string | null
+  salaryMin: number | null
+  salaryMax: number | null
 }
 
 export type MatchingMissionInput = {

@@ -5,22 +5,12 @@ import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { buildPharmacyListWhere } from './pharmacy-list-where'
 import { listPharmaciesForRadiusSearch } from './pharmacy-list-in-radius.repo'
+import { pharmacyListInclude } from './pharmacy-list-include'
 
 function buildPharmacyListQueryWhere(filters?: PharmacyListFilters): Prisma.PharmacyWhereInput {
   const filterWhere = buildPharmacyListWhere(filters)
   return Object.keys(filterWhere).length === 0 ? NOT_DELETED : { AND: [NOT_DELETED, filterWhere] }
 }
-
-const listInclude = {
-  groupement: { select: { name: true } },
-  software: { select: { name: true } },
-  contacts: {
-    where: { ...NOT_DELETED, isPrimary: true },
-    take: 1,
-    select: { firstName: true, lastName: true, isPrimary: true },
-  },
-  _count: { select: { missions: { where: NOT_DELETED } } },
-} satisfies Prisma.PharmacyInclude
 
 const detailInclude = {
   groupement: { select: { id: true, name: true } },
@@ -34,8 +24,8 @@ const detailInclude = {
       lastName: true,
       email: true,
       phone: true,
-      role: true,
       isPrimary: true,
+      contactRole: { select: { name: true } },
     },
   },
   missions: {
@@ -48,6 +38,7 @@ const detailInclude = {
       status: true,
       contractType: true,
       startDate: true,
+      updatedAt: true,
       jobTitle: { select: { name: true } },
       referent: { select: { name: true } },
     },
@@ -72,7 +63,7 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
     list: (filters?: PharmacyListFilters, limit = DEFAULT_LIST_LIMIT) =>
       db.pharmacy.findMany({
         where: buildPharmacyListQueryWhere(filters),
-        include: listInclude,
+        include: pharmacyListInclude,
         orderBy: { name: 'asc' },
         take: limit,
       }),

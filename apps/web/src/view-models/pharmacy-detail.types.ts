@@ -1,4 +1,4 @@
-import type { ContactRole, ContractType, MissionStatus, PharmacyStatus } from '@prisma/client'
+import type { ContractType, MissionStatus, PharmacyStatus } from '@prisma/client'
 
 export type PharmacyContactEntity = {
   id: string
@@ -6,8 +6,8 @@ export type PharmacyContactEntity = {
   lastName: string
   email: string | null
   phone: string | null
-  role: ContactRole
   isPrimary: boolean
+  contactRole: { name: string }
 }
 
 export type PharmacyMissionEntity = {
@@ -16,8 +16,9 @@ export type PharmacyMissionEntity = {
   status: MissionStatus
   contractType: ContractType
   startDate: Date
+  updatedAt: Date
   jobTitle: { name: string }
-  referent: { name: string }
+  referent: { name: string } | null
 }
 
 export type PharmacyDetailEntity = {
@@ -36,6 +37,7 @@ export type PharmacyDetailEntity = {
   softwareId: string | null
   paymentConditions: string | null
   notes: string | null
+  referentId: string | null
   updatedAt: Date
   groupement: { id: string; name: string } | null
   software: { id: string; name: string } | null
@@ -48,7 +50,7 @@ export type PharmacyContactRow = {
   fullName: string
   email: string | null
   phone: string | null
-  role: ContactRole
+  roleName: string
   isPrimary: boolean
 }
 
@@ -58,8 +60,9 @@ export type PharmacyMissionRow = {
   status: MissionStatus
   contractType: ContractType
   startDate: Date
+  updatedAt: Date
   jobTitle: string
-  referent: string
+  referent: string | null
 }
 
 export type PharmacyDetailPayload = {
@@ -74,4 +77,5 @@ export type PharmacyDetailPayload = {
   formSource: Omit<PharmacyDetailEntity, 'contacts' | 'missions' | 'groupement' | 'software'>
   contacts: PharmacyContactRow[]
   activeMissions: PharmacyMissionRow[]
+  terminalMissions: PharmacyMissionRow[]
 }

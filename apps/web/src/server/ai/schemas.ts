@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { cvExtractionSchema, cvExtractionAiSchema } from './cv-extraction.schema'
+import { cvExtractionAiSchema } from './cv-extraction.schema'
 
 export const RESPONSE_KINDS = ['chat', 'summary', 'email', 'offer', 'report', 'cv', 'anonymized'] as const
 

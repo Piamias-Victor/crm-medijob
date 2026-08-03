@@ -9,6 +9,24 @@ export const pharmacyTableColumns: ColumnDef<PharmacyListRow>[] = [
   { id: 'name', header: 'Nom', accessor: (row) => row.name, sortable: true },
   { id: 'city', header: 'Ville', accessor: (row) => row.city ?? TABLE_EMPTY_CELL, sortable: true },
   {
+    id: 'postalCode',
+    header: 'CP',
+    accessor: (row) => row.postalCode ?? TABLE_EMPTY_CELL,
+    sortable: true,
+  },
+  {
+    id: 'createdAtLabel',
+    header: "Date d'ajout",
+    accessor: (row) => row.createdAtLabel,
+    sortable: true,
+  },
+  {
+    id: 'referentName',
+    header: 'Référent',
+    accessor: (row) => row.referentName ?? TABLE_EMPTY_CELL,
+    sortable: true,
+  },
+  {
     id: 'groupementName',
     header: 'Groupement',
     accessor: (row) => row.groupementName ?? TABLE_EMPTY_CELL,

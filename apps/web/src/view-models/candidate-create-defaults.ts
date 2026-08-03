@@ -10,8 +10,10 @@ export function buildCandidateCreateDefaults(
     lastName: '',
     jobTitleId,
     referentId,
+    status: 'NOUVEAU',
     mobilityRadiusKm: CREATE_DEFAULT_MOBILITY_RADIUS_KM,
     softwareIds: [],
     contractTypes: [],
+    consentGiven: false,
   }
 }

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { CONTRACT_TYPES } from '@/view-models/candidate-profile.schema'
+import { optionalReferentIdSchema } from '@/view-models/optional-referent-id.schema'
 
 const optionalText = z
   .string()
@@ -23,7 +24,7 @@ export const missionFormFieldsSchema = z.object({
   contractType: z.enum(CONTRACT_TYPES),
   pharmacyId: z.string().min(1, 'Pharmacie requise'),
   contactId: optionalText,
-  referentId: z.string().min(1, 'Référent requis'),
+  referentId: optionalReferentIdSchema,
   startDate: z.date({ message: 'Date de début requise' }).optional(),
   endDate: z.date().optional(),
   salaireMin: optionalInt,
@@ -33,6 +34,7 @@ export const missionFormFieldsSchema = z.object({
   planning: optionalText,
   tempsPlein: z.boolean(),
   description: optionalText,
+  profilRecherche: optionalText,
   notes: optionalText,
 })
 

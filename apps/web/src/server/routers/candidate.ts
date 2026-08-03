@@ -1,11 +1,7 @@
-import { router, protectedProcedure } from '@/server/trpc'
-import {
-  candidateIdSchema,
-  candidateCreateInputSchema,
-  updateCandidateSchema,
-} from '@/view-models/candidate-profile.schema'
+import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
+import { candidateIdSchema } from '@/view-models/candidate-profile.schema'
 import { toCandidateProfilePayload } from '@/view-models/candidate-profile-payload'
-import { toCandidateCreateData, toCandidateUpdateData } from '@/view-models/candidate-profile-map'
+import { toCandidateQuickView } from '@/view-models/candidate-quick-view'
 import { handleConfirmCvExtraction, handleExtractCv, handleExtractCvDraft } from '@/server/routers/candidate-cv'
 import { handleDiscardCvDraft } from '@/server/routers/candidate-cv-discard'
 import { handleGenerateAnonymized, handleGenerateSummary, handleSaveCvSummary } from '@/server/routers/candidate-documents'
@@ -18,9 +14,15 @@ import { handleCandidateExportCsv } from '@/server/routers/candidate-export'
 import type { CandidateDeps } from '@/server/routers/candidate.deps'
 import { detectDuplicateInputSchema, candidateMergeInputSchema } from '@/view-models/candidate-duplicate.schema'
 import { handleDetectDuplicate, handleMergeCandidate } from '@/server/routers/candidate-duplicate-handlers'
+import { candidateImportRoutes } from '@/server/routers/candidate-import-routes'
 import { createPresentToPharmacyProcedure } from '@/server/routers/candidate-present-pharmacy.procedure'
 import { createListPharmaciesInRadiusProcedure } from '@/server/routers/candidate-list-in-radius.procedure'
 import { createPresentInRadiusProcedure } from '@/server/routers/candidate-present-radius.procedure'
+import {
+  candidateCreateMutation,
+  candidateUpdateMutation,
+} from '@/server/routers/candidate-mutations'
+import { createGdprEraseCandidateProcedure } from '@/server/routers/candidate-gdpr-erase.procedure'
 
 export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
@@ -30,9 +32,9 @@ export function makeCandidateRouter(deps: CandidateDeps) {
       const [rows, stages] = await Promise.all([deps.listForKanban(input), deps.listStages()])
       return { rows, stages }
     }),
-    exportCsv: protectedProcedure.input(candidateExportInputSchema).query(({ input }) =>
-      handleCandidateExportCsv(deps, input),
-    ),
+    exportCsv: permissionProcedure('export')
+      .input(candidateExportInputSchema)
+      .query(({ input }) => handleCandidateExportCsv(deps, input)),
     search: protectedProcedure.input(candidateSearchInput).query(async ({ input }) =>
       toCandidateSearchOptions(await deps.search(input.term, input.limit)),
     ),
@@ -41,13 +43,13 @@ export function makeCandidateRouter(deps: CandidateDeps) {
       if (!candidate) return null
       return toCandidateProfilePayload(candidate)
     }),
+    quickView: protectedProcedure.input(candidateIdSchema).query(async ({ input }) => {
+      const row = await deps.findQuickViewById(input.id)
+      return row ? toCandidateQuickView(row) : null
+    }),
     referentials: protectedProcedure.query(() => deps.referentials()),
-    create: protectedProcedure
-      .input(candidateCreateInputSchema)
-      .mutation(({ input }) => deps.createProfile(toCandidateCreateData(input))),
-    update: protectedProcedure.input(updateCandidateSchema).mutation(({ input }) =>
-      deps.updateProfile(input.id, toCandidateUpdateData(input.data)),
-    ),
+    create: candidateCreateMutation(deps),
+    update: candidateUpdateMutation(deps),
     extractCvDraft: protectedProcedure.input(extractCvDraftSchema).mutation(({ input }) =>
       handleExtractCvDraft(deps, input),
     ),
@@ -73,8 +75,10 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     merge: protectedProcedure.input(candidateMergeInputSchema).mutation(({ input }) =>
       handleMergeCandidate(deps, input),
     ),
+    ...candidateImportRoutes(deps),
     presentToPharmacy: createPresentToPharmacyProcedure(deps),
     listPharmaciesInRadius: createListPharmaciesInRadiusProcedure(deps),
     presentInRadius: createPresentInRadiusProcedure(deps),
+    gdprErase: createGdprEraseCandidateProcedure(deps.gdprErase),
   })
 }

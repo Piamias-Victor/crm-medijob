@@ -23,23 +23,32 @@ export function toPharmacyContactRows(contacts: PharmacyContactEntity[]): Pharma
     fullName: `${c.firstName} ${c.lastName}`.trim(),
     email: c.email,
     phone: c.phone,
-    role: c.role,
+    roleName: c.contactRole.name,
     isPrimary: c.isPrimary,
   }))
 }
 
+function toMissionRow(m: PharmacyMissionEntity): PharmacyMissionRow {
+  return {
+    id: m.id,
+    title: m.title,
+    status: m.status,
+    contractType: m.contractType,
+    startDate: m.startDate,
+    updatedAt: m.updatedAt,
+    jobTitle: m.jobTitle.name,
+    referent: m.referent?.name ?? null,
+  }
+}
+
 export function toPharmacyMissionRows(missions: PharmacyMissionEntity[]): PharmacyMissionRow[] {
-  return missions
-    .filter((m) => !isTerminalMissionStatus(m.status))
-    .map((m) => ({
-      id: m.id,
-      title: m.title,
-      status: m.status,
-      contractType: m.contractType,
-      startDate: m.startDate,
-      jobTitle: m.jobTitle.name,
-      referent: m.referent.name,
-    }))
+  return missions.filter((m) => !isTerminalMissionStatus(m.status)).map(toMissionRow)
+}
+
+export function toPharmacyTerminalMissionRows(
+  missions: PharmacyMissionEntity[],
+): PharmacyMissionRow[] {
+  return missions.filter((m) => isTerminalMissionStatus(m.status)).map(toMissionRow)
 }
 
 export function toPharmacyDetail(entity: PharmacyDetailEntity): PharmacyDetailPayload {
@@ -58,5 +67,6 @@ export function toPharmacyDetail(entity: PharmacyDetailEntity): PharmacyDetailPa
     formSource,
     contacts: toPharmacyContactRows(contacts),
     activeMissions: toPharmacyMissionRows(missions),
+    terminalMissions: toPharmacyTerminalMissionRows(missions),
   }
 }

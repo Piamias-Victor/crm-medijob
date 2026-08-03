@@ -13,8 +13,10 @@ datasource db {
 // ─── Enums ────────────────────────────────────────────────────
 
 enum UserRole {
+  DIRECTION
   RECRUTEUR
-  ADMIN
+  COMMUNICATION
+  RH_ADMIN
 }
 
 enum PharmacyStatus {
@@ -23,12 +25,13 @@ enum PharmacyStatus {
   INACTIF
 }
 
-enum ContactRole {
-  TITULAIRE
-  ADJOINT
-  PREPARATEUR_REFERENT
-  RESPONSABLE_RH
-  AUTRE
+enum CandidateStatus {
+  NOUVEAU
+  A_QUALIFIER
+  QUALIFIE
+  EN_MISSION
+  INACTIF
+  BLACKLISTE
 }
 
 enum ContractType {
@@ -71,6 +74,12 @@ enum DocumentEntityType {
   CONTACT
   MISSION
   CANDIDATE
+}
+
+enum ConsentSource {
+  SITE
+  MANUAL
+  IMPORT
 }
 
 enum ApplicationStatus {
@@ -133,11 +142,14 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  referents   Candidate[]   @relation("ReferentCandidates")
-  missionRefs Mission[]     @relation("ReferentMissions")
-  activities  ActivityLog[]
-  accounts    Account[]
-  sessions    Session[]
+  referents     Candidate[] @relation("ReferentCandidates")
+  missionRefs   Mission[]   @relation("ReferentMissions")
+  pharmacyRefs  Pharmacy[]  @relation("ReferentPharmacies")
+  contactRefs   Contact[]   @relation("ReferentContacts")
+  activities    ActivityLog[]
+  gdprErases    GdprEraseAudit[]
+  accounts      Account[]
+  sessions      Session[]
 
   @@index([deletedAt])
 }
@@ -185,6 +197,14 @@ model JobTitle {
   acceptedInCompatibilities JobTitleCompatibility[] @relation("AcceptedCandidateJobTitle")
 }
 
+model ContactRole {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  contacts Contact[]
+}
+
 model JobTitleCompatibility {
   missionJobTitleId   String
   candidateJobTitleId String
@@ -199,28 +219,36 @@ model JobTitleCompatibility {
 // ─── Candidates ───────────────────────────────────────────────
 
 model Candidate {
-  id                String    @id @default(cuid())
-  firstName         String
-  lastName          String
-  email             String?
-  phone             String?
-  address           String?
-  city              String?
-  postalCode        String?
-  jobTitleId        String
-  mobilityRadiusKm  Int?
-  mobilityNotes     String?
-  availableFrom     DateTime?
-  cvUrl             String?
-  cvSummary         String?
-  anonymizedProfile String?
-  notes             String?
-  referentId        String
-  deletedAt         DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id                 String          @id @default(cuid())
+  firstName          String
+  lastName           String
+  email              String?
+  phone              String?
+  address            String?
+  city               String?
+  postalCode         String?
+  latitude           Float?
+  longitude          Float?
+  jobTitleId         String
+  status             CandidateStatus @default(NOUVEAU)
+  salaryExpectations String?
+  salaryMin          Int?
+  salaryMax          Int?
+  mobilityRadiusKm   Int?
+  mobilityNotes      String?
+  availableFrom      DateTime?
+  cvUrl              String?
+  cvSummary          String?
+  anonymizedProfile  String?
+  notes              String?
+  consentGivenAt     DateTime?
+  consentSource      ConsentSource?
+  referentId         String?
+  deletedAt          DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
 
-  referent            User                          @relation("ReferentCandidates", fields: [referentId], references: [id])
+  referent            User?                         @relation("ReferentCandidates", fields: [referentId], references: [id], onDelete: SetNull)
   jobTitle            JobTitle                      @relation(fields: [jobTitleId], references: [id])
   softwares           CandidateSoftware[]
   contractPreferences CandidateContractPreference[]
@@ -232,6 +260,7 @@ model Candidate {
   @@index([deletedAt])
   @@index([jobTitleId])
   @@index([referentId])
+  @@index([status])
 }
 
 model CandidateContractPreference {
@@ -263,6 +292,8 @@ model Pharmacy {
   address           String?
   city              String?
   postalCode        String?
+  latitude          Float?
+  longitude         Float?
   phone             String?
   email             String?
   website           String?
@@ -271,12 +302,14 @@ model Pharmacy {
   softwareId        String?
   paymentConditions String?
   notes             String?
+  referentId        String?
   deletedAt         DateTime?
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
   groupement Groupement?   @relation(fields: [groupementId], references: [id])
   software   Software?     @relation(fields: [softwareId], references: [id])
+  referent   User?         @relation("ReferentPharmacies", fields: [referentId], references: [id], onDelete: SetNull)
   contacts   Contact[]
   missions   Mission[]
   activities ActivityLog[] @relation("PharmacyActivities")
@@ -287,31 +320,37 @@ model Pharmacy {
   @@index([status])
   @@index([softwareId])
   @@index([postalCode])
+  @@index([referentId])
 }
 
 // ─── Contacts ─────────────────────────────────────────────────
 
 model Contact {
-  id         String      @id @default(cuid())
-  pharmacyId String
-  firstName  String
-  lastName   String
-  email      String?
-  phone      String?
-  role       ContactRole @default(AUTRE)
-  isPrimary  Boolean     @default(false)
-  notes      String?
-  deletedAt  DateTime?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id            String    @id @default(cuid())
+  pharmacyId    String
+  firstName     String
+  lastName      String
+  email         String?
+  phone         String?
+  contactRoleId String
+  isPrimary     Boolean   @default(false)
+  notes         String?
+  referentId    String?
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  pharmacy   Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
-  missions   Mission[]
-  activities ActivityLog[] @relation("ContactActivities")
-  documents  Document[]    @relation("ContactDocuments")
+  pharmacy    Pharmacy      @relation(fields: [pharmacyId], references: [id], onDelete: Cascade)
+  contactRole ContactRole   @relation(fields: [contactRoleId], references: [id])
+  referent    User?         @relation("ReferentContacts", fields: [referentId], references: [id], onDelete: SetNull)
+  missions    Mission[]
+  activities  ActivityLog[] @relation("ContactActivities")
+  documents   Document[]    @relation("ContactDocuments")
 
   @@index([deletedAt])
   @@index([pharmacyId])
+  @@index([contactRoleId])
+  @@index([referentId])
 }
 
 // ─── Missions ─────────────────────────────────────────────────
@@ -320,7 +359,7 @@ model Mission {
   id               String        @id @default(cuid())
   pharmacyId       String
   contactId        String?
-  referentId       String
+  referentId       String?
   jobTitleId       String
   title            String
   description      String?
@@ -334,6 +373,7 @@ model Mission {
   heuresParSemaine Float?
   planning         String?
   tempsPlein       Boolean       @default(true)
+  profilRecherche  String?
   notes            String?
   deletedAt        DateTime?
   createdAt        DateTime      @default(now())
@@ -341,7 +381,7 @@ model Mission {
 
   pharmacy   Pharmacy           @relation(fields: [pharmacyId], references: [id])
   contact    Contact?           @relation(fields: [contactId], references: [id])
-  referent   User               @relation("ReferentMissions", fields: [referentId], references: [id])
+  referent   User?              @relation("ReferentMissions", fields: [referentId], references: [id], onDelete: SetNull)
   jobTitle   JobTitle           @relation(fields: [jobTitleId], references: [id])
   candidates MissionCandidate[]
   jobOffer   JobOffer?
@@ -405,6 +445,8 @@ model Application {
   message     String?
   status      ApplicationStatus @default(EN_ATTENTE)
   candidateId String?
+  consentGivenAt DateTime?
+  consentSource  ConsentSource?
   deletedAt   DateTime?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
@@ -472,4 +514,20 @@ model Document {
   @@index([contactId])
   @@index([missionId])
   @@index([candidateId])
+}
+
+// ─── Audit effacement RGPD (sans PII) ─────────────────────────
+
+model GdprEraseAudit {
+  id             String             @id @default(cuid())
+  entityType     DocumentEntityType
+  entityId       String
+  erasedByUserId String
+  erasedAt       DateTime           @default(now())
+  reason         String?
+
+  erasedBy User @relation(fields: [erasedByUserId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([erasedAt])
 }

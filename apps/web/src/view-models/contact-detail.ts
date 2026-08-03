@@ -20,12 +20,14 @@ export function toContactDetail(entity: ContactDetailEntity): ContactDetailPaylo
     lastName: entity.lastName,
     email: entity.email,
     phone: entity.phone,
-    role: entity.role,
+    contactRoleId: entity.contactRoleId,
+    roleName: entity.contactRole.name,
     isPrimary: entity.isPrimary,
     notes: entity.notes,
     pharmacyId: entity.pharmacyId,
     pharmacyName: entity.pharmacy.name,
     pharmacy: entity.pharmacy,
+    referentId: entity.referentId,
     updatedAt: entity.updatedAt,
   }
 }

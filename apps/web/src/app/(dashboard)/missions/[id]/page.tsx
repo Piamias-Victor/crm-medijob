@@ -1,11 +1,17 @@
 import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { MissionDetailPage } from '@/components/organisms/MissionDetailPage'
+import { parseMissionTab } from '@/view-models/mission-tab-parse'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { id } = await params
+  const query = await searchParams
+  const tab = typeof query.tab === 'string' ? query.tab : undefined
   const caller = await createServerCaller()
   const mission = await caller.mission.getById({ id })
   if (!mission) notFound()
@@ -30,6 +36,7 @@ export default async function Page({ params }: Props) {
       documents={documents}
       activityCount={activities.length}
       documentCount={documents.length}
+      initialTab={parseMissionTab(tab)}
     />
   )
 }

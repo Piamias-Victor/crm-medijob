@@ -5,6 +5,8 @@ import {
   buildAvailableWhere,
   buildProfileIncompleteWhere,
 } from '@/server/db/repositories/candidate-list-where-clauses'
+import { buildEffectiveStatusWhere } from '@/server/db/repositories/candidate-list-status-where'
+import { buildReferentIdWhere } from '@/server/db/repositories/referent-id-where'
 
 export function buildCandidateListWhere(
   filters: CandidateListFilters = {},
@@ -16,7 +18,7 @@ export function buildCandidateListWhere(
   if (filters.departments?.length) {
     clauses.push({ OR: filters.departments.map((d) => ({ postalCode: { startsWith: d } })) })
   }
-  if (filters.referentIds?.length) clauses.push({ referentId: { in: filters.referentIds } })
+  if (filters.referentIds?.length) clauses.push(buildReferentIdWhere(filters.referentIds))
   if (filters.softwareIds?.length) {
     clauses.push({ softwares: { some: { softwareId: { in: filters.softwareIds } } } })
   }
@@ -28,6 +30,11 @@ export function buildCandidateListWhere(
     clauses.push(buildProfileIncompleteWhere(filters.profileIncomplete))
   }
   if (filters.activeMission != null) clauses.push(buildActiveMissionWhere(filters.activeMission))
+  if (filters.statuses?.length) clauses.push(buildEffectiveStatusWhere(filters.statuses))
+  if (filters.city) clauses.push({ city: { contains: filters.city, mode: 'insensitive' } })
+  if (filters.maxMobilityKm != null) {
+    clauses.push({ mobilityRadiusKm: { lte: filters.maxMobilityKm } })
+  }
 
   if (clauses.length === 0) return {}
   if (clauses.length === 1) return clauses[0]!

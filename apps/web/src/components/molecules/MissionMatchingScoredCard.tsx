@@ -1,13 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Avatar } from '@/components/atoms/Avatar'
-import { CandidateDetailLink } from '@/components/molecules/CandidateDetailLink'
 import { MissionMatchingScoredCardActions } from '@/components/molecules/MissionMatchingScoredCardActions'
 import { MissionMatchingScoredCardBody } from '@/components/molecules/MissionMatchingScoredCardBody'
+import { MissionMatchingScoredCardHeader } from '@/components/molecules/MissionMatchingScoredCardHeader'
 import { listItem } from '@/lib/motion/variants'
 import { cn } from '@/lib/cn'
-import { compatibilityScoreStyle } from '@/view-models/compatibility-score-style'
 import type { MissionMatchingScoredRow } from '@/view-models/mission-matching'
 
 type Props = {
@@ -15,6 +13,8 @@ type Props = {
   rank: number
   index: number
   missionId: string
+  selected: boolean
+  onToggleSelect: () => void
   positioned: boolean
   pipelineLocked?: boolean
   onPositioned: (candidateId: string) => void
@@ -25,42 +25,41 @@ export function MissionMatchingScoredCard({
   rank,
   index,
   missionId,
+  selected,
+  onToggleSelect,
   positioned,
   pipelineLocked,
   onPositioned,
 }: Props) {
   return (
     <motion.li variants={listItem} custom={index} className="list-none">
-      <article className="overflow-hidden rounded-2xl border border-border/55 bg-white/95 shadow-sm">
+      <article
+        className={cn(
+          'overflow-hidden rounded-2xl border bg-white/95 shadow-sm',
+          selected ? 'border-accent/60 ring-1 ring-accent/25' : 'border-border/55',
+        )}
+      >
         <div className="flex flex-col sm:flex-row sm:items-stretch">
           <div className="flex min-w-0 flex-1">
-            <div className="grid w-10 shrink-0 place-items-center bg-gradient-to-b from-accent-muted/80 to-white text-sm font-bold text-accent">
-              {rank}
-            </div>
+            <label className="grid w-10 shrink-0 cursor-pointer place-items-center bg-gradient-to-b from-accent-muted/80 to-white">
+              <span className="sr-only">Sélectionner {row.fullName}</span>
+              <input
+                type="checkbox"
+                checked={selected}
+                onChange={onToggleSelect}
+                className="size-4 rounded border-border accent-[var(--color-accent)]"
+              />
+              <span className="mt-1 text-xs font-bold text-accent">{rank}</span>
+            </label>
             <div className="min-w-0 flex-1 p-4">
-              <div className="flex items-start gap-3">
-                <Avatar name={row.fullName} className="size-10 text-xs" />
-                <div className="min-w-0 flex-1">
-                  <CandidateDetailLink
-                    candidateId={row.candidateId}
-                    className="truncate font-semibold text-fg underline-offset-2 hover:underline"
-                  >
-                    {row.fullName}
-                  </CandidateDetailLink>
-                  <p className="truncate text-xs text-fg-muted">
-                    {row.jobTitle}
-                    {row.city ? ` · ${row.city}` : ''}
-                  </p>
-                </div>
-                <span
-                  className={cn(
-                    'shrink-0 rounded-full px-2.5 py-1 text-xs font-bold tabular-nums sm:hidden',
-                    compatibilityScoreStyle(row.score),
-                  )}
-                >
-                  {row.score}%
-                </span>
-              </div>
+              <MissionMatchingScoredCardHeader
+                candidateId={row.candidateId}
+                fullName={row.fullName}
+                jobTitle={row.jobTitle}
+                city={row.city}
+                salaryLabel={row.salaryLabel}
+                score={row.score}
+              />
               <MissionMatchingScoredCardBody
                 score={row.score}
                 justification={row.justification}

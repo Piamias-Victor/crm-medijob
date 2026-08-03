@@ -13,6 +13,8 @@ export function AppAtmosphere({ className, children }: Props) {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--color-surface)_0%,var(--color-primary-fg)_72%)]" />
         <div className="medijob-orb absolute -left-40 top-[-15%] size-80 rounded-full bg-primary/5 blur-3xl" />
         <div className="medijob-orb medijob-orb--delayed absolute -right-32 bottom-[-10%] size-72 rounded-full bg-accent/4 blur-3xl" />
+        <div className="medijob-orb absolute right-[20%] top-[30%] size-56 rounded-full bg-sky/3 blur-3xl" />
+        <div className="medijob-orb medijob-orb--delayed absolute left-[25%] bottom-[15%] size-48 rounded-full bg-rose/3 blur-3xl" />
         <div className="medijob-grid medijob-grid--fade absolute inset-0 opacity-[0.18]" />
         <div className="medijob-grain absolute inset-0 opacity-[0.012]" />
       </div>

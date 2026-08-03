@@ -17,7 +17,7 @@ export type RichContactSeed = {
   lastName: string
   email: string
   phone: string
-  role: 'TITULAIRE' | 'ADJOINT' | 'RESPONSABLE_RH'
+  roleName: string
   isPrimary: boolean
 }
 
@@ -52,11 +52,11 @@ export const RICH_PHARMACIES: RichPharmacySeed[] = [
 ]
 
 export const RICH_CONTACTS: RichContactSeed[] = [
-  { id: 'rich-ct-1', pharmacyId: 'rich-ph-lyon-centre', firstName: 'Sophie', lastName: 'Moreau', email: 's.moreau@bellecour-pharma.fr', phone: '04 78 00 10 01', role: 'TITULAIRE', isPrimary: true },
-  { id: 'rich-ct-2', pharmacyId: 'rich-ph-lyon-gare', firstName: 'Thomas', lastName: 'Girard', email: 't.girard@gare-pharma.fr', phone: '04 78 00 20 02', role: 'TITULAIRE', isPrimary: true },
-  { id: 'rich-ct-3', pharmacyId: 'rich-ph-paris-marais', firstName: 'Isabelle', lastName: 'Renard', email: 'i.renard@marais-pharma.fr', phone: '01 42 00 30 03', role: 'TITULAIRE', isPrimary: true },
-  { id: 'rich-ct-4', pharmacyId: 'rich-ph-marseille-vieux', firstName: 'Karim', lastName: 'Benali', email: 'k.benali@vieuxport-pharma.fr', phone: '04 91 00 40 04', role: 'TITULAIRE', isPrimary: true },
-  { id: 'rich-ct-5', pharmacyId: 'rich-ph-toulouse-cap', firstName: 'Émilie', lastName: 'Dupuis', email: 'e.dupuis@capitole-pharma.fr', phone: '05 61 00 50 05', role: 'RESPONSABLE_RH', isPrimary: true },
+  { id: 'rich-ct-1', pharmacyId: 'rich-ph-lyon-centre', firstName: 'Sophie', lastName: 'Moreau', email: 's.moreau@bellecour-pharma.fr', phone: '04 78 00 10 01', roleName: 'Titulaire', isPrimary: true },
+  { id: 'rich-ct-2', pharmacyId: 'rich-ph-lyon-gare', firstName: 'Thomas', lastName: 'Girard', email: 't.girard@gare-pharma.fr', phone: '04 78 00 20 02', roleName: 'Titulaire', isPrimary: true },
+  { id: 'rich-ct-3', pharmacyId: 'rich-ph-paris-marais', firstName: 'Isabelle', lastName: 'Renard', email: 'i.renard@marais-pharma.fr', phone: '01 42 00 30 03', roleName: 'Titulaire', isPrimary: true },
+  { id: 'rich-ct-4', pharmacyId: 'rich-ph-marseille-vieux', firstName: 'Karim', lastName: 'Benali', email: 'k.benali@vieuxport-pharma.fr', phone: '04 91 00 40 04', roleName: 'Titulaire', isPrimary: true },
+  { id: 'rich-ct-5', pharmacyId: 'rich-ph-toulouse-cap', firstName: 'Émilie', lastName: 'Dupuis', email: 'e.dupuis@capitole-pharma.fr', phone: '05 61 00 50 05', roleName: 'Responsable RH', isPrimary: true },
 ]
 
 export const RICH_CANDIDATES: RichCandidateSeed[] = [

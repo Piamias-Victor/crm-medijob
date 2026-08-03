@@ -7,18 +7,21 @@ const entity = {
   lastName: 'Curie',
   email: 'marie@example.com',
   phone: null,
-  role: 'TITULAIRE' as const,
+  contactRoleId: 'r1',
   isPrimary: true,
   notes: null,
   pharmacyId: 'p1',
+  referentId: null,
   updatedAt: new Date('2026-01-15'),
   pharmacy: { id: 'p1', name: 'Pharmacie du Centre' },
+  contactRole: { id: 'r1', name: 'Titulaire' },
 }
 
 describe('toContactDetail', () => {
   it('maps Contact entity to UI payload', () => {
     const payload = toContactDetail(entity)
     expect(payload.fullName).toBe('Marie Curie')
+    expect(payload.roleName).toBe('Titulaire')
     expect(payload.pharmacyName).toBe('Pharmacie du Centre')
     expect(payload).not.toHaveProperty('deletedAt')
   })

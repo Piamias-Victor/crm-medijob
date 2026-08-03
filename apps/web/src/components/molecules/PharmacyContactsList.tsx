@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { ChevronRight, Mail, Phone, Star, Users } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import type { PharmacyContactRow } from '@/view-models/pharmacy-detail.types'
-import { ROLE_LABELS } from '@/lib/contact-options'
 
 export function PharmacyContactsList({ contacts }: { contacts: PharmacyContactRow[] }) {
   const router = useRouter()
@@ -38,7 +37,7 @@ export function PharmacyContactsList({ contacts }: { contacts: PharmacyContactRo
                   </span>
                 ) : null}
               </div>
-              <p className="text-fg-muted">{ROLE_LABELS[contact.role]}</p>
+              <p className="text-fg-muted">{contact.roleName}</p>
               <div className="flex flex-wrap gap-3 text-xs text-fg-muted">
                 {contact.phone ? (
                   <span className="inline-flex items-center gap-1">

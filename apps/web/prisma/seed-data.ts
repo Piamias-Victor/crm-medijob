@@ -39,6 +39,15 @@ export const JOB_TITLES = [
   'Autre',
 ] as const
 
+export const CONTACT_ROLES = [
+  'Titulaire',
+  'Pharmacien adjoint',
+  'Préparateur référent',
+  'Responsable RH',
+  'Comptabilité',
+  'Autre',
+] as const
+
 // Matrice compatibilité : métier mission → métiers candidats acceptés.
 export const COMPATIBILITY: Record<string, readonly string[]> = {
   Pharmacien: ['Pharmacien'],

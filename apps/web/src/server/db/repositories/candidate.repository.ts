@@ -41,6 +41,8 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         take: limit,
       }),
     findIdentityByEmail: duplicate.findIdentityByEmail,
+    findIdentityByEmailAny: duplicate.findIdentityByEmailAny,
+    findIdentityByPhoneAny: duplicate.findIdentityByPhoneAny,
     findIdentityByNamePhone: duplicate.findIdentityByNamePhone,
     mergeCandidates: (keptId: string, absorbedId: string | undefined, data: CandidateProfileUpdate) =>
       merge.merge(keptId, absorbedId, data),

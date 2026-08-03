@@ -3,15 +3,15 @@
 import { Star } from 'lucide-react'
 import type { ColumnDef } from '@/components/organisms/entity-table/entity-table-types'
 import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
-import { ROLE_LABELS } from '@/lib/contact-options'
 import type { ContactListRow } from '@/view-models/contact-list'
 
 export const contactTableColumns: ColumnDef<ContactListRow>[] = [
-  { id: 'fullName', header: 'Nom', accessor: (row) => row.fullName, sortable: true },
+  { id: 'lastName', header: 'Nom', accessor: (row) => row.lastName, sortable: true },
+  { id: 'firstName', header: 'Prénom', accessor: (row) => row.firstName, sortable: true },
   {
-    id: 'role',
-    header: 'Rôle',
-    accessor: (row) => ROLE_LABELS[row.role],
+    id: 'roleName',
+    header: 'Fonction',
+    accessor: (row) => row.roleName,
     sortable: true,
   },
   { id: 'pharmacyName', header: 'Pharmacie', accessor: (row) => row.pharmacyName, sortable: true },

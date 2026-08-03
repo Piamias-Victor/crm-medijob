@@ -1,5 +1,11 @@
 import type { RawCandidate } from '@/view-models/candidate-kanban.types'
 import { buildCvthequeCoreFields } from '@/view-models/cvtheque-core-fields'
+import { filterActivePositionings } from '@/lib/kanban-active-positionings'
+import { formatDateFr } from '@/view-models/format-date-fr'
+import {
+  toEffectiveCandidateStatus,
+  type CandidateStatus,
+} from '@/view-models/candidate-status'
 
 export type CandidateTableRow = {
   id: string
@@ -10,11 +16,14 @@ export type CandidateTableRow = {
   department: string | null
   referent: string | null
   availability: string
+  status: CandidateStatus
+  createdAtLabel: string
 }
 
 export { candidateDepartment, formatCandidateAvailability } from '@/view-models/cvtheque-core-fields'
 
 export function toCandidateTableRow(candidate: RawCandidate, now = new Date()): CandidateTableRow {
+  const hasActive = filterActivePositionings(candidate.missions).length > 0
   return {
     id: candidate.id,
     ...buildCvthequeCoreFields(
@@ -29,6 +38,8 @@ export function toCandidateTableRow(candidate: RawCandidate, now = new Date()): 
       },
       now,
     ),
+    status: toEffectiveCandidateStatus(candidate.status, hasActive),
+    createdAtLabel: formatDateFr(candidate.createdAt),
   }
 }
 

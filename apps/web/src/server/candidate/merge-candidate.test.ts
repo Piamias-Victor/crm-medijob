@@ -10,6 +10,7 @@ describe('mergeCandidate', () => {
     email: 'alice@x.fr',
     phone: '0600000001',
     jobTitleId: 'jt1',
+      status: 'NOUVEAU' as const,
     referentId: 'u1',
     mobilityRadiusKm: 20,
     softwareIds: [] as string[],

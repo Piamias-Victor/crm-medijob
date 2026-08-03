@@ -7,9 +7,9 @@ import { LIST_CARD_MEDIA_CLASS } from '@/lib/constants/list-card'
 import { ListCardHeader } from '@/components/molecules/ListCardHeader'
 import { ListCardShell } from '@/components/molecules/ListCardShell'
 import { cardHover } from '@/lib/motion/variants'
-import type { HomeModuleDef } from '@/view-models/home-modules'
+import type { HomeKpiDef } from '@/view-models/home-kpi'
 
-type Props = { mod: HomeModuleDef }
+type Props = { mod: HomeKpiDef }
 
 export function HomeStatTile({ mod }: Props) {
   return (

@@ -14,29 +14,51 @@ type Ref = { id: string; name: string }
 type Props = {
   defaultValues: Partial<ContactInput>
   pharmacies: Ref[]
+  contactRoles: Ref[]
+  recruiters: Ref[]
 }
 
-export function ContactCreateForm({ defaultValues, pharmacies }: Props) {
+export function ContactCreateForm({
+  defaultValues,
+  pharmacies,
+  contactRoles,
+  recruiters,
+}: Props) {
   const { create } = useContactCreateMutations()
   const form = useContactCreateForm(defaultValues)
   const { register, handleSubmit, control, formState } = form
   const pharmacyId = useWatchedPharmacyId(control, defaultValues.pharmacyId)
   const isPrimary = useWatchedPrimaryFlag(control, defaultValues.isPrimary)
-  const pharmacyOptions = pharmacies.map((pharmacy) => ({ value: pharmacy.id, label: pharmacy.name }))
+  const pharmacyOptions = pharmacies.map((pharmacy) => ({
+    value: pharmacy.id,
+    label: pharmacy.name,
+  }))
+  const roleOptions = contactRoles.map((role) => ({ value: role.id, label: role.name }))
 
   return (
-    <form onSubmit={handleSubmit((data) => create.mutate(data))} className="flex flex-col gap-6" noValidate>
+    <form
+      onSubmit={handleSubmit((data) => create.mutate(data))}
+      className="flex flex-col gap-6"
+      noValidate
+    >
       {create.error ? <FormErrorBanner message={create.error.message} /> : null}
       <ContactFormSections
         register={register}
         control={control}
         errors={formState.errors}
         pharmacyOptions={pharmacyOptions}
+        roleOptions={roleOptions}
+        recruiters={recruiters}
         pharmacyId={pharmacyId}
         isPrimary={isPrimary}
       />
       <div className="flex justify-end border-t border-border/50 pt-4">
-        <Button type="submit" variant="accent" disabled={create.isPending} className="shadow-md shadow-accent/20">
+        <Button
+          type="submit"
+          variant="accent"
+          disabled={create.isPending}
+          className="shadow-md shadow-accent/20"
+        >
           {create.isPending ? 'Création…' : 'Créer le contact'}
         </Button>
       </div>

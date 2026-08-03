@@ -16,9 +16,10 @@ type Props = {
   defaultValues: PharmacyInput
   groupements: Ref[]
   softwares: Ref[]
+  recruiters: Ref[]
 }
 
-export function PharmacyCreateForm({ defaultValues, groupements, softwares }: Props) {
+export function PharmacyCreateForm({ defaultValues, groupements, softwares, recruiters }: Props) {
   const utils = trpc.useUtils()
   const { create, createGroupement, createSoftware } = usePharmacyCreateMutations()
   const [groupementOptions, setGroupementOptions] = useState(groupements)
@@ -50,6 +51,7 @@ export function PharmacyCreateForm({ defaultValues, groupements, softwares }: Pr
         watch={watch}
         groupements={groupementOptions}
         softwares={softwareOptions}
+        recruiters={recruiters}
         searching={searching}
         activeSource={activeSource}
         onRunSearch={runSearch}

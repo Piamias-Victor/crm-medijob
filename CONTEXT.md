@@ -8,6 +8,10 @@ Medijob est une agence de recrutement spécialisée en pharmacie d'officine. Ce 
 A person qualified and actively tracked in the CVthèque — created directly (CV upload + human review) or converted from an accepted Application.
 _Avoid_: Applicant, postulant, profil (when meaning an inbound application), candidature
 
+**Candidate status**:
+Lifecycle of a Candidate in the CVthèque: Nouveau / À qualifier / Qualifié / En mission / Inactif / Blacklisté. Distinct from PipelineStage on a Mission. « En mission » is derived when the Candidate has a non-terminal MissionCandidate positioning (manual Inactif/Blacklisté still allowed).
+_Avoid_: statut (without qualifier), pipeline stage, phase
+
 **Profile completeness**:
 Matching-critical fields on a Candidate (`city`, `postalCode`, mobility radius, availability). Missing fields trigger an informational banner on the candidate profile — they do not block CRM actions, but the candidate is excluded from distance-based matching until completed.
 _Avoid_: Profil incomplet (as entity name), validation, alerte bloquante
@@ -15,6 +19,10 @@ _Avoid_: Profil incomplet (as entity name), validation, alerte bloquante
 **Preferred contract types**:
 The contract types a Candidate is willing to accept (CDI, CDD, intérim, vacation). Empty means no contract-type filter in matching.
 _Avoid_: Préférences (without qualifier), type de contrat recherché, souhait
+
+**Salary expectations**:
+The Candidate's stated pay pretensions (free text and/or min-max). Used as a matching criterion when set.
+_Avoid_: prétentions (without qualifier), salaire souhaité (as separate entity)
 
 **Mobility radius**:
 The maximum distance in km a Candidate is willing to travel from their location. When unset, matching assumes 30 km.
@@ -60,13 +68,29 @@ _Avoid_: Matching, placement, affectation, liaison
 The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person.
 _Avoid_: Client (ambiguous with Contact), établissement (too generic), officine (too narrow — use when type is INDEPENDANTE)
 
+**Pharmacy status**:
+Commercial lifecycle of a Pharmacy: Client / Prospect / Inactif (CSV V1). Filterable across list views.
+_Avoid_: Actif (legacy label for Client), ACTIF (as user-facing label)
+
 **Contact**:
 A person at a Pharmacy — the human interlocutor for staffing needs and commercial follow-up. Always belongs to exactly one Pharmacy.
 _Avoid_: Client, interlocuteur (as entity name), personne, utilisateur
 
+**Contact role**:
+An administrable function of a Contact at a Pharmacy (e.g. Titulaire, Comptabilité). Seeded defaults match CSV V1; admins can add, rename, or remove entries like JobTitle.
+_Avoid_: ContactRole enum (legacy fixed list), fonction (as free text)
+
 **Referent**:
-The Medijob recruiter (User) responsible for follow-up on a Candidate or Mission. Informational and for reporting — all recruiters have full visibility and may act on any record. Any RECRUTEUR may reassign `referentId`.
+The Medijob User responsible for follow-up on a Pharmacy, Contact, Candidate, or Mission. Optional on all four entities — informational and for reporting/filters; visibility and reassignment rights depend on UserRole permissions.
 _Avoid_: Owner, propriétaire, assigné (implies exclusivity), gestionnaire
+
+**UserRole**:
+One of four internal access roles: Direction, Recruteur, Communication, RH-Admin. Rights are differentiated per module for actions; financial fields (CA, Marge) have separate view rights by role. Operational records are otherwise visible to all roles.
+_Avoid_: ADMIN, RECRUTEUR (legacy two-role model), rôle (without qualifier)
+
+**CA / Marge**:
+Financial figures shown in the CRM (revenue and margin). Visibility is gated by UserRole — not all roles can see them.
+_Avoid_: chiffre d'affaires (as free UI label without the CA token), rentabilité (as synonym for Marge)
 
 **Groupement**:
 An administrable pharmacy purchasing network or banner (e.g. Giphar, Alphega). Affiliation is expressed by `groupementId` on a Pharmacy — replaces a separate "groupe" pharmacy type.
@@ -77,8 +101,8 @@ An administrable pharmacy management software (LGO) — e.g. Winpharma, Pharmage
 _Avoid_: Logiciel (without LGO qualifier), outil, application, programme
 
 **ActivityLog**:
-A timestamped record of recruiter action or interaction on a domain entity (Candidate, Pharmacy, Contact, or Mission). Polymorphic — each entry belongs to exactly one entity.
-_Avoid_: Historique (as entity name), timeline, journal, note (as entity name)
+A timestamped record on a domain entity (Candidate, Pharmacy, Contact, or Mission). Includes recruiter interactions (call, email, note…) and automatic system entries on create/update. Polymorphic — each entry belongs to exactly one entity.
+_Avoid_: Historique (as entity name), timeline, journal, note (as entity name), audit log (as separate entity)
 
 **Document**:
 A file attached to a domain entity (Pharmacy, Contact, Mission, or Candidate) — contracts, quotes, invoices, conventions. Distinct from a Candidate's source CV (`cvUrl`), which is identity data, not a Document.
@@ -126,8 +150,8 @@ Owns: provider abstraction, Zod-validated AI responses, assistant chat.
 Cross-cutting: reads Candidates, Pharmacies, Missions; writes derived fields (cvSummary, JobOffer content, matching scores). Never owns domain entities.
 
 **Auth** — internal users and access.
-Owns: User, UserRole (RECRUTEUR | ADMIN), sessions.
-Provides: Referent identity for Candidates and Missions. Admin config includes JobTitle referential and compatibility matrix. All recruiters see all records — role gates admin config only.
+Owns: User, UserRole (Direction | Recruteur | Communication | RH-Admin), sessions.
+Provides: Referent identity for Pharmacies, Contacts, Candidates, and Missions. Referential admin (JobTitle, Pipeline, etc.) and module actions are gated by UserRole permissions.
 
 ### Cross-cutting
 

@@ -44,4 +44,29 @@ describe('buildPharmacyListWhere filters', () => {
       AND: [{ status: { in: ['ACTIF'] } }, { groupementId: { in: ['giphar'] } }],
     })
   })
+
+  it('filtre référent', () => {
+    expect(buildPharmacyListWhere({ referentIds: ['u1'] })).toEqual({
+      referentId: { in: ['u1'] },
+    })
+  })
+
+  it('filtre ville en contains insensitive', () => {
+    expect(buildPharmacyListWhere({ city: 'Lyon' })).toEqual({
+      city: { contains: 'Lyon', mode: 'insensitive' },
+    })
+  })
+
+  it('filtre région via départements (union avec départements explicites)', () => {
+    const where = buildPharmacyListWhere({ regionIds: ['IDF'], departments: ['69'] })
+    const or = (where as { OR: { postalCode: { startsWith: string } }[] }).OR
+    expect(or).toHaveLength(9)
+    expect(or).toEqual(
+      expect.arrayContaining([
+        { postalCode: { startsWith: '69' } },
+        { postalCode: { startsWith: '75' } },
+        { postalCode: { startsWith: '95' } },
+      ]),
+    )
+  })
 })

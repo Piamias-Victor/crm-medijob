@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { navItems, adminNavItem } from '@/lib/navigation'
 import type { AccessRole } from '@/server/auth/access'
+import { can } from '@/server/auth/permissions'
 import { useSidebarStore } from '@/stores/sidebar-store'
 import { NavLink } from '@/components/molecules/NavLink'
 import { SidebarBrand } from '@/components/molecules/SidebarBrand'
+import { GlobalSearchTrigger } from '@/components/molecules/GlobalSearchTrigger'
 import { LogoutButton } from '@/components/molecules/LogoutButton'
 import { cn } from '@/lib/cn'
 
@@ -36,20 +38,23 @@ export function AppSidebar({ role }: { role: AccessRole }) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-border bg-white transition-[width,box-shadow,padding] duration-200 ease-out',
-          expanded ? 'p-3 shadow-lg' : 'p-2 shadow-sm',
+          'fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-border bg-white p-2 transition-[width,box-shadow] duration-300 ease-out',
+          expanded ? 'shadow-lg' : 'shadow-sm',
           open ? 'flex' : 'hidden md:flex',
           expanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH,
         )}
       >
         <SidebarBrand expanded={expanded} />
-        <nav className="mt-4 flex flex-1 flex-col gap-1">
+        <div className="mt-3">
+          <GlobalSearchTrigger expanded={expanded} />
+        </div>
+        <nav className="mt-2 flex flex-1 flex-col gap-1">
           {navItems.map((item) => (
             <NavLink key={item.href} item={item} active={isActive(item.href)} expanded={expanded} />
           ))}
         </nav>
         <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
-          {role === 'ADMIN' ? (
+          {role && can(role, 'admin') ? (
             <NavLink item={adminNavItem} active={isActive(adminNavItem.href)} expanded={expanded} />
           ) : null}
           <LogoutButton expanded={expanded} />

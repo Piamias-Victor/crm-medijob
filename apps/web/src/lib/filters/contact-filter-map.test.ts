@@ -2,24 +2,32 @@ import { describe, expect, it } from 'vitest'
 import { buildContactFilterConfig } from '@/lib/filters/contact-filter-config'
 import { buildContactFilterDefaults, toContactListFilters } from '@/lib/filters/contact-filter-map'
 
-const config = buildContactFilterConfig([{ id: 'p1', name: 'Pharmacie du Centre' }])
+const config = buildContactFilterConfig(
+  [{ id: 'p1', name: 'Pharmacie du Centre' }],
+  [{ id: 'r1', name: 'Titulaire' }],
+  [{ id: 'u1', name: 'Alice' }],
+)
 
 describe('toContactListFilters', () => {
-  it('mappe rôle, pharmacie, département, statut et principal', () => {
+  it('mappe fonction, pharmacie, ville, département, statut, principal et référent', () => {
     expect(
       toContactListFilters({
-        role: ['TITULAIRE'],
+        fonction: ['r1'],
         pharmacie: ['p1'],
+        ville: '  Lyon  ',
         departement: ['69'],
         statutPharmacie: ['PROSPECT'],
         principal: true,
+        referent: ['u1'],
       }),
     ).toEqual({
-      roles: ['TITULAIRE'],
+      contactRoleIds: ['r1'],
       pharmacyIds: ['p1'],
+      city: 'Lyon',
       departments: ['69'],
       pharmacyStatuses: ['PROSPECT'],
       isPrimary: true,
+      referentIds: ['u1'],
     })
   })
 

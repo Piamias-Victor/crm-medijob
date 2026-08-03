@@ -1,5 +1,6 @@
 import type { CandidateProfileInput } from '@/view-models/candidate-profile.schema'
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
+import type { CandidateStatus } from '@/view-models/candidate-status'
 
 export type MatchingProfileFields = {
   city: string | null
@@ -15,9 +16,13 @@ export type CandidateFormSource = MatchingProfileFields & {
   phone: string | null
   address: string | null
   jobTitleId: string
+  status: CandidateStatus
+  salaryExpectations: string | null
+  salaryMin: number | null
+  salaryMax: number | null
   mobilityNotes: string | null
   notes: string | null
-  referentId: string
+  referentId: string | null
   softwareIds: string[]
   contractTypes: string[]
 }
@@ -46,6 +51,10 @@ export function toCandidateFormValues(c: CandidateFormSource): CandidateProfileI
     city: c.city ?? undefined,
     postalCode: c.postalCode ?? undefined,
     jobTitleId: c.jobTitleId,
+    status: c.status === 'EN_MISSION' ? 'QUALIFIE' : c.status,
+    salaryExpectations: c.salaryExpectations ?? undefined,
+    salaryMin: c.salaryMin,
+    salaryMax: c.salaryMax,
     softwareIds: c.softwareIds,
     contractTypes: c.contractTypes as CandidateProfileInput['contractTypes'],
     mobilityRadiusKm: c.mobilityRadiusKm ?? DEFAULT_MOBILITY_RADIUS_KM,

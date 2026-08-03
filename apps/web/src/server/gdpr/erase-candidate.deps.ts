@@ -1,0 +1,20 @@
+import { deleteBlob, vercelBlobClient } from '@/server/services/blob'
+import { candidateGdprRepository } from '@/server/db/repositories/candidate-gdpr.repository'
+import { gdprEraseAuditRepository } from '@/server/db/repositories/gdpr-erase-audit.repository'
+import type { EraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate'
+
+export function makeEraseCandidateGdprDeps(
+  overrides: Partial<EraseCandidateGdprDeps> = {},
+): EraseCandidateGdprDeps {
+  return {
+    findCandidateForErase: (id) => candidateGdprRepository.findForErase(id),
+    listDocumentUrls: (id) => candidateGdprRepository.listDocumentUrls(id),
+    listApplicationCvUrls: (id) => candidateGdprRepository.listApplicationCvUrls(id),
+    deleteBlobs: async (urls) => {
+      await Promise.all(urls.map((url) => deleteBlob(vercelBlobClient, url).catch(() => undefined)))
+    },
+    hardDeleteCandidateCascade: (id) => candidateGdprRepository.hardDeleteCascade(id),
+    createAudit: (data) => gdprEraseAuditRepository.create(data).then(() => undefined),
+    ...overrides,
+  }
+}

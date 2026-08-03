@@ -6,19 +6,32 @@ import { Plus } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import type { PharmacyContactRow } from '@/view-models/pharmacy-detail.types'
+import { resolveDefaultContactRoleId } from '@/view-models/contact-create-defaults'
 import { Button } from '@/components/atoms/Button'
 import { ContactFormModal } from '@/components/molecules/ContactFormModal'
 import { PharmacyContactsList } from '@/components/molecules/PharmacyContactsList'
 
+type Ref = { id: string; name: string }
+
 type Props = {
   pharmacyId: string
   pharmacyName: string
+  pharmacyReferentId?: string | null
   contacts: PharmacyContactRow[]
+  recruiters: Ref[]
 }
 
-export function PharmacyContactsTab({ pharmacyId, pharmacyName, contacts }: Props) {
+export function PharmacyContactsTab({
+  pharmacyId,
+  pharmacyName,
+  pharmacyReferentId,
+  contacts,
+  recruiters,
+}: Props) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
+  const refs = trpc.contact.referentials.useQuery(undefined, { enabled: open })
+  const contactRoles = refs.data?.contactRoles ?? []
   const mutation = useEntityMutation({
     onSuccess: () => {
       setOpen(false)
@@ -41,7 +54,13 @@ export function PharmacyContactsTab({ pharmacyId, pharmacyName, contacts }: Prop
         open={open}
         submitting={create.isPending}
         pharmacies={[{ id: pharmacyId, name: pharmacyName }]}
-        defaultValues={{ pharmacyId }}
+        contactRoles={contactRoles}
+        recruiters={recruiters}
+        defaultValues={{
+          pharmacyId,
+          referentId: pharmacyReferentId ?? null,
+          contactRoleId: resolveDefaultContactRoleId(contactRoles),
+        }}
         lockedPharmacyId={pharmacyId}
         onClose={() => setOpen(false)}
         onSubmit={(data) => create.mutate(data)}

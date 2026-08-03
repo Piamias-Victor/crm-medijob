@@ -1,20 +1,23 @@
 import type { FilterConfig } from '@/lib/filters/filter-types'
 import { FRENCH_DEPARTMENT_OPTIONS } from '@/lib/constants/french-department-options'
-import { ROLE_LABELS } from '@/lib/contact-options'
+import { buildReferentFilterOptions } from '@/lib/filters/referent-filter-options'
 import { STATUS_LABELS } from '@/lib/pharmacy-options'
-import { CONTACT_ROLES } from '@/view-models/contact-form.schema'
 import { PHARMACY_STATUSES } from '@/view-models/pharmacy-form.schema'
 
 type Ref = { id: string; name: string }
 
-export function buildContactFilterConfig(pharmacies: Ref[]) {
+export function buildContactFilterConfig(
+  pharmacies: Ref[],
+  contactRoles: Ref[],
+  recruiters: Ref[] = [],
+) {
   return [
     {
-      id: 'role',
-      label: 'Rôle',
+      id: 'fonction',
+      label: 'Fonction',
       type: 'multi-select',
-      unit: 'rôles',
-      options: CONTACT_ROLES.map((role) => ({ value: role, label: ROLE_LABELS[role] })),
+      unit: 'fonctions',
+      options: contactRoles.map((item) => ({ value: item.id, label: item.name })),
     },
     {
       id: 'pharmacie',
@@ -22,6 +25,14 @@ export function buildContactFilterConfig(pharmacies: Ref[]) {
       type: 'multi-select',
       unit: 'pharmacies',
       options: pharmacies.map((item) => ({ value: item.id, label: item.name })),
+    },
+    { id: 'ville', label: 'Ville', type: 'text', placeholder: 'Ville…' },
+    {
+      id: 'referent',
+      label: 'Référent',
+      type: 'multi-select',
+      unit: 'référents',
+      options: buildReferentFilterOptions(recruiters),
     },
     {
       id: 'departement',

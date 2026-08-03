@@ -1,6 +1,8 @@
 import type { PharmacyStatus } from '@/view-models/pharmacy-form.schema'
 import { computeNumeroTVA } from '@/lib/tva'
 import { toNull } from '@/view-models/to-null'
+import { toReferentIdOrNull } from '@/view-models/optional-referent-id.schema'
+import { normalizeSiret } from '@/server/pharmacy/normalize-pharmacy-identity'
 import type { z } from 'zod'
 import type { pharmacyInputSchema } from '@/view-models/pharmacy-form.schema'
 
@@ -21,15 +23,17 @@ export type PharmacyUpdate = {
   softwareId: string | null
   paymentConditions: string | null
   notes: string | null
+  referentId: string | null
 }
 
 export function toPharmacyUpdateData(data: PharmacyData): PharmacyUpdate {
-  const numeroTVA = data.siret
-    ? (computeNumeroTVA(data.siret) ?? data.numeroTVA ?? null)
+  const siret = data.siret ? normalizeSiret(data.siret) : undefined
+  const numeroTVA = siret
+    ? (computeNumeroTVA(siret) ?? data.numeroTVA ?? null)
     : toNull(data.numeroTVA)
   return {
     name: data.name,
-    siret: toNull(data.siret),
+    siret: toNull(siret),
     numeroTVA,
     address: toNull(data.address),
     city: toNull(data.city),
@@ -42,5 +46,6 @@ export function toPharmacyUpdateData(data: PharmacyData): PharmacyUpdate {
     softwareId: toNull(data.softwareId),
     paymentConditions: toNull(data.paymentConditions),
     notes: toNull(data.notes),
+    referentId: toReferentIdOrNull(data.referentId),
   }
 }

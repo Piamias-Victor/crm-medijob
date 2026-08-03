@@ -1,53 +1,62 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { toMissionListRows } from '@/view-models/mission-list'
+import { useCallback, useMemo, useState } from 'react'
 import { Briefcase, Plus } from 'lucide-react'
-import { trpc } from '@/lib/trpc/client'
-import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { toMissionListRows } from '@/view-models/mission-list'
+import { useMissionListQuery } from '@/lib/hooks/use-mission-list-query'
 import { Button } from '@/components/atoms/Button'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
-import { ListKanbanShell } from '@/components/molecules/ListKanbanShell'
-import { MissionFormModal } from '@/components/molecules/MissionFormModal'
-import { MissionList } from '@/components/organisms/MissionList'
-import { MissionKanban } from '@/components/organisms/MissionKanban'
-import type { ListKanbanView } from '@/components/molecules/ViewToggle'
-import { missionViewOptions } from '@/components/molecules/ViewToggle'
+import { EntityViewShell } from '@/components/molecules/EntityViewShell'
+import { MissionFilterBar } from '@/components/organisms/mission-table/mission-filter-bar'
+import { MissionsPageCreate } from '@/components/organisms/missions-page-create'
+import { buildMissionViewPanels } from '@/components/organisms/missions-page-panels'
+import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
+import { missionViewOptions, type MissionView } from '@/components/molecules/ViewToggle'
+import type { MissionFilterConfig } from '@/lib/filters/mission-filter-config'
+import type { MissionListFilters } from '@/view-models/mission-list-filters.schema'
 import type { RawMission } from '@/view-models/mission-kanban.types'
 
 type Ref = { id: string; name: string }
 
 type Props = {
-  rows: RawMission[]
+  initialRows: RawMission[]
+  serverFilters: MissionListFilters
+  filterConfig: MissionFilterConfig
   pharmacies: Ref[]
   jobTitles: Ref[]
   recruiters: Ref[]
 }
 
-export function MissionsPage({ rows, pharmacies, jobTitles, recruiters }: Props) {
-  const router = useRouter()
-  const [view, setView] = useState<ListKanbanView>('list')
+export function MissionsPage({
+  initialRows,
+  serverFilters,
+  filterConfig,
+  pharmacies,
+  jobTitles,
+  recruiters,
+}: Props) {
+  const [view, setView] = useState<MissionView>('list')
   const [open, setOpen] = useState(false)
-  const listRows = useMemo(() => toMissionListRows(rows), [rows])
-  const description = useMemo(
-    () => `${listRows.length} mission(s) — liste complète ou kanban par statut.`,
-    [listRows.length],
+  const [sort, setSort] = useState<EntityTableSortState | null>(null)
+  const [count, setCount] = useState(initialRows.length)
+  const onCountChange = useCallback((next: number) => setCount(next), [])
+  const { values, setFilters, reset, rows } = useMissionListQuery(
+    initialRows,
+    serverFilters,
+    filterConfig,
+    onCountChange,
   )
-  const refresh = () => {
-    setOpen(false)
-    router.refresh()
-  }
-  const createMutation = useEntityMutation({ onSuccess: refresh, successMessage: 'Mission créée' })
-  const refMutation = useEntityMutation()
-  const create = trpc.mission.create.useMutation(createMutation)
-  const newJobTitle = trpc.mission.createJobTitle.useMutation(refMutation)
+  const listRows = useMemo(() => toMissionListRows(rows), [rows])
+  const panels = useMemo(
+    () => buildMissionViewPanels({ listRows, rows, sort, onSortChange: setSort }),
+    [listRows, rows, sort],
+  )
 
   return (
     <DashboardPage
       icon={<Briefcase className="size-5" />}
       title="Missions"
-      description={description}
+      description={`${count} mission(s) — tableau, kanban ou carte.`}
       actions={
         <Button variant="accent" className="shadow-md shadow-accent/20" onClick={() => setOpen(true)}>
           <Plus className="size-4" />
@@ -55,27 +64,26 @@ export function MissionsPage({ rows, pharmacies, jobTitles, recruiters }: Props)
         </Button>
       }
     >
-      <ListKanbanShell
-        view={view}
-        primaryView="list"
-        onViewChange={setView}
-        viewOptions={missionViewOptions}
-        listTitle="Toutes les missions"
-        kanbanTitle="Pipeline missions"
-        listDescription="Toutes les missions, y compris pourvues et annulées."
-        kanbanDescription="Glissez une carte pour changer le statut."
-        listView={<MissionList rows={listRows} />}
-        kanbanView={<MissionKanban missions={rows} />}
-      />
-      <MissionFormModal
+      <div className="space-y-4">
+        <MissionFilterBar
+          filterConfig={filterConfig}
+          values={values}
+          onChange={setFilters}
+          onReset={reset}
+        />
+        <EntityViewShell
+          view={view}
+          onViewChange={setView}
+          viewOptions={missionViewOptions}
+          panels={panels}
+        />
+      </div>
+      <MissionsPageCreate
         open={open}
+        onOpenChange={setOpen}
         pharmacies={pharmacies}
         jobTitles={jobTitles}
         recruiters={recruiters}
-        submitting={create.isPending}
-        onClose={() => setOpen(false)}
-        onSubmit={(data) => create.mutate(data)}
-        onCreateJobTitle={(name) => newJobTitle.mutateAsync({ name })}
       />
     </DashboardPage>
   )

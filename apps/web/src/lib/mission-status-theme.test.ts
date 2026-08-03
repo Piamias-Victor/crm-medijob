@@ -19,4 +19,11 @@ describe('MISSION_STATUS_THEME', () => {
     const badges = new Set(active.map((status) => MISSION_STATUS_THEME[status].badge))
     expect(badges.size).toBe(active.length)
   })
+
+  it('uses sky and rose brand accents on active statuses', () => {
+    const active = ['A_POURVOIR', 'EN_RECHERCHE', 'CANDIDATS_PRESENTES', 'ENTRETIEN_EN_COURS'] as const
+    const badges = active.map((status) => MISSION_STATUS_THEME[status].badge)
+    expect(badges).toContain('sky')
+    expect(badges).toContain('rose')
+  })
 })

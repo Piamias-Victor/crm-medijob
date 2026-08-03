@@ -13,8 +13,9 @@ export function buildCvPreviewSrc(
   previewUrl: string,
   mimeType: string,
   filename: string,
-  _size: CvPreviewSize = 'stored',
+  size: CvPreviewSize = 'stored',
 ) {
+  void size
   if (!isPdfPreview(mimeType, filename)) return previewUrl
   return `${previewUrl}#navpanes=0&toolbar=0&view=Fit`
 }

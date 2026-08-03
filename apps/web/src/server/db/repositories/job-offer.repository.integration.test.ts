@@ -56,6 +56,6 @@ describe('jobOfferRepository', () => {
     })
     await repo.softDelete(o.id)
     expect(await repo.findById(o.id)).toBeNull()
-    expect((await repo.list()).some((x) => x.id === o.id)).toBe(false)
+    expect((await repo.listForTable()).some((x) => x.id === o.id)).toBe(false)
   })
 })
