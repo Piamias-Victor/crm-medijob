@@ -41,17 +41,29 @@ Repartir de zéro sur la DB — pas de migration de comptes. Seeds manuels des 4
 
 ## RGPD (V1-010)
 
-### Q4 — Consentement
-Faut-il un champ / preuve de consentement sur les **candidats** (et contacts) dans le CRM ? Si oui, à quel moment (création, import CV, candidature site) ?
+### Q4 — Consentement ✅ TRANCHÉ
+Oui pour **candidats** seulement.
+- Candidature site → consentement obligatoire (quand intake existera) : `consentGivenAt` + `consentSource=SITE`
+- Création manuelle / import CV → case optionnelle → `MANUAL` / `IMPORT`
+- Contacts pharmacie → non en V1
 
-### Q5 — Durée de conservation
-Quelle durée de conservation pour : candidats inactifs / blacklistés, candidatures refusées, pharmacies inactives, documents (CV, CNI, RIB) ?
+### Q5 — Durée de conservation ✅ TRANCHÉ
+| Donnée | Durée |
+|--------|--------|
+| Candidats inactifs | 24 mois puis revue |
+| Blacklistés | 36 mois puis revue |
+| Candidatures refusées | 12 mois |
+| Pharmacies inactives | pas de purge auto |
+| RIB post-mission | 12 mois |
 
-### Q6 — Droit à l'effacement
-Qui exécute une demande RGPD (droit à l'oubli) ? Soft delete suffit-il, ou faut-il une **suppression définitive** (données + fichiers Blob) depuis le CRM ? Quels rôles y ont accès ?
+V1 : alert-only (`docs/gdpr/RETENTION.md`), pas de purge silencieuse.
 
-### Q7 — Registre des traitements
-Le registre des traitements doit-il vivre **dans le CRM** (écran admin), ou reste-t-il un document externe (Notion / PDF) hors outil ?
+### Q6 — Droit à l'effacement ✅ TRANCHÉ
+Action **Effacement RGPD** in-app : hard delete cascade (DB + Blob) + audit sans PII.
+Rôles : **Direction + RH-Admin**. Soft delete ops ≠ oubli. Amendement ADR-0007.
+
+### Q7 — Registre des traitements ✅ TRANCHÉ
+Externe (Notion / PDF). Lien admin `/admin/rgpd` via `RGPD_REGISTER_URL`. Pas d’écran registre in-app V1.
 
 ---
 

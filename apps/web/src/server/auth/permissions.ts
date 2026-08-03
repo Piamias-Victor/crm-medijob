@@ -13,6 +13,7 @@ export type PermissionAction =
   | 'softDelete'
   | 'export'
   | 'finance.view'
+  | 'gdpr.erase'
 
 const ADMIN_ROLES: readonly UserRole[] = ['DIRECTION', 'RH_ADMIN']
 
@@ -22,6 +23,7 @@ const MATRIX: Record<PermissionAction, readonly UserRole[]> = {
   softDelete: ADMIN_ROLES,
   export: ADMIN_ROLES,
   'finance.view': ADMIN_ROLES,
+  'gdpr.erase': ADMIN_ROLES,
 }
 
 export function can(role: UserRole, action: PermissionAction): boolean {

@@ -31,4 +31,5 @@ export const adminSubNav: { label: string; href: string }[] = [
   { label: 'Métiers', href: '/admin/metiers' },
   { label: 'Rôles contact', href: '/admin/roles-contacts' },
   { label: 'Utilisateurs', href: '/admin/utilisateurs' },
+  { label: 'RGPD', href: '/admin/rgpd' },
 ]

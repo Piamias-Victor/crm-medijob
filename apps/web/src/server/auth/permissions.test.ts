@@ -3,7 +3,13 @@ import { can, type PermissionAction, type UserRole } from '@/server/auth/permiss
 
 const ROLES: UserRole[] = ['DIRECTION', 'RECRUTEUR', 'COMMUNICATION', 'RH_ADMIN']
 
-const ADMIN_ONLY: PermissionAction[] = ['admin', 'softDelete', 'export', 'finance.view']
+const ADMIN_ONLY: PermissionAction[] = [
+  'admin',
+  'softDelete',
+  'export',
+  'finance.view',
+  'gdpr.erase',
+]
 
 describe('can — client gate (CA/Marge, soft delete, export) + admin', () => {
   it.each(ADMIN_ONLY)('%s allowed for Direction and RH-Admin only', (action) => {

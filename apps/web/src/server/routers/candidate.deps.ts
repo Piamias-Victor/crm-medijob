@@ -12,6 +12,7 @@ import type { CandidateListFilters } from '@/view-models/candidate-list-filters.
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
 import type { CandidateQuickViewEntity } from '@/view-models/candidate-quick-view.types'
+import type { EraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate'
 
 export type CandidateDeps = CandidateCvDeps &
   CandidateDocumentsDeps &
@@ -40,4 +41,5 @@ export type CandidateDeps = CandidateCvDeps &
     mergeCandidates: typeof candidateRepository.mergeCandidates
     findQuickViewById: (id: string) => Promise<CandidateQuickViewEntity | null>
     logLifecycle: LogEntityLifecycle
+    gdprErase: EraseCandidateGdprDeps
   }

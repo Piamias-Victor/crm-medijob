@@ -1,5 +1,6 @@
 import type { CandidateProfileInput, CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
+import { resolveConsentFields } from '@/server/gdpr/consent-fields'
 
 export function toCandidateUpdateData(data: CandidateProfileInput): CandidateProfileUpdate {
   return {
@@ -25,9 +26,18 @@ export function toCandidateUpdateData(data: CandidateProfileInput): CandidatePro
   }
 }
 
-export function toCandidateCreateData(data: CandidateCreateInput): CandidateProfileUpdate {
+export function toCandidateCreateData(
+  data: CandidateCreateInput,
+  source: 'SITE' | 'MANUAL' | 'IMPORT' = 'MANUAL',
+): CandidateProfileUpdate {
+  const consent = resolveConsentFields({
+    consentGiven: data.consentGiven === true,
+    source,
+  })
   return {
     ...toCandidateUpdateData(data),
     ...(data.cvUrl ? { cvUrl: data.cvUrl } : {}),
+    consentGivenAt: consent.consentGivenAt,
+    consentSource: consent.consentSource,
   }
 }

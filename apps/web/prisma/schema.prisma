@@ -76,6 +76,12 @@ enum DocumentEntityType {
   CANDIDATE
 }
 
+enum ConsentSource {
+  SITE
+  MANUAL
+  IMPORT
+}
+
 enum ApplicationStatus {
   EN_ATTENTE
   ACCEPTEE
@@ -141,6 +147,7 @@ model User {
   pharmacyRefs  Pharmacy[]  @relation("ReferentPharmacies")
   contactRefs   Contact[]   @relation("ReferentContacts")
   activities    ActivityLog[]
+  gdprErases    GdprEraseAudit[]
   accounts      Account[]
   sessions      Session[]
 
@@ -234,6 +241,8 @@ model Candidate {
   cvSummary          String?
   anonymizedProfile  String?
   notes              String?
+  consentGivenAt     DateTime?
+  consentSource      ConsentSource?
   referentId         String?
   deletedAt          DateTime?
   createdAt          DateTime        @default(now())
@@ -436,6 +445,8 @@ model Application {
   message     String?
   status      ApplicationStatus @default(EN_ATTENTE)
   candidateId String?
+  consentGivenAt DateTime?
+  consentSource  ConsentSource?
   deletedAt   DateTime?
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
@@ -503,4 +514,20 @@ model Document {
   @@index([contactId])
   @@index([missionId])
   @@index([candidateId])
+}
+
+// ─── Audit effacement RGPD (sans PII) ─────────────────────────
+
+model GdprEraseAudit {
+  id             String             @id @default(cuid())
+  entityType     DocumentEntityType
+  entityId       String
+  erasedByUserId String
+  erasedAt       DateTime           @default(now())
+  reason         String?
+
+  erasedBy User @relation(fields: [erasedByUserId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([erasedAt])
 }

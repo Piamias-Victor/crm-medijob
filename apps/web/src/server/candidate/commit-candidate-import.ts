@@ -37,7 +37,7 @@ export async function commitCandidateImport(
       duplicates.push({ row, matches })
       continue
     }
-    const created = await deps.create(toCandidateCreateData(row))
+    const created = await deps.create(toCandidateCreateData(row, 'IMPORT'))
     createdIds.push(created.id)
   }
 

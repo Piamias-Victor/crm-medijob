@@ -41,6 +41,7 @@ export type CandidateProfileInput = z.infer<typeof candidateProfileInputSchema>
 export const candidateCreateInputSchema = candidateProfileInputSchema.extend({
   contractTypes: z.array(z.enum(CREATE_CONTRACT_TYPES)),
   cvUrl: z.string().url().refine(isAllowedBlobUrl, 'URL blob non autorisée').optional(),
+  consentGiven: z.boolean().optional(),
 })
 
 export type CandidateCreateInput = z.infer<typeof candidateCreateInputSchema>
