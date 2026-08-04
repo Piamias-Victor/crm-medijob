@@ -27,7 +27,12 @@ export function CandidateGdprEraseButton({ candidateId, candidateName }: Props) 
 
   return (
     <>
-      <Button type="button" variant="danger" onClick={() => setOpen(true)}>
+      <Button
+        type="button"
+        variant="danger"
+        className="px-5 py-2.5 text-base font-semibold shadow-md"
+        onClick={() => setOpen(true)}
+      >
         Effacement RGPD
       </Button>
       <SoftDeleteModal

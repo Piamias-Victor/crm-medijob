@@ -11,7 +11,10 @@ type Props = {
 }
 
 export function PresentCandidateRadiusPharmacyRow({ pharmacy, checked, onToggle }: Props) {
-  const meta = [pharmacy.city, `${pharmacy.distanceKm} km`].filter(Boolean).join(' · ')
+  const contact = `${pharmacy.contactFirstName ?? ''} ${pharmacy.contactLastName ?? ''}`.trim()
+  const meta = [contact || null, pharmacy.city, `${pharmacy.distanceKm} km`]
+    .filter(Boolean)
+    .join(' · ')
   const label = `${pharmacy.name}${meta ? `, ${meta}` : ''}`
 
   return (

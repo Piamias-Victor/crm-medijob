@@ -24,7 +24,12 @@ export type PharmacyRadiusSource = {
   city: string | null
   postalCode: string | null
   email: string | null
-  contacts: Array<{ id: string; email: string | null }>
+  contacts: Array<{
+    id: string
+    email: string | null
+    firstName: string | null
+    lastName: string | null
+  }>
 }
 
 export type ListPharmaciesInRadiusDeps = {
