@@ -6,6 +6,7 @@ import type { MissionStatus } from '@prisma/client'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { MissionPipelineColumn } from '@/components/molecules/MissionPipelineColumn'
 import { useMissionPipelineMutations } from '@/lib/hooks/use-mission-pipeline-mutations'
+import { isTerminalMissionStatus } from '@/lib/kanban-terminal'
 import { buildMissionPipelineColumns } from '@/view-models/mission-pipeline'
 import type { PipelineCandidateRow, PipelineStageRef } from '@/view-models/mission-pipeline.types'
 
@@ -14,13 +15,17 @@ type Props = {
   status: MissionStatus
   rows: PipelineCandidateRow[]
   onRowsChange: (rows: PipelineCandidateRow[]) => void
+  onStatusChange?: (status: MissionStatus) => void
   stages: PipelineStageRef[]
 }
 
 export function MissionPipelineKanban(props: Props) {
   const columns = useMemo(
-    () => buildMissionPipelineColumns(props.stages, props.rows),
-    [props.stages, props.rows],
+    () =>
+      buildMissionPipelineColumns(props.stages, props.rows, {
+        includeTerminal: isTerminalMissionStatus(props.status),
+      }),
+    [props.stages, props.rows, props.status],
   )
   const { busy, move, handleRemove } = useMissionPipelineMutations(props)
 

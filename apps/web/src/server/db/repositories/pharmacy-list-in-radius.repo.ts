@@ -10,7 +10,7 @@ const radiusSelect = {
   contacts: {
     where: { ...NOT_DELETED, isPrimary: true },
     take: 1,
-    select: { id: true, email: true },
+    select: { id: true, email: true, firstName: true, lastName: true },
   },
 } as const
 

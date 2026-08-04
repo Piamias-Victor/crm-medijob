@@ -12,6 +12,7 @@ type PresentDraft = {
   subject: string
   body: string
   to: string
+  toLabel: string
   contactId: string
 }
 

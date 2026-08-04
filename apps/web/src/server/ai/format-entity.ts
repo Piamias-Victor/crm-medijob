@@ -54,6 +54,8 @@ export type PharmacyLike = {
   city?: string | null
   status?: string | null
   notes?: string | null
+  contactName?: string | null
+  contactEmail?: string | null
 }
 
 export function formatPharmacy(p: PharmacyLike): string {
@@ -61,6 +63,8 @@ export function formatPharmacy(p: PharmacyLike): string {
     ['Pharmacie', p.name],
     ['Ville', p.city],
     ['Statut', p.status],
+    ['Contact', p.contactName],
+    ['Email contact', p.contactEmail],
     ['Notes', p.notes],
   ])
 }

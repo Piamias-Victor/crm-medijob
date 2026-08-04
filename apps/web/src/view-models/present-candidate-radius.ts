@@ -5,4 +5,6 @@ export type PharmacyInRadiusRow = {
   distanceKm: number
   email: string
   contactId: string | null
+  contactFirstName: string | null
+  contactLastName: string | null
 }

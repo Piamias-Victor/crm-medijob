@@ -8,6 +8,7 @@ import { CandidateCvStoredPreview } from '@/components/molecules/CandidateCvStor
 import { CandidateHistoryTab } from '@/components/molecules/CandidateHistoryTab'
 import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
 import { CandidateCvSummaryPanel } from '@/components/organisms/CandidateCvSummaryPanel'
+import { CandidateProfileDocsShortcuts } from '@/components/molecules/CandidateProfileDocsShortcuts'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
 import { CandidateDocumentsTab } from '@/components/organisms/CandidateDocumentsTab'
 import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
@@ -69,6 +70,7 @@ export function CandidateDetailTabPanel({
           />
           <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
           <CandidateCvSummaryPanel profile={profile} />
+          <CandidateProfileDocsShortcuts profile={profile} />
           {profile.cvUrl ? (
             <CandidateCvStoredPreview candidateId={profile.id} cvUrl={profile.cvUrl} />
           ) : null}

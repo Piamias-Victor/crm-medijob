@@ -54,6 +54,8 @@ export async function filterPharmaciesByRadius(
         distanceKm: Math.round(distanceKm * 10) / 10,
         email,
         contactId,
+        contactFirstName: primaryContact?.firstName ?? null,
+        contactLastName: primaryContact?.lastName ?? null,
       },
     ]
   })

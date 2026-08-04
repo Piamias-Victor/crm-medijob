@@ -12,15 +12,18 @@ export function usePharmacyDetailMutations() {
     onSuccess: () => router.refresh(),
     successMessage: 'Pharmacie enregistrée',
   })
-  const missionMutation = useEntityMutation({
-    onSuccess: () => router.refresh(),
-    successMessage: 'Mission créée',
-  })
+  const missionToast = useEntityMutation({ successMessage: 'Mission créée' })
   const refMutation = useEntityMutation()
 
   return {
     update: trpc.pharmacy.update.useMutation(mutation),
-    createMission: trpc.mission.create.useMutation(missionMutation),
+    createMission: trpc.mission.create.useMutation({
+      onSuccess: (row) => {
+        missionToast.onSuccess()
+        router.push(`/missions/${row.id}`)
+      },
+      onError: missionToast.onError,
+    }),
     createJobTitle: useCreateJobTitleMutation(),
     newGroupement: trpc.pharmacy.createGroupement.useMutation(refMutation),
     newSoftware: trpc.pharmacy.createSoftware.useMutation(refMutation),

@@ -36,6 +36,8 @@ function presentCaller(overrides: Partial<ReturnType<typeof makeCandidateDeps>> 
       id: 'ct1',
       pharmacyId: 'p1',
       email: 'titulaire@example.com',
+      firstName: 'Sophie',
+      lastName: 'Moreau',
     }),
     ...overrides,
   })
@@ -43,7 +45,7 @@ function presentCaller(overrides: Partial<ReturnType<typeof makeCandidateDeps>> 
 }
 
 describe('candidate.presentToPharmacy', () => {
-  it('returns Zod-valid draft and recipient email', async () => {
+  it('returns Zod-valid draft and recipient email with contact name', async () => {
     const { caller } = presentCaller()
     const result = await caller.presentToPharmacy({
       candidateId: 'c1',
@@ -53,6 +55,7 @@ describe('candidate.presentToPharmacy', () => {
     expect(result.subject.length).toBeGreaterThan(0)
     expect(result.body.length).toBeGreaterThan(0)
     expect(result.to).toBe('titulaire@example.com')
+    expect(result.toLabel).toBe('Sophie Moreau <titulaire@example.com>')
     expect(result.contactId).toBe('ct1')
   })
 
@@ -62,6 +65,8 @@ describe('candidate.presentToPharmacy', () => {
         id: 'ct1',
         pharmacyId: 'p1',
         email: '',
+        firstName: 'Sophie',
+        lastName: 'Moreau',
       }),
     })
     await expect(
@@ -75,6 +80,8 @@ describe('candidate.presentToPharmacy', () => {
         id: 'ct1',
         pharmacyId: 'p2',
         email: 'titulaire@example.com',
+        firstName: 'Sophie',
+        lastName: 'Moreau',
       }),
     })
     await expect(

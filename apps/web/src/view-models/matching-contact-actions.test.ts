@@ -21,12 +21,13 @@ const rows = [
 ]
 
 describe('resolveMatchingContactActions', () => {
-  it('builds mailto + sms/wa urls for selected contactable candidates', () => {
+  it('builds Gmail compose + sms/wa urls for selected contactable candidates', () => {
     const actions = resolveMatchingContactActions({
       selected: rows.slice(0, 2),
       subject: 'Mission X — Pharma',
     })
-    expect(actions.mailtoUrl).toMatch(/mailto:a(@|%40)example\.com/)
+    expect(actions.mailtoUrl).toMatch(/mail\.google\.com/)
+    expect(actions.mailtoUrl).toMatch(/a(@|%40)example\.com/)
     expect(actions.smsUrls).toEqual(['sms:+33612345678', 'sms:+33698765432'])
     expect(actions.whatsappUrls).toEqual([
       'https://wa.me/33612345678',

@@ -11,6 +11,15 @@ describe('cv upload allowlist', () => {
     expect(isAllowedCvUpload({ filename: 'cv.png', mimeType: 'image/png' })).toBe(true)
   })
 
+  it('accepts JPEG uploads', () => {
+    expect(isAllowedCvUpload({ filename: 'cv.jpg', mimeType: 'image/jpeg' })).toBe(true)
+    expect(isAllowedCvUpload({ filename: 'cv.jpeg', mimeType: 'image/jpeg' })).toBe(true)
+  })
+
+  it('accepts WEBP uploads', () => {
+    expect(isAllowedCvUpload({ filename: 'cv.webp', mimeType: 'image/webp' })).toBe(true)
+  })
+
   it('rejects unsupported formats', () => {
     expect(cvUploadError({ filename: 'cv.docx', mimeType: 'application/msword' })).toContain('PDF')
   })

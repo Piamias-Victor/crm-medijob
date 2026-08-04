@@ -17,14 +17,17 @@ type Props = {
 export function CandidateStatusSalaryFields({ register, errors, status, onStatus }: Props) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <FormField label="Statut candidat" error={errors.status?.message}>
-        <Combobox
-          value={status}
-          onChange={(value) => onStatus(value as CandidateProfileInput['status'])}
-          options={MANUAL_CANDIDATE_STATUS_OPTIONS}
-          placeholder="Choisir un statut"
-        />
-      </FormField>
+      <div className="flex flex-col gap-1.5">
+        <FormField label="Statut candidat" error={errors.status?.message}>
+          <Combobox
+            value={status}
+            onChange={(value) => onStatus(value as CandidateProfileInput['status'])}
+            options={MANUAL_CANDIDATE_STATUS_OPTIONS}
+            placeholder="Choisir un statut"
+          />
+        </FormField>
+        <p className="text-xs text-fg-muted">Inclut Inactif et Blacklisté (fin de liste).</p>
+      </div>
       <FormField label="Prétentions salariales" htmlFor="salaryExpectations">
         <Input id="salaryExpectations" {...register('salaryExpectations')} />
       </FormField>

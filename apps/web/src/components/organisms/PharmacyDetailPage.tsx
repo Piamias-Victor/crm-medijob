@@ -12,10 +12,10 @@ import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { PharmacyDetailTabs } from '@/components/molecules/PharmacyDetailTabs'
 import { PharmacyDetailTabPanel } from '@/components/molecules/PharmacyDetailTabPanel'
 import { PharmacyStatusBadge } from '@/components/molecules/PharmacyStatusBadge'
+import { PharmacySoftDeleteButton } from '@/components/molecules/PharmacySoftDeleteButton'
 
 type Ref = { id: string; name: string }
 type MissionRefs = { jobTitles: Ref[]; recruiters: Ref[] }
-
 type Props = {
   pharmacy: PharmacyDetailPayload
   groupements: Ref[]
@@ -24,6 +24,7 @@ type Props = {
   documents: DocumentListRow[]
   activities: ActivityLogRow[]
   backHref?: string
+  canSoftDelete?: boolean
 }
 
 export function PharmacyDetailPage({
@@ -34,6 +35,7 @@ export function PharmacyDetailPage({
   documents,
   activities,
   backHref = '/pharmacies',
+  canSoftDelete,
 }: Props) {
   const [tab, setTab] = useState<PharmacyTab>('infos')
   const mutations = usePharmacyDetailMutations()
@@ -50,11 +52,18 @@ export function PharmacyDetailPage({
         />
       }
       meta={
-        <div className="flex flex-wrap items-center gap-2 px-1">
-          <PharmacyStatusBadge status={pharmacy.status} />
-          {pharmacy.softwareName ? (
-            <span className="text-xs text-fg-muted">LGO · {pharmacy.softwareName}</span>
-          ) : null}
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <PharmacyStatusBadge status={pharmacy.status} />
+            {pharmacy.softwareName ? (
+              <span className="text-xs text-fg-muted">LGO · {pharmacy.softwareName}</span>
+            ) : null}
+          </div>
+          <PharmacySoftDeleteButton
+            pharmacyId={pharmacy.id}
+            pharmacyName={pharmacy.name}
+            canDelete={canSoftDelete}
+          />
         </div>
       }
       tabs={

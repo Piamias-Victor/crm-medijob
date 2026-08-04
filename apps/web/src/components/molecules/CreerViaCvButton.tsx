@@ -5,7 +5,7 @@ import { Upload } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { FormErrorBanner } from '@/components/atoms/FormErrorBanner'
 import { CvImportAnalyzingModal } from '@/components/molecules/CvImportAnalyzingModal'
-import { CV_UPLOAD_ACCEPT } from '@/lib/cv-upload'
+import { CV_UPLOAD_ACCEPT, CV_UPLOAD_HINT } from '@/lib/cv-upload'
 import { useCvImportFromList } from '@/lib/hooks/use-cv-import-from-list'
 
 export function CreerViaCvButton() {
@@ -37,6 +37,7 @@ export function CreerViaCvButton() {
           <Upload className="size-4" />
           {isPending ? 'Analyse…' : 'Créer via CV'}
         </Button>
+        <p className="text-xs text-fg-muted">{CV_UPLOAD_HINT}</p>
         {error ? <FormErrorBanner message={error.message} /> : null}
       </div>
     </>

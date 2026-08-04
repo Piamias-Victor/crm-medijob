@@ -8,6 +8,7 @@ import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { CandidatePresentModals } from '@/components/organisms/CandidatePresentModals'
 import { CandidateGdprEraseButton } from '@/components/molecules/CandidateGdprEraseButton'
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
+import { candidateBlacklistHeaderChips } from '@/view-models/candidate-blacklist-header-chips'
 import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
@@ -53,6 +54,7 @@ export function CandidateDetailPage({
           jobTitle={profile.jobTitleName}
           city={profile.city ?? undefined}
           referentName={profile.referentName ?? undefined}
+          chips={candidateBlacklistHeaderChips(profile.effectiveStatus)}
         />
       }
       meta={

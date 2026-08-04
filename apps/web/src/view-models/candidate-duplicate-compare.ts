@@ -4,53 +4,19 @@ import {
   type CandidateProfileInput,
 } from '@/view-models/candidate-profile.schema'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
+import {
+  emptyCandidateDuplicateRow,
+  type CandidateDuplicateRow,
+} from '@/view-models/candidate-duplicate-row'
 
-export type CandidateDuplicateRow = Record<string, unknown> & {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  address: string
-  city: string
-  postalCode: string
-  jobTitleId: string
-  softwareIds: string[]
-  contractTypes: string[]
-  mobilityRadiusKm: number
-  mobilityNotes: string
-  availableFrom: string
-  notes: string
-  referentId: string
-  cvUrl: string
-}
-
-function emptyRow(): CandidateDuplicateRow {
-  return {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    jobTitleId: '',
-    softwareIds: [],
-    contractTypes: [],
-    mobilityRadiusKm: 0,
-    mobilityNotes: '',
-    availableFrom: '',
-    notes: '',
-    referentId: '',
-    cvUrl: '',
-  }
-}
+export type { CandidateDuplicateRow } from '@/view-models/candidate-duplicate-row'
 
 export function toDuplicateRowFromInput(
   data: CandidateProfileInput | CandidateCreateInput,
   cvUrl?: string,
 ): CandidateDuplicateRow {
   return {
-    ...emptyRow(),
+    ...emptyCandidateDuplicateRow(),
     firstName: data.firstName,
     lastName: data.lastName,
     email: data.email ?? '',
@@ -59,6 +25,7 @@ export function toDuplicateRowFromInput(
     city: data.city ?? '',
     postalCode: data.postalCode ?? '',
     jobTitleId: data.jobTitleId,
+    status: data.status,
     softwareIds: data.softwareIds ?? [],
     contractTypes: data.contractTypes ?? [],
     mobilityRadiusKm: data.mobilityRadiusKm,
@@ -84,12 +51,13 @@ export function toProfileInputFromDuplicateRow(row: CandidateDuplicateRow) {
     city: row.city || undefined,
     postalCode: row.postalCode || undefined,
     jobTitleId: row.jobTitleId,
+    status: row.status,
     softwareIds: row.softwareIds,
     contractTypes: row.contractTypes,
-    mobilityRadiusKm: row.mobilityRadiusKm,
+    mobilityRadiusKm: Math.max(1, row.mobilityRadiusKm || 1),
     mobilityNotes: row.mobilityNotes || undefined,
     availableFrom: row.availableFrom || undefined,
     notes: row.notes || undefined,
-    referentId: row.referentId,
+    referentId: row.referentId || null,
   })
 }

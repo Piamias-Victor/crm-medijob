@@ -32,7 +32,7 @@ describe('buildMissionPipelineColumns', () => {
     expect(columns[1].cards.map((card) => card.candidateId)).toEqual(['c2'])
   })
 
-  it('excludes candidates in terminal stages from the kanban', () => {
+  it('excludes candidates in terminal stages from the kanban by default', () => {
     const candidates = [
       row('c1', stages[0], 'Alice Martin'),
       row('c2', stages[2], 'Bob Durand'),
@@ -40,5 +40,15 @@ describe('buildMissionPipelineColumns', () => {
     const columns = buildMissionPipelineColumns(stages, candidates)
 
     expect(columns.flatMap((column) => column.cards)).toEqual([candidates[0]])
+  })
+
+  it('keeps terminal-stage candidates when includeTerminal is true', () => {
+    const candidates = [
+      row('c1', stages[0], 'Alice Martin'),
+      row('c2', stages[2], 'Bob Durand'),
+    ]
+    const columns = buildMissionPipelineColumns(stages, candidates, { includeTerminal: true })
+
+    expect(columns[2].cards.map((card) => card.candidateId)).toEqual(['c2'])
   })
 })

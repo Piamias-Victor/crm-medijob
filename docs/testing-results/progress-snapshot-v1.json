@@ -1,0 +1,724 @@
+{
+  "session": {
+    "date": "2026-08-03",
+    "url": "https://crm-medijob-web.vercel.app/login?callbackUrl=https%3A%2F%2Fcrm-medijob-web.vercel.app%2F",
+    "tester": "Victor",
+    "seed": "Oui",
+    "ai": "Réel",
+    "verdict": "GO",
+    "notes": "Les loaders sont encore adaptes aud esign card alors que maitnenant on est ne design tableau "
+  },
+  "items": {
+    "env-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "env-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "env-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-3": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-4": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-5": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "login-6": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "forgot-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "forgot-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "forgot-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "forgot-3": {
+      "status": "ko",
+      "checked": true,
+      "comment": "mail arrive pas "
+    },
+    "post-login-smoke-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-3": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-4": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-5": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-6": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "post-login-smoke-7": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "accueil-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "accueil-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "accueil-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "accueil-3": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "accueil-4": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-liste-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-liste-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-liste-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-liste-3": {
+      "status": "ko",
+      "checked": true,
+      "comment": "quand je chosiie region et que j enleve ca saute et ca remet le filtre ca enleve ca remet en bouvcle pareil pour d'autres filtre "
+    },
+    "pharmacies-liste-4": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-liste-5": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-liste-6": {
+      "status": "ko",
+      "checked": true,
+      "comment": "Aucun point géolocalisé pour ces filtres."
+    },
+    "pharmacies-crud-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-crud-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-crud-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-crud-3": {
+      "status": "ok",
+      "checked": true,
+      "comment": "Ca donne moi fichier pour test "
+    },
+    "pharmacies-crud-4": {
+      "status": "ko",
+      "checked": true,
+      "comment": "il me dit juste ca Une pharmacie avec ce SIRET existe déjà."
+    },
+    "pharmacies-crud-5": {
+      "status": "deferred",
+      "checked": false,
+      "comment": "ca je vois aps ce que tu veux "
+    },
+    "pharmacies-crud-6": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-crud-7": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-crud-8": {
+      "status": "ko",
+      "checked": true,
+      "comment": "pas comrpsu ca "
+    },
+    "pharmacies-crud-9": {
+      "status": "ko",
+      "checked": true,
+      "comment": "pas comrpsu ca "
+    },
+    "pharmacies-crud-10": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "pharmacies-crud-11": {
+      "status": "ko",
+      "checked": true,
+      "comment": "je vois pas bouton pour delete en testeur et en admin non plus "
+    },
+    "contacts-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-3": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-4": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-5": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-6": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "contacts-7": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "candidats-liste-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "candidats-liste-1": {
+      "status": "ko",
+      "checked": true,
+      "comment": "meem soucis filtre que pharmacie "
+    },
+    "candidats-liste-2": {
+      "status": "ko",
+      "checked": true,
+      "comment": "carte meme soucis aussi que pharmacie "
+    },
+    "candidats-liste-3": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "candidats-liste-4": {
+      "status": "ko",
+      "checked": true,
+      "comment": "oui met a mettre sous forme liste comme onglet candidat"
+    },
+    "candidats-crud-0": {
+      "status": "ko",
+      "checked": true,
+      "comment": "faios que cette case Consentement au traitement des données personnelles enregistré (optionnel à la création manuelle).\n soit coche par defaut "
+    },
+    "candidats-crud-1": {
+      "status": "ko",
+      "checked": true,
+      "comment": "de la https://crm-medijob-web.vercel.app/candidats/duplicate-review?existingId=cmqs81oal0003mstoel1sohr8 quand j appuie sur fusionner il se passe rien ignorer marche "
+    },
+    "candidats-crud-2": {
+      "status": "ko",
+      "checked": true,
+      "comment": "import csv doit accepter jpeg etc... comme document et sinon dis ca Réponse IA non valide. Réessaie. sur pdf marche bien mais ne me dis aps si doublon dej existant \n\n"
+    },
+    "candidats-crud-3": {
+      "status": "deferred",
+      "checked": false,
+      "comment": "donn efichier pour tester "
+    },
+    "candidats-crud-4": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "candidats-crud-5": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "candidats-crud-6": {
+      "status": "deferred",
+      "checked": false,
+      "comment": "pas comprius "
+    },
+    "candidats-crud-7": {
+      "status": "ko",
+      "checked": true,
+      "comment": "je vois pas blackliste "
+    },
+    "candidats-crud-8": {
+      "status": "ko",
+      "checked": true,
+      "comment": "Bouron enregistrert toujorus griser a l air de pas marcher mais finaleemnt ca enregistre quand meme "
+    },
+    "candidats-crud-9": {
+      "status": "ko",
+      "checked": true,
+      "comment": "je vois pas profil anaonymyser "
+    },
+    "candidats-crud-10": {
+      "status": "ko",
+      "checked": true,
+      "comment": "ok mais ne met pas le nom des gens  pareil dans rpesentation dasn perimetre "
+    },
+    "candidats-crud-11": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "candidats-crud-12": {
+      "status": "ko",
+      "checked": true,
+      "comment": "la met le cv axcesible d'ici aussi stp "
+    },
+    "candidats-crud-13": {
+      "status": "ko",
+      "checked": true,
+      "comment": "Effacement RGPD bouton hyper miche "
+    },
+    "missions-0": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-1": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-2": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-3": {
+      "status": "ko",
+      "checked": true,
+      "comment": "comme autre carte marche pas "
+    },
+    "missions-4": {
+      "status": "ko",
+      "checked": true,
+      "comment": "pas compris mais quand je cree rmsisiuon ca mouvre meme pas la apgfe de la mission "
+    },
+    "missions-5": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-6": {
+      "status": "ko",
+      "checked": true,
+      "comment": "quand je emt coadnida dans place ca pass ebien en pouvur mais plus rien ne st affiche dasn pipeline candidast "
+    },
+    "missions-7": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-8": {
+      "status": "ko",
+      "checked": true,
+      "comment": "la https://crm-medijob-web.vercel.app/missions/rich-mi-6?back=%2F la Email bouton doit ouvrir gmail comme pahrma \n b"
+    },
+    "missions-9": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-10": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "missions-11": {
+      "status": "ko",
+      "checked": true,
+      "comment": "non pas bon la Email bouton doit ouvrir gmail comme pahrma "
+    },
+    "missions-12": {
+      "status": "ok",
+      "checked": true,
+      "comment": ""
+    },
+    "offres-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "offres-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "offres-2": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "offres-3": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "assistant-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "assistant-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "assistant-2": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "assistant-3": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "assistant-4": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "assistant-5": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-2": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-3": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-4": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-5": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-6": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-7": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-8": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "admin-9": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-2": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-3": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-4": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-5": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-6": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-7": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-8": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-9": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-10": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "roles-11": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-2": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-3": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-4": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-5": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-6": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-7": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-8": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-a-9": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-b-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-b-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-b-2": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-b-3": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-c-0": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "e2e-c-1": {
+      "status": "todo",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-0": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-1": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-2": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-3": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-4": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-5": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-6": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    },
+    "deferred-7": {
+      "status": "deferred",
+      "checked": false,
+      "comment": ""
+    }
+  },
+  "source": "docs/testing-results/medijob-tests-2026-08-03.json"
+}

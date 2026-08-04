@@ -7,9 +7,18 @@ import {
   revokeCvImportPreview,
   saveCvImportDraft,
 } from '@/lib/cv-import-draft-storage'
+import {
+  isDuplicateProbeReady,
+  toDetectDuplicateInput,
+} from '@/lib/candidate-duplicate-probe'
+import { useToastStore } from '@/stores/toast-store'
+import { toCvExtractionDuplicateProbe } from '@/view-models/cv-extraction-duplicate-probe'
+import { cvImportDuplicateToastMessage } from '@/view-models/cv-import-duplicate-message'
 
 export function useCvImportFromList() {
   const router = useRouter()
+  const utils = trpc.useUtils()
+  const push = useToastStore((s) => s.push)
   const extract = trpc.candidate.extractCvDraft.useMutation()
 
   const importFile = async (file: File) => {
@@ -21,6 +30,12 @@ export function useCvImportFromList() {
         size: file.size,
         dataBase64: await fileToBase64(file),
       })
+      const probe = toCvExtractionDuplicateProbe(result.extraction)
+      if (isDuplicateProbeReady(probe)) {
+        const matches = await utils.candidate.detectDuplicate.fetch(toDetectDuplicateInput(probe))
+        const message = cvImportDuplicateToastMessage(matches)
+        if (message) push({ variant: 'warning', message })
+      }
       saveCvImportDraft({
         cvUrl: result.cvUrl,
         extraction: result.extraction,

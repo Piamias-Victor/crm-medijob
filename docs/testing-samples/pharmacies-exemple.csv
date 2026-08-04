@@ -1,0 +1,3 @@
+Nom;SIRET;Adresse;Ville;Code postal;Téléphone;Email;Statut;Notes
+Pharmacie du Parc;12345678900012;12 rue des Lilas;Lyon;69003;0478123456;contact@parc-pharma.fr;ACTIF;Exemple import
+Pharmacie Centrale;98765432100019;5 avenue Victor Hugo;Marseille;13001;0491123456;accueil@centrale.fr;PROSPECT;

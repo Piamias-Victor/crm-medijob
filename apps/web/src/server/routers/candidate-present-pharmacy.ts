@@ -7,11 +7,14 @@ import { isValidEmailRecipient } from '@/lib/mailto/is-valid-email-recipient'
 import type { CandidateDocumentsProfile } from '@/server/routers/candidate-documents-input'
 import { toPresentCandidateInput } from '@/server/routers/candidate-present-pharmacy-input'
 import type { PresentToPharmacyInput } from '@/server/routers/candidate-present-pharmacy.schema'
+import { formatPresentContactLabel } from '@/view-models/format-present-contact-label'
 
 type PresentContact = {
   id: string
   pharmacyId: string
   email: string | null
+  firstName: string | null
+  lastName: string | null
 }
 
 export type CandidatePresentPharmacyDeps = {
@@ -42,9 +45,28 @@ export async function handlePresentToPharmacy(
     throw new TRPCError({ code: 'BAD_REQUEST', message: 'Le contact sélectionné n’a pas d’email valide.' })
   }
 
+  const contactName = `${contact.firstName ?? ''} ${contact.lastName ?? ''}`.trim() || null
+  const pharmacyWithContact: PharmacyLike = {
+    ...pharmacy,
+    contactName,
+    contactEmail: email,
+  }
+
   try {
-    const draft = await runPresentCandidateEmail(deps.provider, toPresentCandidateInput(profile, pharmacy))
-    return { ...draft, to: email, contactId: contact.id }
+    const draft = await runPresentCandidateEmail(
+      deps.provider,
+      toPresentCandidateInput(profile, pharmacyWithContact),
+    )
+    return {
+      ...draft,
+      to: email,
+      toLabel: formatPresentContactLabel({
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        email,
+      }),
+      contactId: contact.id,
+    }
   } catch (error) {
     throw mapAssistantChatError(error)
   }

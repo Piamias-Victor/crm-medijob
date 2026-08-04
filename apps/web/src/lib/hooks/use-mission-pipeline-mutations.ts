@@ -13,6 +13,7 @@ type Args = {
   status: MissionStatus
   rows: PipelineCandidateRow[]
   onRowsChange: (rows: PipelineCandidateRow[]) => void
+  onStatusChange?: (status: MissionStatus) => void
   stages: PipelineStageRef[]
 }
 
@@ -20,6 +21,7 @@ export function useMissionPipelineMutations({
   missionId,
   rows,
   onRowsChange,
+  onStatusChange,
   stages,
 }: Args) {
   const router = useRouter()
@@ -30,14 +32,23 @@ export function useMissionPipelineMutations({
   const busy = updateStage.isPending || remove.isPending || markPourvu.isPending
 
   function markPlaced(candidateId: string) {
+    const placedStage = stages.find((stage) => stage.name === TERMINAL_STAGE_NAMES[0])
+    const snapshot = rows
+    if (placedStage) {
+      onRowsChange(movePipelineCandidate(rows, { candidateId, targetStage: placedStage }))
+    }
+    onStatusChange?.('POURVU')
     markPourvu.mutate(
       { id: missionId, placedCandidateId: candidateId },
       {
         onSuccess: () => {
           toast.onSuccess()
-          onRowsChange([])
         },
-        onError: toast.onError,
+        onError: (error) => {
+          toast.onError(error)
+          onRowsChange(snapshot)
+          onStatusChange?.('A_POURVOIR')
+        },
       },
     )
   }
