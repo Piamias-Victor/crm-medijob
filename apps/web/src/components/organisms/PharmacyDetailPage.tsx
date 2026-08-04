@@ -16,7 +16,6 @@ import { PharmacySoftDeleteButton } from '@/components/molecules/PharmacySoftDel
 
 type Ref = { id: string; name: string }
 type MissionRefs = { jobTitles: Ref[]; recruiters: Ref[] }
-
 type Props = {
   pharmacy: PharmacyDetailPayload
   groupements: Ref[]
@@ -25,6 +24,7 @@ type Props = {
   documents: DocumentListRow[]
   activities: ActivityLogRow[]
   backHref?: string
+  canSoftDelete?: boolean
 }
 
 export function PharmacyDetailPage({
@@ -35,6 +35,7 @@ export function PharmacyDetailPage({
   documents,
   activities,
   backHref = '/pharmacies',
+  canSoftDelete,
 }: Props) {
   const [tab, setTab] = useState<PharmacyTab>('infos')
   const mutations = usePharmacyDetailMutations()
@@ -58,7 +59,11 @@ export function PharmacyDetailPage({
               <span className="text-xs text-fg-muted">LGO · {pharmacy.softwareName}</span>
             ) : null}
           </div>
-          <PharmacySoftDeleteButton pharmacyId={pharmacy.id} pharmacyName={pharmacy.name} />
+          <PharmacySoftDeleteButton
+            pharmacyId={pharmacy.id}
+            pharmacyName={pharmacy.name}
+            canDelete={canSoftDelete}
+          />
         </div>
       }
       tabs={

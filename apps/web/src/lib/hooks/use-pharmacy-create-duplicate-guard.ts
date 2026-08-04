@@ -37,8 +37,9 @@ export function usePharmacyCreateDuplicateGuard() {
       }
       return true
     } catch {
+      // Block create — never fall through to Prisma unique toast.
       push({ variant: 'error', message: PROBE_ERROR })
-      return false
+      return true
     }
   }
 }
