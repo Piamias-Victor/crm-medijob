@@ -15,6 +15,7 @@ type Props = {
   status: MissionStatus
   rows: PipelineCandidateRow[]
   onRowsChange: (rows: PipelineCandidateRow[]) => void
+  onStatusChange?: (status: MissionStatus) => void
   stages: PipelineStageRef[]
 }
 

@@ -1,9 +1,11 @@
-# Guide tests V1.4
+# Guide tests V1.5
 
-🖥️ [`testing-manual-v1.html`](./testing-manual-v1.html) (+ Downloads)
+🖥️ **À utiliser :** [`testing-retest-v1.html`](./testing-retest-v1.html)  
+→ **26 lignes** = orange (#259+#260) + 2 KO restants  
+→ **OK 03/08 exclus** (login etc. pas à refaire)
 
-Lignes **orange À RETESTER** = fixes batch 1+2.
+Copie Downloads : `~/Downloads/medijob-retest-v1.html`
 
-Branche : `fix/qa-s1-manual-bugs` — **push/PR requis** pour Vercel.
+Archive complète (58 OK gardés) : [`testing-manual-v1.html`](./testing-manual-v1.html)
 
-Encore ouvert : inbox liste · mailto noms · RGPD bouton · loaders card · résumé IA disabled.
+Si vieux localStorage : bouton **Réinit préremplissage**.

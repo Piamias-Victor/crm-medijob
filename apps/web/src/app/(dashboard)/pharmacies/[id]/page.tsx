@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation'
+import { auth } from '@/server/auth'
+import { can } from '@/server/auth/permissions'
 import { createServerCaller } from '@/lib/trpc/server'
 import { PharmacyDetailPage } from '@/components/organisms/PharmacyDetailPage'
 import { parsePharmacyBackHref } from '@/lib/pharmacy-href'
@@ -11,6 +13,9 @@ type Props = {
 export default async function Page({ params, searchParams }: Props) {
   const { id } = await params
   const { back } = await searchParams
+  const session = await auth()
+  const role = session?.user?.role
+  const canSoftDelete = role ? can(role, 'softDelete') : false
   const caller = await createServerCaller()
   const [pharmacy, referentials, missionRefs, documents, activities] = await Promise.all([
     caller.pharmacy.getById({ id }),
@@ -31,6 +36,7 @@ export default async function Page({ params, searchParams }: Props) {
       documents={documents}
       activities={activities}
       backHref={parsePharmacyBackHref(back)}
+      canSoftDelete={canSoftDelete}
     />
   )
 }

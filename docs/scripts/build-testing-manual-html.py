@@ -112,6 +112,17 @@ SECTIONS = [
         ],
     },
     {
+        "id": "loaders",
+        "title": "2b. Loaders (design tableau)",
+        "role": "Recruteur · listes",
+        "items": [
+            {
+                "text": "Skeleton chargement Candidats / Pharmacies / Missions = TABLEAU (pas cards)",
+                "hint": "Hard refresh ou Network throttle pour voir le skeleton. Fix #260.",
+            },
+        ],
+    },
+    {
         "id": "accueil",
         "title": "3. Accueil / Dashboard",
         "role": "Recruteur · /accueil",
@@ -145,7 +156,10 @@ SECTIONS = [
             "SIRENE/SIRET préremplit nom, SIRET, adresse, ville, CP",
             "Référent prérempli mais optionnel",
             "Création → fiche + historique « Fiche créée »",
-            "Import CSV : mapping + preview",
+            {
+                "text": "Import CSV : mapping + preview (sample docs/testing-samples/pharmacies-exemple.csv)",
+                "hint": "Fichier d’exemple fourni dans le repo.",
+            },
             "Doublon SIRET ou nom+ville+CP → fusion",
             {
                 "text": "Après commit import CSV : nouvelles/maj pharmacies visibles dans la liste",
@@ -192,7 +206,10 @@ SECTIONS = [
             "Filtres métier / dispo / ville / mobilité / statut / référent",
             "Vue rapide + toggle carte",
             "Export CSV des lignes filtrées (si bouton)",
-            "Zone candidatures reçues visible",
+            {
+                "text": "Zone candidatures reçues = TABLEAU (pas cards)",
+                "hint": "Onglet Candidatures reçues — même design liste que CVthèque. Fix #260.",
+            },
         ],
     },
     {
@@ -202,8 +219,14 @@ SECTIONS = [
         "items": [
             "Création : statut Nouveau + prétentions salaire",
             "Doublon email / nom+tél → alerte ou fusion",
-            "Import CV PDF → revue → création",
-            "Import CSV candidats OK",
+            {
+                "text": "Import CV PDF/JPEG → revue → création (+ toast si doublon)",
+                "hint": "Formats PDF PNG JPG WEBP. Doublon existant → toast avant formulaire.",
+            },
+            {
+                "text": "Import CSV candidats OK",
+                "hint": "Sample : docs/testing-samples/candidats-exemple.csv",
+            },
             "Édition profil complète",
             "Bandeau profil incomplet si champs manquants",
             {
@@ -211,18 +234,29 @@ SECTIONS = [
                 "hint": "Fiche candidat ou pipeline mission : ajoute le candidat. Recharge la fiche → statut = En mission (sauf s’il est Blacklisté).",
             },
             {
-                "text": "Statut Blacklisté disponible + un blacklisté ne repasse PAS en En mission",
-                "hint": "Session 03/08 : statut Blacklisté introuvable → bug/manque UI.",
+                "text": "Statut Blacklisté : hint + chip header ; blacklisté ne repasse PAS en En mission",
+                "hint": "Select statut fin de liste + aide. Fiche BLACKLISTE → chip header.",
             },
-            "Résumé IA générer / éditer / sauver",
+            {
+                "text": "Résumé IA : après generate → « Enregistré » ; edit → « Enregistrer » actif",
+                "hint": "Plus de bouton gris mystère après auto-save generate. Fix #260.",
+            },
             {
                 "text": "Profil anonymisé visible + export PDF anonymisé",
-                "hint": "Session 03/08 : introuvable → bug. Chercher bouton Anonymiser / PDF anonymisé sur la fiche.",
+                "hint": "Raccourcis sur onglet Profil.",
             },
-            "Présenter à une pharmacie (mailto)",
+            {
+                "text": "Présenter pharmacie / périmètre : noms contacts + mailto OK",
+                "hint": "Destinataire avec nom · BCC périmètre avec noms. Fix #260.",
+            },
             "Historique + onglet missions",
-            "Documents upload + aperçu",
-            "Effacement RGPD : Direction/RH-Admin only",
+            {
+                "text": "Documents upload + aperçu + CV accessible",
+            },
+            {
+                "text": "Effacement RGPD : bouton bien visible · Direction/RH-Admin only",
+                "hint": "Bouton plus grand. Fix #260.",
+            },
         ],
     },
     {
@@ -375,16 +409,16 @@ ACCOUNTS = [
 
 KNOWN = [
     (
-        "Fixes batch 2 (retester orange)",
-        "CV JPG/WEBP · consent default · fusion SIRET create · anonymisé+CV sur Profil · msg IA plus clair.",
+        "Fixes #259+#260 — lignes orange = À RETESTER",
+        "Loaders table · inbox liste · résumé Enregistré · mailto noms · RGPD bouton · CV JPEG+doublon toast · blacklist chip · CSV samples · + batch #259.",
     ),
     (
-        "Fixes batch 1",
-        "Filtres · Maps+seed · Fusion candidat · Soft delete · Redirect mission · Pipeline Pourvu · Email Gmail.",
+        "OK du 03/08 conservés",
+        "Login, smoke, contacts, etc. restent OK — ne reteste PAS tout. Filtre « À faire / KO seulement ».",
     ),
     (
-        "Encore ouvert",
-        "Inbox liste · Mailto avec noms · RGPD bouton · Loaders card · Enregistrer résumé IA disabled faux · Import CSV samples.",
+        "Encore ouverts (KO / hors scope)",
+        "Besoins/Historique pharmacies (clarif) · Offres/Assistant/Admin/rôles jamais joués · reset mail = N/A Resend.",
     ),
 ]
 
@@ -412,23 +446,32 @@ def normalize_sections():
 
 
 RETEST_IDS = {
+    # #259
     "pharmacies-liste-3",
     "pharmacies-liste-6",
-    "pharmacies-crud-4",  # fusion SIRET create
+    "pharmacies-crud-3",  # CSV sample file
+    "pharmacies-crud-4",
     "pharmacies-crud-11",
     "candidats-liste-1",
     "candidats-liste-2",
-    "candidats-crud-0",  # consent default
+    "candidats-crud-0",
     "candidats-crud-1",
-    "candidats-crud-2",  # jpeg + IA message
-    "candidats-crud-7",  # blacklist hint on profil
-    "candidats-crud-9",  # anonymisé visible profil
-    "candidats-crud-12",  # CV accessible profil/docs
+    "candidats-crud-2",
+    "candidats-crud-3",  # CSV sample file
+    "candidats-crud-7",
+    "candidats-crud-9",
+    "candidats-crud-12",
     "missions-3",
     "missions-4",
     "missions-6",
     "missions-8",
     "missions-11",
+    # #260
+    "loaders-0",
+    "candidats-liste-4",  # inbox table
+    "candidats-crud-8",  # résumé Enregistré
+    "candidats-crud-10",  # mailto noms + périmètre
+    "candidats-crud-13",  # RGPD bouton
 }
 
 
@@ -463,8 +506,30 @@ def load_prefill() -> dict:
     session["url"] = "https://crm-medijob-web-git-dev-victor-piamias-projects.vercel.app"
     session["notes"] = (
         (session.get("notes") or "")
-        + "\n\n[v1.3] Fixes S1 prêts — lignes ambrées = à retester. Reseed pour maps: npm run db:seed"
+        + "\n\n[v1.5] Fixes #259+#260 — OK 03/08 gardés · orange = À RETESTER seulement. Reseed maps: npm run db:seed"
     ).strip()
+    session["date"] = "2026-08-04"
+    # Ensure new retest ids exist even if absent from snapshot
+    for item_id in RETEST_IDS:
+        if item_id not in items:
+            items[item_id] = {
+                "status": "todo",
+                "checked": False,
+                "comment": "[FIX — à retester] #259/#260",
+            }
+    # Never-played modules stay Différé (don't flood « À faire »)
+    for item_id, row in list(items.items()):
+        if any(
+            item_id.startswith(p)
+            for p in ("offres-", "assistant-", "admin-", "roles-", "e2e-")
+        ):
+            if row.get("status") == "todo":
+                items[item_id] = {
+                    "status": "deferred",
+                    "checked": False,
+                    "comment": (row.get("comment") or "").strip()
+                    or "Hors retest V1 — session séparée",
+                }
     return {
         "session": session,
         "items": items,
@@ -622,8 +687,8 @@ def build_html(sections: list) -> str:
 <header class="app">
   <div class="row">
     <div>
-      <h1>CRM MediJob — Checklist tests V1.3</h1>
-      <p>59 OK gardés · lignes orange = FIX à retester · seed maps requis</p>
+      <h1>CRM MediJob — Checklist tests V1.5</h1>
+      <p>OK 03/08 gardés · orange = fixes #259+#260 à retester · seed maps si besoin</p>
     </div>
     <div class="actions">
       <button type="button" class="secondary" id="btn-expand">Tout ouvrir</button>
@@ -640,16 +705,16 @@ def build_html(sections: list) -> str:
 
 <main>
   <div class="banner">
-    <h2>🔧 Fixes S1 prêts — reteste les lignes orange</h2>
+    <h2>🔧 Fixes #259+#260 — reteste UNIQUEMENT les lignes orange</h2>
     <p style="margin:0;font-size:.92rem">
-      <strong>59 OK</strong> inchangés ·
-      <strong>11 fixes</strong> à revalider (bandeau orange) ·
-      autres KO / todo restent.
+      <strong>OK du 03/08</strong> conservés (ne reteste pas) ·
+      <strong>orange</strong> = à revalider ·
+      filtre « À faire / KO seulement » recommandé.
     </p>
     <ul>
-      <li>Filtres clear · Maps (après <code>npm run db:seed</code>) · Fusion candidat · Soft delete pharmacie</li>
-      <li>Redirect création mission · Pipeline après Pourvu · Email matching → Gmail</li>
-      <li>Storage key V1.3 — ouvre ce fichier frais / bouton Recharger snapshot</li>
+      <li>#259 : filtres · maps · fusion · soft delete · consent · CV JPEG · redirect mission · pipeline · Gmail</li>
+      <li>#260 : loaders table · inbox liste · résumé Enregistré · mailto noms · RGPD · doublon CV · blacklist · CSV samples</li>
+      <li>Storage V1.5 — ouvre frais / « Recharger snapshot » pour repartir du préremplissage</li>
     </ul>
   </div>
 
@@ -711,12 +776,12 @@ def build_html(sections: list) -> str:
 
 <footer class="sticky-note">
   <span id="save-state">Sauvegarde locale prête</span>
-  <span>V1.1 · storage séparé de l’ancienne checklist</span>
+  <span>V1.5 · OK 03/08 gardés · orange = À RETESTER</span>
 </footer>
 
 <script id="data" type="application/json">{data_json}</script>
 <script>
-const STORAGE_KEY = "medijob-testing-manual-v1-4";
+const STORAGE_KEY = "medijob-testing-manual-v1-5";
 const DATA = JSON.parse(document.getElementById("data").textContent);
 const RETEST = new Set((DATA.prefill && DATA.prefill.retestIds) || []);
 

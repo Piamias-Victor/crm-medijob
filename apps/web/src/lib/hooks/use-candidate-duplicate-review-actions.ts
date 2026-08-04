@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { useToastStore } from '@/stores/toast-store'
 import {
   DUPLICATE_CREATE_SUCCESS,
   DUPLICATE_MERGE_SUCCESS,
@@ -19,8 +20,11 @@ import {
   type CandidateDuplicateRow,
 } from '@/view-models/candidate-duplicate-compare'
 
+const MERGE_NO_DRAFT = 'Session de fusion expirée. Relance la détection de doublon.'
+
 export function useCandidateDuplicateReviewActions(existingId: string) {
   const router = useRouter()
+  const pushToast = useToastStore((s) => s.push)
   const draft = useCandidateDuplicateDraft()
   const mergeToast = useEntityMutation({ successMessage: DUPLICATE_MERGE_SUCCESS })
   const createToast = useEntityMutation({ successMessage: DUPLICATE_CREATE_SUCCESS })
@@ -57,7 +61,10 @@ export function useCandidateDuplicateReviewActions(existingId: string) {
   })
 
   async function onMerge(row: CandidateDuplicateRow) {
-    if (!draft) return
+    if (!draft) {
+      pushToast({ variant: 'error', message: MERGE_NO_DRAFT })
+      return
+    }
     await merge.mutateAsync({
       keptId: existingId,
       absorbedId: draft.mode === 'edit' ? draft.absorbedId : undefined,
@@ -67,7 +74,10 @@ export function useCandidateDuplicateReviewActions(existingId: string) {
   }
 
   async function onIgnore() {
-    if (!draft) return
+    if (!draft) {
+      pushToast({ variant: 'error', message: MERGE_NO_DRAFT })
+      return
+    }
     if (draft.mode === 'edit') {
       await update.mutateAsync({ id: draft.absorbedId, data: draft.incoming })
       return
