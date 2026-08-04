@@ -17,7 +17,8 @@ export function PresentCandidatePharmacyDraftFields({ register, errors, recipien
     <div className="space-y-4">
       {recipientLabel ? (
         <p className="rounded-lg border border-border/60 bg-surface/60 px-3 py-2 text-sm text-fg">
-          Destinataire : <span className="font-medium">{recipientLabel}</span>
+          Destinataire (contact pharmacie) :{' '}
+          <span className="font-medium">{recipientLabel}</span>
         </p>
       ) : null}
       <FormField label="Objet" error={errors.subject?.message}>

@@ -18,6 +18,9 @@ export function EntityMapCanvas({ pins, onPinClick }: Props) {
       zoom={5}
       className="h-[420px] w-full rounded-lg z-0"
       scrollWheelZoom
+      zoomSnap={0}
+      zoomDelta={0.5}
+      wheelPxPerZoomLevel={120}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'

@@ -6,6 +6,7 @@ import { Textarea } from '@/components/atoms/Textarea'
 import { cn } from '@/lib/cn'
 import {
   cvSummarySaveButtonLabel,
+  cvSummarySaveButtonVariant,
   isCvSummarySaveDisabled,
 } from '@/view-models/cv-summary-save-state'
 
@@ -28,13 +29,14 @@ export function CandidateCvSummaryEditor({
   const hasValue = Boolean(value.trim())
   const disabled = isCvSummarySaveDisabled({ dirty, saving, hasValue })
   const label = cvSummarySaveButtonLabel({ dirty, saving, hasValue })
+  const variant = cvSummarySaveButtonVariant({ dirty, saving, hasValue })
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-fg">Aperçu</p>
         <Button
-          variant="primary"
+          variant={variant}
           disabled={disabled}
           onClick={onSave}
           className="gap-2"
@@ -55,7 +57,7 @@ export function CandidateCvSummaryEditor({
         )}
       />
       {dirty ? (
-        <p className="text-xs text-fg-muted">Modifications non enregistrées.</p>
+        <p className="text-xs text-fg-muted">Modifications non enregistrées — Enregistrer est vert.</p>
       ) : hasValue ? (
         <p className="text-xs text-fg-muted">
           Résumé enregistré. Modifie le texte pour réactiver Enregistrer.
