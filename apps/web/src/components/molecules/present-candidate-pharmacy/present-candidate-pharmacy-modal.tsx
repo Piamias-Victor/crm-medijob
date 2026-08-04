@@ -72,7 +72,11 @@ export function PresentCandidatePharmacyModal({ candidateId, onClose, onActivity
           </div>
         ) : null}
         {flow.draft ? (
-          <PresentCandidatePharmacyDraftFields register={register} errors={formState.errors} />
+          <PresentCandidatePharmacyDraftFields
+            register={register}
+            errors={formState.errors}
+            recipientLabel={flow.draft.toLabel}
+          />
         ) : null}
         <PresentCandidatePharmacyModalFooter
           canSend={canSend}

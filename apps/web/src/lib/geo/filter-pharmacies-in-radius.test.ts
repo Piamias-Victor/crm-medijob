@@ -13,7 +13,7 @@ const pharmacies: PharmacyRadiusSource[] = [
     city: 'Hyères',
     postalCode: '83400',
     email: 'officine@example.com',
-    contacts: [{ id: 'ct1', email: 'titulaire@example.com' }],
+    contacts: [{ id: 'ct1', email: 'titulaire@example.com', firstName: 'Paul', lastName: 'Martin' }],
   },
   {
     id: 'p-far',
@@ -36,6 +36,8 @@ describe('filterPharmaciesByRadius', () => {
     const rows = await filterPharmaciesByRadius(pharmacies, center, 30, lookupPostal)
     expect(rows).toHaveLength(1)
     expect(rows[0]?.id).toBe('p-near')
+    expect(rows[0]?.contactFirstName).toBe('Paul')
+    expect(rows[0]?.contactLastName).toBe('Martin')
     expect(lookupPostal).toHaveBeenCalledTimes(2)
   })
 })

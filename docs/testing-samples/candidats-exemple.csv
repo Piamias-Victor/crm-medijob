@@ -1,0 +1,3 @@
+Prénom;Nom;Métier;Email;Téléphone;Adresse;Ville;Code postal;Statut;Rayon;Salaire;Notes
+Alice;Martin;Pharmacien;alice.martin@example.com;0611223344;10 rue Test;Lyon;69001;NOUVEAU;30;45000;Exemple import
+Bob;Durand;Préparateur;bob.durand@example.com;0699887766;3 place Bellecour;Lyon;69002;A_QUALIFIER;20;;

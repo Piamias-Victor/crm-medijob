@@ -33,7 +33,13 @@ export const candidateRouter = makeCandidateRouter({
   findContactById: async (id) => {
     const contact = await contactRepository.findById(id)
     if (!contact) return null
-    return { id: contact.id, pharmacyId: contact.pharmacyId, email: contact.email }
+    return {
+      id: contact.id,
+      pharmacyId: contact.pharmacyId,
+      email: contact.email,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+    }
   },
   findCandidateGeo: async (id) => {
     const profile = await candidateRepository.findProfileById(id)

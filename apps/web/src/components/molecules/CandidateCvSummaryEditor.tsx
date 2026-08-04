@@ -1,10 +1,13 @@
 'use client'
 
-import { useMemo } from 'react'
 import { Save } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { Textarea } from '@/components/atoms/Textarea'
 import { cn } from '@/lib/cn'
+import {
+  cvSummarySaveButtonLabel,
+  isCvSummarySaveDisabled,
+} from '@/view-models/cv-summary-save-state'
 
 type Props = {
   value: string
@@ -21,10 +24,10 @@ export function CandidateCvSummaryEditor({
   onChange,
   onSave,
 }: Props) {
-  const dirty = useMemo(
-    () => value.trim() !== (savedValue?.trim() ?? ''),
-    [value, savedValue],
-  )
+  const dirty = value.trim() !== (savedValue?.trim() ?? '')
+  const hasValue = Boolean(value.trim())
+  const disabled = isCvSummarySaveDisabled({ dirty, saving, hasValue })
+  const label = cvSummarySaveButtonLabel({ dirty, saving, hasValue })
 
   return (
     <div className="flex flex-col gap-3">
@@ -32,12 +35,13 @@ export function CandidateCvSummaryEditor({
         <p className="text-sm font-medium text-fg">Aperçu</p>
         <Button
           variant="primary"
-          disabled={!dirty || !value.trim() || saving}
+          disabled={disabled}
           onClick={onSave}
           className="gap-2"
+          aria-label={label}
         >
           <Save className="size-4" />
-          {saving ? 'Enregistrement…' : 'Enregistrer'}
+          {label}
         </Button>
       </div>
       <Textarea
@@ -52,6 +56,10 @@ export function CandidateCvSummaryEditor({
       />
       {dirty ? (
         <p className="text-xs text-fg-muted">Modifications non enregistrées.</p>
+      ) : hasValue ? (
+        <p className="text-xs text-fg-muted">
+          Résumé enregistré. Modifie le texte pour réactiver Enregistrer.
+        </p>
       ) : null}
     </div>
   )
