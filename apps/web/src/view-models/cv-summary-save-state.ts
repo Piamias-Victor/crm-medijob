@@ -16,3 +16,13 @@ export function isCvSummarySaveDisabled(input: {
 }): boolean {
   return !input.dirty || !input.hasValue || input.saving
 }
+
+/** Accent mint when save is available (after generate / edit). */
+export function cvSummarySaveButtonVariant(input: {
+  dirty: boolean
+  saving: boolean
+  hasValue: boolean
+}): 'accent' | 'primary' {
+  if (!isCvSummarySaveDisabled(input)) return 'accent'
+  return 'primary'
+}

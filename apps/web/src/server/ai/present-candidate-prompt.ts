@@ -19,11 +19,14 @@ export type PresentCandidateInput = {
 
 export function buildPresentCandidatePrompt(input: PresentCandidateInput): string {
   const context = `${formatPresentCandidate(input.candidate)}\n\n${formatPharmacy(input.pharmacy)}`
+  const contact = input.pharmacy.contactName?.trim() || input.pharmacy.contactEmail || 'le contact pharmacie'
 
   return buildPrompt({
     kind: 'email',
     instruction:
-      'Rédige un email professionnel en français pour présenter ce candidat à cette pharmacie cliente. Ton chaleureux, concis, orienté valeur pour l’officine.',
+      `Rédige un email professionnel en français pour présenter ce candidat à cette pharmacie cliente. ` +
+      `Destinataire = ${contact} (contact officine) — salue CE contact, jamais le candidat. ` +
+      `Parle du candidat à la 3e personne. Ton chaleureux, concis, orienté valeur pour l’officine.`,
     contextText: context,
   })
 }

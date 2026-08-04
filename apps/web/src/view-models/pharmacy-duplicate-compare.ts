@@ -46,10 +46,23 @@ export function toPharmacyDuplicateRowFromInput(data: PharmacyInput): PharmacyDu
   }
 }
 
+/** Compare UI only — never throw on dirty seed/CSV emails. */
 export function toPharmacyDuplicateRowFromFormSource(source: PharmacyFormSource): PharmacyDuplicateRow {
-  return toPharmacyDuplicateRowFromInput(
-    pharmacyInputSchema.parse(toPharmacyFormValues(source)),
-  )
+  const values = toPharmacyFormValues(source)
+  const parsed = pharmacyInputSchema.safeParse(values)
+  if (parsed.success) return toPharmacyDuplicateRowFromInput(parsed.data)
+  return {
+    ...emptyRow(),
+    name: source.name || '',
+    siret: source.siret ?? '',
+    address: source.address ?? '',
+    city: source.city ?? '',
+    postalCode: source.postalCode ?? '',
+    phone: source.phone ?? '',
+    email: source.email ?? '',
+    status: source.status ?? 'PROSPECT',
+    notes: source.notes ?? '',
+  }
 }
 
 export function toPharmacyInputFromDuplicateRow(row: PharmacyDuplicateRow): PharmacyInput {

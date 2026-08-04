@@ -37,4 +37,17 @@ describe('runPresentCandidateEmail', () => {
     expect(prompt).toContain('Pharmacie du Centre')
     expect(prompt).toContain('Winpharma')
   })
+
+  it('tells model to greet pharmacy contact, not the candidate', () => {
+    const prompt = buildPresentCandidatePrompt({
+      ...input,
+      pharmacy: {
+        ...input.pharmacy,
+        contactName: 'Marie Martin',
+        contactEmail: 'marie@pharma.fr',
+      },
+    })
+    expect(prompt).toContain('Marie Martin')
+    expect(prompt).toContain('jamais le candidat')
+  })
 })
