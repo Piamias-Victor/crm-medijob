@@ -30,7 +30,7 @@ export function CandidateGdprEraseButton({ candidateId, candidateName }: Props) 
       <Button
         type="button"
         variant="danger"
-        className="px-5 py-2.5 text-base font-semibold shadow-md"
+        className="px-4 py-2 text-sm font-semibold"
         onClick={() => setOpen(true)}
       >
         Effacement RGPD

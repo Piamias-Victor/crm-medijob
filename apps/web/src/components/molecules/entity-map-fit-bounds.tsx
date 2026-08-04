@@ -30,7 +30,7 @@ export function EntityMapFitBounds({ pins }: { pins: MapPin[] }) {
     }
     map.fitBounds(
       pins.map((pin) => [pin.latitude, pin.longitude] as [number, number]),
-      { padding: [40, 40], animate: true },
+      { padding: [40, 40], animate: false },
     )
   }, [map, pins])
 

@@ -21,9 +21,8 @@ export function CandidateCvSummaryPanel({ profile }: Props) {
     setDraft(profile.cvSummary ?? '')
   }, [profile.cvSummary])
 
-  const generateMutation = useEntityMutation({
-    successMessage: 'Résumé IA généré',
-    onSuccess: refresh,
+  const generateToast = useEntityMutation({
+    successMessage: 'Résumé généré — ajuste puis Enregistrer (vert)',
     onError: (err) => setError(err.message),
   })
   const saveMutation = useEntityMutation({
@@ -32,7 +31,7 @@ export function CandidateCvSummaryPanel({ profile }: Props) {
     onError: (err) => setError(err.message),
   })
 
-  const generateSummary = trpc.candidate.generateSummary.useMutation(generateMutation)
+  const generateSummary = trpc.candidate.generateSummary.useMutation(generateToast)
   const saveCvSummary = trpc.candidate.saveCvSummary.useMutation(saveMutation)
 
   return (
@@ -49,7 +48,14 @@ export function CandidateCvSummaryPanel({ profile }: Props) {
           disabled={generateSummary.isPending}
           onClick={() => {
             setError(undefined)
-            generateSummary.mutate({ id: profile.id })
+            generateSummary.mutate(
+              { id: profile.id },
+              {
+                onSuccess: (data) => {
+                  setDraft(data.cvSummary)
+                },
+              },
+            )
           }}
           className="gap-2"
         >

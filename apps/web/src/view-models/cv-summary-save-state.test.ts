@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   cvSummarySaveButtonLabel,
+  cvSummarySaveButtonVariant,
   isCvSummarySaveDisabled,
 } from '@/view-models/cv-summary-save-state'
 
@@ -21,5 +22,14 @@ describe('cv summary save button', () => {
     expect(
       isCvSummarySaveDisabled({ dirty: true, saving: false, hasValue: true }),
     ).toBe(false)
+  })
+
+  it('uses accent green when user can save (after generate/edit)', () => {
+    expect(
+      cvSummarySaveButtonVariant({ dirty: true, saving: false, hasValue: true }),
+    ).toBe('accent')
+    expect(
+      cvSummarySaveButtonVariant({ dirty: false, saving: false, hasValue: true }),
+    ).toBe('primary')
   })
 })

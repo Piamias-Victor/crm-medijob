@@ -8,7 +8,7 @@ const variants: Record<Variant, string> = {
   accent: 'bg-accent text-accent-fg hover:bg-accent-hover',
   ghost: 'bg-transparent text-fg hover:bg-surface',
   outline: 'border border-border bg-transparent text-fg hover:bg-surface',
-  danger: 'bg-error text-accent-fg hover:opacity-90',
+  danger: 'bg-error text-primary-fg hover:opacity-90',
 }
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }
