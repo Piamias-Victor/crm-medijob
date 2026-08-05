@@ -2,11 +2,11 @@
 
 ## État
 
-**Validé user · prêt merge `dev`.** Branche `feat/issue-287-anonymized-dossier-sections`
+**Validé user · mergé sur `dev`.**
 
 - Issue : https://github.com/Piamias-Victor/crm-medijob/issues/287
-- PR : https://github.com/Piamias-Victor/crm-medijob/pull/292
-- Prompt : `docs/prompts/pending/PROMPT_ISSUE_287.md` → à déplacer `done/` **après** merge
+- PR : https://github.com/Piamias-Victor/crm-medijob/pull/292 (MERGED)
+- Prompt : `docs/prompts/done/PROMPT_ISSUE_287.md`
 - Glossaire : `CONTEXT.md` § Anonymized dossier (modale, pas éditeur Documents)
 
 ## Livré
@@ -32,9 +32,8 @@ Voir diff PR #292. Points d’entrée :
 
 ## Suite
 
-- Merge PR #292 → `dev`
-- `git mv docs/prompts/pending/PROMPT_ISSUE_287.md docs/prompts/done/` + commit push **direct `dev`**
-- Phase 5 : supprimer branche locale / remote après merge si besoin
+- Done. Branche feature supprimée côté remote au merge.
+- Phase 5 : cleanup branche locale `feat/issue-287-anonymized-dossier-sections` si encore présente.
 
 ## Suggested skills
 
