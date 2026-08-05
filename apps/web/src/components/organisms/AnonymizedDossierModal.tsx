@@ -26,15 +26,15 @@ export function AnonymizedDossierModal({ flow }: Props) {
       onClose={flow.close}
       title={ANONYMIZED_MODAL_TITLE}
       description={ANONYMIZED_MODAL_DESCRIPTION}
-      className="max-w-3xl"
+      className="max-w-4xl"
       trapFocus
       preventDismiss={flow.generating || flow.saving}
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {flow.error ? <p className="text-sm text-error">{flow.error}</p> : null}
         {flow.generating || !flow.draft ? (
-          <div className="flex min-h-40 flex-col items-center justify-center gap-3 text-sm text-fg-muted">
-            <Spinner className="size-6 border-accent/30 border-t-accent" />
+          <div className="flex min-h-52 flex-col items-center justify-center gap-3 text-base text-fg-muted">
+            <Spinner className="size-7 border-accent/30 border-t-accent" />
             {ANONYMIZED_MODAL_GENERATING}
           </div>
         ) : (

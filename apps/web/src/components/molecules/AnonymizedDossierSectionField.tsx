@@ -12,27 +12,32 @@ type Props = {
 
 export function AnonymizedDossierSectionField({ index, label, value, onChange }: Props) {
   return (
-    <label className="flex flex-col gap-2">
+    <label
+      className={cn(
+        'flex flex-col gap-3 rounded-2xl border border-border/60 bg-white/90 p-5',
+        'shadow-[0_1px_0_rgb(255_255_255/0.8)_inset]',
+      )}
+    >
       <span className="flex items-center gap-3">
         <span
           className={cn(
-            'flex size-7 shrink-0 items-center justify-center rounded-full',
-            'bg-primary/10 font-mono text-[11px] font-semibold text-primary',
+            'flex size-9 shrink-0 items-center justify-center rounded-full',
+            'bg-primary text-[12px] font-semibold text-primary-fg',
           )}
         >
           {String(index).padStart(2, '0')}
         </span>
-        <span className="text-sm font-semibold tracking-tight text-fg">{label}</span>
+        <span className="text-base font-semibold tracking-tight text-fg">{label}</span>
       </span>
       <Textarea
-        rows={3}
+        rows={5}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder="Sans nom, email ni téléphone…"
         className={cn(
-          'min-h-[4.75rem] resize-y rounded-xl border-border/50 bg-white/70',
-          'px-3.5 py-2.5 text-sm leading-relaxed text-fg',
-          'placeholder:text-fg-muted/70 focus:border-accent focus:ring-accent-muted',
+          'min-h-[8.5rem] resize-y rounded-xl border-border/40 bg-primary-muted/35',
+          'px-4 py-3.5 text-base leading-7 text-fg',
+          'placeholder:text-fg-muted/60 focus:border-accent focus:ring-accent-muted',
         )}
       />
     </label>
