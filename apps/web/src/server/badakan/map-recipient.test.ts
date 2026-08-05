@@ -2,25 +2,23 @@ import { describe, expect, it } from 'vitest'
 import { mapBadakanRecipient } from './map-recipient'
 
 describe('mapBadakanRecipient', () => {
-  it('maps camelCase recipient fields', () => {
+  it('maps real Badakan searchNewEmployees shape', () => {
     const mapped = mapBadakanRecipient({
-      id: 42,
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      email: 'ada@example.com',
-      mobilePhone: '0600000000',
-      city: 'Nice',
-      zipCode: '06000',
-      activity: { label: 'Pharmacien' },
+      id: '6a72',
+      firstName: 'nora',
+      lastName: 'boudjerada',
+      email: 'n@example.com',
+      validatedPhoneNumber: '+33744422730',
+      address: { city: 'Troyes', zipCode: '10000' },
+      activities: [{ label: 'Pharmacien' }],
     })
     expect(mapped).toMatchObject({
-      badakanId: '42',
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      email: 'ada@example.com',
-      phone: '0600000000',
-      city: 'Nice',
-      postalCode: '06000',
+      badakanId: '6a72',
+      firstName: 'nora',
+      lastName: 'boudjerada',
+      phone: '+33744422730',
+      city: 'Troyes',
+      postalCode: '10000',
       activityLabel: 'Pharmacien',
     })
   })
