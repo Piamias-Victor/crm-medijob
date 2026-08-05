@@ -81,6 +81,11 @@
   }
 }
 
+.medijob-entity-map {
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+
 .medijob-map-pin {
   background: transparent;
   border: none;
@@ -94,4 +99,16 @@
   background: var(--color-accent);
   border: 2px solid var(--color-primary);
   box-shadow: 0 1px 4px color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.medijob-map-pin--pharmacy .medijob-map-pin__dot {
+  background: var(--color-accent);
+}
+
+.medijob-map-pin--candidate .medijob-map-pin__dot {
+  background: var(--color-sky);
+}
+
+.medijob-map-pin--mission .medijob-map-pin__dot {
+  background: var(--color-rose);
 }

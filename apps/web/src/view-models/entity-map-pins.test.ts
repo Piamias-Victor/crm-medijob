@@ -9,7 +9,7 @@ import type { RawCandidate } from '@/view-models/candidate-kanban.types'
 import type { RawMission } from '@/view-models/mission-kanban.types'
 
 describe('entity map pins', () => {
-  it('maps pharmacy rows with coords', () => {
+  it('maps pharmacy rows with coords and entity metadata', () => {
     const rows = [
       {
         id: 'p1',
@@ -19,7 +19,14 @@ describe('entity map pins', () => {
       } as PharmacyListRow,
     ]
     expect(toPharmacyMapPins(rows)).toEqual([
-      { id: 'p1', label: 'Pharma', latitude: 45.7, longitude: 4.8 },
+      {
+        id: 'pharmacy:p1',
+        entityId: 'p1',
+        entityType: 'pharmacy',
+        label: 'Pharma',
+        latitude: 45.7,
+        longitude: 4.8,
+      },
     ])
   })
 
@@ -40,9 +47,20 @@ describe('entity map pins', () => {
         pharmacy: { name: 'P', city: null, latitude: 3, longitude: 4 },
       } as RawMission,
     ]
-    expect(toCandidateMapPins(candidates)[0]?.label).toBe('A B')
+    expect(toCandidateMapPins(candidates)[0]).toMatchObject({
+      id: 'candidate:c1',
+      entityType: 'candidate',
+      label: 'A B',
+    })
     expect(toMissionMapPins(missions)).toEqual([
-      { id: 'm1', label: 'CDI', latitude: 3, longitude: 4 },
+      {
+        id: 'mission:m1',
+        entityId: 'm1',
+        entityType: 'mission',
+        label: 'CDI',
+        latitude: 3,
+        longitude: 4,
+      },
     ])
   })
 })

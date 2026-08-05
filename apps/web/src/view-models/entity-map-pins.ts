@@ -6,7 +6,8 @@ import type { RawMission } from '@/view-models/mission-kanban.types'
 export function toPharmacyMapPins(rows: PharmacyListRow[]): MapPin[] {
   return toMapPins(
     rows.map((row) => ({
-      id: row.id,
+      entityId: row.id,
+      entityType: 'pharmacy' as const,
       label: row.name,
       latitude: row.latitude,
       longitude: row.longitude,
@@ -17,7 +18,8 @@ export function toPharmacyMapPins(rows: PharmacyListRow[]): MapPin[] {
 export function toCandidateMapPins(rows: RawCandidate[]): MapPin[] {
   return toMapPins(
     rows.map((row) => ({
-      id: row.id,
+      entityId: row.id,
+      entityType: 'candidate' as const,
       label: `${row.firstName} ${row.lastName}`,
       latitude: row.latitude,
       longitude: row.longitude,
@@ -28,7 +30,8 @@ export function toCandidateMapPins(rows: RawCandidate[]): MapPin[] {
 export function toMissionMapPins(rows: RawMission[]): MapPin[] {
   return toMapPins(
     rows.map((row) => ({
-      id: row.id,
+      entityId: row.id,
+      entityType: 'mission' as const,
       label: row.title,
       latitude: row.pharmacy.latitude,
       longitude: row.pharmacy.longitude,
