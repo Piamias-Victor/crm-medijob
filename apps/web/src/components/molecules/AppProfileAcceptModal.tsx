@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Modal } from '@/components/atoms/Modal'
+import { GlassModal } from '@/components/molecules/GlassModal'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { FormField } from '@/components/molecules/FormField'
@@ -44,7 +44,14 @@ export function AppProfileAcceptModal({
   })
 
   return (
-    <Modal open={open} onClose={onClose} title="Créer le candidat">
+    <GlassModal
+      open={open}
+      onClose={onClose}
+      title="Créer le candidat"
+      description="Complète les infos manquantes puis crée le candidat en CVthèque."
+      className="max-w-lg"
+      trapFocus
+    >
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-3 sm:grid-cols-2">
           <FormField label="Prénom" htmlFor="firstName" error={errors.firstName?.message}>
@@ -74,7 +81,7 @@ export function AppProfileAcceptModal({
             placeholder="Choisir un métier"
           />
         </FormField>
-        <div className="flex justify-end gap-2 border-t border-border pt-4">
+        <div className="flex justify-end gap-2 border-t border-border/50 pt-4">
           <Button type="button" variant="outline" onClick={onClose}>
             Annuler
           </Button>
@@ -83,6 +90,6 @@ export function AppProfileAcceptModal({
           </Button>
         </div>
       </form>
-    </Modal>
+    </GlassModal>
   )
 }
