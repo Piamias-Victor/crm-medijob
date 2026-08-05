@@ -58,7 +58,7 @@ export const cvthequeExportColumnHeaders: Record<CvthequeExportColumnId, string>
   contractTypes: 'Types contrat',
   notes: 'Notes',
   cvSummary: 'Résumé CV',
-  anonymizedProfile: 'Profil anonymisé',
+  anonymizedProfile: 'Dossier anonymisé',
   createdAt: 'Date création',
   updatedAt: 'Date MAJ',
   activeMission: 'Mission active',

@@ -6,8 +6,10 @@ import { CandidateCvReviewForm } from '@/components/molecules/CandidateCvReviewF
 import { CandidateCvActionsBar } from '@/components/molecules/CandidateCvActionsBar'
 import { useCandidateCvReviewState } from '@/lib/hooks/use-candidate-cv-review-state'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { ANONYMIZED_REGENERATE_CONFIRM } from '@/lib/constants/anonymized-dossier'
 import { candidateAnonymizedPdfPath } from '@/lib/candidate-anonymized-pdf-url'
 import { trpc } from '@/lib/trpc/client'
+import { hasStructuredAnonymizedDossier } from '@/view-models/anonymized-dossier'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { RefItem } from '@/view-models/referential'
 
@@ -28,6 +30,7 @@ export function CandidateCvPanel({ profile, referentials, onPresentPharmacy, onP
   const cv = useCandidateCvReviewState(profile, referentials)
   const router = useRouter()
   const [anonError, setAnonError] = useState<string>()
+  const hasStructured = hasStructuredAnonymizedDossier(profile.anonymizedProfile)
   const toast = useEntityMutation({
     successMessage: 'Dossier anonymisé enregistré — téléchargement…',
     onSuccess: () => {
@@ -65,11 +68,12 @@ export function CandidateCvPanel({ profile, referentials, onPresentPharmacy, onP
         candidateId={profile.id}
         hasCv={Boolean(profile.cvUrl)}
         hasSummary={Boolean(profile.cvSummary?.trim())}
-        hasAnonymized={Boolean(profile.anonymizedProfile?.trim())}
+        hasAnonymized={hasStructured}
         anonymizedPending={generateAnonymized.isPending}
         submitting={cv.extractPending}
         onFile={(file) => void cv.onUpload(file)}
         onGenerateAnonymized={() => {
+          if (hasStructured && !window.confirm(ANONYMIZED_REGENERATE_CONFIRM)) return
           setAnonError(undefined)
           generateAnonymized.mutate({ id: profile.id })
         }}

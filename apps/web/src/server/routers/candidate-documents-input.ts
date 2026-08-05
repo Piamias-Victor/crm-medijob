@@ -26,7 +26,7 @@ function softwareNames(profile: CandidateDocumentsProfile): string[] {
   return profile.softwares.map((row) => row.software.name)
 }
 
-function piiTokens(profile: CandidateDocumentsProfile): string[] {
+export function piiTokens(profile: CandidateDocumentsProfile): string[] {
   return [profile.firstName, profile.lastName, profile.email, profile.phone, profile.address]
     .filter((value): value is string => Boolean(value?.trim()))
 }

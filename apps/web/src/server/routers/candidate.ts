@@ -4,9 +4,14 @@ import { toCandidateProfilePayload } from '@/view-models/candidate-profile-paylo
 import { toCandidateQuickView } from '@/view-models/candidate-quick-view'
 import { handleConfirmCvExtraction, handleExtractCv, handleExtractCvDraft } from '@/server/routers/candidate-cv'
 import { handleDiscardCvDraft } from '@/server/routers/candidate-cv-discard'
-import { handleGenerateAnonymized, handleGenerateSummary, handleSaveCvSummary } from '@/server/routers/candidate-documents'
+import {
+  handleGenerateAnonymized,
+  handleGenerateSummary,
+  handleSaveAnonymized,
+  handleSaveCvSummary,
+} from '@/server/routers/candidate-documents'
 import { confirmCvExtractionSchema, discardCvDraftSchema, extractCvDraftSchema, extractCvSchema } from '@/server/routers/candidate-cv.schema'
-import { saveCvSummarySchema } from '@/server/routers/candidate-documents.schema'
+import { saveAnonymizedSchema, saveCvSummarySchema } from '@/server/routers/candidate-documents.schema'
 import { candidateSearchInput, toCandidateSearchOptions } from '@/server/routers/candidate-search'
 import { candidateListFiltersSchema } from '@/view-models/candidate-list-filters.schema'
 import { candidateExportInputSchema } from '@/view-models/candidate-export.schema'
@@ -70,10 +75,12 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     generateAnonymized: protectedProcedure.input(candidateIdSchema).mutation(({ input }) =>
       handleGenerateAnonymized(deps, input.id),
     ),
+    saveAnonymized: protectedProcedure.input(saveAnonymizedSchema).mutation(({ input }) =>
+      handleSaveAnonymized(deps, input.id, input.dossier),
+    ),
     detectDuplicate: protectedProcedure.input(detectDuplicateInputSchema).query(({ input }) =>
       handleDetectDuplicate(deps, input),
-    ),
-    merge: protectedProcedure.input(candidateMergeInputSchema).mutation(({ input }) =>
+    ),    merge: protectedProcedure.input(candidateMergeInputSchema).mutation(({ input }) =>
       handleMergeCandidate(deps, input),
     ),
     ...candidateImportRoutes(deps),

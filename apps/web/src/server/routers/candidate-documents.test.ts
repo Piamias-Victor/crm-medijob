@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 import { makeCandidateDeps, session } from '@/server/routers/candidate.test.fixtures'
+import { emptyAnonymizedDossier, parseAnonymizedDossier } from '@/view-models/anonymized-dossier'
 
 const documentsProfile = {
   id: 'c1',
@@ -50,7 +51,7 @@ describe('candidate documents mutations', () => {
     )
   })
 
-  it('generateAnonymized persists anonymizedProfile without PII', async () => {
+  it('generateAnonymized persists structured JSON without PII', async () => {
     const { caller, updateDerivedFields } = documentsCaller({
       findDocumentsProfile: vi.fn().mockResolvedValue({
         ...documentsProfile,
@@ -58,7 +59,8 @@ describe('candidate documents mutations', () => {
       }),
     })
     const result = await caller.generateAnonymized({ id: 'c1' })
-    expect(result.anonymizedProfile).toContain('Profil anonymisé')
+    const dossier = parseAnonymizedDossier(result.anonymizedProfile)
+    expect(dossier?.accroche.length).toBeGreaterThan(0)
     expect(result.anonymizedProfile.toLowerCase()).not.toContain('camille')
     expect(updateDerivedFields).toHaveBeenCalled()
   })
@@ -67,6 +69,23 @@ describe('candidate documents mutations', () => {
     const { caller } = documentsCaller()
     await expect(caller.generateAnonymized({ id: 'c1' })).rejects.toMatchObject({
       message: 'Générez d’abord le résumé IA.',
+    })
+  })
+
+  it('saveAnonymized persists edits and refuses PII', async () => {
+    const { caller, updateDerivedFields } = documentsCaller()
+    const dossier = { ...emptyAnonymizedDossier(), accroche: 'Profil officine' }
+    const result = await caller.saveAnonymized({ id: 'c1', dossier })
+    expect(parseAnonymizedDossier(result.anonymizedProfile)?.accroche).toBe('Profil officine')
+    expect(updateDerivedFields).toHaveBeenCalled()
+
+    await expect(
+      caller.saveAnonymized({
+        id: 'c1',
+        dossier: { ...emptyAnonymizedDossier(), accroche: 'Camille Durand' },
+      }),
+    ).rejects.toMatchObject({
+      message: 'Le dossier anonymisé contient des données personnelles. Réessaie.',
     })
   })
 

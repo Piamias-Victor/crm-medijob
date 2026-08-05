@@ -2,7 +2,8 @@ import { buildPrompt } from './prompt'
 import { parseAssistantResponse } from './parse'
 import type { AssistantProvider } from './provider'
 import type { AnonymizedProfileResponse } from './schemas'
-import { assertAnonymizedProfileSafe } from './candidate-anonymized-pii'
+import { assertAnonymizedDossierSafe } from './candidate-anonymized-pii-dossier'
+import type { AnonymizedDossier } from '@/view-models/anonymized-dossier.schema'
 
 export type CandidateAnonymizedInput = {
   cvSummary: string
@@ -36,7 +37,7 @@ export function buildCandidateAnonymizedPrompt(input: CandidateAnonymizedInput):
   return buildPrompt({
     kind: 'anonymized',
     instruction:
-      'Rédige un dossier candidat anonymisé en markdown (français) pour un client. Zéro nom, email, téléphone, adresse postale ou identifiant personnel.',
+      'Rédige un dossier candidat anonymisé (français) pour un client. Remplis les 6 champs texte. Zéro nom, email, téléphone, adresse postale ou identifiant personnel. Laisse "" si non renseigné.',
     contextText: context,
   })
 }
@@ -44,10 +45,10 @@ export function buildCandidateAnonymizedPrompt(input: CandidateAnonymizedInput):
 export async function runCandidateAnonymized(
   provider: AssistantProvider,
   input: CandidateAnonymizedInput,
-): Promise<string> {
+): Promise<AnonymizedDossier> {
   const prompt = buildCandidateAnonymizedPrompt(input)
   const raw = await provider.complete({ prompt, kind: 'anonymized' })
   const data = parseAssistantResponse('anonymized', raw) as AnonymizedProfileResponse
-  assertAnonymizedProfileSafe({ profile: data.profile, forbiddenTokens: input.forbiddenTokens })
-  return data.profile
+  assertAnonymizedDossierSafe(data, input.forbiddenTokens)
+  return data
 }

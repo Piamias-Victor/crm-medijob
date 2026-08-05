@@ -21,8 +21,12 @@ const builders: Record<ResponseKind, (prompt: string) => object> = {
   offer: (prompt) => ({ title: 'Offre (simulation)', content: `${prompt}\n\n${FILLER.repeat(2)}` }),
   report: (prompt) => ({ report: `Rapport simulé.\n\n${prompt}` }),
   anonymized: () => ({
-    profile:
-      '## Profil anonymisé\n\nProfessionnel de santé expérimenté en officine. Maîtrise des logiciels métier. Mobilité régionale. Disponibilité immédiate.',
+    accroche: 'Professionnel de santé expérimenté en officine.',
+    metierExperience: 'Parcours solide en officine de quartier.',
+    competencesLogiciels: 'Maîtrise des logiciels métier.',
+    mobilite: 'Mobilité régionale.',
+    disponibiliteContrat: 'Disponibilité immédiate.',
+    pointsForts: 'Autonomie et relation patient.',
   }),
   cv: () => ({
     firstName: 'Camille',

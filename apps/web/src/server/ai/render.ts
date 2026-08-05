@@ -1,3 +1,4 @@
+import { formatAnonymizedDossierExport } from '@/view-models/anonymized-dossier'
 import type {
   ResponseKind,
   ChatResponse,
@@ -25,7 +26,7 @@ export function renderResponse(kind: ResponseKind, data: unknown): string {
     case 'report':
       return (data as ReportResponse).report
     case 'anonymized':
-      return (data as AnonymizedProfileResponse).profile
+      return formatAnonymizedDossierExport(data as AnonymizedProfileResponse)
     case 'cv':
       return JSON.stringify(data)
   }

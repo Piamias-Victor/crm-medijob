@@ -35,7 +35,11 @@ export function CandidateDocumentsAiActions({
           className="gap-2"
         >
           <UserRoundSearch className="size-4" />
-          {anonymizedPending ? 'Génération…' : 'Générer dossier anonymisé'}
+          {anonymizedPending
+            ? 'Génération…'
+            : hasAnonymized
+              ? 'Régénérer dossier anonymisé'
+              : 'Générer dossier anonymisé'}
         </Button>
         {hasAnonymized ? (
           <a

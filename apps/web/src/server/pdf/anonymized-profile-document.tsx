@@ -1,5 +1,6 @@
 import { Document, Page, Path, StyleSheet, Svg, Text, View } from '@react-pdf/renderer'
 import { PDF_BRAND } from './anonymized-profile-colors'
+import type { AnonymizedSection } from '@/view-models/anonymized-dossier'
 
 const styles = StyleSheet.create({
   page: {
@@ -17,20 +18,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: PDF_BRAND.accent,
   },
-  brand: {
-    fontSize: 18,
+  brand: { fontSize: 18, fontWeight: 700, color: PDF_BRAND.primary },
+  subtitle: { fontSize: 10, color: PDF_BRAND.textMuted, marginTop: 2 },
+  section: { marginBottom: 16 },
+  sectionTitle: {
+    fontSize: 12,
     fontWeight: 700,
     color: PDF_BRAND.primary,
+    marginBottom: 6,
   },
-  subtitle: {
-    fontSize: 10,
-    color: PDF_BRAND.textMuted,
-    marginTop: 2,
-  },
-  body: {
-    lineHeight: 1.5,
-    fontSize: 11,
-  },
+  body: { lineHeight: 1.5, fontSize: 11 },
   footer: {
     position: 'absolute',
     bottom: 28,
@@ -50,9 +47,9 @@ function BrandLogo() {
   )
 }
 
-type Props = { content: string }
+type Props = { sections: AnonymizedSection[] }
 
-export function AnonymizedProfileDocument({ content }: Props) {
+export function AnonymizedProfileDocument({ sections }: Props) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -63,7 +60,12 @@ export function AnonymizedProfileDocument({ content }: Props) {
             <Text style={styles.subtitle}>Dossier candidat anonymisé</Text>
           </View>
         </View>
-        <Text style={styles.body}>{content}</Text>
+        {sections.map((section) => (
+          <View key={section.key} style={styles.section}>
+            <Text style={styles.sectionTitle}>{section.label}</Text>
+            <Text style={styles.body}>{section.content}</Text>
+          </View>
+        ))}
         <Text style={styles.footer}>Document confidentiel — MediJob · Généré automatiquement</Text>
       </Page>
     </Document>
