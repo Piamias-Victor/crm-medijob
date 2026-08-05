@@ -1,7 +1,6 @@
 'use client'
 
 import { nonEmptyAnonymizedSections, type AnonymizedDossier } from '@/view-models/anonymized-dossier'
-import { cn } from '@/lib/cn'
 
 type Props = {
   dossier: AnonymizedDossier
@@ -14,18 +13,15 @@ export function AnonymizedDossierPreview({ dossier, emptyLabel }: Props) {
     return <p className="text-sm text-fg-muted">{emptyLabel}</p>
   }
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5 border-l-2 border-accent/40 pl-4">
       {sections.map((section) => (
         <section key={section.key} className="flex flex-col gap-1">
-          <h4 className="text-sm font-semibold text-fg">{section.label}</h4>
-          <pre
-            className={cn(
-              'whitespace-pre-wrap rounded-lg border border-border/60 bg-surface/60',
-              'p-3 text-sm leading-relaxed text-fg',
-            )}
-          >
+          <h4 className="text-xs font-semibold uppercase tracking-[0.08em] text-fg-muted">
+            {section.label}
+          </h4>
+          <p className="whitespace-pre-wrap font-serif text-[15px] leading-7 text-fg">
             {section.content}
-          </pre>
+          </p>
         </section>
       ))}
     </div>

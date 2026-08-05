@@ -40,9 +40,9 @@ export function toSummaryInput(profile: CandidateDocumentsProfile): CandidateSum
 }
 
 export function toAnonymizedInput(profile: CandidateDocumentsProfile): CandidateAnonymizedInput {
-  if (!profile.cvSummary?.trim()) throw new Error('CV_SUMMARY_REQUIRED')
   return {
-    cvSummary: profile.cvSummary,
+    cvSummary: profile.cvSummary?.trim() ?? '',
+    notes: profile.notes,
     jobTitleName: profile.jobTitle.name,
     softwareNames: softwareNames(profile),
     mobilityRadiusKm: profile.mobilityRadiusKm,

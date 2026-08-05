@@ -7,6 +7,7 @@ import type { AnonymizedDossier } from '@/view-models/anonymized-dossier.schema'
 
 export type CandidateAnonymizedInput = {
   cvSummary: string
+  notes: string | null
   jobTitleName: string
   softwareNames: string[]
   mobilityRadiusKm: number | null
@@ -24,7 +25,8 @@ function formatAvailability(value: Date | string | null): string | null {
 
 export function buildCandidateAnonymizedPrompt(input: CandidateAnonymizedInput): string {
   const context = [
-    `Résumé professionnel :\n${input.cvSummary}`,
+    input.cvSummary ? `Résumé professionnel :\n${input.cvSummary}` : null,
+    input.notes?.trim() ? `Notes recruteur :\n${input.notes.trim()}` : null,
     `Métier : ${input.jobTitleName}`,
     input.softwareNames.length > 0 ? `Logiciels : ${input.softwareNames.join(', ')}` : null,
     input.mobilityRadiusKm !== null ? `Rayon de mobilité : ${input.mobilityRadiusKm} km` : null,

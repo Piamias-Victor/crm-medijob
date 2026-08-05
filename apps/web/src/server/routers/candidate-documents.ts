@@ -59,12 +59,6 @@ export async function handleGenerateAnonymized(deps: CandidateDocumentsDeps, can
     const updated = await deps.updateDerivedFields(candidateId, { anonymizedProfile })
     return { anonymizedProfile: updated?.anonymizedProfile ?? anonymizedProfile }
   } catch (error) {
-    if (error instanceof Error && error.message === 'CV_SUMMARY_REQUIRED') {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Générez d’abord le résumé IA.',
-      })
-    }
     throw mapAssistantChatError(error)
   }
 }

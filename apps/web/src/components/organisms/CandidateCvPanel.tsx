@@ -67,7 +67,6 @@ export function CandidateCvPanel({ profile, referentials, onPresentPharmacy, onP
       <CandidateCvActionsBar
         candidateId={profile.id}
         hasCv={Boolean(profile.cvUrl)}
-        hasSummary={Boolean(profile.cvSummary?.trim())}
         hasAnonymized={hasStructured}
         anonymizedPending={generateAnonymized.isPending}
         submitting={cv.extractPending}

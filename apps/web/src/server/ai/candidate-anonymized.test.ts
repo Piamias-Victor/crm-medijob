@@ -9,6 +9,7 @@ describe('candidate-anonymized', () => {
   it('returns PII-free structured dossier from mock provider', async () => {
     const dossier = await runCandidateAnonymized(mockProvider, {
       cvSummary: 'Pharmacienne expérimentée',
+      notes: null,
       jobTitleName: 'Pharmacien',
       softwareNames: ['Winpharma'],
       mobilityRadiusKm: 30,

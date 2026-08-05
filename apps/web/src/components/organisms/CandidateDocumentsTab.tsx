@@ -44,7 +44,6 @@ export function CandidateDocumentsTab({ profile, documents }: Props) {
       <CandidateDocumentsAiActions
         candidateId={profile.id}
         hasCv={Boolean(profile.cvUrl)}
-        hasSummary={Boolean(profile.cvSummary?.trim())}
         hasAnonymized={hasStructured}
         anonymizedPending={generateAnonymized.isPending}
         anonymizedError={anonymizedError}
@@ -54,16 +53,12 @@ export function CandidateDocumentsTab({ profile, documents }: Props) {
       {!profile.cvUrl ? (
         <CandidateDocumentsEmptyState label="Aucun CV téléversé pour ce candidat." />
       ) : null}
-      {hasStructured && profile.anonymizedProfile ? (
-        <AnonymizedDossierEditor
-          candidateId={profile.id}
-          stored={profile.anonymizedProfile}
-          onError={setAnonymizedError}
-          onSaved={() => undefined}
-        />
-      ) : !legacyBlob ? (
-        <p className="text-sm text-fg-muted">Aucun dossier anonymisé généré.</p>
-      ) : null}
+      <AnonymizedDossierEditor
+        candidateId={profile.id}
+        stored={hasStructured ? profile.anonymizedProfile : null}
+        onError={setAnonymizedError}
+        onSaved={() => undefined}
+      />
       <EntityDocumentsTab
         entityType="CANDIDATE"
         entityId={profile.id}

@@ -65,11 +65,11 @@ describe('candidate documents mutations', () => {
     expect(updateDerivedFields).toHaveBeenCalled()
   })
 
-  it('generateAnonymized rejects when cvSummary is missing', async () => {
-    const { caller } = documentsCaller()
-    await expect(caller.generateAnonymized({ id: 'c1' })).rejects.toMatchObject({
-      message: 'Générez d’abord le résumé IA.',
-    })
+  it('generateAnonymized works without cvSummary', async () => {
+    const { caller, updateDerivedFields } = documentsCaller()
+    const result = await caller.generateAnonymized({ id: 'c1' })
+    expect(parseAnonymizedDossier(result.anonymizedProfile)?.accroche.length).toBeGreaterThan(0)
+    expect(updateDerivedFields).toHaveBeenCalled()
   })
 
   it('saveAnonymized persists edits and refuses PII', async () => {
