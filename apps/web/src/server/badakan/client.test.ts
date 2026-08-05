@@ -2,17 +2,18 @@ import { describe, expect, it, vi } from 'vitest'
 import { createBadakanClient } from './client'
 
 describe('createBadakanClient', () => {
-  it('logs in then searches new employees', async () => {
+  it('logs in on /services/v3 then searches new employees', async () => {
     const fetchFn = vi
       .fn()
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ security_token: 'tok' }),
+        json: async () => ({ securityToken: 'tok' }),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           content: [{ id: 'r1', firstName: 'Ada', lastName: 'L', email: 'a@b.c' }],
+          totalPages: 1,
         }),
       })
 
@@ -26,8 +27,11 @@ describe('createBadakanClient', () => {
     const rows = await client.searchNewEmployees(20)
     expect(rows).toHaveLength(1)
     expect(rows[0]?.badakanId).toBe('r1')
-    expect(fetchFn).toHaveBeenCalledTimes(2)
-    expect(String(fetchFn.mock.calls[0]?.[0])).toContain('/accounts/login')
-    expect(String(fetchFn.mock.calls[1]?.[0])).toContain('/recipients/searchNewEmployees')
+    expect(String(fetchFn.mock.calls[0]?.[0])).toContain('/services/v3/accounts/login')
+    expect(String(fetchFn.mock.calls[1]?.[0])).toContain(
+      '/services/v3/recipients/searchNewEmployees',
+    )
+    const searchInit = fetchFn.mock.calls[1]?.[1] as RequestInit
+    expect(searchInit.headers).toMatchObject({ security_token: 'tok' })
   })
 })
