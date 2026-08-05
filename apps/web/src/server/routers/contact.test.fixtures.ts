@@ -37,6 +37,11 @@ export const contactSession = {
   expires: '2999-01-01',
 }
 
+export const directionSession = {
+  user: { id: 'u1', role: 'DIRECTION' as const },
+  expires: '2999-01-01',
+}
+
 export function makeContactDeps(overrides: Partial<ContactDeps> = {}): ContactDeps {
   return {
     contacts: {
@@ -63,6 +68,9 @@ export function makeContactDeps(overrides: Partial<ContactDeps> = {}): ContactDe
   }
 }
 
-export function contactCaller(deps: ContactDeps) {
-  return createCallerFactory(makeContactRouter(deps))({ session: contactSession })
+export function contactCaller(
+  deps: ContactDeps,
+  session: typeof contactSession | typeof directionSession = contactSession,
+) {
+  return createCallerFactory(makeContactRouter(deps))({ session })
 }

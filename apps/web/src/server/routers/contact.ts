@@ -8,6 +8,7 @@ import { groupContactsByPharmacy } from '@/view-models/contact-by-pharmacy'
 import { mapContactPharmacyPickerRows } from '@/view-models/contact-pharmacy-picker'
 import { toContactPrimaryName } from '@/view-models/contact-primary-warning'
 import { toContactCreateData, type ContactDeps } from '@/server/routers/contact.deps'
+import { mapContactSoftDeleteError } from '@/server/routers/contact-soft-delete-error'
 import { idSchema } from '@/lib/schemas/entity-id'
 import { contactListFiltersSchema } from '@/view-models/contact-list-filters.schema'
 
@@ -79,6 +80,12 @@ export function makeContactRouter(deps: ContactDeps) {
     missions: protectedProcedure.input(idSchema).query(({ input }) => deps.listMissions(input.id)),
     softDelete: permissionProcedure('softDelete')
       .input(idSchema)
-      .mutation(({ input }) => deps.contacts.softDelete(input.id)),
+      .mutation(async ({ input }) => {
+        try {
+          return await deps.contacts.softDelete(input.id)
+        } catch (error) {
+          mapContactSoftDeleteError(error)
+        }
+      }),
   })
 }

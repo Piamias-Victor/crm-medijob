@@ -48,7 +48,7 @@ describe('SoftDeleteModal', () => {
   })
 
   it('shows an error toast and stays open when onConfirm fails', async () => {
-    const onConfirm = vi.fn().mockRejectedValue(new Error('network'))
+    const onConfirm = vi.fn().mockRejectedValue(new Error('Désignez un autre contact primaire'))
     const onOpenChange = vi.fn()
 
     render(
@@ -63,9 +63,27 @@ describe('SoftDeleteModal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
 
     await waitFor(() => {
-      expect(useToastStore.getState().toasts[0]?.message).toBe(SOFT_DELETE_ERROR)
+      expect(useToastStore.getState().toasts[0]?.message).toBe(
+        'Désignez un autre contact primaire',
+      )
     })
     expect(onOpenChange).not.toHaveBeenCalledWith(false)
     expect(screen.getByRole('alertdialog')).toBeInTheDocument()
+  })
+
+  it('falls back to generic copy when error has no message', async () => {
+    const onConfirm = vi.fn().mockRejectedValue(new Error(''))
+    render(
+      <SoftDeleteModal
+        entityName="X"
+        open
+        onOpenChange={vi.fn()}
+        onConfirm={onConfirm}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
+    await waitFor(() => {
+      expect(useToastStore.getState().toasts[0]?.message).toBe(SOFT_DELETE_ERROR)
+    })
   })
 })
