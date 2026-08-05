@@ -9,7 +9,6 @@ import { cn } from '@/lib/cn'
 type Props = {
   candidateId: string
   hasCv: boolean
-  hasSummary: boolean
   hasAnonymized: boolean
   anonymizedPending: boolean
   anonymizedError?: string
@@ -19,7 +18,6 @@ type Props = {
 export function CandidateDocumentsAiActions({
   candidateId,
   hasCv,
-  hasSummary,
   hasAnonymized,
   anonymizedPending,
   anonymizedError,
@@ -30,12 +28,16 @@ export function CandidateDocumentsAiActions({
       <div className="flex flex-wrap gap-2">
         <Button
           variant="accent"
-          disabled={!hasSummary || anonymizedPending}
+          disabled={anonymizedPending}
           onClick={onGenerateAnonymized}
           className="gap-2"
         >
           <UserRoundSearch className="size-4" />
-          {anonymizedPending ? 'Génération…' : 'Générer dossier anonymisé'}
+          {anonymizedPending
+            ? 'Ouverture…'
+            : hasAnonymized
+              ? 'Ouvrir dossier anonymisé'
+              : 'Dossier anonymisé'}
         </Button>
         {hasAnonymized ? (
           <a

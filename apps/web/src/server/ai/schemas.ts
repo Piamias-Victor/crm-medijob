@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { cvExtractionAiSchema } from './cv-extraction.schema'
+import { anonymizedDossierSchema } from '@/view-models/anonymized-dossier.schema'
 
 export const RESPONSE_KINDS = ['chat', 'summary', 'email', 'offer', 'report', 'cv', 'anonymized'] as const
 
@@ -16,7 +17,7 @@ export const offerResponseSchema = z.object({
   content: z.string().min(100),
 })
 export const reportResponseSchema = z.object({ report: z.string().min(1) })
-export const anonymizedProfileResponseSchema = z.object({ profile: z.string().min(1) })
+export const anonymizedProfileResponseSchema = anonymizedDossierSchema
 
 export { cvExtractionAiSchema as cvResponseSchema } from './cv-extraction.schema'
 

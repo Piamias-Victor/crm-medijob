@@ -1,13 +1,15 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
+import { emptyAnonymizedDossier } from '@/view-models/anonymized-dossier'
 import { mockProvider } from './mock-provider'
-import { assertAnonymizedProfileSafe } from './candidate-anonymized-pii'
+import { assertAnonymizedDossierSafe } from './candidate-anonymized-pii-dossier'
 import { runCandidateAnonymized } from './candidate-anonymized'
 
 describe('candidate-anonymized', () => {
-  it('returns PII-free profile from mock provider', async () => {
-    const profile = await runCandidateAnonymized(mockProvider, {
+  it('returns PII-free structured dossier from mock provider', async () => {
+    const dossier = await runCandidateAnonymized(mockProvider, {
       cvSummary: 'Pharmacienne expérimentée',
+      notes: null,
       jobTitleName: 'Pharmacien',
       softwareNames: ['Winpharma'],
       mobilityRadiusKm: 30,
@@ -15,25 +17,25 @@ describe('candidate-anonymized', () => {
       availableFrom: null,
       forbiddenTokens: ['Camille', 'Durand', 'camille@example.com'],
     })
-    expect(profile).toContain('Profil anonymisé')
-    expect(profile.toLowerCase()).not.toContain('camille')
+    expect(dossier.accroche.length).toBeGreaterThan(0)
+    expect(JSON.stringify(dossier).toLowerCase()).not.toContain('camille')
   })
 
-  it('rejects profile containing candidate name', () => {
+  it('rejects dossier section containing candidate name', () => {
     expect(() =>
-      assertAnonymizedProfileSafe({
-        profile: 'Candidat Camille Durand expérimentée',
-        forbiddenTokens: ['Camille Durand'],
-      }),
+      assertAnonymizedDossierSafe(
+        { ...emptyAnonymizedDossier(), accroche: 'Candidat Camille Durand expérimentée' },
+        ['Camille Durand'],
+      ),
     ).toThrow('ANONYMIZED_CONTAINS_PII')
   })
 
-  it('rejects profile containing email pattern', () => {
+  it('rejects dossier containing email pattern', () => {
     expect(() =>
-      assertAnonymizedProfileSafe({
-        profile: 'Contact : test@example.com',
-        forbiddenTokens: [],
-      }),
+      assertAnonymizedDossierSafe(
+        { ...emptyAnonymizedDossier(), pointsForts: 'Contact : test@example.com' },
+        [],
+      ),
     ).toThrow('ANONYMIZED_CONTAINS_PII')
   })
 })

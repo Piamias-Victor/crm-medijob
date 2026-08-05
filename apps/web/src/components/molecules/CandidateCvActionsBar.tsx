@@ -12,7 +12,6 @@ import { cn } from '@/lib/cn'
 type Props = {
   candidateId: string
   hasCv: boolean
-  hasSummary: boolean
   hasAnonymized: boolean
   anonymizedPending: boolean
   submitting: boolean
@@ -30,7 +29,6 @@ const linkClass = cn(
 export function CandidateCvActionsBar({
   candidateId,
   hasCv,
-  hasSummary,
   hasAnonymized,
   anonymizedPending,
   submitting,
@@ -58,11 +56,11 @@ export function CandidateCvActionsBar({
           type="button"
           variant="outline"
           className="gap-2"
-          disabled={!hasSummary || anonymizedPending}
+          disabled={anonymizedPending}
           onClick={onGenerateAnonymized}
         >
           <UserRoundSearch className="size-4" />
-          {anonymizedPending ? 'Génération…' : 'Dossier anonymisé'}
+          {anonymizedPending ? 'Ouverture…' : hasAnonymized ? 'Ouvrir dossier' : 'Dossier anonymisé'}
         </Button>
         {hasAnonymized ? (
           <a
