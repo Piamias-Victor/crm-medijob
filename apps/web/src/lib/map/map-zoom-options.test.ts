@@ -8,8 +8,8 @@ import {
 describe('mapZoomOptions', () => {
   it('keeps mid wheel sensitivity; native wheel off for custom boost', () => {
     expect(mapZoomOptions.wheelPxPerZoomLevel).toBe(MAP_WHEEL_PX_PER_ZOOM_LEVEL)
-    expect(mapZoomOptions.wheelPxPerZoomLevel).toBeGreaterThan(30)
-    expect(mapZoomOptions.wheelPxPerZoomLevel).toBeLessThan(60)
+    expect(mapZoomOptions.wheelPxPerZoomLevel).toBeGreaterThan(40)
+    expect(mapZoomOptions.wheelPxPerZoomLevel).toBeLessThanOrEqual(60)
     expect(mapZoomOptions.wheelDebounceTime).toBe(MAP_WHEEL_DEBOUNCE_MS)
     expect(mapZoomOptions.wheelDebounceTime).toBe(0)
     expect(mapZoomOptions.zoomSnap).toBe(0)
