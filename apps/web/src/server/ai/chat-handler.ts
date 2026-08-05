@@ -7,6 +7,7 @@ import {
 import { buildPrompt } from './prompt'
 import { parseAssistantResponse } from './parse'
 import { renderResponse } from './render'
+import { formatChatHistory, takeChatHistoryWindow } from './chat-history'
 import type { AssistantProvider } from './provider'
 import type { ChatInput } from './request'
 import type { ResponseKind } from './schemas'
@@ -36,11 +37,13 @@ export async function runAssistantChat(
   const kind: ResponseKind = shortcut?.kind ?? 'chat'
   const entityText = await loadContextText(input.context, deps.repos)
   const extraText = await loadShortcutExtraContext(shortcut, input.context, deps)
+  const history = takeChatHistoryWindow(input.history ?? [])
   const prompt = buildPrompt({
     kind,
     message: input.message,
     instruction: shortcut?.instruction,
     contextText: mergeContext(entityText, extraText),
+    historyText: history.length > 0 ? formatChatHistory(history) : null,
   })
 
   const raw = await deps.provider.complete({ prompt, kind })
