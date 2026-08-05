@@ -32,6 +32,7 @@ export function makeCandidateRouter(deps: CandidateDeps) {
       const [rows, stages] = await Promise.all([deps.listForKanban(input), deps.listStages()])
       return { rows, stages }
     }),
+    mapPins: protectedProcedure.query(() => deps.listMapPins()),
     exportCsv: permissionProcedure('export')
       .input(candidateExportInputSchema)
       .query(({ input }) => handleCandidateExportCsv(deps, input)),

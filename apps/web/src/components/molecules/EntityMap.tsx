@@ -17,7 +17,7 @@ const EntityMapCanvas = dynamic(
 
 type Props = {
   pins: MapPin[]
-  onPinClick?: (id: string) => void
+  onPinClick?: (pin: MapPin) => void
   emptyLabel?: string
 }
 
