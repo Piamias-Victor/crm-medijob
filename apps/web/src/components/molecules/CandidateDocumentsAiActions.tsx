@@ -34,10 +34,10 @@ export function CandidateDocumentsAiActions({
         >
           <UserRoundSearch className="size-4" />
           {anonymizedPending
-            ? 'Génération…'
+            ? 'Ouverture…'
             : hasAnonymized
-              ? 'Régénérer dossier anonymisé'
-              : 'Générer dossier anonymisé'}
+              ? 'Ouvrir dossier anonymisé'
+              : 'Dossier anonymisé'}
         </Button>
         {hasAnonymized ? (
           <a

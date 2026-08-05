@@ -4,8 +4,8 @@
 export function CandidateProfileDocsShortcuts() {
   return (
     <p className="text-sm text-fg-muted">
-      Dossier anonymisé : générer / PDF dans la barre profil, édition complète dans l’onglet
-      Documents. Statut Blacklisté = liste déroulante Statut du profil.
+      Dossier anonymisé : bouton dans la barre profil (modale IA → édition → PDF). Édition aussi
+      depuis l’onglet Documents. Statut Blacklisté = liste déroulante Statut du profil.
     </p>
   )
 }

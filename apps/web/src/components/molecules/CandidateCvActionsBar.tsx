@@ -60,7 +60,7 @@ export function CandidateCvActionsBar({
           onClick={onGenerateAnonymized}
         >
           <UserRoundSearch className="size-4" />
-          {anonymizedPending ? 'Génération…' : hasAnonymized ? 'Régénérer dossier' : 'Dossier anonymisé'}
+          {anonymizedPending ? 'Ouverture…' : hasAnonymized ? 'Ouvrir dossier' : 'Dossier anonymisé'}
         </Button>
         {hasAnonymized ? (
           <a
