@@ -88,6 +88,12 @@ enum ApplicationStatus {
   REFUSEE
 }
 
+enum AppProfileStatus {
+  EN_ATTENTE
+  ACCEPTE
+  IGNORE
+}
+
 enum JobOfferStatus {
   BROUILLON
   PUBLIEE
@@ -193,6 +199,7 @@ model JobTitle {
   candidates                Candidate[]
   missions                  Mission[]
   applications              Application[]
+  appProfiles               AppProfile[]
   missionCompatibilities    JobTitleCompatibility[] @relation("MissionJobTitle")
   acceptedInCompatibilities JobTitleCompatibility[] @relation("AcceptedCandidateJobTitle")
 }
@@ -256,6 +263,7 @@ model Candidate {
   activities          ActivityLog[]                 @relation("CandidateActivities")
   documents           Document[]                    @relation("CandidateDocuments")
   applications        Application[]
+  appProfiles         AppProfile[]
 
   @@index([deletedAt])
   @@index([jobTitleId])
@@ -458,6 +466,31 @@ model Application {
   @@index([deletedAt])
   @@index([jobOfferId])
   @@index([status])
+}
+
+model AppProfile {
+  id           String           @id @default(cuid())
+  badakanId    String           @unique
+  firstName    String
+  lastName     String
+  email        String?
+  phone        String?
+  city         String?
+  postalCode   String?
+  activityLabel String?
+  jobTitleId   String?
+  snapshot     Json?
+  status       AppProfileStatus @default(EN_ATTENTE)
+  candidateId  String?
+  syncedAt     DateTime         @default(now())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
+  candidate Candidate? @relation(fields: [candidateId], references: [id])
+
+  @@index([status])
+  @@index([candidateId])
 }
 
 // ─── Historique polymorphe ────────────────────────────────────

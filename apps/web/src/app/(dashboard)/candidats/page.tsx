@@ -21,9 +21,10 @@ export default async function Page({ searchParams }: Props) {
   const listFilters = toCandidateListFilters(
     normalizeCvthequeFilterValues(deserializeFilters(filterConfig, toUrlSearchParams(params))),
   )
-  const [list, inbox] = await Promise.all([
+  const [list, inbox, appProfiles] = await Promise.all([
     caller.candidate.list(listFilters),
     caller.application.listInbox(),
+    caller.appProfile.listPending(),
   ])
 
   return (
@@ -31,6 +32,8 @@ export default async function Page({ searchParams }: Props) {
       <CandidatsPage
         list={list}
         inbox={inbox}
+        appProfiles={appProfiles}
+        jobTitles={referentials.jobTitles}
         serverFilters={listFilters}
         filterConfig={filterConfig}
         initialTab={parseCandidatsTab(typeof tab === 'string' ? tab : undefined)}

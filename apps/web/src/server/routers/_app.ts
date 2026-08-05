@@ -8,6 +8,7 @@ import { assistantRouter } from '@/server/routers/assistant'
 import { candidateRouter } from '@/server/routers/candidate.adapter'
 import { missionCandidateRouter } from '@/server/routers/mission-candidate'
 import { applicationRouter } from '@/server/routers/application'
+import { appProfileRouter } from '@/server/routers/app-profile'
 import { missionRouter } from '@/server/routers/mission.adapter'
 import { jobOfferRouter } from '@/server/routers/job-offer'
 import { activityLogRouter } from '@/server/routers/activity-log'
@@ -29,6 +30,7 @@ export const appRouter = router({
   mission: missionRouter,
   missionCandidate: missionCandidateRouter,
   application: applicationRouter,
+  appProfile: appProfileRouter,
   jobOffer: jobOfferRouter,
   activityLog: activityLogRouter,
   document: documentRouter,
