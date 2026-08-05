@@ -1,4 +1,5 @@
 import { mapBadakanRecipient, type BadakanRecipient } from './map-recipient'
+import { badakanLogin } from './auth'
 
 export type BadakanClientConfig = {
   baseUrl: string
@@ -11,32 +12,13 @@ export type BadakanClient = {
   searchNewEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
 }
 
-type LoginBody = {
-  securityToken?: string
-  security_token?: string
-  token?: string
-}
-
-async function login(config: BadakanClientConfig, fetchFn: typeof fetch): Promise<string> {
-  const res = await fetchFn(`${config.baseUrl}/services/v3/accounts/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: config.email, password: config.password }),
-  })
-  if (!res.ok) throw new Error(`Badakan login failed (${res.status})`)
-  const body = (await res.json()) as LoginBody
-  const token = body.securityToken ?? body.security_token ?? body.token
-  if (!token) throw new Error('Badakan login: missing securityToken')
-  return token
-}
-
 type PageListing = { content?: unknown[]; totalPages?: number }
 
 export function createBadakanClient(config: BadakanClientConfig): BadakanClient {
   const fetchFn = config.fetchFn ?? fetch
   return {
     async searchNewEmployees(pageSize = 100) {
-      const token = await login(config, fetchFn)
+      const token = await badakanLogin(config.baseUrl, config.email, config.password, fetchFn)
       const rows: BadakanRecipient[] = []
       for (let pageNumber = 0; pageNumber < 50; pageNumber++) {
         const res = await fetchFn(
@@ -80,4 +62,15 @@ export function badakanClientFromEnv(
     password,
     fetchFn,
   })
+}
+
+export function badakanEnvConfig(env: NodeJS.ProcessEnv = process.env) {
+  const email = env.BADAKAN_EMAIL
+  const password = env.BADAKAN_PASSWORD
+  if (!email || !password) throw new Error('BADAKAN_EMAIL / BADAKAN_PASSWORD manquants')
+  return {
+    baseUrl: env.BADAKAN_API_URL ?? env.BADAKAN_BASE_URL ?? 'https://api.badakan.com/brother-web',
+    email,
+    password,
+  }
 }

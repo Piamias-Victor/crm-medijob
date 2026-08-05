@@ -10,7 +10,7 @@ function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
   return {
     listPending: vi.fn().mockResolvedValue([]),
     countPending: vi.fn().mockResolvedValue(0),
-    findById: vi.fn().mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE' }),
+    findById: vi.fn().mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE', badakanId: 'bk1' }),
     findByBadakanIds: vi.fn().mockResolvedValue([]),
     upsertPending: vi.fn(),
     markStatus: vi.fn(),
@@ -19,6 +19,7 @@ function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
     getBadakanClient: () => ({
       searchNewEmployees: vi.fn().mockResolvedValue([]),
     }),
+    importCvUrl: vi.fn().mockResolvedValue(null),
     ...overrides,
   }
 }

@@ -50,7 +50,10 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
           input.id,
           {
             data: input.data
-              ? toCandidateCreateData(input.data as CandidateCreateInput, 'MANUAL')
+              ? (toCandidateCreateData(input.data as CandidateCreateInput, 'MANUAL') as Record<
+                  string,
+                  unknown
+                >)
               : undefined,
             mergeCandidateId: input.mergeCandidateId,
           },
@@ -58,6 +61,7 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
             findById: deps.findById,
             createCandidate: (data) => deps.createProfile(data as never),
             markStatus: deps.markStatus,
+            importCvUrl: deps.importCvUrl,
           },
         )
       } catch (error) {

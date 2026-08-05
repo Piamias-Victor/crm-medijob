@@ -16,6 +16,8 @@ export const badakanRecipientSchema = z
     validatedPhoneNumber: z.string().optional().nullable(),
     address: z
       .object({
+        address1: z.string().optional().nullable(),
+        address2: z.string().optional().nullable(),
         city: z.string().optional().nullable(),
         zipCode: z.string().optional().nullable(),
       })
@@ -25,6 +27,13 @@ export const badakanRecipientSchema = z
     zipCode: z.string().optional().nullable(),
     activity: activityItem.optional().nullable(),
     activities: z.array(activityItem).optional().nullable(),
+    documents: z
+      .object({
+        RESUME: z.object({ rectoUrl: z.string().optional() }).optional(),
+      })
+      .passthrough()
+      .optional()
+      .nullable(),
   })
   .passthrough()
 
@@ -36,9 +45,11 @@ export type BadakanRecipient = {
   lastName: string
   email: string | null
   phone: string | null
+  address: string | null
   city: string | null
   postalCode: string | null
   activityLabel: string | null
+  hasResume: boolean
   snapshot: BadakanRecipientRaw
 }
 
@@ -48,8 +59,9 @@ function labelOf(value: z.infer<typeof activityItem> | null | undefined): string
   return value.label ?? value.name ?? null
 }
 
-function firstActivity(r: BadakanRecipientRaw): string | null {
-  return labelOf(r.activity) ?? labelOf(r.activities?.[0])
+function joinAddress(a: NonNullable<BadakanRecipientRaw['address']>): string | null {
+  const line = [a.address1, a.address2].map((p) => p?.trim()).filter(Boolean).join(', ')
+  return line || null
 }
 
 export function mapBadakanRecipient(raw: unknown): BadakanRecipient | null {
@@ -65,9 +77,11 @@ export function mapBadakanRecipient(raw: unknown): BadakanRecipient | null {
     lastName: lastName || '—',
     email: r.email ?? null,
     phone: r.validatedPhoneNumber ?? r.phone ?? r.mobilePhone ?? null,
+    address: r.address ? joinAddress(r.address) : null,
     city: r.address?.city ?? r.city ?? null,
     postalCode: r.address?.zipCode ?? r.zipCode ?? null,
-    activityLabel: firstActivity(r),
+    activityLabel: labelOf(r.activity) ?? labelOf(r.activities?.[0]),
+    hasResume: Boolean(r.documents?.RESUME?.rectoUrl),
     snapshot: r,
   }
 }

@@ -13,20 +13,19 @@ export type SyncDeps = {
 
 export type SyncResult = { fetched: number; upserted: number; skippedTreated: number }
 
-function toUpsert(
-  row: BadakanRecipient,
-  jobTitleId: string | null,
-): AppProfileUpsertInput {
+function toUpsert(row: BadakanRecipient, jobTitleId: string | null): AppProfileUpsertInput {
   return {
     badakanId: row.badakanId,
     firstName: row.firstName,
     lastName: row.lastName,
     email: row.email,
     phone: row.phone,
+    address: row.address,
     city: row.city,
     postalCode: row.postalCode,
     activityLabel: row.activityLabel,
     jobTitleId,
+    hasResume: row.hasResume,
     snapshot: row.snapshot as Prisma.InputJsonValue,
   }
 }
@@ -37,7 +36,6 @@ export async function syncAppProfiles(deps: SyncDeps): Promise<SyncResult> {
   const treated = new Set(
     existing.filter((e) => e.status !== 'EN_ATTENTE').map((e) => e.badakanId),
   )
-
   let upserted = 0
   let skippedTreated = 0
   for (const row of fetched) {

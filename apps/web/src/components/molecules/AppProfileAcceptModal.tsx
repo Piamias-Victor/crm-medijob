@@ -31,49 +31,47 @@ export function AppProfileAcceptModal({
   onClose,
   onSubmit,
 }: Props) {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<CandidateCreateInput>({
+  const form = useForm<CandidateCreateInput>({
     resolver: zodResolver(candidateCreateInputSchema),
     defaultValues,
     values: defaultValues,
   })
+  const { register, handleSubmit, setValue, watch, formState } = form
 
   return (
     <GlassModal
       open={open}
       onClose={onClose}
       title="Créer le candidat"
-      description="Complète les infos manquantes puis crée le candidat en CVthèque."
+      description="CV Badakan importé à la validation s’il existe. Complète le reste si besoin."
       className="max-w-lg"
       trapFocus
     >
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField label="Prénom" htmlFor="firstName" error={errors.firstName?.message}>
+          <FormField label="Prénom" htmlFor="firstName" error={formState.errors.firstName?.message}>
             <Input id="firstName" {...register('firstName')} />
           </FormField>
-          <FormField label="Nom" htmlFor="lastName" error={errors.lastName?.message}>
+          <FormField label="Nom" htmlFor="lastName" error={formState.errors.lastName?.message}>
             <Input id="lastName" {...register('lastName')} />
           </FormField>
-          <FormField label="Email" htmlFor="email" error={errors.email?.message}>
+          <FormField label="Email" htmlFor="email" error={formState.errors.email?.message}>
             <Input id="email" type="email" {...register('email')} />
           </FormField>
-          <FormField label="Téléphone" htmlFor="phone" error={errors.phone?.message}>
+          <FormField label="Téléphone" htmlFor="phone" error={formState.errors.phone?.message}>
             <Input id="phone" {...register('phone')} />
           </FormField>
-          <FormField label="Ville" htmlFor="city" error={errors.city?.message}>
+          <FormField label="Ville" htmlFor="city" error={formState.errors.city?.message}>
             <Input id="city" {...register('city')} />
           </FormField>
-          <FormField label="Code postal" htmlFor="postalCode" error={errors.postalCode?.message}>
+          <FormField label="Code postal" htmlFor="postalCode" error={formState.errors.postalCode?.message}>
             <Input id="postalCode" {...register('postalCode')} />
           </FormField>
         </div>
-        <FormField label="Métier" htmlFor="jobTitleId" error={errors.jobTitleId?.message}>
+        <FormField label="Adresse" htmlFor="address" error={formState.errors.address?.message}>
+          <Input id="address" {...register('address')} />
+        </FormField>
+        <FormField label="Métier" htmlFor="jobTitleId" error={formState.errors.jobTitleId?.message}>
           <Combobox
             value={watch('jobTitleId')}
             onChange={(value) => setValue('jobTitleId', value, { shouldValidate: true })}

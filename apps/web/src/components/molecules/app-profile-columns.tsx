@@ -14,6 +14,11 @@ export function buildAppProfileColumns(
     { id: 'email', header: 'Email', accessor: (row) => row.email ?? TABLE_EMPTY_CELL },
     { id: 'city', header: 'Ville', accessor: (row) => row.city ?? TABLE_EMPTY_CELL },
     {
+      id: 'address',
+      header: 'Adresse',
+      accessor: (row) => row.address ?? TABLE_EMPTY_CELL,
+    },
+    {
       id: 'metier',
       header: 'Métier',
       accessor: (row) => row.jobTitleName ?? row.activityLabel ?? TABLE_EMPTY_CELL,

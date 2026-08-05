@@ -12,6 +12,7 @@ export function buildAppProfileAcceptDefaults(
     lastName: profile.lastName === '—' ? '' : profile.lastName,
     email: profile.email ?? undefined,
     phone: profile.phone ?? undefined,
+    address: profile.address ?? undefined,
     city: profile.city ?? undefined,
     postalCode: profile.postalCode ?? undefined,
     jobTitleId: profile.jobTitleId ?? fallbackJobTitleId,

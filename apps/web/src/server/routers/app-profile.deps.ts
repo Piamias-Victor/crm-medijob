@@ -2,6 +2,8 @@ import { prisma } from '@/server/db/repositories/client'
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
+import { importBadakanCvToBlob } from '@/server/app-profile/import-cv'
+import { vercelBlobClient } from '@/server/services/blob'
 
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
@@ -13,6 +15,7 @@ export type AppProfileDeps = {
   createProfile: typeof candidateRepository.createProfile
   findJobTitleIdByName: (name: string) => Promise<string | null>
   getBadakanClient: () => BadakanClient
+  importCvUrl: (badakanId: string) => Promise<string | null>
 }
 
 export const defaultAppProfileDeps: AppProfileDeps = {
@@ -31,4 +34,5 @@ export const defaultAppProfileDeps: AppProfileDeps = {
     return row?.id ?? null
   },
   getBadakanClient: () => badakanClientFromEnv(),
+  importCvUrl: (badakanId) => importBadakanCvToBlob(badakanId, vercelBlobClient),
 }

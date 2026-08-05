@@ -8,10 +8,12 @@ export type AppProfileUpsertInput = {
   lastName: string
   email?: string | null
   phone?: string | null
+  address?: string | null
   city?: string | null
   postalCode?: string | null
   activityLabel?: string | null
   jobTitleId?: string | null
+  hasResume?: boolean
   snapshot?: Prisma.InputJsonValue
 }
 
@@ -24,21 +26,17 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         take: limit,
         include: { jobTitle: { select: { id: true, name: true } } },
       }),
-
     countPending: () => db.appProfile.count({ where: { status: 'EN_ATTENTE' } }),
-
     findById: (id: string) =>
       db.appProfile.findUnique({
         where: { id },
         include: { jobTitle: { select: { id: true, name: true } } },
       }),
-
     findByBadakanIds: (ids: string[]) =>
       db.appProfile.findMany({
         where: { badakanId: { in: ids } },
         select: { id: true, badakanId: true, status: true },
       }),
-
     upsertPending: (data: AppProfileUpsertInput) =>
       db.appProfile.upsert({
         where: { badakanId: data.badakanId },
@@ -48,15 +46,16 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
           lastName: data.lastName,
           email: data.email,
           phone: data.phone,
+          address: data.address,
           city: data.city,
           postalCode: data.postalCode,
           activityLabel: data.activityLabel,
           jobTitleId: data.jobTitleId,
+          hasResume: data.hasResume ?? false,
           snapshot: data.snapshot,
           syncedAt: new Date(),
         },
       }),
-
     markStatus: (
       id: string,
       status: Extract<AppProfileStatus, 'ACCEPTE' | 'IGNORE'>,
