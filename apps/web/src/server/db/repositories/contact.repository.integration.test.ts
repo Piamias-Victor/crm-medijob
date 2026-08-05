@@ -51,6 +51,19 @@ describe('contactRepository', () => {
     expect((await repo.list()).some((x) => x.id === c.id)).toBe(false)
   })
 
+  it('refuses soft-delete of a primary contact', async () => {
+    const pharmacy = await db.prisma.pharmacy.create({ data: { name: 'Primary guard pharma' } })
+    const primary = await repo.create({
+      ...newContact('Primaire'),
+      pharmacyId: pharmacy.id,
+      isPrimary: true,
+    })
+    await expect(repo.softDelete(primary.id)).rejects.toMatchObject({
+      name: 'PrimaryContactSoftDeleteError',
+    })
+    expect(await repo.findById(primary.id)).not.toBeNull()
+  })
+
   it('unsets previous primary when creating a primary contact', async () => {
     const first = await repo.create({ ...newContact('Anne'), isPrimary: true })
     const second = await repo.create({ ...newContact('Bob'), isPrimary: true })

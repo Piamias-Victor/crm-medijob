@@ -30,8 +30,12 @@ export function SoftDeleteModal({ entityName, open, onOpenChange, onConfirm }: P
     try {
       await onConfirm()
       onOpenChange(false)
-    } catch {
-      push({ variant: 'error', message: SOFT_DELETE_ERROR })
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message.trim() !== ''
+          ? error.message
+          : SOFT_DELETE_ERROR
+      push({ variant: 'error', message })
     } finally {
       setLoading(false)
     }
