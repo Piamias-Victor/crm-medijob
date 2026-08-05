@@ -27,4 +27,21 @@ describe('buildPrompt', () => {
     expect(prompt).toContain('Rédige un email professionnel')
     expect(prompt).toContain('subject')
   })
+
+  it('chat prompt addresses the recruiter and forbids greeting the candidate', () => {
+    const prompt = buildPrompt({ kind: 'chat', message: 'résume le profil' })
+    expect(prompt.toLowerCase()).toContain('recruteur')
+    expect(prompt).toContain('3e personne')
+    expect(prompt).toContain('Bonjour Camille')
+  })
+
+  it('includes history text when provided', () => {
+    const prompt = buildPrompt({
+      kind: 'chat',
+      message: 'c’est tout ?',
+      historyText: 'user: résume\nassistant: Camille est préparatrice.',
+    })
+    expect(prompt).toContain('Historique récent')
+    expect(prompt).toContain('Camille est préparatrice.')
+  })
 })

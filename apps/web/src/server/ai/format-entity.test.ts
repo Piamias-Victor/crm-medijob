@@ -15,6 +15,25 @@ describe('format-entity', () => {
     expect(text).toContain('Préparatrice expérimentée')
   })
 
+  it('formats enriched candidate fields for recruiter chat', () => {
+    const text = formatCandidate({
+      firstName: 'Camille',
+      lastName: 'Martin',
+      jobTitleName: 'Préparateur',
+      softwareNames: ['Winpharma', 'LGPI'],
+      mobilityNotes: 'Rhône-Alpes',
+      preferredContractTypes: ['CDI', 'CDD'],
+      salaryExpectations: '28k',
+      status: 'QUALIFIE',
+    })
+    expect(text).toContain('Préparateur')
+    expect(text).toContain('Winpharma')
+    expect(text).toContain('Rhône-Alpes')
+    expect(text).toContain('CDI')
+    expect(text).toContain('28k')
+    expect(text).toContain('QUALIFIE')
+  })
+
   it('formats a pharmacy with its name', () => {
     const text = formatPharmacy({ name: 'Pharmacie du Centre', city: 'Lyon' })
     expect(text).toContain('Pharmacie du Centre')

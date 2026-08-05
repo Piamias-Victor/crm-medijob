@@ -34,4 +34,22 @@ describe('runAssistantChat', () => {
   it('throws on an unknown shortcut id', async () => {
     await expect(runAssistantChat({ shortcutId: 'nope' }, deps('{"reply":"x"}'))).rejects.toThrow()
   })
+
+  it('attaches recent chat history to the free-chat prompt', async () => {
+    let seen: AssistantRequest | undefined
+    const d = deps('{"reply":"Suite"}', (req) => (seen = req))
+    await runAssistantChat(
+      {
+        message: 'c’est tout ?',
+        history: [
+          { role: 'user', content: 'résume Camille' },
+          { role: 'assistant', content: 'Camille est préparatrice à Lille.' },
+        ],
+      },
+      d,
+    )
+    expect(seen?.prompt).toContain('résume Camille')
+    expect(seen?.prompt).toContain('Camille est préparatrice à Lille.')
+    expect(seen?.prompt).toContain('c’est tout ?')
+  })
 })
