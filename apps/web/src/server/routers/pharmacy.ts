@@ -23,6 +23,7 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
     list: protectedProcedure.input(pharmacyListFiltersSchema.optional()).query(async ({ input }) =>
       (await deps.pharmacies.list(input)).map(toPharmacyListRow),
     ),
+    mapPins: protectedProcedure.query(() => deps.pharmacies.listMapPins()),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const pharmacy = await deps.pharmacies.findDetailById(input.id)
       return pharmacy ? toPharmacyDetail(pharmacy) : null

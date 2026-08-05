@@ -3,6 +3,7 @@ import { sortRowsByAccessor } from '@/lib/sort-rows'
 import type { CandidateExportSort } from '@/view-models/candidate-export.schema'
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
 import { formatExportActiveMission, formatExportJoin } from '@/view-models/candidate-export-format'
+import { formatStoredAnonymizedDossierExport } from '@/view-models/anonymized-dossier'
 import { buildCvthequeCoreFields } from '@/view-models/cvtheque-core-fields'
 import { cvthequeExportHeaders, orderExportColumnIds } from '@/view-models/cvtheque-export-columns'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
@@ -42,7 +43,7 @@ export function toCandidateExportRow(raw: RawCandidateExport, now = new Date()):
     contractTypes: formatExportJoin((raw.contractPreferences ?? []).map((entry) => entry.contractType)),
     notes: raw.notes ?? '',
     cvSummary: raw.cvSummary ?? '',
-    anonymizedProfile: raw.anonymizedProfile ?? '',
+    anonymizedProfile: formatStoredAnonymizedDossierExport(raw.anonymizedProfile),
     createdAt: raw.createdAt ? formatDateFr(raw.createdAt) : '',
     updatedAt: raw.updatedAt ? formatDateFr(raw.updatedAt) : '',
     activeMission: formatExportActiveMission(raw.missions ?? []),

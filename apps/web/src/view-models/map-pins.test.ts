@@ -2,13 +2,40 @@ import { describe, it, expect } from 'vitest'
 import { toMapPins } from '@/view-models/map-pins'
 
 describe('toMapPins', () => {
-  it('keeps only rows with both coords', () => {
+  it('keeps only rows with both coords and prefixes id by entity type', () => {
     expect(
       toMapPins([
-        { id: 'a', label: 'A', latitude: 45.7, longitude: 4.8 },
-        { id: 'b', label: 'B', latitude: null, longitude: 4.8 },
-        { id: 'c', label: 'C', latitude: 46, longitude: null },
+        {
+          entityId: 'a',
+          entityType: 'pharmacy',
+          label: 'A',
+          latitude: 45.7,
+          longitude: 4.8,
+        },
+        {
+          entityId: 'b',
+          entityType: 'candidate',
+          label: 'B',
+          latitude: null,
+          longitude: 4.8,
+        },
+        {
+          entityId: 'c',
+          entityType: 'mission',
+          label: 'C',
+          latitude: 46,
+          longitude: null,
+        },
       ]),
-    ).toEqual([{ id: 'a', label: 'A', latitude: 45.7, longitude: 4.8 }])
+    ).toEqual([
+      {
+        id: 'pharmacy:a',
+        entityId: 'a',
+        entityType: 'pharmacy',
+        label: 'A',
+        latitude: 45.7,
+        longitude: 4.8,
+      },
+    ])
   })
 })

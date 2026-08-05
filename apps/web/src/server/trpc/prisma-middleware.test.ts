@@ -16,6 +16,7 @@ describe('prisma error middleware', () => {
         lookupGeo: vi.fn().mockResolvedValue(null),
         pharmacies: {
           list: vi.fn(),
+          listMapPins: vi.fn(),
           findDetailById: vi.fn(),
           findQuickViewById: vi.fn(),
           findAddressById: vi.fn().mockResolvedValue(null),

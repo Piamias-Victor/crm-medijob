@@ -17,6 +17,8 @@ import type { CandidateProfileUpdate } from './candidate-profile.repository'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
 import type { RawCandidateExport } from '@/view-models/candidate-export.types'
+import { candidateContextSelect } from './candidate-context.select'
+import { mapCandidateForContext } from './candidate-context.map'
 
 export type { CandidateProfileUpdate } from './candidate-profile.repository'
 
@@ -62,19 +64,13 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         filters,
         buildCandidateExportSelect(columnIds),
       )) as unknown as RawCandidateExport[],
-    findForContext: (id: string) =>
-      db.candidate.findFirst({
+    findForContext: async (id: string) => {
+      const row = await db.candidate.findFirst({
         where: { id, ...NOT_DELETED },
-        select: {
-          firstName: true,
-          lastName: true,
-          city: true,
-          availableFrom: true,
-          mobilityRadiusKm: true,
-          cvSummary: true,
-          notes: true,
-        },
-      }),
+        select: candidateContextSelect,
+      })
+      return row ? mapCandidateForContext(row) : null
+    },
     softDelete: (id: string) =>
       db.candidate.update({ where: { id }, data: { deletedAt: new Date() } }),
   }

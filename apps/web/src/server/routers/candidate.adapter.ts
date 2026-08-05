@@ -15,6 +15,8 @@ import { createGeoLookup, createGeoQueryLookup } from '@/server/matching/distanc
 import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { makeEraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate.deps'
 import { makeCandidateRouter } from '@/server/routers/candidate'
+import { listCandidateMapPins } from '@/server/db/repositories/map-pins.repo'
+import { prisma } from '@/server/db/repositories/client'
 
 const cvProvider = createCvExtractionProvider()
 const documentsProvider = createAssistantProvider()
@@ -25,6 +27,7 @@ export const candidateRouter = makeCandidateRouter({
   listForKanban: (filters) => candidateRepository.listForKanban(filters),
   listForExport: (filters, columnIds) => candidateRepository.listForExport(filters, columnIds ?? []),
   listStages: () => pipelineStageRepository.list(),
+  listMapPins: () => listCandidateMapPins(prisma),
   search: (term, limit) => candidateRepository.search(term, limit),
   findProfileById: (id) => candidateRepository.findProfileById(id),
   findQuickViewById: (id) => findCandidateQuickViewById(id),

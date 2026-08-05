@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { ContactDetailPage } from '@/components/organisms/ContactDetailPage'
 import { parseContactBackHref } from '@/lib/contact-href'
+import { auth } from '@/server/auth'
+import { can } from '@/server/auth/permissions'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -11,7 +13,9 @@ type Props = {
 export default async function Page({ params, searchParams }: Props) {
   const { id } = await params
   const { back } = await searchParams
-  const caller = await createServerCaller()
+  const [session, caller] = await Promise.all([auth(), createServerCaller()])
+  const role = session?.user?.role
+  const canSoftDelete = role ? can(role, 'softDelete') : false
   const [contact, missions, contactRefs, pharmacyRefs, activities, documents] = await Promise.all([
     caller.contact.getById({ id }),
     caller.contact.missions({ id }),
@@ -33,6 +37,7 @@ export default async function Page({ params, searchParams }: Props) {
       activities={activities}
       documents={documents}
       backHref={parseContactBackHref(back)}
+      canSoftDelete={canSoftDelete}
     />
   )
 }

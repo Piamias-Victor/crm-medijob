@@ -70,7 +70,7 @@ export function CandidateDetailTabPanel({
           />
           <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
           <CandidateCvSummaryPanel profile={profile} />
-          <CandidateProfileDocsShortcuts profile={profile} />
+          <CandidateProfileDocsShortcuts />
           {profile.cvUrl ? (
             <CandidateCvStoredPreview candidateId={profile.id} cvUrl={profile.cvUrl} />
           ) : null}

@@ -36,7 +36,7 @@ export function SectionCard({
       {actions ? <div className="shrink-0">{actions}</div> : null}
     </header>
   )
-  const body = <div className={cn('p-5', bodyClassName)}>{children}</div>
+  const body = <div className={cn('min-h-0 p-5', bodyClassName)}>{children}</div>
 
   if (embedded) {
     return (

@@ -39,6 +39,9 @@ export const detailEntity = {
 export function makeMissionDeps(overrides: Partial<MissionDeps> = {}): MissionDeps {
   return {
     list: vi.fn().mockResolvedValue([]),
+    listMapPins: vi.fn().mockResolvedValue([
+      { id: 'm1', label: 'Titulaire CDI', latitude: 45.7, longitude: 4.8 },
+    ]),
     findDetailById: vi.fn().mockResolvedValue(detailEntity),
     findQuickViewById: vi.fn().mockResolvedValue(null),
     update: vi.fn().mockResolvedValue(undefined),

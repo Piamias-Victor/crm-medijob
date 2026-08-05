@@ -1,3 +1,5 @@
+import { parseAnonymizedDossier } from '@/view-models/anonymized-dossier'
+
 type AnonymizedRecord = { anonymizedProfile: string | null }
 
 export type AnonymizedPdfDownloadDeps = {
@@ -9,6 +11,7 @@ export async function loadAnonymizedProfilePdf(
   deps: AnonymizedPdfDownloadDeps,
 ) {
   const candidate = await deps.findAnonymizedProfile(candidateId)
-  if (!candidate?.anonymizedProfile?.trim()) return { status: 404 as const }
-  return { status: 200 as const, content: candidate.anonymizedProfile }
+  const raw = candidate?.anonymizedProfile
+  if (!parseAnonymizedDossier(raw)) return { status: 404 as const }
+  return { status: 200 as const, content: raw as string }
 }

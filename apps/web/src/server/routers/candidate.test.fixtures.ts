@@ -31,6 +31,9 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
       },
     ]),
     findQuickViewById: vi.fn().mockResolvedValue(null),
+    listMapPins: vi.fn().mockResolvedValue([
+      { id: 'c1', label: 'Camille Durand', latitude: 45.7, longitude: 4.8 },
+    ]),
     listForExport: vi.fn().mockResolvedValue([candidateExportFixture]),
     listStages: vi.fn().mockResolvedValue([{ id: 's1', name: 'Nouveau' }]),
     search: vi.fn().mockResolvedValue([

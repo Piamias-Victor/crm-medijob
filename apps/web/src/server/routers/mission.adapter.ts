@@ -7,9 +7,12 @@ import { loadMissionReferentials } from '@/server/read-models/mission-referentia
 import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { makeMissionRouter } from '@/server/routers/mission'
+import { listMissionMapPins } from '@/server/db/repositories/map-pins.repo'
+import { prisma } from '@/server/db/repositories/client'
 
 export const missionRouter = makeMissionRouter({
   list: (filters) => missionRepository.list(filters),
+  listMapPins: () => listMissionMapPins(prisma),
   findDetailById: (id) => missionRepository.findDetailById(id),
   findQuickViewById: (id) => findMissionQuickViewById(id),
   update: (id, data) => missionRepository.update(id, data),

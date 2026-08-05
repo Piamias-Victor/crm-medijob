@@ -1,9 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { EntityMap } from '@/components/molecules/EntityMap'
-import { PharmacyQuickView } from '@/components/organisms/PharmacyQuickView'
+import { EntityMapWithLayers } from '@/components/organisms/EntityMapWithLayers'
 import { PharmacyFilterBar } from '@/components/organisms/pharmacy-table/pharmacy-filter-bar'
 import { buildPharmacyReturnPath } from '@/lib/pharmacy-href'
 import { toPharmacyMapPins } from '@/view-models/entity-map-pins'
@@ -22,7 +21,6 @@ type Props = {
 export function PharmacyMapView({ rows, filterConfig, values, onChange, onReset }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [quickViewId, setQuickViewId] = useState<string | null>(null)
   const pins = useMemo(() => toPharmacyMapPins(rows), [rows])
   const returnPath = useMemo(
     () => buildPharmacyReturnPath(pathname, searchParams.toString()),
@@ -37,11 +35,10 @@ export function PharmacyMapView({ rows, filterConfig, values, onChange, onReset 
         onChange={onChange}
         onReset={onReset}
       />
-      <EntityMap pins={pins} onPinClick={setQuickViewId} />
-      <PharmacyQuickView
-        pharmacyId={quickViewId}
+      <EntityMapWithLayers
+        primaryType="pharmacy"
+        primaryPins={pins}
         returnPath={returnPath}
-        onClose={() => setQuickViewId(null)}
       />
     </div>
   )

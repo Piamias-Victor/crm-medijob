@@ -8,6 +8,7 @@ import type { PharmacyQuickViewRepoRow } from '@/view-models/pharmacy-quick-view
 import type { PharmacyDuplicateIdentity } from '@/server/pharmacy/detect-duplicate.types'
 import type { PharmacyUpdate } from '@/view-models/pharmacy-update'
 import type { AddressFields, GeoQueryLookup } from '@/lib/geo/geocode-address-fields'
+import type { LeanMapPinRow } from '@/view-models/lean-map-pin-row'
 
 type Ref = { id: string; name: string }
 type CreatedPharmacy = { id: string }
@@ -16,6 +17,7 @@ export type PharmacyDeps = {
   lookupGeo: GeoQueryLookup
   pharmacies: {
     list: (filters?: PharmacyListFilters) => Promise<PharmacyListEntity[]>
+    listMapPins: () => Promise<LeanMapPinRow[]>
     findDetailById: (id: string) => Promise<PharmacyDetailEntity | null>
     findQuickViewById: (id: string) => Promise<PharmacyQuickViewRepoRow | null>
     findAddressById: (id: string) => Promise<AddressFields | null>

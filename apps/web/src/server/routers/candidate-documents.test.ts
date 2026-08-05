@@ -1,43 +1,10 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest'
-import { createCallerFactory } from '@/server/trpc'
-import { makeCandidateRouter } from '@/server/routers/candidate'
-import { makeCandidateDeps, session } from '@/server/routers/candidate.test.fixtures'
-
-const documentsProfile = {
-  id: 'c1',
-  firstName: 'Camille',
-  lastName: 'Durand',
-  email: 'camille@example.com',
-  phone: '0612345678',
-  address: '12 rue Test',
-  city: 'Lyon',
-  postalCode: '69001',
-  notes: '5 ans en officine',
-  cvSummary: null as string | null,
-  anonymizedProfile: null as string | null,
-  jobTitle: { name: 'Pharmacien' },
-  mobilityRadiusKm: 30,
-  mobilityNotes: 'Rhône-Alpes',
-  availableFrom: null,
-  softwares: [{ software: { name: 'Winpharma' } }],
-}
-
-function documentsCaller(overrides: Partial<ReturnType<typeof makeCandidateDeps>> = {}) {
-  const updateDerivedFields = vi.fn().mockImplementation(async (_id, fields) => ({
-    ...documentsProfile,
-    ...fields,
-  }))
-  const deps = makeCandidateDeps({
-    findDocumentsProfile: vi.fn().mockResolvedValue(documentsProfile),
-    updateDerivedFields,
-    ...overrides,
-  })
-  return {
-    caller: createCallerFactory(makeCandidateRouter(deps))({ session }),
-    updateDerivedFields,
-  }
-}
+import { emptyAnonymizedDossier, parseAnonymizedDossier } from '@/view-models/anonymized-dossier'
+import {
+  documentsCaller,
+  documentsProfile,
+} from '@/server/routers/candidate-documents.test.fixtures'
 
 describe('candidate documents mutations', () => {
   it('generateSummary persists cvSummary after Zod validation', async () => {
@@ -50,7 +17,7 @@ describe('candidate documents mutations', () => {
     )
   })
 
-  it('generateAnonymized persists anonymizedProfile without PII', async () => {
+  it('generateAnonymized persists structured JSON without PII', async () => {
     const { caller, updateDerivedFields } = documentsCaller({
       findDocumentsProfile: vi.fn().mockResolvedValue({
         ...documentsProfile,
@@ -58,15 +25,33 @@ describe('candidate documents mutations', () => {
       }),
     })
     const result = await caller.generateAnonymized({ id: 'c1' })
-    expect(result.anonymizedProfile).toContain('Profil anonymisé')
+    const dossier = parseAnonymizedDossier(result.anonymizedProfile)
+    expect(dossier?.accroche.length).toBeGreaterThan(0)
     expect(result.anonymizedProfile.toLowerCase()).not.toContain('camille')
     expect(updateDerivedFields).toHaveBeenCalled()
   })
 
-  it('generateAnonymized rejects when cvSummary is missing', async () => {
-    const { caller } = documentsCaller()
-    await expect(caller.generateAnonymized({ id: 'c1' })).rejects.toMatchObject({
-      message: 'Générez d’abord le résumé IA.',
+  it('generateAnonymized works without cvSummary', async () => {
+    const { caller, updateDerivedFields } = documentsCaller()
+    const result = await caller.generateAnonymized({ id: 'c1' })
+    expect(parseAnonymizedDossier(result.anonymizedProfile)?.accroche.length).toBeGreaterThan(0)
+    expect(updateDerivedFields).toHaveBeenCalled()
+  })
+
+  it('saveAnonymized persists edits and refuses PII', async () => {
+    const { caller, updateDerivedFields } = documentsCaller()
+    const dossier = { ...emptyAnonymizedDossier(), accroche: 'Profil officine' }
+    const result = await caller.saveAnonymized({ id: 'c1', dossier })
+    expect(parseAnonymizedDossier(result.anonymizedProfile)?.accroche).toBe('Profil officine')
+    expect(updateDerivedFields).toHaveBeenCalled()
+
+    await expect(
+      caller.saveAnonymized({
+        id: 'c1',
+        dossier: { ...emptyAnonymizedDossier(), accroche: 'Camille Durand' },
+      }),
+    ).rejects.toMatchObject({
+      message: 'Le dossier anonymisé contient des données personnelles. Réessaie.',
     })
   })
 

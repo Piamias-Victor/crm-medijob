@@ -16,6 +16,11 @@ export type CandidateLike = {
   mobilityNotes?: string | null
   cvSummary?: string | null
   notes?: string | null
+  jobTitleName?: string | null
+  softwareNames?: string[]
+  preferredContractTypes?: string[]
+  salaryExpectations?: string | null
+  status?: string | null
 }
 
 export type PresentCandidateLike = CandidateLike & {
@@ -24,29 +29,27 @@ export type PresentCandidateLike = CandidateLike & {
 }
 
 export function formatCandidate(c: CandidateLike): string {
-  return toBlock([
-    ['Candidat', `${c.firstName} ${c.lastName}`],
-    ['Ville', c.city],
-    ['Disponible à partir de', c.availableFrom],
-    ['Rayon de mobilité (km)', c.mobilityRadiusKm],
-    ['Résumé CV', c.cvSummary],
-    ['Notes', c.notes],
-  ])
-}
-
-export function formatPresentCandidate(c: PresentCandidateLike): string {
   const fields: Field[] = [
     ['Candidat', `${c.firstName} ${c.lastName}`],
     ['Métier', c.jobTitleName],
     ['Ville', c.city],
+    ['Statut', c.status],
     ['Disponible à partir de', c.availableFrom],
     ['Rayon de mobilité (km)', c.mobilityRadiusKm],
   ]
-  if (c.softwareNames.length > 0) fields.push(['Logiciels', c.softwareNames.join(', ')])
+  if (c.softwareNames?.length) fields.push(['Logiciels', c.softwareNames.join(', ')])
+  if (c.preferredContractTypes?.length) {
+    fields.push(['Contrats souhaités', c.preferredContractTypes.join(', ')])
+  }
+  if (c.salaryExpectations) fields.push(['Prétentions salariales', c.salaryExpectations])
   if (c.mobilityNotes) fields.push(['Mobilité', c.mobilityNotes])
   if (c.cvSummary) fields.push(['Résumé CV', c.cvSummary])
   if (c.notes) fields.push(['Notes', c.notes])
   return toBlock(fields)
+}
+
+export function formatPresentCandidate(c: PresentCandidateLike): string {
+  return formatCandidate(c)
 }
 
 export type PharmacyLike = {

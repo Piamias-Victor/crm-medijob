@@ -1,8 +1,12 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Eye } from 'lucide-react'
 import type { ContactListRow } from '@/view-models/contact-list'
 import { contactDetailHref } from '@/lib/contact-href'
 import { Button } from '@/components/atoms/Button'
+import { ContactSoftDeleteButton } from '@/components/molecules/ContactSoftDeleteButton'
 import { CONTACT_QUICK_VIEW_TRIGGER } from '@/components/molecules/contact-quick-view/contact-quick-view-copy'
 
 export function ContactTableActions({
@@ -14,6 +18,9 @@ export function ContactTableActions({
   returnPath: string
   onQuickView: (id: string) => void
 }) {
+  const router = useRouter()
+  const name = `${row.firstName} ${row.lastName}`.trim()
+
   return (
     <div className="flex items-center justify-end gap-1.5">
       <Button
@@ -37,6 +44,12 @@ export function ContactTableActions({
       >
         Modifier
       </Link>
+      <ContactSoftDeleteButton
+        contactId={row.id}
+        contactName={name}
+        compact
+        onDeleted={() => router.refresh()}
+      />
     </div>
   )
 }

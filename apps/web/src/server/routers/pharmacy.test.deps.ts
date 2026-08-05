@@ -19,6 +19,9 @@ export function makeDeps(overrides: Partial<PharmacyDeps> = {}): PharmacyDeps {
     lookupGeo: vi.fn().mockResolvedValue(null),
     pharmacies: {
       list: vi.fn().mockResolvedValue([pharmacyListEntity]),
+      listMapPins: vi.fn().mockResolvedValue([
+        { id: 'p1', label: 'Pharma Test', latitude: 45.7, longitude: 4.8 },
+      ]),
       findDetailById: vi.fn().mockResolvedValue(pharmacyDetailEntity),
       findQuickViewById: vi.fn().mockResolvedValue(pharmacyQuickViewRepoRow),
       findAddressById: vi.fn().mockResolvedValue(null),

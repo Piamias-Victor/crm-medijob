@@ -10,6 +10,7 @@ import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { ContactDetailTabs } from '@/components/molecules/ContactDetailTabs'
 import { ContactDetailTabPanel } from '@/components/molecules/ContactDetailTabPanel'
+import { ContactSoftDeleteButton } from '@/components/molecules/ContactSoftDeleteButton'
 import { useContactDetailMutations } from '@/lib/hooks/use-contact-detail-mutations'
 import { Building2, Briefcase, Star } from 'lucide-react'
 
@@ -22,6 +23,7 @@ type Props = {
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   backHref?: string
+  canSoftDelete?: boolean
 }
 
 export function ContactDetailPage({
@@ -33,6 +35,7 @@ export function ContactDetailPage({
   activities,
   documents,
   backHref = '/contacts',
+  canSoftDelete,
 }: Props) {
   const [tab, setTab] = useState<ContactTab>('infos')
   const { update, setPrimary } = useContactDetailMutations()
@@ -57,6 +60,15 @@ export function ContactDetailPage({
           name={contact.fullName}
           chips={headerChips}
         />
+      }
+      meta={
+        <div className="flex justify-end px-1">
+          <ContactSoftDeleteButton
+            contactId={contact.id}
+            contactName={contact.fullName}
+            canDelete={canSoftDelete}
+          />
+        </div>
       }
       tabs={<ContactDetailTabs active={tab} onChange={setTab} missionCount={missions.length} />}
       tabKey={tab}

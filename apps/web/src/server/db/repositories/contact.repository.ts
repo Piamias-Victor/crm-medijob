@@ -6,6 +6,7 @@ import { NOT_DELETED } from './soft-delete'
 import { searchContacts } from './contact-search.repo'
 import { listContactsByPharmacyWithEmail } from './contact-list-by-pharmacy.repo'
 import { findPrimaryContactByPharmacy } from './contact-primary.repo'
+import { softDeleteContact } from './contact-soft-delete.repo'
 import { buildContactListQueryWhere, contactListInclude } from './contact-list-where'
 
 const listInclude = contactListInclude
@@ -91,8 +92,7 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       return db.contact.findFirst({ where: { id }, include: detailInclude })
     },
     search: (term: string, limit = 8) => searchContacts(db, term, limit),
-    softDelete: (id: string) =>
-      db.contact.update({ where: { id }, data: { deletedAt: new Date() } }),
+    softDelete: (id: string) => softDeleteContact(db, id),
   }
 }
 

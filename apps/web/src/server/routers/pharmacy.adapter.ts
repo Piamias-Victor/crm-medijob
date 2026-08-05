@@ -10,6 +10,7 @@ import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { searchSiret as searchSiretService } from '@/server/services/siret'
 import { createGeoQueryLookup } from '@/server/matching/distance'
 import { makePharmacyRouter } from '@/server/routers/pharmacy'
+import { listPharmacyMapPins } from '@/server/db/repositories/map-pins.repo'
 
 const pharmacyDuplicates = makePharmacyDuplicateRepository(prisma)
 const pharmacyMerge = makePharmacyMergeRepository(prisma)
@@ -19,6 +20,7 @@ export const pharmacyRouter = makePharmacyRouter({
   lookupGeo,
   pharmacies: {
     list: (filters) => pharmacyRepository.list(filters),
+    listMapPins: () => listPharmacyMapPins(prisma),
     findDetailById: (id) => pharmacyRepository.findDetailById(id),
     findQuickViewById: (id) => findPharmacyQuickViewById(id),
     findAddressById: async (id) => {

@@ -26,7 +26,7 @@ function softwareNames(profile: CandidateDocumentsProfile): string[] {
   return profile.softwares.map((row) => row.software.name)
 }
 
-function piiTokens(profile: CandidateDocumentsProfile): string[] {
+export function piiTokens(profile: CandidateDocumentsProfile): string[] {
   return [profile.firstName, profile.lastName, profile.email, profile.phone, profile.address]
     .filter((value): value is string => Boolean(value?.trim()))
 }
@@ -40,9 +40,9 @@ export function toSummaryInput(profile: CandidateDocumentsProfile): CandidateSum
 }
 
 export function toAnonymizedInput(profile: CandidateDocumentsProfile): CandidateAnonymizedInput {
-  if (!profile.cvSummary?.trim()) throw new Error('CV_SUMMARY_REQUIRED')
   return {
-    cvSummary: profile.cvSummary,
+    cvSummary: profile.cvSummary?.trim() ?? '',
+    notes: profile.notes,
     jobTitleName: profile.jobTitle.name,
     softwareNames: softwareNames(profile),
     mobilityRadiusKm: profile.mobilityRadiusKm,

@@ -9,17 +9,22 @@ import { ChatComposer } from '@/components/molecules/ChatComposer'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { Spinner } from '@/components/atoms/Spinner'
 import { EmptyState } from '@/components/atoms/EmptyState'
+import { ASSISTANT_CHAT_VIEWPORT_OFFSET } from '@/lib/constants/assistant-chat'
 
 export function AssistantChat() {
   const { messages, context, setContext, send, runShortcut, isPending } = useAssistantChat()
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(240px,280px)_1fr]">
+    <div
+      className="grid min-h-0 gap-6 lg:grid-cols-[minmax(240px,280px)_1fr]"
+      style={{ height: `calc(100dvh - ${ASSISTANT_CHAT_VIEWPORT_OFFSET})` }}
+    >
       <SectionCard
         variant="glass"
         title="Outils"
         description="Contexte ciblé et actions rapides."
-        bodyClassName="space-y-5 p-4 sm:p-5"
+        className="flex min-h-0 flex-col overflow-hidden"
+        bodyClassName="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-5"
       >
         <ContextPicker value={context} onChange={setContext} />
         <ShortcutBar onSelect={runShortcut} disabled={isPending} />
@@ -29,9 +34,10 @@ export function AssistantChat() {
         variant="glass"
         title="Conversation"
         description="Pose une question ou lance un raccourci."
-        bodyClassName="flex min-h-[min(70vh,640px)] flex-col p-0"
+        className="flex min-h-0 flex-col overflow-hidden"
+        bodyClassName="flex min-h-0 flex-1 flex-col overflow-hidden p-0"
       >
-        <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4 sm:p-5">
+        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4 sm:p-5">
           {messages.length === 0 ? (
             <EmptyState
               icon={Sparkles}
@@ -48,7 +54,7 @@ export function AssistantChat() {
             </div>
           ) : null}
         </div>
-        <div className="border-t border-border/50 bg-white/50 p-4 backdrop-blur-sm sm:px-5">
+        <div className="shrink-0 border-t border-border/50 bg-white/50 p-4 backdrop-blur-sm sm:px-5">
           <ChatComposer onSend={send} disabled={isPending} />
         </div>
       </SectionCard>
