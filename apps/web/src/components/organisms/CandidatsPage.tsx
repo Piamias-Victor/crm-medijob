@@ -8,26 +8,21 @@ import { Users, Plus, Upload } from 'lucide-react'
 import { accentButtonClassName } from '@/lib/button-styles'
 import { CandidatTabs, type CandidatsTab } from '@/components/molecules/CandidatTabs'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
-import { SectionCard } from '@/components/molecules/SectionCard'
-import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
-import { CvthequeSection } from '@/components/organisms/CvthequeSection'
+import { CandidatsTabPanel } from '@/components/organisms/CandidatsTabPanel'
 import { CreerViaCvButton } from '@/components/molecules/CreerViaCvButton'
 import { tabPanelMotion } from '@/lib/motion/variants'
 import { buildCandidatsTabHref } from '@/view-models/candidats-tab'
-import type { InboxItem } from '@/view-models/application-inbox'
-import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
-import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
-import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
+import type { CandidatsPageProps } from '@/view-models/candidats-page.props'
 
-type Props = {
-  list: { rows: RawCandidate[]; stages: RawStage[] }
-  inbox: InboxItem[]
-  serverFilters: CandidateListFilters
-  filterConfig: CvthequeFilterConfig
-  initialTab?: CandidatsTab
-}
-
-export function CandidatsPage({ list, inbox, serverFilters, filterConfig, initialTab = 'cvtheque' }: Props) {
+export function CandidatsPage({
+  list,
+  inbox,
+  appProfiles,
+  jobTitles,
+  serverFilters,
+  filterConfig,
+  initialTab = 'cvtheque',
+}: CandidatsPageProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [tab, setTab] = useState<CandidatsTab>(initialTab)
@@ -42,8 +37,9 @@ export function CandidatsPage({ list, inbox, serverFilters, filterConfig, initia
   )
 
   const description = useMemo(
-    () => `${cvthequeCount} profil(s) en CVthèque · ${inbox.length} candidature(s) en attente`,
-    [cvthequeCount, inbox.length],
+    () =>
+      `${cvthequeCount} CVthèque · ${inbox.length} candidature(s) · ${appProfiles.length} profil(s) app`,
+    [cvthequeCount, inbox.length, appProfiles.length],
   )
 
   return (
@@ -51,7 +47,14 @@ export function CandidatsPage({ list, inbox, serverFilters, filterConfig, initia
       icon={<Users className="size-5" />}
       title="Candidats"
       description={description}
-      nav={<CandidatTabs active={tab} onChange={onTabChange} inboxCount={inbox.length} />}
+      nav={
+        <CandidatTabs
+          active={tab}
+          onChange={onTabChange}
+          inboxCount={inbox.length}
+          appProfileCount={appProfiles.length}
+        />
+      }
       actions={
         <div className="flex flex-wrap items-center gap-2">
           <Link
@@ -71,23 +74,16 @@ export function CandidatsPage({ list, inbox, serverFilters, filterConfig, initia
     >
       <AnimatePresence mode="wait">
         <motion.div key={tab} className="w-full" {...tabPanelMotion}>
-          {tab === 'cvtheque' ? (
-            <CvthequeSection
-              initialList={list}
-              serverFilters={serverFilters}
-              filterConfig={filterConfig}
-              onCountChange={setCvthequeCount}
-            />
-          ) : (
-            <SectionCard
-              variant="glass"
-              title="Candidatures reçues"
-              description="Flux entrant Webflow — validez ou refusez avant intégration à la CVthèque."
-              bodyClassName="p-4 sm:p-5"
-            >
-              <ApplicationInbox items={inbox} />
-            </SectionCard>
-          )}
+          <CandidatsTabPanel
+            tab={tab}
+            list={list}
+            inbox={inbox}
+            appProfiles={appProfiles}
+            jobTitles={jobTitles}
+            serverFilters={serverFilters}
+            filterConfig={filterConfig}
+            onCountChange={setCvthequeCount}
+          />
         </motion.div>
       </AnimatePresence>
     </DashboardPage>

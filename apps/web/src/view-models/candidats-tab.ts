@@ -1,17 +1,21 @@
-export type CandidatsTab = 'cvtheque' | 'inbox'
+export type CandidatsTab = 'cvtheque' | 'inbox' | 'app-profiles'
 
 export function parseCandidatsTab(param: string | null | undefined): CandidatsTab {
-  return param === 'inbox' ? 'inbox' : 'cvtheque'
+  if (param === 'inbox') return 'inbox'
+  if (param === 'app-profiles') return 'app-profiles'
+  return 'cvtheque'
 }
 
 export function candidatsPageHref(tab: CandidatsTab = 'cvtheque'): string {
-  return tab === 'inbox' ? '/candidats?tab=inbox' : '/candidats'
+  if (tab === 'inbox') return '/candidats?tab=inbox'
+  if (tab === 'app-profiles') return '/candidats?tab=app-profiles'
+  return '/candidats'
 }
 
 export function buildCandidatsTabHref(tab: CandidatsTab, search: string): string {
   const params = new URLSearchParams(search)
-  if (tab === 'inbox') params.set('tab', 'inbox')
-  else params.delete('tab')
+  if (tab === 'cvtheque') params.delete('tab')
+  else params.set('tab', tab)
   const query = params.toString()
   return query ? `/candidats?${query}` : '/candidats'
 }
