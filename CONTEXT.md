@@ -36,6 +36,10 @@ _Avoid_: Disponibilité (as free text), date de début, planning
 An inbound candidacy received via the public website (Webflow), tied to a specific JobOffer. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters.
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead
 
+**AppProfile**:
+A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it and creates or merges a Candidate. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync.
+_Avoid_: Application, candidature app, recipient (as UI label), Badakan candidate
+
 **JobTitle**:
 An administrable job role in the pharmacy staffing domain (e.g. Pharmacien, Préparateur). Referenced by Candidate and Mission — replaces the former fixed enum.
 _Avoid_: Métier (as free text), fonction, enum JobTitle
@@ -152,6 +156,11 @@ Outbound: Applications (inbound candidacies from website).
 Owns: Application, deduplication logic, accept/refuse workflow.
 Inbound: Webflow webhook tied to JobOffer.
 Outbound: Candidate creation on acceptance (into Candidates).
+
+**AppProfiles** — Badakan app registration inbox ("Profils app").
+Owns: AppProfile, manual sync from Badakan `searchNewEmployees`, accept/ignore workflow.
+Inbound: Badakan API (read-only).
+Outbound: Candidate creation or merge on acceptance (into Candidates). Never auto-writes the CVthèque.
 
 **AI** — assisted extraction, generation, and matching.
 Owns: provider abstraction, Zod-validated AI responses, assistant chat.
