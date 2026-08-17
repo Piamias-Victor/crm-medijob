@@ -1,0 +1,89 @@
+{
+  "generated": "2026-08-17",
+  "updated": "2026-08-17T10:15+02:00",
+  "sites": {
+    "eval": "https://medijob-eval.netlify.app/",
+    "op": "https://op-medijob.netlify.app/"
+  },
+  "decision": {
+    "q12": "CRM remplace Netlify; tous les profils in scope (Victor 2026-08-17)"
+  },
+  "files_written": {
+    "raw": [
+      "api-status-meta.json",
+      "eval-evaluations.json",
+      "eval-extract.json",
+      "eval-health.json",
+      "eval-profiles-deep.json",
+      "eval-qualify-project.json",
+      "eval-score.json",
+      "eval-t4s-health.json",
+      "eval-templates.json",
+      "eval.html",
+      "eval.js",
+      "op-extract.json",
+      "op-try-health.json",
+      "op-try-templates.json",
+      "op.html",
+      "op.js",
+      "summary.json"
+    ],
+    "markdown": [
+      "docs/grill/inventories/INVENTORY_MEDIJOB_EVAL.md",
+      "docs/grill/inventories/INVENTORY_OP_MEDIJOB.md",
+      "docs/grill/QUESTIONS_CLIENT_V1.md"
+    ]
+  },
+  "counts": {
+    "eval_templates_api_items": 2,
+    "eval_profiles_in_bundle": [
+      "pharmacien",
+      "preparateur",
+      "etudiant",
+      "conseiller_para",
+      "rayonniste"
+    ],
+    "eval_routes": 23,
+    "eval_api_paths": 20,
+    "eval_criteria": 10,
+    "eval_per_profile_unique_items": {
+      "pharmacien": 66,
+      "preparateur": 61,
+      "etudiant": 61,
+      "conseiller_para": 35,
+      "rayonniste": 35
+    },
+    "eval_per_profile_questions_with_qmark": {
+      "pharmacien": 48,
+      "preparateur": 47,
+      "etudiant": 44,
+      "conseiller_para": 33,
+      "rayonniste": 33
+    },
+    "eval_additional_questions_with_qmark_vs_prior": {
+      "pharmacien": 32,
+      "preparateur": 33,
+      "etudiant": 30,
+      "conseiller_para": 18,
+      "rayonniste": 18
+    },
+    "eval_additional_items_vs_prior": {
+      "pharmacien": 34,
+      "preparateur": 35,
+      "etudiant": 32,
+      "conseiller_para": 20,
+      "rayonniste": 20
+    },
+    "op_routes": 9,
+    "op_supabase_tables": 11,
+    "op_french_labels": 312,
+    "op_supabase_project_ref": "qfghmxiomfakobvtaxsa",
+    "op_devis_fields_curated": 39
+  },
+  "notes": [
+    "No password login attempted.",
+    "CRM feature code not implemented.",
+    "Deep profile inventory from eval.js balanced-brace parse; see eval-profiles-deep.json",
+    "docs/grill/inventories/.raw/ gitignored for large JS bundles."
+  ]
+}
