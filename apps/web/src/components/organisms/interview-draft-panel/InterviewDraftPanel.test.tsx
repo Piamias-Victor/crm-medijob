@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { InterviewDraftPanel } from '@/components/organisms/interview-draft-panel/InterviewDraftPanel'
-import { INTERVIEW_ABANDON } from '@/view-models/interview-copy'
+import { INTERVIEW_ABANDON, INTERVIEW_DRAFT_HINT } from '@/view-models/interview-copy'
 import { toInterviewListRow } from '@/view-models/interview-list'
 
 vi.mock('next/navigation', () => ({
@@ -35,5 +35,6 @@ describe('InterviewDraftPanel', () => {
       />,
     )
     expect(screen.getByRole('button', { name: INTERVIEW_ABANDON })).toBeInTheDocument()
+    expect(screen.getByText(INTERVIEW_DRAFT_HINT)).toBeInTheDocument()
   })
 })

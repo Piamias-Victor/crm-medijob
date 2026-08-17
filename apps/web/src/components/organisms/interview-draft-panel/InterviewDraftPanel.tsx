@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/atoms/Button'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
-import { INTERVIEW_ABANDON, INTERVIEW_ABANDON_PENDING, INTERVIEW_ABANDON_SUCCESS } from '@/view-models/interview-copy'
+import { INTERVIEW_ABANDON, INTERVIEW_ABANDON_PENDING, INTERVIEW_ABANDON_SUCCESS, INTERVIEW_DRAFT_HINT } from '@/view-models/interview-copy'
 import type { InterviewListRow } from '@/view-models/interview-list'
 
 type Props = { candidateId: string; interview: InterviewListRow }
@@ -25,6 +25,7 @@ export function InterviewDraftPanel({ candidateId, interview }: Props) {
       <p className="text-sm text-fg-muted">
         {interview.modeLabel} · {interview.statusLabel} · {interview.dateLabel}
       </p>
+      <p className="text-sm text-fg">{INTERVIEW_DRAFT_HINT}</p>
       {interview.status === 'DRAFT' ? (
         <div>
           <Button

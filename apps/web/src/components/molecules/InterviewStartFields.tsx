@@ -2,10 +2,9 @@
 
 import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 import { Input } from '@/components/atoms/Input'
-import { Select } from '@/components/atoms/Select'
 import { Combobox } from '@/components/molecules/Combobox'
 import { FormField } from '@/components/molecules/FormField'
-import { INTERVIEW_MODE_LABELS } from '@/view-models/interview-labels'
+import { INTERVIEW_MODE_OPTIONS, parseInterviewMode } from '@/view-models/interview-labels'
 import type { InterviewStartInput } from '@/view-models/interview-start.schema'
 
 type JobTitle = { id: string; name: string }
@@ -41,11 +40,15 @@ export function InterviewStartFields({ register, setValue, watch, errors, jobTit
           placeholder="Choisir un métier"
         />
       </FormField>
-      <FormField label="Mode" htmlFor="interview-mode" error={errors.mode?.message}>
-        <Select id="interview-mode" {...register('mode')}>
-          <option value="INTERIM">{INTERVIEW_MODE_LABELS.INTERIM}</option>
-          <option value="CDD_CDI">{INTERVIEW_MODE_LABELS.CDD_CDI}</option>
-        </Select>
+      <FormField label="Mode" error={errors.mode?.message}>
+        <Combobox
+          value={watch('mode')}
+          onChange={(value) =>
+            setValue('mode', parseInterviewMode(value), { shouldValidate: true })
+          }
+          options={INTERVIEW_MODE_OPTIONS}
+          placeholder="Choisir un mode"
+        />
       </FormField>
     </div>
   )

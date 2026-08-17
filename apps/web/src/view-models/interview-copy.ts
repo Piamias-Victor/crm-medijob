@@ -13,4 +13,6 @@ export const INTERVIEW_ABANDON_SUCCESS = 'Brouillon abandonné'
 export const INTERVIEW_START_SECTION = 'Identité'
 export const INTERVIEW_START_HINT =
   'Confirme les infos minimales, puis ouvre le brouillon d’entretien.'
+export const INTERVIEW_DRAFT_HINT =
+  'Brouillon ouvert. Le questionnaire arrive à l’étape suivante.'
 

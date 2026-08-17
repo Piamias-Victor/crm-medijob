@@ -21,6 +21,7 @@ describe('InterviewStartForm', () => {
     )
     expect(screen.getByLabelText('Prénom')).toHaveValue('Camille')
     expect(screen.getByLabelText('Nom')).toHaveValue('Durand')
+    expect(screen.getByText('Intérim')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: INTERVIEW_START_SUBMIT })).toBeInTheDocument()
   })
 })
