@@ -4,6 +4,7 @@ import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
 import { InterviewAvailabilityFields } from '@/components/molecules/InterviewAvailabilityFields'
 import { InterviewSuggestedChoices } from '@/components/molecules/InterviewSuggestedChoices'
 import { INTERVIEW_SOFTWARE_OPTIONS } from '@/view-models/interview-software'
+import { pertinentInterviewChips } from '@/view-models/interview-pertinent-chips'
 import {
   interviewQuestionKind,
   joinChoiceLabels,
@@ -20,7 +21,6 @@ type Props = {
 
 export function InterviewQuestionInputs({ question, choiceLabel, disabled, onChoice }: Props) {
   const kind = interviewQuestionKind(question.question)
-  if (kind === 'notes') return null
   if (kind === 'software') {
     return (
       <CheckboxGroup
@@ -37,7 +37,7 @@ export function InterviewQuestionInputs({ question, choiceLabel, disabled, onCho
   }
   return (
     <InterviewSuggestedChoices
-      answers={question.suggestedAnswers}
+      answers={pertinentInterviewChips(question.question) ?? question.suggestedAnswers}
       selected={choiceLabel}
       disabled={disabled}
       onSelect={onChoice}

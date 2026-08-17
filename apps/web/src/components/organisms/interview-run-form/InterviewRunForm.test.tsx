@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { InterviewRunForm } from '@/components/organisms/interview-run-form/InterviewRunForm'
 import { INTERVIEW_AVAILABLE_NOW, INTERVIEW_VALIDATE } from '@/view-models/interview-copy'
 import { interviewRunFixture } from '@/view-models/interview-run.fixture'
@@ -55,7 +55,7 @@ describe('InterviewRunForm', () => {
     expect(screen.queryByText('Flou')).not.toBeInTheDocument()
   })
 
-  it('keeps motivation questions as free notes', () => {
+  it('uses pertinent chips instead of vague scored labels', () => {
     render(
       <InterviewRunForm
         run={runWithQuestion({
@@ -66,6 +66,7 @@ describe('InterviewRunForm', () => {
         })}
       />,
     )
+    expect(screen.getByRole('button', { name: 'Variété d’officines' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Liberté' })).not.toBeInTheDocument()
   })
 

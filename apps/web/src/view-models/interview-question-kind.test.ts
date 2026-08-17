@@ -11,13 +11,4 @@ describe('interviewQuestionKind', () => {
       interviewQuestionKind('À partir de quand êtes-vous disponible ? Quels jours, temps plein ou partiel ?'),
     ).toBe('availability')
   })
-
-  it('drops scored chips on open motivation questions', () => {
-    expect(interviewQuestionKind('Qu’est-ce qui vous plaît dans le remplacement / l’intérim ?')).toBe(
-      'notes',
-    )
-    expect(interviewQuestionKind('Comment réagissez-vous lorsque vous intégrez une nouvelle équipe ?')).toBe(
-      'notes',
-    )
-  })
 })

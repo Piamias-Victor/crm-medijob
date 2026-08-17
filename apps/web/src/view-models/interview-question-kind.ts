@@ -1,17 +1,9 @@
-export type InterviewQuestionKind = 'choice' | 'software' | 'availability' | 'notes'
-
-const NOTES_MARKERS = [
-  'plaît dans le remplacement',
-  'type de remplacement recherchez',
-  'attentes et vos critères',
-  'nouvelle équipe',
-]
+export type InterviewQuestionKind = 'choice' | 'software' | 'availability'
 
 export function interviewQuestionKind(prompt: string): InterviewQuestionKind {
   const text = prompt.toLowerCase()
   if (text.includes('logiciel')) return 'software'
   if (text.includes('à partir de quand')) return 'availability'
-  if (NOTES_MARKERS.some((marker) => text.includes(marker))) return 'notes'
   return 'choice'
 }
 
