@@ -36,3 +36,6 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large scraped Netlify prototype bundles / raw inventories
+docs/grill/inventories/.raw/
