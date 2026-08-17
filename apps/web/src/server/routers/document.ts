@@ -1,5 +1,7 @@
 import type { DocumentEntityType, Prisma } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '@/server/trpc'
+import { DOCUMENT_UPLOAD_STORAGE_ERROR, sanitizeDocumentFilename } from '@/lib/document-upload'
 import { documentRepository } from '@/server/db/repositories/document.repository'
 import { deleteBlob, uploadBlob, vercelBlobClient, type BlobClient } from '@/server/services/blob'
 import { toDocumentListRow, type DocumentRecord } from '@/view-models/document-list'
@@ -35,8 +37,16 @@ export function makeDocumentRouter(deps: DocumentDeps) {
     ),
     upload: protectedProcedure.input(uploadDocumentSchema).mutation(async ({ input }) => {
       const body = Buffer.from(input.dataBase64, 'base64')
-      const pathname = `${input.entityType.toLowerCase()}/${input.entityId}/${Date.now()}-${input.filename}`
-      const blob = await deps.uploadBlob({ pathname, body, contentType: input.mimeType })
+      const pathname = `${input.entityType.toLowerCase()}/${input.entityId}/${Date.now()}-${sanitizeDocumentFilename(input.filename)}`
+      let blob
+      try {
+        blob = await deps.uploadBlob({ pathname, body, contentType: input.mimeType })
+      } catch {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: DOCUMENT_UPLOAD_STORAGE_ERROR,
+        })
+      }
       try {
         const doc = await deps.create({
           entityType: input.entityType,

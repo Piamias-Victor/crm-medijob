@@ -55,7 +55,7 @@ describe('InterviewRunForm', () => {
     expect(screen.queryByText('Flou')).not.toBeInTheDocument()
   })
 
-  it('uses pertinent chips instead of vague scored labels', () => {
+  it('uses checkbox chips instead of single-select buttons', () => {
     render(
       <InterviewRunForm
         run={runWithQuestion({
@@ -66,8 +66,8 @@ describe('InterviewRunForm', () => {
         })}
       />,
     )
-    expect(screen.getByRole('button', { name: 'Variété d’officines' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Liberté' })).not.toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Variété d’officines' })).toBeInTheDocument()
+    expect(screen.queryByText('Liberté')).not.toBeInTheDocument()
   })
 
   it('exposes a Valider action', () => {

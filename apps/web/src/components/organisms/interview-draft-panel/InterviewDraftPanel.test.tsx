@@ -47,7 +47,7 @@ describe('InterviewDraftPanel', () => {
 
   it('saves immediately when a suggested answer is chosen', () => {
     render(<InterviewDraftPanel run={interviewRunFixture} />)
-    fireEvent.click(screen.getByRole('button', { name: 'Non inscrit' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Non inscrit' }))
     expect(saveDraftMutate).toHaveBeenCalledWith(
       expect.objectContaining({
         id: 'i1',

@@ -1,8 +1,9 @@
 // @vitest-environment node
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeDocumentRouter } from '@/server/routers/document'
 import { documentCaller, makeDocumentDeps } from '@/server/routers/document.test.fixtures'
+import { DOCUMENT_UPLOAD_STORAGE_ERROR } from '@/lib/document-upload'
 
 describe('documentRouter', () => {
   it('lists documents for a pharmacy entity', async () => {
@@ -58,6 +59,24 @@ describe('documentRouter', () => {
       }),
     ).rejects.toThrow()
     expect(deps.uploadBlob).not.toHaveBeenCalled()
+  })
+
+  it('maps blob failures to a French storage error', async () => {
+    const deps = makeDocumentDeps({
+      uploadBlob: vi.fn().mockRejectedValue(new Error('No token found')),
+    })
+    const fileBase64 = Buffer.from('%PDF-1.4').toString('base64')
+    await expect(
+      documentCaller(deps).upload({
+        entityType: 'CANDIDATE',
+        entityId: 'c1',
+        category: 'AUTRE',
+        filename: 'cv.pdf',
+        mimeType: 'application/pdf',
+        size: 8,
+        dataBase64: fileBase64,
+      }),
+    ).rejects.toThrow(DOCUMENT_UPLOAD_STORAGE_ERROR)
   })
 
   it('rejects unauthenticated callers', async () => {

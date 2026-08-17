@@ -35,7 +35,7 @@ const NEW_TEAM = [
   'Besoin d’un briefing',
   'Observe puis agit',
   'Force de proposition',
-  'Discret, s’adapte',
+  'Discret / s’adapte',
 ].map(chip)
 
 export function pertinentInterviewChips(prompt: string): Chip[] | null {

@@ -16,4 +16,16 @@ describe('pertinentInterviewChips', () => {
       expect.arrayContaining(['1 à 3 jours', 'Autonome (seul)', 'Grosse affluence']),
     )
   })
+
+  it('offers expectation and new-team chips without join-separator commas', () => {
+    const prompts = [
+      'Quelles sont vos attentes et vos critères prioritaires ?',
+      'Comment réagissez-vous lorsque vous intégrez une nouvelle équipe pour une mission courte ?',
+    ]
+    for (const prompt of prompts) {
+      const chips = pertinentInterviewChips(prompt) ?? []
+      expect(chips.length).toBeGreaterThan(1)
+      expect(chips.map((chip) => chip.label).join('|')).not.toContain(', ')
+    }
+  })
 })

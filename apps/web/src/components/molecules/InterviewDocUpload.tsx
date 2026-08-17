@@ -6,7 +6,7 @@ import { Upload } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
-import { DOCUMENT_UPLOAD_ACCEPT } from '@/lib/document-upload'
+import { DOCUMENT_UPLOAD_ACCEPT, resolvedDocumentMime } from '@/lib/document-upload'
 import { INTERVIEW_UPLOAD } from '@/view-models/interview-copy'
 
 type Props = {
@@ -40,7 +40,7 @@ export function InterviewDocUpload({ candidateId, disabled, onUploaded }: Props)
         entityId: candidateId,
         category: 'AUTRE',
         filename: file.name,
-        mimeType: file.type || 'application/octet-stream',
+        mimeType: resolvedDocumentMime(file.name, file.type),
         size: file.size,
         dataBase64,
       })
