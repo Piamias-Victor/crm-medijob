@@ -17,7 +17,7 @@ export function HomeQuickActions({ actions, onOpen }: Props) {
       variants={listContainer}
       initial="hidden"
       animate="visible"
-      className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
+      className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"
     >
       {actions.map((action, index) => (
         <motion.div key={action.kind} custom={index} variants={listItem} className="h-full">

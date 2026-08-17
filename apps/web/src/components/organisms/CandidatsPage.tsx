@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Users, Plus, Upload } from 'lucide-react'
 import { accentButtonClassName } from '@/lib/button-styles'
+import { INTERVIEW_CTA } from '@/view-models/interview-copy'
 import { CandidatTabs, type CandidatsTab } from '@/components/molecules/CandidatTabs'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
 import { CandidatsTabPanel } from '@/components/organisms/CandidatsTabPanel'
@@ -68,6 +69,10 @@ export function CandidatsPage({
           <Link href="/candidats/new" className={accentButtonClassName}>
             <Plus className="size-4" />
             Nouveau candidat
+          </Link>
+          <Link href="/candidats/entretiens/new" className={accentButtonClassName}>
+            <Plus className="size-4" />
+            {INTERVIEW_CTA}
           </Link>
         </div>
       }

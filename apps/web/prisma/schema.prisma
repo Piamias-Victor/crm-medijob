@@ -588,6 +588,7 @@ model Interview {
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   referent  User?     @relation("ReferentInterviews", fields: [referentId], references: [id], onDelete: SetNull)
 
+  // One DRAFT per candidate: partial unique index Interview_one_draft_per_candidate
   @@index([candidateId])
   @@index([deletedAt])
 }

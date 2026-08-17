@@ -8,4 +8,4 @@ export type HomeReferentials = {
   softwares: HomeRef[]
 }
 
-export type HomeQuickCreateKind = 'candidate' | 'mission' | 'pharmacy' | 'contact'
+export type HomeQuickCreateKind = 'candidate' | 'interview' | 'mission' | 'pharmacy' | 'contact'

@@ -45,12 +45,18 @@ describe('interviewRepository', () => {
   })
 
   it('does not list another candidate interviews', async () => {
-    await repo.create({ candidateId, mode: 'CDD_CDI' })
     expect(await repo.listByCandidate(otherCandidateId)).toEqual([])
   })
 
   it('finds a persisted interview by id', async () => {
-    const created = await repo.create({ candidateId, mode: 'INTERIM' })
-    expect((await repo.findById(created.id))?.id).toBe(created.id)
+    const listed = await repo.listByCandidate(candidateId)
+    expect(listed[0]).toBeDefined()
+    expect((await repo.findById(listed[0]!.id))?.id).toBe(listed[0]!.id)
+  })
+
+  it('rejects a second open DRAFT for the same candidate', async () => {
+    await expect(repo.create({ candidateId, mode: 'CDD_CDI' })).rejects.toMatchObject({
+      code: 'P2002',
+    })
   })
 })

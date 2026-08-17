@@ -1,5 +1,10 @@
 import { PrismaClient, UserRole } from '@prisma/client'
 import { hashPassword } from '../src/server/auth/password'
+import {
+  DEFAULT_TESTER_EMAIL,
+  DEFAULT_TESTER_NAME,
+  DEFAULT_TESTER_PASSWORD,
+} from '../src/server/auth/dev-tester'
 
 type SeedUserDef = {
   email: string
@@ -47,11 +52,11 @@ function testerSeedUser(): SeedUserDef | null {
   const email = process.env.SEED_TESTER_EMAIL
   if (email === 'off') return null
   return {
-    email: email && email.length > 0 ? email : 'victorpiamiaspro@gmail.com',
-    name: 'Testeur MediJob',
+    email: email && email.length > 0 ? email : DEFAULT_TESTER_EMAIL,
+    name: DEFAULT_TESTER_NAME,
     role: UserRole.RH_ADMIN,
     envKeys: ['SEED_TESTER_PASSWORD'],
-    fallback: 'tester-medijob-2026',
+    fallback: DEFAULT_TESTER_PASSWORD,
   }
 }
 

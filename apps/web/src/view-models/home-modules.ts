@@ -2,12 +2,14 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Briefcase,
   Building2,
+  ClipboardList,
   Inbox,
   User,
   Users,
 } from 'lucide-react'
 import type { HomeQuickCreateKind } from '@/view-models/home-referentials'
 import { candidatsPageHref } from '@/view-models/candidats-tab'
+import { INTERVIEW_CTA } from '@/view-models/interview-copy'
 
 export type HomeActionDef = {
   kind: HomeQuickCreateKind
@@ -18,6 +20,7 @@ export type HomeActionDef = {
 
 export const HOME_ACTIONS: HomeActionDef[] = [
   { kind: 'candidate', label: 'Nouveau candidat', hint: 'CVthèque', icon: Users },
+  { kind: 'interview', label: INTERVIEW_CTA, hint: 'Qualification', icon: ClipboardList },
   { kind: 'mission', label: 'Nouvelle mission', hint: 'Besoin client', icon: Briefcase },
   { kind: 'pharmacy', label: 'Nouvelle pharmacie', hint: 'Portefeuille', icon: Building2 },
   { kind: 'contact', label: 'Nouveau contact', hint: 'Annuaire', icon: User },
