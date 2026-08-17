@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/atoms/Button'
@@ -8,6 +9,7 @@ import { InterviewQuestionBlock } from '@/components/molecules/InterviewQuestion
 import { useInterviewDraftAutosave } from '@/lib/hooks/use-interview-draft-autosave'
 import { useToastStore } from '@/stores/toast-store'
 import { INTERVIEW_SAVE_SUCCESS, INTERVIEW_VALIDATE } from '@/view-models/interview-copy'
+import { interviewCandidateFichePath } from '@/view-models/interview-href'
 import {
   interviewDraftAnswersSchema,
   type InterviewDraftAnswers,
@@ -23,6 +25,7 @@ type Props = { run: InterviewRun }
 
 export function InterviewRunForm({ run }: Props) {
   const disabled = run.status !== 'DRAFT'
+  const router = useRouter()
   const push = useToastStore((state) => state.push)
   const form = useForm<InterviewDraftAnswers>({
     resolver: zodResolver(interviewDraftAnswersSchema),
@@ -81,6 +84,7 @@ export function InterviewRunForm({ run }: Props) {
           onClick={() => {
             persist(form.getValues())
             push({ variant: 'success', message: INTERVIEW_SAVE_SUCCESS })
+            router.push(interviewCandidateFichePath(run.candidateId))
           }}
         >
           {INTERVIEW_VALIDATE}

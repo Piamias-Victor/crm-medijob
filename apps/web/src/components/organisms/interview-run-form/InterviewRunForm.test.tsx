@@ -1,12 +1,15 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { InterviewRunForm } from '@/components/organisms/interview-run-form/InterviewRunForm'
 import { INTERVIEW_AVAILABLE_NOW, INTERVIEW_VALIDATE } from '@/view-models/interview-copy'
+import { interviewCandidateFichePath } from '@/view-models/interview-href'
 import { interviewRunFixture } from '@/view-models/interview-run.fixture'
 import type { InterviewRun } from '@/view-models/interview-run'
 
+const { routerPush } = vi.hoisted(() => ({ routerPush: vi.fn() }))
+
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }),
+  useRouter: () => ({ refresh: vi.fn(), push: routerPush }),
 }))
 
 vi.mock('@/lib/trpc/client', () => ({
@@ -70,8 +73,9 @@ describe('InterviewRunForm', () => {
     expect(screen.queryByText('Liberté')).not.toBeInTheDocument()
   })
 
-  it('exposes a Valider action', () => {
+  it('exposes a Valider action that returns to the candidate fiche', () => {
     render(<InterviewRunForm run={interviewRunFixture} />)
-    expect(screen.getByRole('button', { name: INTERVIEW_VALIDATE })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: INTERVIEW_VALIDATE }))
+    expect(routerPush).toHaveBeenCalledWith(interviewCandidateFichePath(interviewRunFixture.candidateId))
   })
 })

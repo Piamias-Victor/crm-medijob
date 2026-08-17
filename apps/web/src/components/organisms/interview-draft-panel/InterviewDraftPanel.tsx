@@ -12,6 +12,7 @@ import {
   INTERVIEW_ABANDON_SUCCESS,
   INTERVIEW_DRAFT_HINT,
 } from '@/view-models/interview-copy'
+import { interviewCandidateFichePath } from '@/view-models/interview-href'
 import type { InterviewRun } from '@/view-models/interview-run'
 
 type Props = { run: InterviewRun }
@@ -22,7 +23,7 @@ export function InterviewDraftPanel({ run }: Props) {
   const abandon = trpc.interview.abandon.useMutation({
     onSuccess: () => {
       mutation.onSuccess()
-      router.push(`/candidats/${run.candidateId}`)
+      router.push(interviewCandidateFichePath(run.candidateId))
     },
     onError: mutation.onError,
   })
