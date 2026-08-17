@@ -12,11 +12,12 @@ export default async function Page({ params, searchParams }: Props) {
   const { id } = await params
   const { back } = await searchParams
   const caller = await createServerCaller()
-  const [profile, referentials, activities, documents] = await Promise.all([
+  const [profile, referentials, activities, documents, interviews] = await Promise.all([
     caller.candidate.getById({ id }),
     caller.candidate.referentials(),
     caller.activityLog.listByEntity({ entityType: 'CANDIDATE', entityId: id }),
     caller.document.listByEntity({ entityType: 'CANDIDATE', entityId: id }),
+    caller.interview.listByCandidate({ candidateId: id }),
   ])
 
   if (!profile) notFound()
@@ -27,6 +28,7 @@ export default async function Page({ params, searchParams }: Props) {
       referentials={referentials}
       activities={activities}
       documents={documents}
+      interviews={interviews}
       backHref={parseCvthequeBackHref(back)}
     />
   )

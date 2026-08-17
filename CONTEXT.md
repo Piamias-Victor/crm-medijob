@@ -5,7 +5,7 @@ Medijob est une agence de recrutement spécialisée en pharmacie d'officine. Ce 
 ## Language
 
 **Candidate**:
-A person qualified and actively tracked in the CVthèque — created directly (CV upload + human review) or converted from an accepted Application.
+A person qualified and actively tracked in the CVthèque — created directly (CV upload + human review), converted from an accepted Application, or created at Interview start.
 _Avoid_: Applicant, postulant, profil (when meaning an inbound application), candidature
 
 **Candidate status**:
@@ -35,6 +35,10 @@ _Avoid_: Disponibilité (as free text), date de début, planning
 **Application**:
 An inbound candidacy received via the public website (Webflow), tied to a specific JobOffer. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters.
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead
+
+**Interview**:
+A first-class qualification conversation on a Candidate (status DRAFT or CLOSED, mode INTERIM or CDD_CDI, answers/scores, eligibility decision, Referent). Distinct from the PipelineStage named « Entretien » (mission progression) and from Application (website inbound). Templates (trames) are versioned question banks keyed by JobTitle `profileKey` × mode — seeded in V1, admin editor later.
+_Avoid_: Entretien (unqualified), évaluation, eval, qualification projet, PipelineStage Entretien (as the Interview entity)
 
 **AppProfile**:
 A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it and creates or merges a Candidate. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync.
@@ -161,6 +165,11 @@ Outbound: Candidate creation on acceptance (into Candidates).
 Owns: AppProfile, manual sync from Badakan `searchNewEmployees`, accept/ignore workflow.
 Inbound: Badakan API (read-only).
 Outbound: Candidate creation or merge on acceptance (into Candidates). Never auto-writes the CVthèque.
+
+**Interviews** — structured qualification conversations replacing medijob-eval.
+Owns: Interview, InterviewTemplate (versioned trames).
+Inbound: Candidate ID, optional Referent (User). JobTitle `profileKey` selects the trame.
+Outbound: later write-back to Candidate at close. Never a PipelineStage and never an Application.
 
 **AI** — assisted extraction, generation, and matching.
 Owns: provider abstraction, Zod-validated AI responses, assistant chat.
