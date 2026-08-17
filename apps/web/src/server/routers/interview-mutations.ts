@@ -10,9 +10,16 @@ import {
   interviewAbandonSchema,
   interviewStartSchema,
 } from '@/view-models/interview-start.schema'
-import { INTERVIEW_DRAFT_OPEN } from '@/view-models/interview-copy'
+import { interviewSaveDraftSchema } from '@/view-models/interview-draft.schema'
+import { INTERVIEW_DRAFT_OPEN, INTERVIEW_NOT_DRAFT } from '@/view-models/interview-copy'
+import {
+  saveInterviewDraft,
+  type SaveInterviewDraftDeps,
+} from '@/server/interview/save-draft'
 
-export type InterviewWriteDeps = StartInterviewDeps & AbandonInterviewDeps
+export type InterviewWriteDeps = StartInterviewDeps &
+  AbandonInterviewDeps &
+  SaveInterviewDraftDeps
 
 function mapStartError(error: unknown): never {
   if (error instanceof InterviewDraftOpenError) {
@@ -41,6 +48,22 @@ export function interviewAbandonMutation(deps: AbandonInterviewDeps) {
     } catch (error) {
       if (error instanceof Error && error.message === 'INTERVIEW_NOT_FOUND') {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Entretien introuvable.' })
+      }
+      throw error
+    }
+  })
+}
+
+export function interviewSaveDraftMutation(deps: SaveInterviewDraftDeps) {
+  return protectedProcedure.input(interviewSaveDraftSchema).mutation(async ({ input }) => {
+    try {
+      return await saveInterviewDraft(input.id, input.answers, deps)
+    } catch (error) {
+      if (error instanceof Error && error.message === 'INTERVIEW_NOT_FOUND') {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Entretien introuvable.' })
+      }
+      if (error instanceof Error && error.message === 'INTERVIEW_NOT_DRAFT') {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: INTERVIEW_NOT_DRAFT })
       }
       throw error
     }

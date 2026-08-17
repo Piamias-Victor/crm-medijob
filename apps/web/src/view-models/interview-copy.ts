@@ -13,6 +13,10 @@ export const INTERVIEW_ABANDON_SUCCESS = 'Brouillon abandonné'
 export const INTERVIEW_START_SECTION = 'Identité'
 export const INTERVIEW_START_HINT =
   'Confirme les infos minimales, puis ouvre le brouillon d’entretien.'
-export const INTERVIEW_DRAFT_HINT =
-  'Brouillon ouvert. Le questionnaire arrive à l’étape suivante.'
+export const INTERVIEW_DRAFT_HINT = 'Les réponses s’enregistrent au fil de l’appel.'
+export const INTERVIEW_NOT_DRAFT = 'Seuls les brouillons peuvent être enregistrés.'
+export const INTERVIEW_ELIMINATOIRE = 'Éliminatoire'
+export const INTERVIEW_NOTES = 'Note libre'
+export const INTERVIEW_CHECKLIST_TITLE = 'Dossier documents'
+export const INTERVIEW_NOTE_AUTOSAVE_MS = 800
 

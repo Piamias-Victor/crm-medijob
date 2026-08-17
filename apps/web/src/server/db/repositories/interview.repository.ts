@@ -47,6 +47,9 @@ export function makeInterviewRepository(db: PrismaClient = defaultDb) {
       })
       return { candidateId: row.candidateId }
     },
+    updateAnswers: async (id: string, answers: Prisma.InputJsonValue) => {
+      await db.interview.update({ where: { id }, data: { answers } })
+    },
   }
 }
 

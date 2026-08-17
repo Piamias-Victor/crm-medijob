@@ -18,6 +18,7 @@ describe('CandidateInterviewsTab', () => {
         mode: 'INTERIM',
         decision: null,
         createdAt: new Date('2026-08-17T10:00:00Z'),
+        candidateId: 'c1',
       }),
     ]
     render(<CandidateInterviewsTab candidateId="c1" interviews={interviews} />)

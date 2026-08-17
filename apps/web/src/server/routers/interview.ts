@@ -1,19 +1,23 @@
 import { router, protectedProcedure } from '@/server/trpc'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { interviewRepository } from '@/server/db/repositories/interview.repository'
+import { interviewTemplateRepository } from '@/server/db/repositories/interview-template.repository'
 import { toInterviewListRow, type InterviewRecord } from '@/view-models/interview-list'
 import { getInterviewSchema, listInterviewsSchema } from '@/server/routers/interview.schema'
 import {
   interviewAbandonMutation,
+  interviewSaveDraftMutation,
   interviewStartMutation,
   type InterviewWriteDeps,
 } from '@/server/routers/interview-mutations'
+import { loadInterviewRun, type LoadInterviewRunDeps } from '@/server/interview/load-run'
 import { toInterviewCandidateCreate } from '@/view-models/interview-candidate-create'
 
 export type InterviewDeps = {
   listByCandidate: (candidateId: string) => Promise<InterviewRecord[]>
   findById: (id: string) => Promise<InterviewRecord | null>
-} & InterviewWriteDeps
+} & InterviewWriteDeps &
+  LoadInterviewRunDeps
 
 export function makeInterviewRouter(deps: InterviewDeps) {
   return router({
@@ -26,6 +30,10 @@ export function makeInterviewRouter(deps: InterviewDeps) {
     }),
     start: interviewStartMutation(deps),
     abandon: interviewAbandonMutation(deps),
+    saveDraft: interviewSaveDraftMutation(deps),
+    getRun: protectedProcedure.input(getInterviewSchema).query(async ({ input }) =>
+      loadInterviewRun(input.id, deps),
+    ),
   })
 }
 
@@ -43,4 +51,7 @@ export const interviewRouter = makeInterviewRouter({
   createCandidate: (data) => candidateRepository.createProfile(toInterviewCandidateCreate(data)),
   createInterview: (data) => interviewRepository.create(data),
   softDeleteInterview: (id) => interviewRepository.softDelete(id),
+  updateAnswers: (id, answers) => interviewRepository.updateAnswers(id, answers),
+  findCandidateProfileKey: (candidateId) => candidateRepository.findJobTitleProfileKey(candidateId),
+  findTemplate: (profileKey, mode) => interviewTemplateRepository.findByProfileMode(profileKey, mode),
 })

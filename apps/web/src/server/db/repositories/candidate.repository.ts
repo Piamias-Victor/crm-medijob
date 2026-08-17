@@ -75,6 +75,13 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
     },
     softDelete: (id: string) =>
       db.candidate.update({ where: { id }, data: { deletedAt: new Date() } }),
+    findJobTitleProfileKey: async (id: string) => {
+      const row = await db.candidate.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: { jobTitle: { select: { profileKey: true } } },
+      })
+      return row?.jobTitle.profileKey ?? null
+    },
   }
 }
 

@@ -14,8 +14,8 @@ export default async function Page({ params }: Props) {
 
   const { id, interviewId } = await params
   const caller = await createServerCaller()
-  const interview = await caller.interview.getById({ id: interviewId })
-  if (!interview) notFound()
+  const run = await caller.interview.getRun({ id: interviewId })
+  if (!run || run.candidateId !== id) notFound()
 
   return (
     <EntityDetailShell
@@ -30,11 +30,11 @@ export default async function Page({ params }: Props) {
     >
       <SectionCard
         variant="glass"
-        title={interview.statusLabel}
-        description={interview.modeLabel}
+        title={run.statusLabel}
+        description={`${run.templateLabel} · ${run.modeLabel}`}
         bodyClassName="p-5 sm:p-6"
       >
-        <InterviewDraftPanel candidateId={id} interview={interview} />
+        <InterviewDraftPanel run={run} />
       </SectionCard>
     </EntityDetailShell>
   )
