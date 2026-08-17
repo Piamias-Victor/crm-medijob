@@ -61,6 +61,16 @@ Parcours questions (#300), clôture (#301). Peut avancer en parallèle de #300 a
 - Réutiliser `detectCandidateDuplicates` / duplicate-review
 - Fichiers < 100 lignes, TDD
 
+## Fichiers impactés
+
+- `apps/web/src/view-models/interview-duplicate-incoming.ts` — mapping identité entretien → incoming review + start après fusion/ignore
+- `apps/web/src/lib/candidate-duplicate-draft-storage.ts` — draft `mode: 'interview'`
+- `apps/web/src/lib/hooks/use-interview-duplicate-merge-flow.ts` — alerte + guard comme création manuelle
+- `apps/web/src/lib/hooks/use-interview-duplicate-review-actions.ts` — fusion puis `interview.start` ; ignorer = start sans `candidateId`
+- `apps/web/src/lib/hooks/use-interview-start-mutation.ts` — clear draft ; redirect CONFLICT depuis review
+- `apps/web/src/components/organisms/interview-start-form/InterviewStartForm.tsx` — probe (skip si fiche)
+- `apps/web/src/components/organisms/candidate-duplicate-review/CandidateDuplicateReviewClient.tsx` — branche actions interview
+
 ---
 
 ## Fin
@@ -77,6 +87,8 @@ pnpm dev
 
 ## Tests manuels
 
-- [ ] Nouvel entretien avec email d’un candidat existant → écran doublon
-- [ ] Choisir rattacher → brouillon sur la fiche existante (pas de 2ᵉ fiche)
+- [ ] Nouvel entretien (Accueil/CVthèque) avec email d’un candidat existant → alerte doublon puis écran fusion
+- [ ] Fusionner → brouillon sur la fiche existante (pas de 2ᵉ fiche)
+- [ ] Ignorer → nouvelle fiche + brouillon (comme création manuelle)
 - [ ] Email inconnu → création normale (régression #298)
+- [ ] Depuis fiche existante → pas d’écran doublon

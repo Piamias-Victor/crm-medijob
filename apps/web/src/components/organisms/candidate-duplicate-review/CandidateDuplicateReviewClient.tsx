@@ -6,6 +6,7 @@ import { DuplicateDetectionPage } from '@/components/organisms/duplicate-detecti
 import { CandidateDuplicatePicker } from '@/components/molecules/CandidateDuplicatePicker'
 import { buildCandidateDuplicateFields } from '@/lib/candidate-duplicate-fields'
 import { useCandidateDuplicateReviewActions } from '@/lib/hooks/use-candidate-duplicate-review-actions'
+import { useInterviewDuplicateReviewActions } from '@/lib/hooks/use-interview-duplicate-review-actions'
 import {
   DUPLICATE_REVIEW_EXPIRED,
   DUPLICATE_REVIEW_LOADING,
@@ -31,7 +32,10 @@ export function CandidateDuplicateReviewClient({
   referentials,
 }: Props) {
   const [existingId, setExistingId] = useState(initialExistingId)
-  const { draft, onMerge, onIgnore, onCancel } = useCandidateDuplicateReviewActions(existingId ?? '')
+  const candidateActions = useCandidateDuplicateReviewActions(existingId ?? '')
+  const interviewActions = useInterviewDuplicateReviewActions(existingId ?? '')
+  const { draft, onMerge, onIgnore, onCancel } =
+    candidateActions.draft?.mode === 'interview' ? interviewActions : candidateActions
   const profileQuery = trpc.candidate.getById.useQuery(
     { id: existingId ?? '' },
     { enabled: Boolean(existingId) && !existing },
