@@ -48,11 +48,19 @@ const editDraftSchema = z.object({
   ...draftShared,
 })
 
+const interviewDraftSchema = z.object({
+  mode: z.literal('interview'),
+  incoming: candidateCreateInputSchema,
+  interviewMode: z.enum(['INTERIM', 'CDD_CDI']),
+  ...draftShared,
+})
+
 export const candidateDuplicateDraftSchema = z.discriminatedUnion('mode', [
   createDraftSchema,
   cvDraftSchema,
   importDraftSchema,
   editDraftSchema,
+  interviewDraftSchema,
 ])
 
 export type CandidateDuplicateDraft = z.infer<typeof candidateDuplicateDraftSchema>

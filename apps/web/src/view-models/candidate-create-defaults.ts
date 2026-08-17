@@ -2,7 +2,7 @@ import type { CandidateCreateInput } from '@/view-models/candidate-profile.schem
 import { CREATE_DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 
 export function buildCandidateCreateDefaults(
-  referentId: string,
+  referentId: string | null,
   jobTitleId: string,
 ): CandidateCreateInput {
   return {

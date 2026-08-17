@@ -4,6 +4,18 @@ import { InterviewStartForm } from '@/components/organisms/interview-start-form/
 import { buildInterviewStartDefaults } from '@/view-models/interview-start-defaults'
 import { INTERVIEW_START_SUBMIT } from '@/view-models/interview-copy'
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
+vi.mock('@/lib/trpc/client', () => ({
+  trpc: {
+    useUtils: () => ({
+      candidate: { detectDuplicate: { fetch: vi.fn().mockResolvedValue([]) } },
+    }),
+  },
+}))
+
 describe('InterviewStartForm', () => {
   it('renders confirmed identity fields', () => {
     render(
