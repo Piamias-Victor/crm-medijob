@@ -7,6 +7,7 @@ type Row = {
   mode: string
   status: string
   deletedAt: Date | null
+  answers?: unknown
 }
 
 function fakeDb(rows: Row[] = []) {
@@ -57,5 +58,14 @@ describe('interviewRepository draft', () => {
     const result = await repo.softDelete(created.id)
     expect(result).toEqual({ candidateId: 'c1' })
     expect(await repo.findDraftByCandidate('c1')).toBeNull()
+  })
+
+  it('persists draft answers on the interview', async () => {
+    const db = fakeDb()
+    const repo = makeInterviewRepository(db as never)
+    const created = await repo.create({ candidateId: 'c1', mode: 'INTERIM' })
+    const answers = { questions: { q1: { choiceLabel: 'Oui' } }, checklist: { cv: true } }
+    await repo.updateAnswers(created.id, answers)
+    expect(await repo.findById(created.id)).toMatchObject({ answers })
   })
 })

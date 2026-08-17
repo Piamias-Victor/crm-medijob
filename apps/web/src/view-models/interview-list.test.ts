@@ -9,6 +9,7 @@ describe('toInterviewListRow', () => {
       mode: 'INTERIM',
       decision: null,
       createdAt: new Date('2026-08-17T10:00:00Z'),
+      candidateId: 'c1',
     })
     expect(row.statusLabel).toBe('Brouillon')
     expect(row.modeLabel).toBe('Intérim')

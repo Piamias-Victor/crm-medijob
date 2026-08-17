@@ -9,6 +9,8 @@ export const interviewRecord: InterviewRecord = {
   mode: 'INTERIM',
   decision: null,
   createdAt: new Date('2026-08-17T10:00:00Z'),
+  candidateId: 'c1',
+  answers: {},
 }
 
 import type { UserRole } from '@/server/auth/permissions'
@@ -33,6 +35,9 @@ export function makeInterviewDeps(overrides: Partial<InterviewDeps> = {}): Inter
     createCandidate: vi.fn().mockResolvedValue({ id: 'c1' }),
     createInterview: vi.fn().mockResolvedValue({ id: 'i1' }),
     softDeleteInterview: vi.fn().mockResolvedValue({ candidateId: 'c1' }),
+    updateAnswers: vi.fn().mockResolvedValue(undefined),
+    findCandidateProfileKey: vi.fn().mockResolvedValue('pharmacien'),
+    findTemplate: vi.fn().mockResolvedValue({ label: 'Pharmacien', sections: [] }),
     ...overrides,
   }
 }

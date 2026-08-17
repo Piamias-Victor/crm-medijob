@@ -5,3 +5,7 @@ export function interviewStartPath(candidateId?: string) {
 export function interviewDraftPath(candidateId: string, interviewId: string) {
   return `/candidats/${candidateId}/entretiens/${interviewId}`
 }
+
+export function interviewCandidateFichePath(candidateId: string) {
+  return `/candidats/${candidateId}`
+}

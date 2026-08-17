@@ -10,6 +10,8 @@ export type InterviewRecord = {
   mode: keyof typeof INTERVIEW_MODE_LABELS
   decision: keyof typeof INTERVIEW_DECISION_LABELS | null
   createdAt: Date
+  candidateId: string
+  answers?: unknown
 }
 
 export type InterviewListRow = {

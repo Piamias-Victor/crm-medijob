@@ -52,6 +52,9 @@ export function memoryStartDeps(seed: CandidateRow[] = []) {
     },
     listByCandidate: async () => [],
     findById: async () => null,
+    updateAnswers: async () => undefined,
+    findCandidateProfileKey: async () => 'pharmacien',
+    findTemplate: async () => ({ label: 'Pharmacien', sections: [] }),
     softDeleteInterview: async (id: string) => {
       const row = interviews.find((interview) => interview.id === id && !interview.deletedAt)
       if (!row) return null

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import templates from '../../../prisma/data/interview-templates.json'
+import { GENERIC_INTERVIEW_TEMPLATES } from '../../../prisma/data/interview-generic-templates'
+import { parseInterviewSections } from '@/view-models/interview-template'
+import { INTERVIEW_GENERIC_PROFILE_KEY } from '@/view-models/interview-profile-key'
 import {
   INTERVIEW_PROFILE_KEYS,
   JOB_TITLE_PROFILE_KEYS,
@@ -41,5 +44,24 @@ describe('Interview scored trames catalog', () => {
       expect(questions.length).toBeGreaterThan(0)
       expect(questions.every((question) => question.suggestedAnswers.length > 0)).toBe(true)
     }
+  })
+
+  it('parses eliminatory flags from the pharmacien trame', () => {
+    const trame = templates.find((row) => row.profileKey === 'pharmacien' && row.mode === 'INTERIM')
+    const sections = parseInterviewSections(trame?.sections)
+    expect(sections.some((section) => section.questions.some((question) => question.eliminatoire))).toBe(
+      true,
+    )
+  })
+})
+
+describe('Interview generic trame', () => {
+  it('covers Autre for both modes', () => {
+    expect(GENERIC_INTERVIEW_TEMPLATES).toHaveLength(2)
+    expect(
+      GENERIC_INTERVIEW_TEMPLATES.every(
+        (row) => row.profileKey === INTERVIEW_GENERIC_PROFILE_KEY && row.sections.length > 0,
+      ),
+    ).toBe(true)
   })
 })
