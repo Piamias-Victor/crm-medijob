@@ -28,6 +28,7 @@ export type StartInterviewDeps = {
     mode: InterviewMode
     referentId: string
   }) => Promise<{ id: string }>
+  logActivity: (input: { candidateId: string; authorId: string; content: string }) => Promise<void>
 }
 
 export class InterviewDraftOpenError extends Error {
@@ -53,6 +54,11 @@ export async function startInterview(
       mode: input.mode,
       referentId: actorId,
     })
+    await deps.logActivity({
+      candidateId: existing.id,
+      authorId: actorId,
+      content: 'Entretien créé',
+    })
     return { candidateId: existing.id, interviewId: interview.id, createdCandidate: false }
   }
 
@@ -69,6 +75,11 @@ export async function startInterview(
     candidateId: candidate.id,
     mode: input.mode,
     referentId: actorId,
+  })
+  await deps.logActivity({
+    candidateId: candidate.id,
+    authorId: actorId,
+    content: 'Entretien créé',
   })
   return { candidateId: candidate.id, interviewId: interview.id, createdCandidate: true }
 }

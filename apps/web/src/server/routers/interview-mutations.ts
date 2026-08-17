@@ -49,6 +49,9 @@ export function interviewAbandonMutation(deps: AbandonInterviewDeps) {
       if (error instanceof Error && error.message === 'INTERVIEW_NOT_FOUND') {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Entretien introuvable.' })
       }
+      if (error instanceof Error && error.message === 'INTERVIEW_NOT_DRAFT') {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: INTERVIEW_NOT_DRAFT })
+      }
       throw error
     }
   })

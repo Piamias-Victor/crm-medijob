@@ -26,4 +26,14 @@ describe('abandonInterview', () => {
     expect(again.createdCandidate).toBe(false)
     expect(deps.interviews.filter((row) => !row.deletedAt)).toHaveLength(1)
   })
+
+  it('refuses to abandon a CLOSED interview', async () => {
+    const deps = memoryStartDeps()
+    const started = await startInterview(interviewStartIdentity, 'u1', deps)
+    const row = deps.interviews.find((interview) => interview.id === started.interviewId)
+    if (row) row.status = 'CLOSED'
+    await expect(abandonInterview(started.interviewId, deps)).rejects.toMatchObject({
+      message: 'INTERVIEW_NOT_DRAFT',
+    })
+  })
 })

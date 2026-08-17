@@ -1,3 +1,5 @@
+import type { InterviewRecord } from '@/view-models/interview-list'
+
 export const interviewStartIdentity = {
   firstName: 'Camille',
   lastName: 'Durand',
@@ -15,11 +17,7 @@ type CandidateRow = {
   referentId: string
 }
 
-type InterviewRow = {
-  id: string
-  candidateId: string
-  mode: string
-  status: string
+type InterviewRow = InterviewRecord & {
   referentId: string
   deletedAt: Date | null
 }
@@ -27,17 +25,26 @@ type InterviewRow = {
 export function memoryStartDeps(seed: CandidateRow[] = []) {
   const candidates = [...seed]
   const interviews: InterviewRow[] = []
+  const logs: { candidateId: string; authorId: string; content: string }[] = []
   let n = seed.length
   return {
     candidates,
     interviews,
+    logs,
     createCandidate: async (data: Omit<CandidateRow, 'id'>) => {
       const row = { ...data, id: `c${++n}` }
       candidates.push(row)
       return { id: row.id }
     },
-    createInterview: async (data: Omit<InterviewRow, 'id' | 'status' | 'deletedAt'>) => {
-      const row = { ...data, id: `i${++n}`, status: 'DRAFT', deletedAt: null }
+    createInterview: async (data: Omit<InterviewRow, 'id' | 'status' | 'deletedAt' | 'decision' | 'createdAt'>) => {
+      const row: InterviewRow = {
+        ...data,
+        id: `i${++n}`,
+        status: 'DRAFT',
+        decision: null,
+        createdAt: new Date(),
+        deletedAt: null,
+      }
       interviews.push(row)
       return { id: row.id }
     },
@@ -51,10 +58,19 @@ export function memoryStartDeps(seed: CandidateRow[] = []) {
       if (row && !row.jobTitleId) row.jobTitleId = jobTitleId
     },
     listByCandidate: async () => [],
-    findById: async () => null,
+    findById: async (id: string) =>
+      interviews.find((row) => row.id === id && !row.deletedAt) ?? null,
     updateAnswers: async () => undefined,
     findCandidateProfileKey: async () => 'pharmacien',
     findTemplate: async () => ({ label: 'Pharmacien', sections: [] }),
+    logActivity: async (input: { candidateId: string; authorId: string; content: string }) => {
+      logs.push(input)
+    },
+    close: async () => undefined,
+    findCandidate: async () => null,
+    findTemplateQuestions: async () => [],
+    findTemplateSections: async () => [],
+    applyCandidatePatch: async () => undefined,
     softDeleteInterview: async (id: string) => {
       const row = interviews.find((interview) => interview.id === id && !interview.deletedAt)
       if (!row) return null
