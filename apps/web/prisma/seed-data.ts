@@ -34,9 +34,32 @@ export const GROUPEMENTS = [
 export const JOB_TITLES = [
   'Pharmacien',
   'Préparateur',
-  'Étudiant pharma',
-  'Rayoniste',
+  'Étudiant en pharmacie',
+  'Conseiller parapharmacie',
+  'Rayonniste',
   'Autre',
+] as const
+
+export const JOB_TITLE_RENAMES = [
+  ['Étudiant pharma', 'Étudiant en pharmacie'],
+  ['Rayoniste', 'Rayonniste'],
+] as const
+
+export const JOB_TITLE_PROFILE_KEYS: Record<(typeof JOB_TITLES)[number], string | null> = {
+  Pharmacien: 'pharmacien',
+  Préparateur: 'preparateur',
+  'Étudiant en pharmacie': 'etudiant',
+  'Conseiller parapharmacie': 'conseiller_para',
+  Rayonniste: 'rayonniste',
+  Autre: null,
+}
+
+export const INTERVIEW_PROFILE_KEYS = [
+  'pharmacien',
+  'preparateur',
+  'etudiant',
+  'conseiller_para',
+  'rayonniste',
 ] as const
 
 export const CONTACT_ROLES = [
@@ -51,8 +74,16 @@ export const CONTACT_ROLES = [
 // Matrice compatibilité : métier mission → métiers candidats acceptés.
 export const COMPATIBILITY: Record<string, readonly string[]> = {
   Pharmacien: ['Pharmacien'],
-  Préparateur: ['Préparateur', 'Étudiant pharma'],
-  'Étudiant pharma': ['Étudiant pharma'],
-  Rayoniste: ['Rayoniste'],
-  Autre: ['Pharmacien', 'Préparateur', 'Étudiant pharma', 'Rayoniste', 'Autre'],
+  Préparateur: ['Préparateur', 'Étudiant en pharmacie'],
+  'Étudiant en pharmacie': ['Étudiant en pharmacie'],
+  'Conseiller parapharmacie': ['Conseiller parapharmacie'],
+  Rayonniste: ['Rayonniste'],
+  Autre: [
+    'Pharmacien',
+    'Préparateur',
+    'Étudiant en pharmacie',
+    'Conseiller parapharmacie',
+    'Rayonniste',
+    'Autre',
+  ],
 }

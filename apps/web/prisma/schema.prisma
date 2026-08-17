@@ -100,6 +100,22 @@ enum JobOfferStatus {
   DEPUBLIEE
 }
 
+enum InterviewStatus {
+  DRAFT
+  CLOSED
+}
+
+enum InterviewMode {
+  INTERIM
+  CDD_CDI
+}
+
+enum InterviewDecision {
+  ELIGIBLE
+  NON_ELIGIBLE
+  REVIEW
+}
+
 // ─── Auth (NextAuth v5) ───────────────────────────────────────
 
 model Account {
@@ -153,9 +169,10 @@ model User {
   pharmacyRefs  Pharmacy[]  @relation("ReferentPharmacies")
   contactRefs   Contact[]   @relation("ReferentContacts")
   activities    ActivityLog[]
-  gdprErases    GdprEraseAudit[]
-  accounts      Account[]
-  sessions      Session[]
+  gdprErases     GdprEraseAudit[]
+  interviewRefs  Interview[]      @relation("ReferentInterviews")
+  accounts       Account[]
+  sessions       Session[]
 
   @@index([deletedAt])
 }
@@ -192,9 +209,10 @@ model PipelineStage {
 }
 
 model JobTitle {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  name       String   @unique
+  profileKey String?  @unique
+  createdAt  DateTime @default(now())
 
   candidates                Candidate[]
   missions                  Mission[]
@@ -264,6 +282,7 @@ model Candidate {
   documents           Document[]                    @relation("CandidateDocuments")
   applications        Application[]
   appProfiles         AppProfile[]
+  interviews          Interview[]
 
   @@index([deletedAt])
   @@index([jobTitleId])
@@ -549,6 +568,42 @@ model Document {
   @@index([contactId])
   @@index([missionId])
   @@index([candidateId])
+}
+
+// ─── Interviews ───────────────────────────────────────────────
+
+model Interview {
+  id          String              @id @default(cuid())
+  status      InterviewStatus     @default(DRAFT)
+  mode        InterviewMode
+  decision    InterviewDecision?
+  answers     Json                @default("{}")
+  scores      Json                @default("{}")
+  candidateId String
+  referentId  String?
+  deletedAt   DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  referent  User?     @relation("ReferentInterviews", fields: [referentId], references: [id], onDelete: SetNull)
+
+  @@index([candidateId])
+  @@index([deletedAt])
+}
+
+model InterviewTemplate {
+  id         String        @id @default(cuid())
+  profileKey String
+  mode       InterviewMode
+  version    Int           @default(1)
+  label      String
+  sections   Json
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@unique([profileKey, mode, version])
+  @@index([profileKey, mode])
 }
 
 // ─── Audit effacement RGPD (sans PII) ─────────────────────────

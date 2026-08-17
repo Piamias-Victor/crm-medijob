@@ -16,6 +16,10 @@ export const CANDIDATE_TAB_META: Record<
     title: 'Missions actives',
     description: 'Suivi des missions en cours pour ce candidat.',
   },
+  entretiens: {
+    title: 'Entretiens',
+    description: 'Historique des entretiens de qualification du candidat.',
+  },
   documents: {
     title: 'Documents',
     description: 'CV, dossier anonymisé, export PDF et pièces jointes.',

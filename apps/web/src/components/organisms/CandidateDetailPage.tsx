@@ -12,22 +12,16 @@ import { candidateBlacklistHeaderChips } from '@/view-models/candidate-blacklist
 import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
+import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
-import type { RefItem } from '@/view-models/referential'
-import type { RawStage } from '@/view-models/candidate-kanban.types'
-
-type Referentials = {
-  jobTitles: RefItem[]
-  softwares: RefItem[]
-  recruiters: RefItem[]
-  pipelineStages: RawStage[]
-}
+import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
 
 type Props = {
   profile: CandidateProfilePayload
-  referentials: Referentials
+  referentials: CandidateDetailReferentials
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  interviews: InterviewListRow[]
   backHref?: string
 }
 
@@ -36,6 +30,7 @@ export function CandidateDetailPage({
   referentials,
   activities,
   documents,
+  interviews,
   backHref = '/candidats',
 }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
@@ -78,6 +73,7 @@ export function CandidateDetailPage({
         referentials={referentials}
         activities={activities}
         documents={documents}
+        interviews={interviews}
         onPresentPharmacy={() => setPresentOpen(true)}
         onPresentRadius={() => setPresentRadiusOpen(true)}
       />

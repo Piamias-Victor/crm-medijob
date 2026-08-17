@@ -69,8 +69,8 @@ export const RICH_CANDIDATES: RichCandidateSeed[] = [
   { id: 'rich-ca-3', firstName: 'Léa', lastName: 'Bernard', email: 'lea.bernard@email.fr', phone: '06 11 22 33 03', city: 'Paris', postalCode: '75011', latitude: 48.858, longitude: 2.38, jobTitle: 'Pharmacien', mobilityRadiusKm: 40 },
   { id: 'rich-ca-4', firstName: 'Hugo', lastName: 'Petit', email: 'hugo.petit@email.fr', phone: '06 11 22 33 04', city: 'Marseille', postalCode: '13008', latitude: 43.27, longitude: 5.38, jobTitle: 'Préparateur', mobilityRadiusKm: 35 },
   { id: 'rich-ca-5', firstName: 'Manon', lastName: 'Roux', email: 'manon.roux@email.fr', phone: '06 11 22 33 05', city: 'Toulouse', postalCode: '31000', latitude: 43.6045, longitude: 1.444, jobTitle: 'Pharmacien', mobilityRadiusKm: 30 },
-  { id: 'rich-ca-6', firstName: 'Nathan', lastName: 'Faure', email: 'nathan.faure@email.fr', phone: '06 11 22 33 06', city: 'Lyon', postalCode: '69007', latitude: 45.748, longitude: 4.845, jobTitle: 'Étudiant pharma', mobilityRadiusKm: 20 },
-  { id: 'rich-ca-7', firstName: 'Chloé', lastName: 'Lambert', email: 'chloe.lambert@email.fr', phone: '06 11 22 33 07', city: 'Nantes', postalCode: '44000', latitude: 47.2184, longitude: -1.5536, jobTitle: 'Rayoniste', mobilityRadiusKm: 30 },
+  { id: 'rich-ca-6', firstName: 'Nathan', lastName: 'Faure', email: 'nathan.faure@email.fr', phone: '06 11 22 33 06', city: 'Lyon', postalCode: '69007', latitude: 45.748, longitude: 4.845, jobTitle: 'Étudiant en pharmacie', mobilityRadiusKm: 20 },
+  { id: 'rich-ca-7', firstName: 'Chloé', lastName: 'Lambert', email: 'chloe.lambert@email.fr', phone: '06 11 22 33 07', city: 'Nantes', postalCode: '44000', latitude: 47.2184, longitude: -1.5536, jobTitle: 'Rayonniste', mobilityRadiusKm: 30 },
   { id: 'rich-ca-8', firstName: 'Antoine', lastName: 'Mercier', email: 'antoine.mercier@email.fr', phone: '06 11 22 33 08', city: 'Lyon', postalCode: '69006', latitude: 45.769, longitude: 4.85, jobTitle: 'Pharmacien', mobilityRadiusKm: 45 },
 ]
 
@@ -80,5 +80,5 @@ export const RICH_MISSIONS: RichMissionSeed[] = [
   { id: 'rich-mi-3', pharmacyId: 'rich-ph-paris-marais', contactId: 'rich-ct-3', title: 'Pharmacien titulaire de remplacement', status: 'A_POURVOIR', contractType: 'CDI', jobTitle: 'Pharmacien' },
   { id: 'rich-mi-4', pharmacyId: 'rich-ph-toulouse-cap', contactId: 'rich-ct-5', title: 'Adjoint officine', status: 'POURVU', contractType: 'CDI', jobTitle: 'Pharmacien' },
   { id: 'rich-mi-5', pharmacyId: 'rich-ph-marseille-vieux', contactId: 'rich-ct-4', title: 'Préparateur H/F', status: 'A_POURVOIR', contractType: 'CDD', jobTitle: 'Préparateur' },
-  { id: 'rich-mi-6', pharmacyId: 'rich-ph-lyon-centre', contactId: 'rich-ct-1', title: 'Stage étudiant pharma', status: 'ANNULEE', contractType: 'CDD', jobTitle: 'Étudiant pharma' },
+  { id: 'rich-mi-6', pharmacyId: 'rich-ph-lyon-centre', contactId: 'rich-ct-1', title: 'Stage étudiant pharma', status: 'ANNULEE', contractType: 'CDD', jobTitle: 'Étudiant en pharmacie' },
 ]
