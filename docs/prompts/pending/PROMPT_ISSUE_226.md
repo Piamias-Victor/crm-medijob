@@ -1,64 +1,14 @@
-# Prompt — Issue #226
+# Prompt — Issue #226 (PRD parent — ne pas implémenter en une PR)
 
 **Issue** : https://github.com/Piamias-Victor/crm-medijob/issues/226  
-**Parent** : Epic #210 · ADD Entretien · Q12  
-**Blocked by** : #224  
-**Type** : HITL (`ready-for-human`) — inventaire champs client avant/pendant implémentation
+**Type** : PRD parent Entretiens CRM  
+**Enfants** : #297 → #298 → (#299 ∥ #300) → #301 → (#302 ∥ #303)
 
 ---
 
-## Avant de coder
+## Important
 
-**Pose-moi des questions** — notamment statut Q12 et inventaire champs medijob-eval.  
-Ne code pas l’inventaire au feeling.
+**Ne code pas toute l’issue #226 d’un coup.**  
+Exécute les prompts enfants dans `docs/prompts/pending/PROMPT_ISSUE_297.md` … `303.md`, dans l’ordre des dépendances.
 
-Lis #226 et `docs/grill/QUESTIONS_CLIENT_V1.md` Q12.
-
----
-
-## Skills
-
-```
-/caveman
-/tdd
-```
-
----
-
-## Setup
-
-Lire `docs/prompt-rules.md` et `docs/github-rules.md`.
-
-```bash
-cd /Users/victorpiamias/Desktop/Dev/ia/medijob
-git fetch origin
-git checkout -b feat/issue-226-candidate-interview-form origin/dev
-```
-
----
-
-## Contraintes
-
-- Champs dans le CRM (pas iframe)
-- Zod + RHF
-- Fichiers < 100 lignes
-
----
-
-## Fin
-
-PR vers `dev` avec `Closes #226`.
-
-## Commande de test
-
-```bash
-cd /Users/victorpiamias/Desktop/Dev/ia/medijob
-pnpm test
-pnpm dev
-```
-
-## Tests manuels
-
-- [ ] Section entretien sur fiche candidat
-- [ ] Sauvegarde met à jour le profil
-- [ ] Création avec entretien — données persistées
+PRD : `docs/PRD_ENTRETIENS_V1.md`
