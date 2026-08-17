@@ -32,7 +32,7 @@ export function InterviewDraftPanel({ run }: Props) {
       <p className="text-sm text-fg-muted">
         {run.templateLabel} · {run.modeLabel} · {run.statusLabel} · {run.dateLabel}
       </p>
-      <p className="text-sm text-fg">{INTERVIEW_DRAFT_HINT}</p>
+      <p className="text-xs font-medium text-fg-muted">{INTERVIEW_DRAFT_HINT}</p>
       <InterviewSectionNav sections={run.sections} />
       <InterviewRunForm run={run} />
       {run.status === 'DRAFT' ? (

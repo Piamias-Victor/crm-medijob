@@ -20,6 +20,9 @@ vi.mock('@/lib/trpc/client', () => ({
       abandon: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
       saveDraft: { useMutation: () => ({ mutate: saveDraftMutate, isPending: false }) },
     },
+    document: {
+      upload: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
+    },
   },
 }))
 

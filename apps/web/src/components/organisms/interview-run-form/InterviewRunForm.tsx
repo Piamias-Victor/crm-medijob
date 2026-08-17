@@ -2,11 +2,12 @@
 
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
+import { Button } from '@/components/atoms/Button'
+import { InterviewDossierSection } from '@/components/molecules/InterviewDossierSection'
 import { InterviewQuestionBlock } from '@/components/molecules/InterviewQuestionBlock'
 import { useInterviewDraftAutosave } from '@/lib/hooks/use-interview-draft-autosave'
-import { toChecklistOptions } from '@/view-models/interview-checklist'
-import { INTERVIEW_CHECKLIST_TITLE } from '@/view-models/interview-copy'
+import { useToastStore } from '@/stores/toast-store'
+import { INTERVIEW_SAVE_SUCCESS, INTERVIEW_VALIDATE } from '@/view-models/interview-copy'
 import {
   interviewDraftAnswersSchema,
   type InterviewDraftAnswers,
@@ -22,6 +23,7 @@ type Props = { run: InterviewRun }
 
 export function InterviewRunForm({ run }: Props) {
   const disabled = run.status !== 'DRAFT'
+  const push = useToastStore((state) => state.push)
   const form = useForm<InterviewDraftAnswers>({
     resolver: zodResolver(interviewDraftAnswersSchema),
     defaultValues: toInterviewRunFormValues(run),
@@ -30,14 +32,18 @@ export function InterviewRunForm({ run }: Props) {
   const questions = useWatch({ control: form.control, name: 'questions' }) ?? {}
   const checklist = useWatch({ control: form.control, name: 'checklist' }) ?? {}
 
+  const setChoice = (questionId: string, choiceLabel: string) => {
+    const nextAnswer = { ...questions[questionId], choiceLabel }
+    const answers = form.getValues()
+    form.setValue(`questions.${questionId}`, nextAnswer)
+    persist({ ...answers, questions: { ...answers.questions, [questionId]: nextAnswer } })
+  }
+
   return (
     <form className="flex flex-col gap-8" onSubmit={(event) => event.preventDefault()}>
       {run.sections.map((section) => (
         <section key={section.id} id={section.id} className="flex flex-col gap-4">
-          <div>
-            <h2 className="text-lg font-semibold text-fg">{section.title}</h2>
-            {section.hint ? <p className="text-sm text-fg-muted">{section.hint}</p> : null}
-          </div>
+          <h2 className="text-lg font-semibold text-fg">{section.title}</h2>
           {section.questions.map((question) => (
             <InterviewQuestionBlock
               key={question.id}
@@ -45,37 +51,41 @@ export function InterviewRunForm({ run }: Props) {
               choiceLabel={questions[question.id]?.choiceLabel}
               note={questions[question.id]?.note ?? ''}
               disabled={disabled}
-              onChoice={(label) => {
-                const current = questions[question.id]
-                const nextAnswer = { ...current, choiceLabel: label }
-                const answers = form.getValues()
-                const next = {
-                  ...answers,
-                  questions: { ...answers.questions, [question.id]: nextAnswer },
-                }
-                form.setValue(`questions.${question.id}`, nextAnswer)
-                persist(next)
-              }}
-              onNote={(note) => {
-                const current = questions[question.id]
-                form.setValue(`questions.${question.id}`, { ...current, note })
-              }}
+              onChoice={(label) => setChoice(question.id, label)}
+              onNote={(note) => form.setValue(`questions.${question.id}`, { ...questions[question.id], note })}
             />
           ))}
         </section>
       ))}
-      <section id="dossier" className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-fg">{INTERVIEW_CHECKLIST_TITLE}</h2>
-        <CheckboxGroup
-          options={toChecklistOptions(run.checklistItems)}
-          values={checklistSelectedIds(checklist)}
-          onChange={(selected) => {
-            const next = checklistFromSelectedIds(run.checklistItems, selected)
-            form.setValue('checklist', next)
-            persist({ ...form.getValues(), checklist: next })
+      <InterviewDossierSection
+        candidateId={run.candidateId}
+        items={run.checklistItems}
+        selected={checklistSelectedIds(checklist)}
+        disabled={disabled}
+        onChange={(selected) => {
+          const next = checklistFromSelectedIds(run.checklistItems, selected)
+          form.setValue('checklist', next)
+          persist({ ...form.getValues(), checklist: next })
+        }}
+        onUploaded={(itemId) => {
+          const selected = [...new Set([...checklistSelectedIds(checklist), itemId])]
+          const next = checklistFromSelectedIds(run.checklistItems, selected)
+          form.setValue('checklist', next)
+          persist({ ...form.getValues(), checklist: next })
+        }}
+      />
+      {disabled ? null : (
+        <Button
+          type="button"
+          variant="accent"
+          onClick={() => {
+            persist(form.getValues())
+            push({ variant: 'success', message: INTERVIEW_SAVE_SUCCESS })
           }}
-        />
-      </section>
+        >
+          {INTERVIEW_VALIDATE}
+        </Button>
+      )}
     </form>
   )
 }

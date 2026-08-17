@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/atoms/Badge'
 import { Textarea } from '@/components/atoms/Textarea'
-import { InterviewSuggestedChoices } from '@/components/molecules/InterviewSuggestedChoices'
+import { InterviewQuestionInputs } from '@/components/molecules/InterviewQuestionInputs'
 import { INTERVIEW_ELIMINATOIRE, INTERVIEW_NOTES } from '@/view-models/interview-copy'
 import type { InterviewRunQuestion } from '@/view-models/interview-template'
 import { cn } from '@/lib/cn'
@@ -28,18 +28,18 @@ export function InterviewQuestionBlock({
     <div
       className={cn(
         'flex flex-col gap-3 rounded-lg border p-4',
-        question.eliminatoire ? 'border-error/40 bg-error/5' : 'border-border bg-white',
+        question.eliminatoire ? 'border-error/50 bg-error/10' : 'border-border bg-white',
       )}
     >
       <div className="flex flex-wrap items-start gap-2">
-        <h3 className="text-sm font-medium text-fg">{question.question}</h3>
+        <h3 className="text-sm font-semibold text-fg">{question.question}</h3>
         {question.eliminatoire ? <Badge variant="error">{INTERVIEW_ELIMINATOIRE}</Badge> : null}
       </div>
-      <InterviewSuggestedChoices
-        answers={question.suggestedAnswers}
-        selected={choiceLabel}
+      <InterviewQuestionInputs
+        question={question}
+        choiceLabel={choiceLabel}
         disabled={disabled}
-        onSelect={onChoice}
+        onChoice={onChoice}
       />
       <Textarea
         value={note}
