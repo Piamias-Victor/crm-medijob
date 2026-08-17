@@ -51,7 +51,7 @@ describe('InterviewRunForm', () => {
         })}
       />,
     )
-    expect(screen.getByRole('button', { name: INTERVIEW_AVAILABLE_NOW })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: INTERVIEW_AVAILABLE_NOW })).toBeInTheDocument()
     expect(screen.queryByText('Flou')).not.toBeInTheDocument()
   })
 

@@ -34,6 +34,14 @@ describe('InterviewQuestionInputs', () => {
     expect(screen.getByRole('checkbox', { name: chip })).toBeInTheDocument()
   })
 
+  it('renders Maintenant as the same checkbox chip', () => {
+    render(
+      <Harness prompt="À partir de quand êtes-vous disponible ? Quels jours, temps plein ou partiel ?" />,
+    )
+    expect(screen.getByRole('checkbox', { name: 'Maintenant' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Maintenant' })).not.toBeInTheDocument()
+  })
+
   it('lets recruiter tick several chips at once', () => {
     render(<Harness prompt="Qu’est-ce qui vous plaît dans le remplacement / l’intérim ?" />)
     fireEvent.click(screen.getByRole('checkbox', { name: 'Variété d’officines' }))

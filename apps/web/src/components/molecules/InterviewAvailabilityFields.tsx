@@ -1,7 +1,7 @@
 'use client'
 
+import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
 import { DatePicker } from '@/components/molecules/DatePicker'
-import { InterviewSuggestedChoices } from '@/components/molecules/InterviewSuggestedChoices'
 import { CLEAR_DATE_LABEL } from '@/lib/date-picker-utils'
 import { INTERVIEW_AVAILABLE_NOW, INTERVIEW_PICK_DATE } from '@/view-models/interview-copy'
 import { isIsoDateChoice } from '@/view-models/interview-question-kind'
@@ -12,14 +12,17 @@ type Props = {
   onSelect: (label: string) => void
 }
 
-export function InterviewAvailabilityFields({ selected, disabled, onSelect }: Props) {
+const NOW_OPTIONS = [{ value: INTERVIEW_AVAILABLE_NOW, label: INTERVIEW_AVAILABLE_NOW }]
+
+export function InterviewAvailabilityFields({ selected, onSelect }: Props) {
   return (
     <div className="flex flex-col gap-3">
-      <InterviewSuggestedChoices
-        answers={[{ label: INTERVIEW_AVAILABLE_NOW, text: INTERVIEW_AVAILABLE_NOW }]}
-        selected={selected === INTERVIEW_AVAILABLE_NOW ? INTERVIEW_AVAILABLE_NOW : undefined}
-        disabled={disabled}
-        onSelect={onSelect}
+      <CheckboxGroup
+        options={NOW_OPTIONS}
+        values={selected === INTERVIEW_AVAILABLE_NOW ? [INTERVIEW_AVAILABLE_NOW] : []}
+        onChange={(values) =>
+          onSelect(values.includes(INTERVIEW_AVAILABLE_NOW) ? INTERVIEW_AVAILABLE_NOW : '')
+        }
       />
       <DatePicker
         value={isIsoDateChoice(selected) ? selected : undefined}
