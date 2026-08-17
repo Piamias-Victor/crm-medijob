@@ -18,6 +18,7 @@ export function InterviewAvailabilityFields({ selected, onSelect }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <CheckboxGroup
+        exclusive
         options={NOW_OPTIONS}
         values={selected === INTERVIEW_AVAILABLE_NOW ? [INTERVIEW_AVAILABLE_NOW] : []}
         onChange={(values) =>

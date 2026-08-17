@@ -11,4 +11,10 @@ describe('interviewQuestionKind', () => {
       interviewQuestionKind('À partir de quand êtes-vous disponible ? Quels jours, temps plein ou partiel ?'),
     ).toBe('availability')
   })
+
+  it('marks motivation chips as multi-choice', () => {
+    expect(interviewQuestionKind('Qu’est-ce qui vous plaît dans le remplacement / l’intérim ?')).toBe(
+      'multi',
+    )
+  })
 })

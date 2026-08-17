@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest'
 import {
   DOCUMENT_UPLOAD_ACCEPT,
   DOCUMENT_UPLOAD_HINT,
+  documentBlobErrorMessage,
   isAllowedDocumentUpload,
   resolvedDocumentMime,
   sanitizeDocumentFilename,
@@ -54,5 +55,11 @@ describe('document upload allowlist', () => {
 
   it('strips path segments from blob filenames', () => {
     expect(sanitizeDocumentFilename('../../CV Marie.pdf')).toBe('CV-Marie.pdf')
+  })
+
+  it('maps blob access denial to a French message', () => {
+    expect(documentBlobErrorMessage(new Error('Vercel Blob: Access denied, please provide a valid token for this resource.'))).toContain(
+      'Jeton Vercel Blob',
+    )
   })
 })

@@ -12,6 +12,8 @@ const EXTENSION_MIME: Record<string, readonly string[]> = {
 
 export const DOCUMENT_UPLOAD_EXTENSIONS = Object.keys(EXTENSION_MIME)
 export const DOCUMENT_UPLOAD_STORAGE_ERROR = 'Téléversement impossible pour le moment. Réessaie.'
+export const DOCUMENT_UPLOAD_BLOB_DENIED =
+  'Stockage fichiers indisponible. Jeton Vercel Blob invalide ou expiré.'
 
 export const DOCUMENT_UPLOAD_ACCEPT = [
   ...new Set(Object.values(EXTENSION_MIME).flat()),
@@ -51,4 +53,12 @@ export function documentUploadError(input: { filename: string; mimeType: string 
   return isAllowedDocumentUpload(input)
     ? null
     : 'Format non supporté. Formats acceptés : PDF, PNG, JPG, WEBP, DOC, DOCX, CSV, XLSX.'
+}
+
+export function documentBlobErrorMessage(error: unknown) {
+  const text = error instanceof Error ? error.message : ''
+  if (text.includes('Access denied') || text.includes('valid token')) {
+    return DOCUMENT_UPLOAD_BLOB_DENIED
+  }
+  return DOCUMENT_UPLOAD_STORAGE_ERROR
 }

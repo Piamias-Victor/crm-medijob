@@ -1,6 +1,7 @@
 'use client'
 
 import { InterviewDocUpload } from '@/components/molecules/InterviewDocUpload'
+import { CheckboxChip } from '@/components/molecules/CheckboxChip'
 import { INTERVIEW_CHECKLIST_TITLE } from '@/view-models/interview-copy'
 import { cn } from '@/lib/cn'
 
@@ -41,16 +42,12 @@ export function InterviewDossierSection({
                 checked ? 'border-accent bg-accent-muted' : 'border-border bg-white',
               )}
             >
-              <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-fg">
-                <input
-                  type="checkbox"
-                  className="size-4 accent-[var(--color-accent)]"
-                  checked={checked}
-                  disabled={disabled}
-                  onChange={() => toggle(item.id)}
-                />
-                {item.label}
-              </label>
+              <CheckboxChip
+                label={item.label}
+                checked={checked}
+                disabled={disabled}
+                onChange={() => toggle(item.id)}
+              />
               <InterviewDocUpload
                 candidateId={candidateId}
                 disabled={disabled}

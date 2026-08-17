@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeDocumentRouter } from '@/server/routers/document'
 import { documentCaller, makeDocumentDeps } from '@/server/routers/document.test.fixtures'
-import { DOCUMENT_UPLOAD_STORAGE_ERROR } from '@/lib/document-upload'
+import { DOCUMENT_UPLOAD_BLOB_DENIED } from '@/lib/document-upload'
 
 describe('documentRouter', () => {
   it('lists documents for a pharmacy entity', async () => {
@@ -61,9 +61,10 @@ describe('documentRouter', () => {
     expect(deps.uploadBlob).not.toHaveBeenCalled()
   })
 
-  it('maps blob failures to a French storage error', async () => {
+  it('maps blob token denials to a French storage error', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
     const deps = makeDocumentDeps({
-      uploadBlob: vi.fn().mockRejectedValue(new Error('No token found')),
+      uploadBlob: vi.fn().mockRejectedValue(new Error('Vercel Blob: Access denied, please provide a valid token for this resource.')),
     })
     const fileBase64 = Buffer.from('%PDF-1.4').toString('base64')
     await expect(
@@ -76,7 +77,7 @@ describe('documentRouter', () => {
         size: 8,
         dataBase64: fileBase64,
       }),
-    ).rejects.toThrow(DOCUMENT_UPLOAD_STORAGE_ERROR)
+    ).rejects.toThrow(DOCUMENT_UPLOAD_BLOB_DENIED)
   })
 
   it('rejects unauthenticated callers', async () => {

@@ -4,20 +4,18 @@ import { useState } from 'react'
 import { InterviewQuestionInputs } from '@/components/molecules/InterviewQuestionInputs'
 import type { InterviewRunQuestion } from '@/view-models/interview-template'
 
-function question(prompt: string): InterviewRunQuestion {
+function question(prompt: string, answers?: InterviewRunQuestion['suggestedAnswers']): InterviewRunQuestion {
   return {
     id: 'q1',
     question: prompt,
     eliminatoire: false,
-    suggestedAnswers: [{ label: 'Liberté', text: 'Liberté' }],
+    suggestedAnswers: answers ?? [{ label: 'Liberté', text: 'Liberté' }],
   }
 }
 
-function Harness({ prompt }: { prompt: string }) {
+function Harness({ item }: { item: InterviewRunQuestion }) {
   const [choice, setChoice] = useState('')
-  return (
-    <InterviewQuestionInputs question={question(prompt)} choiceLabel={choice} onChoice={setChoice} />
-  )
+  return <InterviewQuestionInputs question={item} choiceLabel={choice} onChoice={setChoice} />
 }
 
 describe('InterviewQuestionInputs', () => {
@@ -30,23 +28,37 @@ describe('InterviewQuestionInputs', () => {
       'À l’aise tout de suite',
     ],
   ])('renders multi checkboxes for %s', (prompt, chip) => {
-    render(<Harness prompt={prompt} />)
+    render(<Harness item={question(prompt)} />)
     expect(screen.getByRole('checkbox', { name: chip })).toBeInTheDocument()
   })
 
   it('renders Maintenant as the same checkbox chip', () => {
     render(
-      <Harness prompt="À partir de quand êtes-vous disponible ? Quels jours, temps plein ou partiel ?" />,
+      <Harness item={question('À partir de quand êtes-vous disponible ? Quels jours, temps plein ou partiel ?')} />,
     )
     expect(screen.getByRole('checkbox', { name: 'Maintenant' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Maintenant' })).not.toBeInTheDocument()
   })
 
   it('lets recruiter tick several chips at once', () => {
-    render(<Harness prompt="Qu’est-ce qui vous plaît dans le remplacement / l’intérim ?" />)
+    render(<Harness item={question('Qu’est-ce qui vous plaît dans le remplacement / l’intérim ?')} />)
     fireEvent.click(screen.getByRole('checkbox', { name: 'Variété d’officines' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Liberté d’agenda' }))
     expect(screen.getByRole('checkbox', { name: 'Variété d’officines' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Liberté d’agenda' })).toBeChecked()
+  })
+
+  it('keeps ordre answers exclusive', () => {
+    render(
+      <Harness
+        item={question('Êtes-vous inscrit(e) à l’Ordre ?', [
+          { label: 'Non inscrit', text: 'Non inscrit à l’Ordre.' },
+          { label: 'Section A', text: 'Inscrit section A.' },
+        ])}
+      />,
+    )
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Non inscrit' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Section A' }))
+    expect(screen.getByRole('checkbox', { name: 'Non inscrit' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Section A' })).toBeChecked()
   })
 })

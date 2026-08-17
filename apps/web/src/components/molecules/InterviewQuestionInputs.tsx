@@ -32,8 +32,10 @@ export function InterviewQuestionInputs({ question, choiceLabel, disabled, onCho
   }
   const options = chipOptions(question)
   if (options.length === 0) return null
+  const exclusive = interviewQuestionKind(question.question) === 'choice'
   return (
     <CheckboxGroup
+      exclusive={exclusive}
       options={options}
       values={splitChoiceLabels(choiceLabel)}
       onChange={(values) => onChoice(joinChoiceLabels(values))}

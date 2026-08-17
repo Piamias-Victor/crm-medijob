@@ -1,44 +1,37 @@
 'use client'
 
-import { cn } from '@/lib/cn'
+import { CheckboxChip } from '@/components/molecules/CheckboxChip'
 
 export type CheckboxOption = { value: string; label: string }
 
 type Props = {
   options: readonly CheckboxOption[]
   values: string[]
+  exclusive?: boolean
+  disabled?: boolean
   onChange: (values: string[]) => void
 }
 
-export function CheckboxGroup({ options, values, onChange }: Props) {
-  const toggle = (value: string) => {
-    onChange(values.includes(value) ? values.filter((v) => v !== value) : [...values, value])
+export function CheckboxGroup({ options, values, exclusive, disabled, onChange }: Props) {
+  const toggle = (value: string, checked: boolean) => {
+    if (exclusive) {
+      onChange(checked ? [value] : [])
+      return
+    }
+    onChange(checked ? [...values, value] : values.filter((entry) => entry !== value))
   }
 
   return (
     <div className="flex flex-wrap gap-2">
-      {options.map((option) => {
-        const checked = values.includes(option.value)
-        return (
-          <label
-            key={option.value}
-            className={cn(
-              'cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors',
-              checked
-                ? 'border-accent bg-accent-muted text-accent-hover'
-                : 'border-border bg-white text-fg hover:border-accent/50',
-            )}
-          >
-            <input
-              type="checkbox"
-              className="sr-only"
-              checked={checked}
-              onChange={() => toggle(option.value)}
-            />
-            {option.label}
-          </label>
-        )
-      })}
+      {options.map((option) => (
+        <CheckboxChip
+          key={option.value}
+          label={option.label}
+          checked={values.includes(option.value)}
+          disabled={disabled}
+          onChange={(checked) => toggle(option.value, checked)}
+        />
+      ))}
     </div>
   )
 }

@@ -1,9 +1,12 @@
-export type InterviewQuestionKind = 'choice' | 'software' | 'availability'
+import { pertinentInterviewChips } from '@/view-models/interview-pertinent-chips'
+
+export type InterviewQuestionKind = 'choice' | 'software' | 'availability' | 'multi'
 
 export function interviewQuestionKind(prompt: string): InterviewQuestionKind {
   const text = prompt.toLowerCase()
   if (text.includes('logiciel')) return 'software'
   if (text.includes('à partir de quand')) return 'availability'
+  if (pertinentInterviewChips(prompt)) return 'multi'
   return 'choice'
 }
 
