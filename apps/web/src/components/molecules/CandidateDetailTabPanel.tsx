@@ -74,7 +74,9 @@ export function CandidateDetailTabPanel({
           missions={profile.missions}
         />
       ) : null}
-      {tab === 'entretiens' ? <CandidateInterviewsTab interviews={interviews} /> : null}
+      {tab === 'entretiens' ? (
+        <CandidateInterviewsTab candidateId={profile.id} interviews={interviews} />
+      ) : null}
       {tab === 'documents' ? (
         <CandidateDocumentsTab profile={profile} documents={documents} />
       ) : null}

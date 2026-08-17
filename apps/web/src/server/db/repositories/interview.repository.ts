@@ -28,12 +28,25 @@ export function makeInterviewRepository(db: PrismaClient = defaultDb) {
         },
       }),
     findById: (id: string) => db.interview.findFirst({ where: { id, ...NOT_DELETED } }),
+    findDraftByCandidate: (candidateId: string) =>
+      db.interview.findFirst({
+        where: { candidateId, status: 'DRAFT', ...NOT_DELETED },
+        select: { id: true },
+      }),
     listByCandidate: (candidateId: string, limit = DEFAULT_LIST_LIMIT) =>
       db.interview.findMany({
         where: { candidateId, ...NOT_DELETED },
         orderBy: { createdAt: 'desc' },
         take: limit,
       }),
+    softDelete: async (id: string) => {
+      const row = await db.interview.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+        select: { candidateId: true },
+      })
+      return { candidateId: row.candidateId }
+    },
   }
 }
 

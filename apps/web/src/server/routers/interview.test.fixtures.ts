@@ -27,6 +27,12 @@ export function makeInterviewDeps(overrides: Partial<InterviewDeps> = {}): Inter
   return {
     listByCandidate: vi.fn().mockResolvedValue([interviewRecord]),
     findById: vi.fn().mockResolvedValue(interviewRecord),
+    findCandidateById: vi.fn().mockResolvedValue(null),
+    findDraftByCandidate: vi.fn().mockResolvedValue(null),
+    setJobTitleIfMissing: vi.fn().mockResolvedValue(undefined),
+    createCandidate: vi.fn().mockResolvedValue({ id: 'c1' }),
+    createInterview: vi.fn().mockResolvedValue({ id: 'i1' }),
+    softDeleteInterview: vi.fn().mockResolvedValue({ candidateId: 'c1' }),
     ...overrides,
   }
 }

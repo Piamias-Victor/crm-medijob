@@ -1,1 +1,16 @@
 export const INTERVIEW_TAB_EMPTY = 'Aucun entretien pour ce candidat.'
+export const INTERVIEW_CONTACT_REQUIRED = 'Email ou téléphone requis'
+export const INTERVIEW_DRAFT_OPEN = 'Un brouillon existe déjà.'
+export const INTERVIEW_CTA = 'Nouvel entretien'
+export const INTERVIEW_RESUME = 'Reprendre'
+export const INTERVIEW_RESUME_DRAFT = 'Reprendre le brouillon'
+export const INTERVIEW_ABANDON = 'Abandonner le brouillon'
+export const INTERVIEW_START_SUBMIT = 'Lancer l’entretien'
+export const INTERVIEW_START_PENDING = 'Ouverture…'
+export const INTERVIEW_ABANDON_PENDING = 'Abandon…'
+export const INTERVIEW_START_SUCCESS = 'Entretien ouvert'
+export const INTERVIEW_ABANDON_SUCCESS = 'Brouillon abandonné'
+export const INTERVIEW_START_SECTION = 'Identité'
+export const INTERVIEW_START_HINT =
+  'Confirme les infos minimales, puis ouvre le brouillon d’entretien.'
+

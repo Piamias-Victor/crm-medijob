@@ -6,7 +6,7 @@ import { CandidateDetailTabPanel } from '@/components/molecules/CandidateDetailT
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { CandidatePresentModals } from '@/components/organisms/CandidatePresentModals'
-import { CandidateGdprEraseButton } from '@/components/molecules/CandidateGdprEraseButton'
+import { CandidateDetailHeaderActions } from '@/components/molecules/CandidateDetailHeaderActions'
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 import { candidateBlacklistHeaderChips } from '@/view-models/candidate-blacklist-header-chips'
 import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
@@ -52,11 +52,7 @@ export function CandidateDetailPage({
           chips={candidateBlacklistHeaderChips(profile.effectiveStatus)}
         />
       }
-      meta={
-        <div className="flex justify-end">
-          <CandidateGdprEraseButton candidateId={profile.id} candidateName={name} />
-        </div>
-      }
+      meta={<CandidateDetailHeaderActions candidateId={profile.id} candidateName={name} />}
       tabs={
         <CandidateDetailTabs
           active={tab}

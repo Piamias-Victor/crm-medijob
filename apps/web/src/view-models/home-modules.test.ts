@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { buildHomeModules } from './home-modules'
+import { buildHomeModules, HOME_ACTIONS } from './home-modules'
+import { INTERVIEW_CTA } from './interview-copy'
 
 describe('buildHomeModules', () => {
   it('maps overview counts to module tiles', () => {
@@ -16,5 +17,11 @@ describe('buildHomeModules', () => {
       href: '/candidats?tab=inbox',
       accent: true,
     })
+  })
+})
+
+describe('HOME_ACTIONS', () => {
+  it('includes Nouvel entretien', () => {
+    expect(HOME_ACTIONS.map((action) => action.label)).toContain(INTERVIEW_CTA)
   })
 })
