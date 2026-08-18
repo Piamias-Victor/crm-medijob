@@ -15,6 +15,7 @@ describe('interviewRouter close', () => {
       scores: { B1: 12 },
       decision: 'ELIGIBLE',
       overwriteFields: [],
+      mappingEdits: {},
       applyStatus: false,
       blacklist: false,
     })
@@ -31,6 +32,7 @@ describe('interviewRouter close', () => {
         scores: { B1: 1 },
         decision: 'REVIEW',
         overwriteFields: [],
+        mappingEdits: {},
         applyStatus: false,
         blacklist: false,
       }),

@@ -1,48 +1,40 @@
 'use client'
 
+import { SectionCard } from '@/components/molecules/SectionCard'
+import { InterviewMappingFieldRow } from '@/components/molecules/InterviewMappingFieldRow'
 import type { InterviewMappingDiff } from '@/view-models/interview-mapping-types'
 import {
-  formatMappingValue,
-  INTERVIEW_MAPPING_FIELD_LABELS,
-} from '@/view-models/interview-mapping-labels'
-import {
-  INTERVIEW_MAPPING_FILL,
-  INTERVIEW_MAPPING_OVERWRITE,
+  INTERVIEW_MAPPING_HINT,
   INTERVIEW_MAPPING_TITLE,
 } from '@/view-models/interview-copy'
 
 type Props = {
   diffs: InterviewMappingDiff[]
-  overwriteFields: string[]
-  onToggleOverwrite: (field: string, checked: boolean) => void
+  values: Record<string, string>
+  savedFields: string[]
+  onEdit: (field: string, value: string) => void
+  onToggleSave: (field: string, saved: boolean) => void
 }
 
-export function InterviewMappingDiffs({ diffs, overwriteFields, onToggleOverwrite }: Props) {
+export function InterviewMappingDiffs({ diffs, values, savedFields, onEdit, onToggleSave }: Props) {
   if (!diffs.length) return null
   return (
-    <fieldset className="flex flex-col gap-3">
-      <legend className="text-sm font-semibold text-fg">{INTERVIEW_MAPPING_TITLE}</legend>
+    <SectionCard
+      variant="glass"
+      title={INTERVIEW_MAPPING_TITLE}
+      description={INTERVIEW_MAPPING_HINT}
+      bodyClassName="flex flex-col gap-2 p-4 sm:p-5"
+    >
       {diffs.map((diff) => (
-        <div key={diff.field} className="flex flex-col gap-1 text-sm text-fg">
-          <p className="font-medium">{INTERVIEW_MAPPING_FIELD_LABELS[diff.field]}</p>
-          <p className="text-fg-muted">
-            {formatMappingValue(diff.current)} → {formatMappingValue(diff.next)}
-          </p>
-          {diff.kind === 'fill' ? (
-            <p className="text-xs text-fg-muted">{INTERVIEW_MAPPING_FILL}</p>
-          ) : (
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                className="size-4 accent-[var(--color-accent)]"
-                checked={overwriteFields.includes(diff.field)}
-                onChange={(event) => onToggleOverwrite(diff.field, event.target.checked)}
-              />
-              {INTERVIEW_MAPPING_OVERWRITE}
-            </label>
-          )}
-        </div>
+        <InterviewMappingFieldRow
+          key={diff.field}
+          diff={diff}
+          value={values[diff.field] ?? ''}
+          saved={savedFields.includes(diff.field)}
+          onEdit={(value) => onEdit(diff.field, value)}
+          onToggleSave={(saved) => onToggleSave(diff.field, saved)}
+        />
       ))}
-    </fieldset>
+    </SectionCard>
   )
 }

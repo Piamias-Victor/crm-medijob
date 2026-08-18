@@ -29,6 +29,7 @@ describe('previewInterviewClose', () => {
       findTemplateSections: async () => sections,
     })
     expect(preview?.scores).toEqual({ B1: 10 })
+    expect(preview?.scoreMax).toEqual({ B1: 10 })
     expect(preview?.decision).toBe('ELIGIBLE')
     expect(preview?.proposedStatus).toBe('QUALIFIE')
   })

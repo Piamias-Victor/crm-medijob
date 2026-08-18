@@ -1,3 +1,5 @@
+import { cdiChipsAreExclusive, cdiInterviewChips } from '@/view-models/interview-cdi-chips'
+
 type Chip = { label: string; text: string }
 
 const chip = (label: string): Chip => ({ label, text: label })
@@ -44,5 +46,9 @@ export function pertinentInterviewChips(prompt: string): Chip[] | null {
   if (text.includes('type de remplacement recherchez')) return TYPE_MISSION
   if (text.includes('attentes et vos critères')) return EXPECTATIONS
   if (text.includes('nouvelle équipe')) return NEW_TEAM
-  return null
+  return cdiInterviewChips(prompt)
+}
+
+export function pertinentChipsAreExclusive(prompt: string): boolean {
+  return cdiInterviewChips(prompt) !== null && cdiChipsAreExclusive(prompt)
 }

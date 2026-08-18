@@ -10,6 +10,7 @@ export type CloseInterviewInput = {
   scores: Record<string, number>
   decision: InterviewDecision
   overwriteFields?: string[]
+  mappingEdits?: Record<string, string>
   applyStatus?: boolean
   blacklist?: boolean
 }

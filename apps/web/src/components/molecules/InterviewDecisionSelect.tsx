@@ -1,8 +1,9 @@
 'use client'
 
-import { Select } from '@/components/atoms/Select'
+import { SectionCard } from '@/components/molecules/SectionCard'
 import { INTERVIEW_DECISION_OPTIONS } from '@/view-models/interview-labels'
-import { INTERVIEW_DECISION_TITLE } from '@/view-models/interview-copy'
+import { INTERVIEW_DECISION_HINT, INTERVIEW_DECISION_TITLE } from '@/view-models/interview-copy'
+import { pillNavLinkClass } from '@/view-models/pill-nav-link'
 import type { InterviewCloseInput } from '@/view-models/interview-close.schema'
 
 type Props = {
@@ -12,18 +13,25 @@ type Props = {
 
 export function InterviewDecisionSelect({ value, onChange }: Props) {
   return (
-    <label className="flex flex-col gap-1 text-sm text-fg">
-      <span className="font-semibold">{INTERVIEW_DECISION_TITLE}</span>
-      <Select
-        value={value}
-        onChange={(event) => onChange(event.target.value as InterviewCloseInput['decision'])}
-      >
+    <SectionCard
+      variant="glass"
+      title={INTERVIEW_DECISION_TITLE}
+      description={INTERVIEW_DECISION_HINT}
+      bodyClassName="p-4 sm:p-5"
+    >
+      <div className="flex flex-wrap gap-2" role="group" aria-label={INTERVIEW_DECISION_TITLE}>
         {INTERVIEW_DECISION_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={value === option.value}
+            onClick={() => onChange(option.value)}
+            className={pillNavLinkClass(value === option.value)}
+          >
             {option.label}
-          </option>
+          </button>
         ))}
-      </Select>
-    </label>
+      </div>
+    </SectionCard>
   )
 }

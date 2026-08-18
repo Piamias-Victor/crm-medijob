@@ -1,6 +1,7 @@
 import type { InterviewDecision } from '@prisma/client'
 import { parseInterviewAnswers } from '@/view-models/interview-draft.schema'
 import { diffInterviewMapping } from '@/view-models/interview-mapping'
+import { applyMappingEdits } from '@/view-models/interview-mapping-edit'
 import { selectInterviewPatch } from '@/view-models/interview-mapping-patch'
 import type { MappingQuestion } from '@/view-models/interview-mapping-extract'
 import type { InterviewMappingProfile } from '@/view-models/interview-mapping-types'
@@ -10,6 +11,7 @@ import type { CandidateStatus, ManualCandidateStatus } from '@/view-models/candi
 export type CloseSideEffectInput = {
   decision: InterviewDecision
   overwriteFields?: string[]
+  mappingEdits?: Record<string, string>
   applyStatus?: boolean
   blacklist?: boolean
 }
@@ -27,7 +29,10 @@ export function buildCloseSideEffects(
     questions,
   })
   return {
-    mapping: selectInterviewPatch(diffs, input.overwriteFields ?? []),
+    mapping: selectInterviewPatch(
+      applyMappingEdits(diffs, input.mappingEdits ?? {}),
+      input.overwriteFields ?? [],
+    ),
     status: input.applyStatus
       ? proposeCandidateStatus(input.decision, profile.status, input.blacklist === true)
       : null,

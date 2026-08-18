@@ -1,32 +1,59 @@
 'use client'
 
-import { Input } from '@/components/atoms/Input'
-import { interviewCriterionLabel } from '@/view-models/interview-criteria-labels'
-import { INTERVIEW_SCORES_TITLE } from '@/view-models/interview-copy'
+import { InterviewScoreRow } from '@/components/molecules/InterviewScoreRow'
+import { SectionCard } from '@/components/molecules/SectionCard'
+import {
+  INTERVIEW_SCORES_B,
+  INTERVIEW_SCORES_C,
+  INTERVIEW_SCORES_HINT,
+  INTERVIEW_SCORES_TITLE,
+} from '@/view-models/interview-copy'
+import {
+  interviewScoreRows,
+  type InterviewScoreGroup,
+  type InterviewScoreRowVm,
+} from '@/view-models/interview-score-rows'
 
 type Props = {
   scores: Record<string, number>
+  maxes: Record<string, number>
   onChange: (id: string, value: number) => void
 }
 
-export function InterviewScoreGrid({ scores, onChange }: Props) {
-  const ids = Object.keys(scores).sort()
+function ScoreGroup({
+  title,
+  group,
+  rows,
+  onChange,
+}: {
+  title: string
+  group: InterviewScoreGroup
+  rows: InterviewScoreRowVm[]
+  onChange: (id: string, value: number) => void
+}) {
+  const items = rows.filter((row) => row.group === group)
+  if (items.length === 0) return null
   return (
-    <fieldset className="flex flex-col gap-3">
-      <legend className="text-sm font-semibold text-fg">{INTERVIEW_SCORES_TITLE}</legend>
-      {ids.map((id) => (
-        <label key={id} className="flex items-center justify-between gap-4 text-sm text-fg">
-          <span>
-            {id} — {interviewCriterionLabel(id)}
-          </span>
-          <Input
-            type="number"
-            className="w-24"
-            value={scores[id]}
-            onChange={(event) => onChange(id, Number(event.target.value))}
-          />
-        </label>
+    <div className="flex flex-col gap-3">
+      <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">{title}</p>
+      {items.map((row) => (
+        <InterviewScoreRow key={row.id} row={row} onChange={onChange} />
       ))}
-    </fieldset>
+    </div>
+  )
+}
+
+export function InterviewScoreGrid({ scores, maxes, onChange }: Props) {
+  const rows = interviewScoreRows(scores, maxes)
+  return (
+    <SectionCard
+      variant="glass"
+      title={INTERVIEW_SCORES_TITLE}
+      description={INTERVIEW_SCORES_HINT}
+      bodyClassName="grid gap-6 p-4 sm:p-5 lg:grid-cols-2"
+    >
+      <ScoreGroup title={INTERVIEW_SCORES_B} group="B" rows={rows} onChange={onChange} />
+      <ScoreGroup title={INTERVIEW_SCORES_C} group="C" rows={rows} onChange={onChange} />
+    </SectionCard>
   )
 }

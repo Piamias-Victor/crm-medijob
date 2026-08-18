@@ -1,3 +1,4 @@
+import { interviewCriterionMaxes } from '@/view-models/interview-criterion-maxes'
 import { parseInterviewAnswers } from '@/view-models/interview-draft.schema'
 import { parseScoringCatalog } from '@/view-models/interview-scoring-parse'
 import { suggestInterviewScores } from '@/view-models/interview-scoring'
@@ -24,6 +25,7 @@ export async function previewInterviewClose(id: string, deps: PreviewCloseDeps) 
   const decision = suggestInterviewDecision(scores, catalog, answers)
   return {
     scores,
+    scoreMax: interviewCriterionMaxes(catalog),
     decision,
     diffs: diffInterviewMapping(answers, profile, {
       mode: row.mode,
