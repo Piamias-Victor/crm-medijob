@@ -34,6 +34,7 @@ export type CloseInterviewDeps = {
     authorId: string
     content: string
   }) => Promise<void>
+  storePdf?: (interviewId: string) => Promise<{ documentId: string } | null>
 }
 
 export async function closeInterview(
@@ -57,5 +58,10 @@ export async function closeInterview(
     authorId: actorId,
     content: `Entretien clôturé — ${INTERVIEW_DECISION_LABELS[input.decision]}`,
   })
-  return { id: input.id, candidateId: row.candidateId }
+  try {
+    const stored = deps.storePdf ? await deps.storePdf(input.id) : null
+    return { id: input.id, candidateId: row.candidateId, pdfDocumentId: stored?.documentId ?? null }
+  } catch {
+    return { id: input.id, candidateId: row.candidateId, pdfDocumentId: null }
+  }
 }

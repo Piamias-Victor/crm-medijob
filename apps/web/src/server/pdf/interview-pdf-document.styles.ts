@@ -1,0 +1,66 @@
+import { StyleSheet } from '@react-pdf/renderer'
+import { PDF_BRAND } from './anonymized-profile-colors'
+
+export const interviewPdfStyles = StyleSheet.create({
+  page: {
+    paddingTop: 0,
+    paddingBottom: 52,
+    fontFamily: 'Helvetica',
+    color: PDF_BRAND.text,
+    backgroundColor: '#FFFFFF',
+  },
+  hero: {
+    backgroundColor: PDF_BRAND.primary,
+    paddingTop: 32,
+    paddingBottom: 24,
+    paddingHorizontal: 40,
+  },
+  heroTop: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  brand: { fontSize: 18, fontFamily: 'Helvetica-Bold', color: '#FFFFFF', letterSpacing: 0.4 },
+  kicker: {
+    marginTop: 16,
+    fontSize: 9,
+    color: PDF_BRAND.accent,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+  },
+  name: { marginTop: 6, fontSize: 22, fontFamily: 'Helvetica-Bold', color: '#FFFFFF' },
+  chips: { flexDirection: 'row', gap: 8, marginTop: 16 },
+  chip: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+  },
+  chipText: { fontSize: 9, color: '#FFFFFF', letterSpacing: 0.3 },
+  accentBar: { height: 4, backgroundColor: PDF_BRAND.accent },
+  content: { paddingTop: 22, paddingHorizontal: 40 },
+  section: {
+    marginBottom: 12,
+    padding: 14,
+    backgroundColor: PDF_BRAND.muted,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: PDF_BRAND.accent,
+  },
+  sectionTitle: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    color: PDF_BRAND.primary,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  kvRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
+  kvLabel: { fontSize: 9, color: PDF_BRAND.textMuted, width: '38%' },
+  kvValue: { fontSize: 10, color: PDF_BRAND.text, width: '60%', textAlign: 'right' },
+  footer: {
+    position: 'absolute',
+    bottom: 18,
+    left: 40,
+    right: 40,
+    fontSize: 8,
+    color: PDF_BRAND.textMuted,
+    textAlign: 'center',
+  },
+})

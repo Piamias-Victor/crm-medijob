@@ -44,6 +44,12 @@ export function makeInterviewDeps(overrides: Partial<InterviewDeps> = {}): Inter
     findTemplateQuestions: vi.fn().mockResolvedValue([]),
     findTemplateSections: vi.fn().mockResolvedValue([]),
     applyCandidatePatch: vi.fn().mockResolvedValue(undefined),
+    storePdf: vi.fn().mockResolvedValue(null),
+    loadSnapshot: vi.fn().mockResolvedValue(null),
+    findDocumentByName: vi.fn().mockResolvedValue(null),
+    renderPdf: vi.fn().mockResolvedValue(Buffer.from('%PDF')),
+    uploadBlob: vi.fn().mockResolvedValue({ url: 'https://blob.example/x.pdf' }),
+    createDocument: vi.fn().mockResolvedValue({ id: 'd1' }),
     ...overrides,
   }
 }

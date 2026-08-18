@@ -35,6 +35,10 @@ export function buildDocumentPreviewUrl(id: string) {
   return `/api/documents/${id}/preview`
 }
 
+export function buildDocumentDownloadUrl(id: string) {
+  return `/api/documents/${id}/download`
+}
+
 export function buildDocumentPreviewSrc(
   previewUrl: string,
   mimeType: string | null | undefined,

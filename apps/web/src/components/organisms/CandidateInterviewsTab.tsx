@@ -2,18 +2,24 @@ import Link from 'next/link'
 import { ClipboardList, Plus } from 'lucide-react'
 import { EmptyState } from '@/components/atoms/EmptyState'
 import { Badge } from '@/components/atoms/Badge'
+import { InterviewPdfActions } from '@/components/molecules/InterviewPdfActions'
 import {
   INTERVIEW_CTA,
   INTERVIEW_RESUME,
   INTERVIEW_TAB_EMPTY,
 } from '@/view-models/interview-copy'
 import { interviewDraftPath, interviewStartPath } from '@/view-models/interview-href'
+import { findInterviewPdfId } from '@/view-models/interview-pdf-filename'
 import { accentButtonClassName } from '@/lib/button-styles'
 import type { InterviewListRow } from '@/view-models/interview-list'
 
-type Props = { candidateId: string; interviews: InterviewListRow[] }
+type Props = {
+  candidateId: string
+  interviews: InterviewListRow[]
+  documents: { id: string; name: string }[]
+}
 
-export function CandidateInterviewsTab({ candidateId, interviews }: Props) {
+export function CandidateInterviewsTab({ candidateId, interviews, documents }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-end">
@@ -43,7 +49,12 @@ export function CandidateInterviewsTab({ candidateId, interviews }: Props) {
                   >
                     {INTERVIEW_RESUME}
                   </Link>
-                ) : null}
+                ) : (
+                  <InterviewPdfActions
+                    interviewId={row.id}
+                    pdfDocumentId={findInterviewPdfId(documents, row.id)}
+                  />
+                )}
               </div>
             </li>
           ))}
