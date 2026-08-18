@@ -612,6 +612,18 @@ model InterviewTemplate {
   @@index([profileKey, mode])
 }
 
+model InterviewTemplateWorkingCopy {
+  id         String        @id @default(cuid())
+  profileKey String
+  mode       InterviewMode
+  label      String
+  sections   Json
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@unique([profileKey, mode])
+}
+
 // ─── Audit effacement RGPD (sans PII) ─────────────────────────
 
 model GdprEraseAudit {

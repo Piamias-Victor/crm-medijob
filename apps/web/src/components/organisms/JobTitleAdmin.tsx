@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { ReferentialManager } from '@/components/organisms/ReferentialManager'
 import { CompatibilityMatrix } from '@/components/organisms/CompatibilityMatrix'
+import { JobTitleAdminList } from '@/components/organisms/JobTitleAdminList'
 import {
   buildCompatibilityScores,
   type CompatibilityPair,
@@ -24,10 +24,7 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <ReferentialManager
-        title="Métiers"
-        description="Référentiel des métiers candidats et missions."
-        itemLabel="métier"
+      <JobTitleAdminList
         items={titles}
         onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
         onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}

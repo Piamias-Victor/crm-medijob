@@ -6,10 +6,10 @@ import { INTERVIEW_SOFTWARE_OPTIONS } from '@/view-models/interview-software'
 import { interviewChipDisplayLabel } from '@/view-models/interview-quality-chip-labels'
 import { pertinentInterviewChips } from '@/view-models/interview-pertinent-chips'
 import {
-  interviewQuestionKind,
   persistChoiceValues,
   selectedChoiceValues,
 } from '@/view-models/interview-question-kind'
+import { interviewRunWidgetKind } from '@/view-models/interview-run-widget-kind'
 import type { InterviewRunQuestion } from '@/view-models/interview-template'
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 }
 
 function chipOptions(question: InterviewRunQuestion) {
-  if (interviewQuestionKind(question.question) === 'software') return INTERVIEW_SOFTWARE_OPTIONS
+  if (interviewRunWidgetKind(question) === 'software') return INTERVIEW_SOFTWARE_OPTIONS
   const chips = pertinentInterviewChips(question.question) ?? question.suggestedAnswers
   return chips.map((chip) => ({
     value: chip.label,
@@ -29,14 +29,14 @@ function chipOptions(question: InterviewRunQuestion) {
 }
 
 export function InterviewQuestionInputs({ question, choiceLabel, disabled, onChoice }: Props) {
-  if (interviewQuestionKind(question.question) === 'availability') {
+  if (interviewRunWidgetKind(question) === 'availability') {
     return (
       <InterviewAvailabilityFields selected={choiceLabel} disabled={disabled} onSelect={onChoice} />
     )
   }
   const options = chipOptions(question)
   if (options.length === 0) return null
-  const exclusive = interviewQuestionKind(question.question) === 'choice'
+  const exclusive = interviewRunWidgetKind(question) === 'choice'
   return (
     <CheckboxGroup
       exclusive={exclusive}

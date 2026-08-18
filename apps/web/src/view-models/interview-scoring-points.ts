@@ -1,9 +1,7 @@
 import { INTERVIEW_AVAILABLE_NOW } from '@/view-models/interview-copy'
 import { pertinentInterviewChips } from '@/view-models/interview-pertinent-chips'
-import {
-  interviewQuestionKind,
-  splitChoiceLabels,
-} from '@/view-models/interview-question-kind'
+import { splitChoiceLabels } from '@/view-models/interview-question-kind'
+import { interviewRunWidgetKind } from '@/view-models/interview-run-widget-kind'
 import type { InterviewScoringQuestion } from '@/view-models/interview-scoring-catalog'
 
 function pointsBySoftwareCount(question: InterviewScoringQuestion, count: number): number {
@@ -35,7 +33,7 @@ function pointsForOpenChips(
   if (!isOpenQualityScale(question)) return null
   const chips = pertinentInterviewChips(question.question)
   if (!chips) return null
-  if (interviewQuestionKind(question.question) === 'choice') {
+  if (interviewRunWidgetKind(question) === 'choice') {
     const index = chips.findIndex((chip) => chip.label === choiceLabel)
     return index < 0 ? 0 : pointsAtScaleIndex(question, index)
   }
@@ -49,7 +47,7 @@ export function pointsForChoice(
   if (!choiceLabel) return 0
   const exact = question.suggestedAnswers.find((answer) => answer.label === choiceLabel)
   if (exact) return exact.points
-  const kind = interviewQuestionKind(question.question)
+  const kind = interviewRunWidgetKind(question)
   if (kind === 'availability' && choiceLabel === INTERVIEW_AVAILABLE_NOW) return maxPoints(question)
   if (kind === 'software') return pointsBySoftwareCount(question, splitChoiceLabels(choiceLabel).length)
   const open = pointsForOpenChips(question, choiceLabel)

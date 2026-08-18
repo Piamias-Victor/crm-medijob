@@ -1,3 +1,5 @@
+import type { InterviewCloseMapping } from '@/view-models/interview-close-mapping'
+
 export type InterviewScoringAnswer = {
   label: string
   points: number
@@ -9,6 +11,7 @@ export type InterviewScoringQuestion = {
   question: string
   eliminatoire: boolean
   mainCritere?: string
+  mapping?: InterviewCloseMapping
   suggestedAnswers: InterviewScoringAnswer[]
 }
 

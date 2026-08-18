@@ -40,7 +40,7 @@ export function ReferentialRow({ item, onRename, onDelete }: Props) {
   return (
     <li className={rowClass}>
       <span className="truncate text-sm font-medium text-fg">{item.name}</span>
-      <div className="flex shrink-0 gap-1">
+      <div className="flex shrink-0 items-center gap-1">
         <Button variant="ghost" className="px-2" aria-label="Renommer" onClick={() => edit.setEditing(true)}>
           <Pencil className="size-4" />
         </Button>

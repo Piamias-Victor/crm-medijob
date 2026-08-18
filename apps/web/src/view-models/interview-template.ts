@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { INTERVIEW_CLOSE_MAPPINGS, type InterviewCloseMapping } from '@/view-models/interview-close-mapping'
 
 const suggestedSchema = z.object({
   label: z.string(),
@@ -9,6 +10,7 @@ const questionSchema = z.object({
   id: z.string(),
   question: z.string(),
   eliminatoire: z.boolean().optional(),
+  mapping: z.enum(INTERVIEW_CLOSE_MAPPINGS).optional(),
   suggestedAnswers: z.array(suggestedSchema),
 })
 
@@ -23,6 +25,7 @@ export type InterviewRunQuestion = {
   id: string
   question: string
   eliminatoire: boolean
+  mapping?: InterviewCloseMapping
   suggestedAnswers: { label: string; text: string }[]
 }
 
@@ -44,6 +47,7 @@ export function parseInterviewSections(raw: unknown): InterviewRunSection[] {
       id: question.id,
       question: question.question,
       eliminatoire: question.eliminatoire === true,
+      mapping: question.mapping,
       suggestedAnswers: question.suggestedAnswers.map(({ label, text }) => ({ label, text })),
     })),
   }))
