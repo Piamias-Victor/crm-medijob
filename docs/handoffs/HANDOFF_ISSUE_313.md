@@ -5,6 +5,7 @@
 **Code livré · merge `dev` demandé.** Tests manuels user non confirmés (checklist postée, pas de retour OK/KO).
 
 - Issue : https://github.com/Piamias-Victor/crm-medijob/issues/313
+- PR : https://github.com/Piamias-Victor/crm-medijob/pull/318
 - Prompt : `docs/prompts/done/PROMPT_ISSUE_313.md`
 - ADR : `docs/adr/0015-interview-template-admin.md`
 - Parent : PRD #226 · blocked by #312 (mergé) · débloque #314 / #315
