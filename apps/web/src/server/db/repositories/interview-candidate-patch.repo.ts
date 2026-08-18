@@ -8,6 +8,7 @@ export type InterviewCandidatePatch = {
   mobilityRadiusKm?: number
   salaryExpectations?: string
   notes?: string
+  cvSummary?: string
   status?: ManualCandidateStatus
   softwareIds?: string[]
   contractTypes?: ContractType[]
@@ -23,6 +24,7 @@ export function makeInterviewCandidatePatchRepository(db: PrismaClient) {
           ? { salaryExpectations: patch.salaryExpectations }
           : {}),
         ...(patch.notes !== undefined ? { notes: patch.notes } : {}),
+        ...(patch.cvSummary !== undefined ? { cvSummary: patch.cvSummary } : {}),
         ...(patch.status ? { status: patch.status } : {}),
       }
       await db.$transaction(async (tx) => {

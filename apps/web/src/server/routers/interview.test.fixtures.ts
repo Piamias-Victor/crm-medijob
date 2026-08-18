@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { mockProvider } from '@/server/ai/mock-provider'
 import { createCallerFactory } from '@/server/trpc'
 import { makeInterviewRouter, type InterviewDeps } from '@/server/routers/interview'
 import type { InterviewRecord } from '@/view-models/interview-list'
@@ -50,6 +51,7 @@ export function makeInterviewDeps(overrides: Partial<InterviewDeps> = {}): Inter
     renderPdf: vi.fn().mockResolvedValue(Buffer.from('%PDF')),
     uploadBlob: vi.fn().mockResolvedValue({ url: 'https://blob.example/x.pdf' }),
     createDocument: vi.fn().mockResolvedValue({ id: 'd1' }),
+    provider: mockProvider,
     ...overrides,
   }
 }

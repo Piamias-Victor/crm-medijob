@@ -16,6 +16,7 @@ type Props = {
   saving: boolean
   onChange: (value: string) => void
   onSave: () => void
+  showSave?: boolean
 }
 
 export function CandidateCvSummaryEditor({
@@ -24,6 +25,7 @@ export function CandidateCvSummaryEditor({
   saving,
   onChange,
   onSave,
+  showSave = true,
 }: Props) {
   const dirty = value.trim() !== (savedValue?.trim() ?? '')
   const hasValue = Boolean(value.trim())
@@ -35,6 +37,7 @@ export function CandidateCvSummaryEditor({
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-fg">Aperçu</p>
+        {showSave ? (
         <Button
           variant={variant}
           disabled={disabled}
@@ -45,6 +48,7 @@ export function CandidateCvSummaryEditor({
           <Save className="size-4" />
           {label}
         </Button>
+        ) : null}
       </div>
       <Textarea
         value={value}
@@ -56,9 +60,9 @@ export function CandidateCvSummaryEditor({
           'font-serif text-[15px] leading-7 text-fg shadow-sm',
         )}
       />
-      {dirty ? (
+      {showSave && dirty ? (
         <p className="text-xs text-fg-muted">Modifications non enregistrées — Enregistrer est vert.</p>
-      ) : hasValue ? (
+      ) : showSave && hasValue ? (
         <p className="text-xs text-fg-muted">
           Résumé enregistré. Modifie le texte pour réactiver Enregistrer.
         </p>

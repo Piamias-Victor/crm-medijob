@@ -34,6 +34,7 @@ export async function previewInterviewClose(id: string, deps: PreviewCloseDeps) 
     proposedStatus: proposeCandidateStatus(decision, profile.status, false),
     currentStatus: profile.status,
     candidateId: row.candidateId,
+    cvSummary: profile.cvSummary,
   }
 }
 

@@ -13,6 +13,7 @@ export type CloseInterviewInput = {
   mappingEdits?: Record<string, string>
   applyStatus?: boolean
   blacklist?: boolean
+  cvSummary?: string
 }
 
 export type CloseInterviewRow = InterviewRecord
@@ -50,7 +51,11 @@ export async function closeInterview(
   if (profile) {
     const questions = await deps.findTemplateQuestions(row.candidateId, row.mode)
     const effects = buildCloseSideEffects(input, { ...row, answers: row.answers ?? {} }, profile, questions)
-    const patch = { ...effects.mapping, ...(effects.status ? { status: effects.status } : {}) }
+    const patch = {
+      ...effects.mapping,
+      ...(effects.status ? { status: effects.status } : {}),
+      ...(input.cvSummary !== undefined ? { cvSummary: input.cvSummary } : {}),
+    }
     if (Object.keys(patch).length) await deps.applyCandidatePatch(row.candidateId, patch)
   }
   await deps.logActivity({

@@ -7,6 +7,8 @@ export type CloseProfileSource = {
   mobilityRadiusKm: number | null
   salaryExpectations: string | null
   notes: string | null
+  cvSummary: string | null
+  jobTitle: { name: string } | null
   softwares: { software: { name: string } }[]
   contractPreferences: { contractType: string }[]
 }
@@ -20,5 +22,7 @@ export function toCloseProfile(row: CloseProfileSource): CloseSideEffectProfile 
     notes: row.notes,
     softwareNames: row.softwares.map((item) => item.software.name),
     contractTypes: row.contractPreferences.map((item) => item.contractType),
+    cvSummary: row.cvSummary,
+    jobTitleName: row.jobTitle?.name ?? '',
   }
 }

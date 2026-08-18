@@ -12,7 +12,10 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('@/lib/trpc/client', () => ({
   trpc: {
-    interview: { close: { useMutation: () => ({ mutate: closeMutate, isPending: false }) } },
+    interview: {
+      close: { useMutation: () => ({ mutate: closeMutate, isPending: false }) },
+      suggestCvSummary: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
+    },
   },
 }))
 
@@ -47,6 +50,7 @@ const preview: InterviewClosePreview = {
   proposedStatus: 'QUALIFIE',
   currentStatus: 'NOUVEAU',
   candidateId: 'c1',
+  cvSummary: '## Pharmacien\n\nDéjà en fiche.',
 }
 
 describe('InterviewCloseForm', () => {
@@ -70,6 +74,7 @@ describe('InterviewCloseForm', () => {
             softwareNames: 'Winpharma, LGPI',
             contractTypes: 'CDI, CDD',
           },
+          cvSummary: '## Pharmacien\n\nDéjà en fiche.',
         }),
       ),
     )

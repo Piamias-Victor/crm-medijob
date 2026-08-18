@@ -18,6 +18,7 @@ describe('interviewRouter close', () => {
       mappingEdits: {},
       applyStatus: false,
       blacklist: false,
+      cvSummary: '',
     })
     expect(result).toMatchObject({ id: 'i1', candidateId: 'c1' })
     expect(memory.interviews[0]?.status).toBe('CLOSED')
@@ -35,6 +36,7 @@ describe('interviewRouter close', () => {
         mappingEdits: {},
         applyStatus: false,
         blacklist: false,
+        cvSummary: '',
       }),
     ).rejects.toMatchObject({ message: INTERVIEW_CLOSE_NOT_DRAFT })
   })

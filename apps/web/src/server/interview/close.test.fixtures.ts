@@ -39,6 +39,8 @@ export function memoryCloseDeps(
     softwareNames: [],
     contractTypes: [],
     status: 'NOUVEAU',
+    cvSummary: null,
+    jobTitleName: 'Pharmacien',
     ...profile,
   }
   const logs: { candidateId: string; authorId: string; content: string }[] = []

@@ -8,6 +8,7 @@ import { InterviewScoreGrid } from '@/components/molecules/InterviewScoreGrid'
 import { InterviewDecisionSelect } from '@/components/molecules/InterviewDecisionSelect'
 import { InterviewMappingDiffs } from '@/components/molecules/InterviewMappingDiffs'
 import { InterviewCloseStatus } from '@/components/molecules/InterviewCloseStatus'
+import { InterviewCloseCvSummary } from '@/components/molecules/InterviewCloseCvSummary'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import {
@@ -34,6 +35,7 @@ export function InterviewCloseForm({ preview, interviewId }: Props) {
   const mappingEdits = useWatch({ control: form.control, name: 'mappingEdits' }) ?? {}
   const decision = useWatch({ control: form.control, name: 'decision' }) ?? preview.decision
   const blacklist = useWatch({ control: form.control, name: 'blacklist' }) ?? false
+  const cvSummary = useWatch({ control: form.control, name: 'cvSummary' }) ?? ''
   const close = trpc.interview.close.useMutation({
     onSuccess: () => {
       mutation.onSuccess()
@@ -47,6 +49,12 @@ export function InterviewCloseForm({ preview, interviewId }: Props) {
 
   return (
     <form className="flex flex-col gap-6" onSubmit={form.handleSubmit((values) => close.mutate(values))}>
+      <InterviewCloseCvSummary
+        interviewId={interviewId}
+        value={cvSummary}
+        savedValue={preview.cvSummary}
+        onChange={(value) => form.setValue('cvSummary', value)}
+      />
       <InterviewScoreGrid
         scores={scores}
         maxes={preview.scoreMax}
