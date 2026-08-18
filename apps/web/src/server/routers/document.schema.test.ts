@@ -19,6 +19,8 @@ describe('uploadDocumentSchema', () => {
       { filename: 'devis.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
       { filename: 'data.csv', mimeType: 'text/csv' },
       { filename: 'tableau.xlsx', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+      { filename: 'cv.jpg', mimeType: 'image/jpeg' },
+      { filename: 'scan.webp', mimeType: 'image/webp' },
     ]
     for (const file of cases) {
       expect(uploadDocumentSchema.safeParse({ ...base, ...file }).success).toBe(true)

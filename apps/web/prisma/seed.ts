@@ -3,13 +3,14 @@ import {
   PIPELINE_STAGES,
   SOFTWARES,
   GROUPEMENTS,
-  JOB_TITLES,
   CONTACT_ROLES,
   COMPATIBILITY,
 } from './seed-data'
 import { seedUsers } from './seed-users'
 import { seedDemo } from './seed-demo'
 import { seedDemoRich } from './seed-demo-rich'
+import { seedJobTitles } from './seed-job-titles'
+import { seedInterviewTemplates } from './seed-interview-templates'
 
 const prisma = new PrismaClient()
 
@@ -64,13 +65,12 @@ async function main() {
   await seedByName(GROUPEMENTS, (name) =>
     prisma.groupement.upsert({ where: { name }, update: {}, create: { name } }),
   )
-  await seedByName(JOB_TITLES, (name) =>
-    prisma.jobTitle.upsert({ where: { name }, update: {}, create: { name } }),
-  )
+  await seedJobTitles(prisma)
   await seedByName(CONTACT_ROLES, (name) =>
     prisma.contactRole.upsert({ where: { name }, update: {}, create: { name } }),
   )
   await seedCompatibility()
+  await seedInterviewTemplates(prisma)
   await seedDemo(prisma)
   await seedDemoRich(prisma)
 }

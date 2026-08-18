@@ -22,7 +22,7 @@
 | 12 | #223 | AFK | [CONTACTS] Liste/filtres CSV + admin Contact role référentiel |
 | 13 | #224 | AFK | [CANDIDATS] Statut CSV + prétentions + colonnes/filtres/vue rapide |
 | 14 | #225 | AFK | [CANDIDATS] Timeline historique + import CSV + fusion |
-| 15 | #226 | HITL | [CANDIDATS] Fiche d’entretien intégrée (champs medijob-eval) |
+| 15 | #226 | HITL | [CANDIDATS] Fiche d’entretien intégrée (champs medijob-eval) — children #297–#303, follow-up admin trames #312–#315 |
 | 16 | #227 | AFK | [MISSIONS] Tableau + filtres CSV + profilRecherche |
 | 17 | #228 | AFK | [MAPS] Vues map Pharmacies / Candidats / Missions |
 | 18 | #229 | AFK | [OFFRES] Génération IA + cycle de vie + liste/actions |
@@ -33,6 +33,22 @@
 | 23 | #218 | AFK | [DASHBOARD] KPI CSV + centre d’alertes |
 | 24 | #234 | HITL | [FINANCE] Perf + Facturation/Devis (inventaire proto) |
 | 25 | #235 | HITL | [RGPD] Consentement / rétention / effacement / registre |
+
+## Children of #226 (Interview)
+
+| Slice | GitHub | Type | Titre |
+|-------|--------|------|-------|
+| A | #297 | AFK | [CANDIDATS][Interview] Fondations — entité, seed trames/JobTitles, onglet vide |
+| B | #298 | AFK | [CANDIDATS][Interview] Démarrer un entretien — create Candidate + DRAFT |
+| C | #299 | AFK | [CANDIDATS][Interview] Déduplication à l’ouverture |
+| D | #300 | AFK | [CANDIDATS][Interview] Parcours réponses + autosave |
+| E | #301 | AFK | [CANDIDATS][Interview] Clôture — score, mapping profil, status |
+| F | #302 | AFK | [CANDIDATS][Interview] PDF compte-rendu |
+| G | #303 | AFK | [CANDIDATS][Interview] IA optionnelle OpenRouter |
+| H | #312 | AFK | [CANDIDATS][Interview] Pin version trame + seed fill-only |
+| I | #313 | AFK | [CANDIDATS][Interview] Admin trames — copie de travail + Publier |
+| J | #314 | AFK | [CANDIDATS][Interview] Créer et archiver une trame |
+| K | #315 | AFK | [CANDIDATS][Interview] Dupliquer / insérer questions depuis une autre trame |
 
 ## Blocked by
 
@@ -54,6 +70,17 @@
 #224  →  #219, #215
 #225  →  #216, #224
 #226  →  #224
+#297  →  (aucun)           # children of #226 [Interview]
+#298  →  #297
+#299  →  #298
+#300  →  #298
+#301  →  #300
+#302  →  #301
+#303  →  #301
+#312  →  (aucun)           # admin trames follow-up
+#313  →  #312
+#314  →  #313
+#315  →  #313
 #227  →  #219, #215
 #228  →  #220, #224, #227
 #229  →  #227

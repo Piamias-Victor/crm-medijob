@@ -3,34 +3,25 @@
 import { useMemo } from 'react'
 import type { CandidateDetailTab } from '@/components/molecules/CandidateDetailTabs'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { CandidateProfileForm } from '@/components/molecules/CandidateProfileForm'
-import { CandidateCvStoredPreview } from '@/components/molecules/CandidateCvStoredPreview'
 import { CandidateHistoryTab } from '@/components/molecules/CandidateHistoryTab'
-import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
-import { CandidateCvSummaryPanel } from '@/components/organisms/CandidateCvSummaryPanel'
-import { CandidateProfileDocsShortcuts } from '@/components/molecules/CandidateProfileDocsShortcuts'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
 import { CandidateDocumentsTab } from '@/components/organisms/CandidateDocumentsTab'
+import { CandidateProfilTab } from '@/components/organisms/CandidateProfilTab'
+import { CandidateInterviewsTab } from '@/components/organisms/CandidateInterviewsTab'
 import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
+import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
-import type { RefItem } from '@/view-models/referential'
-import type { RawStage } from '@/view-models/candidate-kanban.types'
-
-type Referentials = {
-  jobTitles: RefItem[]
-  softwares: RefItem[]
-  recruiters: RefItem[]
-  pipelineStages: RawStage[]
-}
+import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
 
 type Props = {
   tab: CandidateDetailTab
   profile: CandidateProfilePayload
-  referentials: Referentials
+  referentials: CandidateDetailReferentials
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  interviews: InterviewListRow[]
   onPresentPharmacy?: () => void
   onPresentRadius?: () => void
 }
@@ -41,6 +32,7 @@ export function CandidateDetailTabPanel({
   referentials,
   activities,
   documents,
+  interviews,
   onPresentPharmacy,
   onPresentRadius,
 }: Props) {
@@ -61,20 +53,12 @@ export function CandidateDetailTabPanel({
       bodyClassName={tab === 'missions' ? 'p-4 sm:p-5' : 'p-5 sm:p-6'}
     >
       {tab === 'profil' ? (
-        <div className="flex flex-col gap-8">
-          <CandidateCvPanel
-            profile={profile}
-            referentials={referentials}
-            onPresentPharmacy={onPresentPharmacy}
-            onPresentRadius={onPresentRadius}
-          />
-          <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
-          <CandidateCvSummaryPanel profile={profile} />
-          <CandidateProfileDocsShortcuts />
-          {profile.cvUrl ? (
-            <CandidateCvStoredPreview candidateId={profile.id} cvUrl={profile.cvUrl} />
-          ) : null}
-        </div>
+        <CandidateProfilTab
+          profile={profile}
+          referentials={referentials}
+          onPresentPharmacy={onPresentPharmacy}
+          onPresentRadius={onPresentRadius}
+        />
       ) : null}
       {tab === 'historique' ? (
         <CandidateHistoryTab
@@ -88,6 +72,13 @@ export function CandidateDetailTabPanel({
           candidateId={profile.id}
           stages={referentials.pipelineStages}
           missions={profile.missions}
+        />
+      ) : null}
+      {tab === 'entretiens' ? (
+        <CandidateInterviewsTab
+          candidateId={profile.id}
+          interviews={interviews}
+          documents={documents}
         />
       ) : null}
       {tab === 'documents' ? (

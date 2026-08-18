@@ -108,6 +108,9 @@ Ex. : pas d’ActivityLog depuis X jours sur mission à pourvoir / candidat en p
 ### Q12 — Proto medijob-eval
 Confirmez que https://medijob-eval.netlify.app/ est la référence des champs d’entretien à intégrer dans la fiche candidat. L’outil Netlify doit-il rester utilisé en parallèle, ou le CRM le remplace ?
 
+#### Answer (2026-08-17)
+**CRM remplace** l’outil Netlify ; **tous les profils** sont in scope (pharmacien, préparateur, étudiant, conseiller_para, rayonniste). Confirmé par Victor.
+
 ---
 
 ## Finance / performance (ajout CSV)

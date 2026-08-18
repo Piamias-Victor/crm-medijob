@@ -31,6 +31,10 @@ export function HomePage({ overview }: Props) {
       router.push('/candidats/new')
       return
     }
+    if (kind === 'interview') {
+      router.push('/candidats/entretiens/new')
+      return
+    }
     if (kind === 'pharmacy') {
       router.push('/pharmacies/new')
       return

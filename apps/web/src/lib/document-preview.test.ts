@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   buildDocumentPreviewUrl,
+  buildDocumentDownloadUrl,
   isPreviewableDocument,
 } from '@/lib/document-preview'
 
@@ -31,5 +32,11 @@ describe('isPreviewableDocument', () => {
 describe('buildDocumentPreviewUrl', () => {
   it('points to the authenticated preview route', () => {
     expect(buildDocumentPreviewUrl('doc-1')).toBe('/api/documents/doc-1/preview')
+  })
+})
+
+describe('buildDocumentDownloadUrl', () => {
+  it('points to the authenticated download route', () => {
+    expect(buildDocumentDownloadUrl('doc-1')).toBe('/api/documents/doc-1/download')
   })
 })

@@ -8,6 +8,7 @@ export function makeJobTitleRepository(db: PrismaClient = defaultDb) {
     list: () => db.jobTitle.findMany({ orderBy: { name: 'asc' } }),
     update: (id: string, data: Prisma.JobTitleUpdateInput) =>
       db.jobTitle.update({ where: { id }, data }),
+    findByProfileKey: (profileKey: string) => db.jobTitle.findUnique({ where: { profileKey } }),
     remove: (id: string) => db.jobTitle.delete({ where: { id } }),
     usageCount: async (id: string) =>
       (await db.candidate.count({ where: { jobTitleId: id } })) +

@@ -1,0 +1,8 @@
+export const INTERVIEW_PDF_TITLE = 'Compte-rendu d’entretien'
+export const INTERVIEW_PDF_SUB = 'Document interne · Qualification candidat'
+export const INTERVIEW_PDF_FOOTER = 'Confidentiel — MediJob · Usage interne recruteur'
+export const INTERVIEW_PDF_DOWNLOAD = 'Télécharger PDF'
+export const INTERVIEW_PDF_GENERATE = 'Générer PDF'
+export const INTERVIEW_PDF_SUCCESS = 'Compte-rendu PDF généré'
+export const INTERVIEW_PDF_NOT_CLOSED = 'Le compte-rendu n’est disponible qu’après clôture.'
+export const INTERVIEW_PDF_NOT_FOUND = 'Entretien introuvable.'

@@ -6,28 +6,22 @@ import { CandidateDetailTabPanel } from '@/components/molecules/CandidateDetailT
 import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { CandidatePresentModals } from '@/components/organisms/CandidatePresentModals'
-import { CandidateGdprEraseButton } from '@/components/molecules/CandidateGdprEraseButton'
+import { CandidateDetailHeaderActions } from '@/components/molecules/CandidateDetailHeaderActions'
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 import { candidateBlacklistHeaderChips } from '@/view-models/candidate-blacklist-header-chips'
 import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
+import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
-import type { RefItem } from '@/view-models/referential'
-import type { RawStage } from '@/view-models/candidate-kanban.types'
-
-type Referentials = {
-  jobTitles: RefItem[]
-  softwares: RefItem[]
-  recruiters: RefItem[]
-  pipelineStages: RawStage[]
-}
+import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
 
 type Props = {
   profile: CandidateProfilePayload
-  referentials: Referentials
+  referentials: CandidateDetailReferentials
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  interviews: InterviewListRow[]
   backHref?: string
 }
 
@@ -36,6 +30,7 @@ export function CandidateDetailPage({
   referentials,
   activities,
   documents,
+  interviews,
   backHref = '/candidats',
 }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
@@ -57,11 +52,7 @@ export function CandidateDetailPage({
           chips={candidateBlacklistHeaderChips(profile.effectiveStatus)}
         />
       }
-      meta={
-        <div className="flex justify-end">
-          <CandidateGdprEraseButton candidateId={profile.id} candidateName={name} />
-        </div>
-      }
+      meta={<CandidateDetailHeaderActions candidateId={profile.id} candidateName={name} />}
       tabs={
         <CandidateDetailTabs
           active={tab}
@@ -78,6 +69,7 @@ export function CandidateDetailPage({
         referentials={referentials}
         activities={activities}
         documents={documents}
+        interviews={interviews}
         onPresentPharmacy={() => setPresentOpen(true)}
         onPresentRadius={() => setPresentRadiusOpen(true)}
       />

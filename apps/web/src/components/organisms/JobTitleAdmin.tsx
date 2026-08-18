@@ -4,17 +4,24 @@ import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { ReferentialManager } from '@/components/organisms/ReferentialManager'
 import { CompatibilityMatrix } from '@/components/organisms/CompatibilityMatrix'
+import { JobTitleAdminList } from '@/components/organisms/JobTitleAdminList'
 import {
   buildCompatibilityScores,
   type CompatibilityPair,
 } from '@/view-models/compatibility-matrix'
 import type { RefItem } from '@/view-models/referential'
+import type { InterviewTemplatePairStatus } from '@/view-models/interview-template-pairs'
+import type { InterviewTemplateListRow } from '@/server/interview/template-admin-types'
 
-type Props = { titles: RefItem[]; compatibilities: CompatibilityPair[] }
+type Props = {
+  titles: RefItem[]
+  compatibilities: CompatibilityPair[]
+  pairs: InterviewTemplatePairStatus[]
+  published: InterviewTemplateListRow[]
+}
 
-export function JobTitleAdmin({ titles, compatibilities }: Props) {
+export function JobTitleAdmin({ titles, compatibilities, pairs, published }: Props) {
   const router = useRouter()
   const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
   const create = trpc.admin.jobTitle.create.useMutation(mutation)
@@ -24,11 +31,10 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <ReferentialManager
-        title="Métiers"
-        description="Référentiel des métiers candidats et missions."
-        itemLabel="métier"
+      <JobTitleAdminList
         items={titles}
+        pairs={pairs}
+        published={published}
         onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
         onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}
         onDelete={(id) => remove.mutateAsync({ id }).then(() => undefined)}

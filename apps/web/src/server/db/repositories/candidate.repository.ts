@@ -36,6 +36,8 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
     findDocumentsProfile: profile.findDocumentsProfile,
     updateDerivedFields: profile.updateDerivedFields,
     updateProfile: profile.updateProfile,
+    setJobTitle: (id: string, jobTitleId: string) =>
+      db.candidate.update({ where: { id }, data: { jobTitleId }, select: { id: true } }),
     list: (limit = DEFAULT_LIST_LIMIT) =>
       db.candidate.findMany({
         where: NOT_DELETED,
@@ -73,6 +75,13 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
     },
     softDelete: (id: string) =>
       db.candidate.update({ where: { id }, data: { deletedAt: new Date() } }),
+    findJobTitleProfileKey: async (id: string) => {
+      const row = await db.candidate.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: { jobTitle: { select: { profileKey: true } } },
+      })
+      return row?.jobTitle.profileKey ?? null
+    },
   }
 }
 

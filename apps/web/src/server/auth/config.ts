@@ -2,6 +2,7 @@ import type { NextAuthConfig } from 'next-auth'
 import { NextResponse } from 'next/server'
 import { evaluateAccess, HOME_PATH, LOGIN_PATH, type AccessRole } from './access'
 import { applyTokenToSession } from './session-from-token'
+import { applyAuthJwt } from './auth-jwt'
 
 export const authConfig = {
   trustHost: true,
@@ -13,6 +14,7 @@ export const authConfig = {
     session({ session, token }) {
       return applyTokenToSession(session, token)
     },
+    jwt: applyAuthJwt,
     authorized({ auth, request }) {
       const role = (auth?.user?.role ?? null) as AccessRole
       const decision = evaluateAccess({

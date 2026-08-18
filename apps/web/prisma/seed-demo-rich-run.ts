@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { seedUsers } from './seed-users'
 import { seedDemoRich } from './seed-demo-rich'
-import { PIPELINE_STAGES, SOFTWARES, GROUPEMENTS, JOB_TITLES, COMPATIBILITY } from './seed-data'
+import { PIPELINE_STAGES, SOFTWARES, GROUPEMENTS, COMPATIBILITY } from './seed-data'
+import { seedJobTitles } from './seed-job-titles'
 
 const prisma = new PrismaClient()
 
@@ -47,9 +48,7 @@ async function seedReferentials() {
   await seedByName(GROUPEMENTS, (name) =>
     prisma.groupement.upsert({ where: { name }, update: {}, create: { name } }),
   )
-  await seedByName(JOB_TITLES, (name) =>
-    prisma.jobTitle.upsert({ where: { name }, update: {}, create: { name } }),
-  )
+  await seedJobTitles(prisma)
   await seedCompatibility()
 }
 
