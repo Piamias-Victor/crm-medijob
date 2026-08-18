@@ -37,8 +37,12 @@ An inbound candidacy received via the public website (Webflow), tied to a specif
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead
 
 **Interview**:
-A first-class qualification conversation on a Candidate (status DRAFT or CLOSED, mode INTERIM or CDD_CDI, answers/scores, eligibility decision, Referent). Distinct from the PipelineStage named « Entretien » (mission progression) and from Application (website inbound). Templates (trames) are versioned question banks keyed by JobTitle `profileKey` × mode — seeded in V1, admin editor later.
+A first-class qualification conversation on a Candidate (status DRAFT or CLOSED, mode INTERIM or CDD_CDI, answers/scores, eligibility decision, Referent). Distinct from the PipelineStage named « Entretien » (mission progression) and from Application (website inbound). The métier and mode at Interview start pin a **published** InterviewTemplate version; the DRAFT stays on that version. New Interviews use the latest published version.
 _Avoid_: Entretien (unqualified), évaluation, eval, qualification projet, PipelineStage Entretien (as the Interview entity)
+
+**InterviewTemplate**:
+A versioned question bank (trame) for one JobTitle `profileKey` × InterviewMode (INTERIM | CDD_CDI). Direction and RH-Admin create or edit a working copy, then publish a new version; a new template may start empty or as a duplicate of another published template. Each question may declare an explicit Candidate mapping at close (availability, software, mobility, salary, contracts, or none) and scoring (eliminatory, B/C criterion, answer points). At most one question per mapping kind per template. Recruteur and Communication do not edit templates. Not keyed by UserRole. A JobTitle without profileKey, or whose dedicated template is archived, uses the generic template. Factory seeds create a template only when that profile × mode does not exist yet — they never replace a published CRM version. Published versions are not hard-deleted; a DRAFT Interview keeps the version it started on.
+_Avoid_: questionnaire, eval config, brouillon (that word means Interview status DRAFT, not an unpublished template)
 
 **AppProfile**:
 A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it and creates or merges a Candidate. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync.
