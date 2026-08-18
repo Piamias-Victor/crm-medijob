@@ -8,6 +8,7 @@ type Row = {
   status: string
   deletedAt: Date | null
   createdAt: Date
+  templateId?: string | null
 }
 
 function fakeDb(rows: Row[] = []) {
@@ -21,6 +22,7 @@ function fakeDb(rows: Row[] = []) {
           createdAt: new Date(),
           candidateId: String(data.candidateId),
           mode: String(data.mode),
+          templateId: data.templateId,
         }
         rows.push(row)
         return row
@@ -59,5 +61,12 @@ describe('interviewRepository', () => {
     const created = await repo.create({ candidateId: 'c1', mode: 'CDD_CDI' })
     const found = await repo.findById(created.id)
     expect(found?.mode).toBe('CDD_CDI')
+  })
+
+  it('persists the pinned InterviewTemplate id', async () => {
+    const db = fakeDb()
+    const repo = makeInterviewRepository(db as never)
+    const created = await repo.create({ candidateId: 'c1', mode: 'INTERIM', templateId: 'tpl-v1' })
+    expect(created.templateId).toBe('tpl-v1')
   })
 })

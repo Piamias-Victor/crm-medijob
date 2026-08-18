@@ -2,22 +2,14 @@ import type { ContractType } from '@prisma/client'
 import { activityLogRepository } from '@/server/db/repositories/activity-log.repository'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { interviewRepository } from '@/server/db/repositories/interview.repository'
-import { interviewTemplateRepository } from '@/server/db/repositories/interview-template.repository'
 import { softwareRepository } from '@/server/db/repositories/software.repository'
 import { interviewCandidatePatchRepository } from '@/server/db/repositories/interview-candidate-patch.repo'
 import { toCloseProfile } from '@/view-models/interview-close-profile'
-import { resolveInterviewProfileKey } from '@/view-models/interview-profile-key'
 import { parseScoringCatalog } from '@/view-models/interview-scoring-parse'
 import type { InterviewCandidatePatch } from '@/server/db/repositories/interview-candidate-patch.repo'
 import type { CloseInterviewDeps } from '@/server/interview/close'
 import type { PreviewCloseDeps } from '@/server/interview/preview-close'
-
-async function loadTemplate(candidateId: string, mode: 'INTERIM' | 'CDD_CDI') {
-  const profileKey = resolveInterviewProfileKey(
-    await candidateRepository.findJobTitleProfileKey(candidateId),
-  )
-  return interviewTemplateRepository.findByProfileMode(profileKey, mode)
-}
+import { loadLiveInterviewTemplate } from '@/server/interview/load-live-interview-template'
 
 async function applyCandidatePatch(id: string, patch: Record<string, unknown>) {
   const names = patch.softwareNames as string[] | undefined
@@ -45,12 +37,12 @@ export function interviewCloseLiveDeps(): Omit<CloseInterviewDeps & PreviewClose
       const row = await candidateRepository.findProfileById(id)
       return row ? toCloseProfile(row) : null
     },
-    findTemplateQuestions: async (candidateId, mode) => {
-      const template = await loadTemplate(candidateId, mode)
+    findTemplateQuestions: async (interview) => {
+      const template = await loadLiveInterviewTemplate(interview)
       return parseScoringCatalog(template?.sections).map(({ id, question }) => ({ id, question }))
     },
-    findTemplateSections: async (candidateId, mode) => {
-      const template = await loadTemplate(candidateId, mode)
+    findTemplateSections: async (interview) => {
+      const template = await loadLiveInterviewTemplate(interview)
       return template?.sections ?? []
     },
     applyCandidatePatch,

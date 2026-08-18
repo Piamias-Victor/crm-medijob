@@ -25,10 +25,7 @@ export type CloseInterviewDeps = {
     data: { scores: Record<string, number>; decision: InterviewDecision },
   ) => Promise<void>
   findCandidate: (id: string) => Promise<CloseSideEffectProfile | null>
-  findTemplateQuestions: (
-    candidateId: string,
-    mode: CloseInterviewRow['mode'],
-  ) => Promise<MappingQuestion[]>
+  findTemplateQuestions: (interview: CloseInterviewRow) => Promise<MappingQuestion[]>
   applyCandidatePatch: (id: string, patch: Record<string, unknown>) => Promise<void>
   logActivity: (input: {
     candidateId: string
@@ -49,7 +46,7 @@ export async function closeInterview(
   await deps.close(input.id, { scores: input.scores, decision: input.decision })
   const profile = await deps.findCandidate(row.candidateId)
   if (profile) {
-    const questions = await deps.findTemplateQuestions(row.candidateId, row.mode)
+    const questions = await deps.findTemplateQuestions(row)
     const effects = buildCloseSideEffects(input, { ...row, answers: row.answers ?? {} }, profile, questions)
     const patch = {
       ...effects.mapping,

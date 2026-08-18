@@ -7,7 +7,12 @@ export function makeInterviewTemplateRepository(db: PrismaClient = defaultDb) {
       db.interviewTemplate.findFirst({
         where: { profileKey, mode },
         orderBy: { version: 'desc' },
-        select: { label: true, sections: true },
+        select: { id: true, label: true, sections: true },
+      }),
+    findById: (id: string) =>
+      db.interviewTemplate.findUnique({
+        where: { id },
+        select: { id: true, label: true, sections: true },
       }),
   }
 }

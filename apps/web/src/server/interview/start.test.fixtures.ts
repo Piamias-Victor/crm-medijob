@@ -63,7 +63,9 @@ export function memoryStartDeps(seed: CandidateRow[] = []) {
       interviews.find((row) => row.id === id && !row.deletedAt) ?? null,
     updateAnswers: async () => undefined,
     findCandidateProfileKey: async () => 'pharmacien',
+    findPublishedTemplate: async () => ({ id: 'tpl-1' }),
     findTemplate: async () => ({ label: 'Pharmacien', sections: [] }),
+    findTemplateById: async () => ({ label: 'Pharmacien', sections: [] }),
     logActivity: async (input: { candidateId: string; authorId: string; content: string }) => {
       logs.push(input)
     },

@@ -11,7 +11,7 @@ import type { CloseInterviewRow } from '@/server/interview/close'
 export type PreviewCloseDeps = {
   findById: (id: string) => Promise<CloseInterviewRow | null>
   findCandidate: (id: string) => Promise<CloseSideEffectProfile | null>
-  findTemplateSections: (candidateId: string, mode: CloseInterviewRow['mode']) => Promise<unknown>
+  findTemplateSections: (interview: CloseInterviewRow) => Promise<unknown>
 }
 
 export async function previewInterviewClose(id: string, deps: PreviewCloseDeps) {
@@ -19,7 +19,7 @@ export async function previewInterviewClose(id: string, deps: PreviewCloseDeps) 
   if (!row || row.status !== 'DRAFT') return null
   const profile = await deps.findCandidate(row.candidateId)
   if (!profile) return null
-  const catalog = parseScoringCatalog(await deps.findTemplateSections(row.candidateId, row.mode))
+  const catalog = parseScoringCatalog(await deps.findTemplateSections(row))
   const answers = parseInterviewAnswers(row.answers)
   const scores = suggestInterviewScores(answers, catalog)
   const decision = suggestInterviewDecision(scores, catalog, answers)

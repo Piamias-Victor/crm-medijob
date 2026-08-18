@@ -581,16 +581,19 @@ model Interview {
   scores      Json                @default("{}")
   candidateId String
   referentId  String?
+  templateId  String?
   deletedAt   DateTime?
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   referent  User?     @relation("ReferentInterviews", fields: [referentId], references: [id], onDelete: SetNull)
+  template  InterviewTemplate? @relation(fields: [templateId], references: [id], onDelete: Restrict)
 
   // One DRAFT per candidate: partial unique index Interview_one_draft_per_candidate
   @@index([candidateId])
   @@index([deletedAt])
+  @@index([templateId])
 }
 
 model InterviewTemplate {
@@ -602,6 +605,8 @@ model InterviewTemplate {
   sections   Json
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+
+  interviews Interview[]
 
   @@unique([profileKey, mode, version])
   @@index([profileKey, mode])
