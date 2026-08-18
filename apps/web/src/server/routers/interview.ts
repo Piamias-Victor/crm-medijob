@@ -79,7 +79,10 @@ export const interviewRouter = makeInterviewRouter({
   softDeleteInterview: (id) => interviewRepository.softDelete(id),
   updateAnswers: (id, answers) => interviewRepository.updateAnswers(id, answers),
   findCandidateProfileKey: (candidateId) => candidateRepository.findJobTitleProfileKey(candidateId),
+  findPublishedTemplate: (profileKey, mode) =>
+    interviewTemplateRepository.findByProfileMode(profileKey, mode),
   findTemplate: (profileKey, mode) => interviewTemplateRepository.findByProfileMode(profileKey, mode),
+  findTemplateById: (id) => interviewTemplateRepository.findById(id),
   ...interviewCloseLiveDeps(),
   ...interviewPdfStore,
   storePdf: (id) => storeInterviewCompteRendu(id, interviewPdfStore),

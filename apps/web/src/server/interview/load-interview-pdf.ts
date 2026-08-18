@@ -11,7 +11,7 @@ export type LoadInterviewPdfDeps = {
   findInterview: (id: string) => Promise<InterviewPdfLoadRow | null>
   findIdentity: (candidateId: string) => Promise<Omit<InterviewPdfIdentity, 'referentName'> | null>
   findReferentName: (userId: string) => Promise<string | null>
-  findTemplateSections: (candidateId: string, mode: InterviewPdfRow['mode']) => Promise<unknown>
+  findTemplateSections: (row: InterviewPdfLoadRow) => Promise<unknown>
 }
 
 export async function loadInterviewPdfSnapshot(
@@ -26,7 +26,7 @@ export async function loadInterviewPdfSnapshot(
   const input = toInterviewPdfInput(
     row,
     { ...identity, referentName: interviewReferent },
-    await deps.findTemplateSections(row.candidateId, row.mode),
+    await deps.findTemplateSections(row),
   )
   return { candidateId: row.candidateId, status: row.status, input }
 }

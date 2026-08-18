@@ -12,6 +12,7 @@ export type InterviewRecord = {
   createdAt: Date
   candidateId: string
   answers?: unknown
+  templateId?: string | null
 }
 
 export type InterviewListRow = {

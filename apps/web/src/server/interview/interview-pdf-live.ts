@@ -1,12 +1,11 @@
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { documentRepository } from '@/server/db/repositories/document.repository'
 import { interviewRepository } from '@/server/db/repositories/interview.repository'
-import { interviewTemplateRepository } from '@/server/db/repositories/interview-template.repository'
 import { userRepository } from '@/server/db/repositories/user.repository'
 import { loadInterviewPdfSnapshot } from '@/server/interview/load-interview-pdf'
+import { loadLiveInterviewTemplate } from '@/server/interview/load-live-interview-template'
 import { renderInterviewPdf } from '@/server/pdf/render-interview-pdf'
 import { uploadBlob, vercelBlobClient } from '@/server/services/blob'
-import { resolveInterviewProfileKey } from '@/view-models/interview-profile-key'
 import { toInterviewPdfIdentity } from '@/view-models/interview-pdf-identity'
 import type { StoreInterviewPdfDeps } from '@/server/interview/store-interview-pdf'
 
@@ -26,11 +25,8 @@ export function interviewPdfLiveDeps(): StoreInterviewPdfDeps {
           const user = await userRepository.findById(userId)
           return user?.name ?? null
         },
-        findTemplateSections: async (candidateId, mode) => {
-          const profileKey = resolveInterviewProfileKey(
-            await candidateRepository.findJobTitleProfileKey(candidateId),
-          )
-          const template = await interviewTemplateRepository.findByProfileMode(profileKey, mode)
+        findTemplateSections: async (interview) => {
+          const template = await loadLiveInterviewTemplate(interview)
           return template?.sections ?? []
         },
       }),

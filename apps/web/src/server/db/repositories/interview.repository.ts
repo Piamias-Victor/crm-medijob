@@ -7,6 +7,7 @@ export type InterviewCreateInput = {
   candidateId: string
   mode: InterviewMode
   referentId?: string | null
+  templateId?: string | null
   status?: InterviewStatus
   decision?: InterviewDecision | null
   answers?: Prisma.InputJsonValue
@@ -21,6 +22,7 @@ export function makeInterviewRepository(db: PrismaClient = defaultDb) {
           candidateId: data.candidateId,
           mode: data.mode,
           referentId: data.referentId ?? undefined,
+          templateId: data.templateId ?? undefined,
           status: data.status,
           decision: data.decision,
           answers: data.answers ?? undefined,

@@ -13,6 +13,7 @@ export type InterviewPdfRow = {
   createdAt: Date
   answers: unknown
   scores: unknown
+  templateId?: string | null
 }
 
 export type InterviewPdfIdentity = {

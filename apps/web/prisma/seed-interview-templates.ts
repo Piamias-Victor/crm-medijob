@@ -16,19 +16,16 @@ export async function seedInterviewTemplates(prisma: PrismaClient) {
     ...(GENERIC_INTERVIEW_TEMPLATES as SeedTrame[]),
   ]
   for (const trame of trames) {
-    await prisma.interviewTemplate.upsert({
-      where: {
-        profileKey_mode_version: {
-          profileKey: trame.profileKey,
-          mode: trame.mode,
-          version: trame.version,
-        },
-      },
-      update: { label: trame.label, sections: trame.sections },
-      create: {
+    const exists = await prisma.interviewTemplate.findFirst({
+      where: { profileKey: trame.profileKey, mode: trame.mode },
+      select: { id: true },
+    })
+    if (exists) continue
+    await prisma.interviewTemplate.create({
+      data: {
         profileKey: trame.profileKey,
         mode: trame.mode,
-        version: trame.version,
+        version: 1,
         label: trame.label,
         sections: trame.sections,
       },

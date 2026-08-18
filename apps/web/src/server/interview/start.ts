@@ -1,4 +1,5 @@
 import type { InterviewMode } from '@prisma/client'
+import { pinPublishedTemplateId } from '@/server/interview/pin-published-template'
 
 export type StartInterviewInput = {
   firstName: string
@@ -27,7 +28,13 @@ export type StartInterviewDeps = {
     candidateId: string
     mode: InterviewMode
     referentId: string
+    templateId: string | null
   }) => Promise<{ id: string }>
+  findCandidateProfileKey: (candidateId: string) => Promise<string | null>
+  findPublishedTemplate: (
+    profileKey: string,
+    mode: InterviewMode,
+  ) => Promise<{ id: string } | null>
   logActivity: (input: { candidateId: string; authorId: string; content: string }) => Promise<void>
 }
 
@@ -53,6 +60,7 @@ export async function startInterview(
       candidateId: existing.id,
       mode: input.mode,
       referentId: actorId,
+      templateId: await pinPublishedTemplateId(existing.id, input.mode, deps),
     })
     await deps.logActivity({
       candidateId: existing.id,
@@ -75,6 +83,7 @@ export async function startInterview(
     candidateId: candidate.id,
     mode: input.mode,
     referentId: actorId,
+    templateId: await pinPublishedTemplateId(candidate.id, input.mode, deps),
   })
   await deps.logActivity({
     candidateId: candidate.id,
