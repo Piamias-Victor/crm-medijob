@@ -2,6 +2,7 @@ import { router, protectedProcedure } from '@/server/trpc'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { interviewRepository } from '@/server/db/repositories/interview.repository'
 import { interviewTemplateRepository } from '@/server/db/repositories/interview-template.repository'
+import { interviewTemplateWorkingCopyRepository } from '@/server/db/repositories/interview-template-working-copy.repository'
 import { toInterviewListRow, type InterviewRecord } from '@/view-models/interview-list'
 import { getInterviewSchema, listInterviewsSchema } from '@/server/routers/interview.schema'
 import {
@@ -81,6 +82,10 @@ export const interviewRouter = makeInterviewRouter({
   findCandidateProfileKey: (candidateId) => candidateRepository.findJobTitleProfileKey(candidateId),
   findPublishedTemplate: (profileKey, mode) =>
     interviewTemplateRepository.findByProfileMode(profileKey, mode),
+  isPairArchived: async (profileKey, mode) =>
+    Boolean(
+      (await interviewTemplateWorkingCopyRepository.find(profileKey, mode))?.archivedAt,
+    ),
   findTemplate: (profileKey, mode) => interviewTemplateRepository.findByProfileMode(profileKey, mode),
   findTemplateById: (id) => interviewTemplateRepository.findById(id),
   ...interviewCloseLiveDeps(),

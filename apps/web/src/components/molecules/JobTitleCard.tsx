@@ -6,14 +6,18 @@ import { Button } from '@/components/atoms/Button'
 import { JobTitleTrameLinks } from '@/components/molecules/JobTitleTrameLinks'
 import { useInlineEdit } from '@/lib/use-inline-edit'
 import type { RefItem } from '@/view-models/referential'
+import type { InterviewTemplatePairStatus } from '@/view-models/interview-template-pairs'
+import type { InterviewTemplateListRow } from '@/server/interview/template-admin-types'
 
 type Props = {
   item: RefItem
+  pairs: InterviewTemplatePairStatus[]
+  published: InterviewTemplateListRow[]
   onRename: (id: string, name: string) => Promise<void>
   onDelete: (id: string) => void
 }
 
-export function JobTitleCard({ item, onRename, onDelete }: Props) {
+export function JobTitleCard({ item, pairs, published, onRename, onDelete }: Props) {
   const edit = useInlineEdit(item.name, (name) => onRename(item.id, name))
 
   return (
@@ -48,7 +52,7 @@ export function JobTitleCard({ item, onRename, onDelete }: Props) {
           </>
         )}
       </div>
-      <JobTitleTrameLinks profileKey={item.profileKey ?? null} />
+      <JobTitleTrameLinks item={item} pairs={pairs} published={published} />
     </li>
   )
 }

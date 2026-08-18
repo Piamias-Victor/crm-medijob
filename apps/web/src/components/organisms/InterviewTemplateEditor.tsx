@@ -7,6 +7,7 @@ import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { Input } from '@/components/atoms/Input'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { InterviewTemplateEditorToolbar } from '@/components/molecules/InterviewTemplateEditorToolbar'
+import { InterviewTemplateArchiveControls } from '@/components/molecules/InterviewTemplateArchiveControls'
 import { InterviewTemplateSectionEditor } from '@/components/molecules/InterviewTemplateSectionEditor'
 import { emptyAdminSection, replaceAt } from '@/view-models/interview-admin-draft'
 import {
@@ -40,6 +41,9 @@ export function InterviewTemplateEditor({ copy: initial }: { copy: InterviewTemp
         <InterviewTemplateEditorToolbar
           saving={save.isPending}
           publishing={publish.isPending}
+          archive={
+            <InterviewTemplateArchiveControls profileKey={copy.profileKey} mode={copy.mode} />
+          }
           onSave={() => save.mutate(copy)}
           onPublish={() => {
             void save

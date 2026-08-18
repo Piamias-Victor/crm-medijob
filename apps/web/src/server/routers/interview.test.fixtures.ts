@@ -39,6 +39,7 @@ export function makeInterviewDeps(overrides: Partial<InterviewDeps> = {}): Inter
     updateAnswers: vi.fn().mockResolvedValue(undefined),
     findCandidateProfileKey: vi.fn().mockResolvedValue('pharmacien'),
     findPublishedTemplate: vi.fn().mockResolvedValue({ id: 'tpl-1' }),
+    isPairArchived: vi.fn().mockResolvedValue(false),
     findTemplate: vi.fn().mockResolvedValue({ label: 'Pharmacien', sections: [] }),
     findTemplateById: vi.fn().mockResolvedValue({ label: 'Pharmacien', sections: [] }),
     logActivity: vi.fn().mockResolvedValue(undefined),

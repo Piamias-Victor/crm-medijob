@@ -14,6 +14,10 @@ export const liveTemplateAdminStore: TemplateAdminStore = {
       ...copy,
       sections: copy.sections as Prisma.InputJsonValue,
     }),
+  setWorkingCopyArchived: async (profileKey, mode, archivedAt) => {
+    await interviewTemplateWorkingCopyRepository.setArchived(profileKey, mode, archivedAt)
+  },
+  listWorkingCopies: () => interviewTemplateWorkingCopyRepository.list(),
   createPublishedVersion: (row) =>
     interviewTemplateRepository.createVersion({
       ...row,

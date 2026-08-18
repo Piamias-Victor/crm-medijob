@@ -3,13 +3,28 @@ export const INTERVIEW_TEMPLATE_DUPLICATE_MAPPING =
 export const INTERVIEW_TEMPLATE_SAVE_SUCCESS = 'Copie de travail enregistrée'
 export const INTERVIEW_TEMPLATE_PUBLISH_SUCCESS = 'Trame publiée'
 export const INTERVIEW_TEMPLATE_NOT_FOUND = 'Trame introuvable'
+export const INTERVIEW_TEMPLATE_PAIR_EXISTS =
+  'Une trame existe déjà pour ce métier et ce type d’entretien.'
 export const INTERVIEW_TEMPLATE_TITLE = 'Trames d’entretien'
 export const INTERVIEW_TEMPLATE_HINT =
   'Copie de travail par métier × mode. Publier crée une nouvelle version ; les brouillons ouverts restent pinnés.'
 export const INTERVIEW_TEMPLATE_METIERS_HINT =
-  'Référentiel des métiers. Chaque carte ouvre les deux trames d’entretien.'
+  'Référentiel des métiers. Créez ou éditez une trame Intérim / CDD-CDI par métier.'
 export const INTERVIEW_TEMPLATE_SAVE = 'Enregistrer'
 export const INTERVIEW_TEMPLATE_PUBLISH = 'Publier'
+export const INTERVIEW_TEMPLATE_CREATE = 'Créer une trame'
+export const INTERVIEW_TEMPLATE_ARCHIVE = 'Archiver'
+export const INTERVIEW_TEMPLATE_ARCHIVE_HINT =
+  'Les nouveaux entretiens utiliseront la trame générique. Les brouillons ouverts restent pinnés.'
+export const INTERVIEW_TEMPLATE_ARCHIVE_SUCCESS = 'Trame archivée'
+export const INTERVIEW_TEMPLATE_CREATE_SUCCESS = 'Trame créée'
+export const INTERVIEW_TEMPLATE_PROFILE_KEY = 'Clé de trame'
+export const INTERVIEW_TEMPLATE_COPY_SOURCE = 'Copier une trame publiée'
+export const INTERVIEW_TEMPLATE_EMPTY_SOURCE = 'Trame vide'
+export const INTERVIEW_TEMPLATE_GENERIC_TITLE = 'Trame générique'
+export const INTERVIEW_TEMPLATE_GENERIC_HINT =
+  'Fallback pour les métiers sans trame dédiée. Non archivable.'
+export const INTERVIEW_TEMPLATE_CANCEL = 'Annuler'
 export const INTERVIEW_TEMPLATE_ADD_SECTION = 'Ajouter une section'
 export const INTERVIEW_TEMPLATE_ADD_QUESTION = 'Ajouter une question'
 export const INTERVIEW_TEMPLATE_ADD_ANSWER = 'Ajouter une réponse'

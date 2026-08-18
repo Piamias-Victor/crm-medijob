@@ -11,10 +11,17 @@ import {
   type CompatibilityPair,
 } from '@/view-models/compatibility-matrix'
 import type { RefItem } from '@/view-models/referential'
+import type { InterviewTemplatePairStatus } from '@/view-models/interview-template-pairs'
+import type { InterviewTemplateListRow } from '@/server/interview/template-admin-types'
 
-type Props = { titles: RefItem[]; compatibilities: CompatibilityPair[] }
+type Props = {
+  titles: RefItem[]
+  compatibilities: CompatibilityPair[]
+  pairs: InterviewTemplatePairStatus[]
+  published: InterviewTemplateListRow[]
+}
 
-export function JobTitleAdmin({ titles, compatibilities }: Props) {
+export function JobTitleAdmin({ titles, compatibilities, pairs, published }: Props) {
   const router = useRouter()
   const mutation = useEntityMutation({ onSuccess: () => router.refresh() })
   const create = trpc.admin.jobTitle.create.useMutation(mutation)
@@ -26,6 +33,8 @@ export function JobTitleAdmin({ titles, compatibilities }: Props) {
     <div className="flex flex-col gap-6">
       <JobTitleAdminList
         items={titles}
+        pairs={pairs}
+        published={published}
         onAdd={(name) => create.mutateAsync({ name }).then(() => undefined)}
         onRename={(id, name) => update.mutateAsync({ id, name }).then(() => undefined)}
         onDelete={(id) => remove.mutateAsync({ id }).then(() => undefined)}

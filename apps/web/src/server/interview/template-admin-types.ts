@@ -20,6 +20,7 @@ export type InterviewTemplateCopyRow = {
   mode: InterviewMode
   label: string
   sections: unknown
+  archivedAt: Date | null
 }
 
 export type TemplateAdminStore = {
@@ -33,6 +34,14 @@ export type TemplateAdminStore = {
     mode: InterviewMode,
   ) => Promise<InterviewTemplateCopyRow | null>
   upsertWorkingCopy: (copy: InterviewTemplateWorkingCopy) => Promise<InterviewTemplateCopyRow>
+  setWorkingCopyArchived: (
+    profileKey: string,
+    mode: InterviewMode,
+    archivedAt: Date | null,
+  ) => Promise<void>
+  listWorkingCopies: () => Promise<
+    { profileKey: string; mode: InterviewMode; archivedAt: Date | null }[]
+  >
   createPublishedVersion: (
     row: InterviewTemplateListRow & { sections: unknown },
   ) => Promise<InterviewTemplateListRow>

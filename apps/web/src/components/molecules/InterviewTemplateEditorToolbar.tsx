@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { Button } from '@/components/atoms/Button'
 import {
   INTERVIEW_TEMPLATE_ADD_SECTION,
@@ -12,6 +13,7 @@ import {
 type Props = {
   saving: boolean
   publishing: boolean
+  archive?: ReactNode
   onSave: () => void
   onPublish: () => void
   onAddSection: () => void
@@ -20,6 +22,7 @@ type Props = {
 export function InterviewTemplateEditorToolbar({
   saving,
   publishing,
+  archive,
   onSave,
   onPublish,
   onAddSection,
@@ -39,6 +42,7 @@ export function InterviewTemplateEditorToolbar({
         <Button type="button" variant="accent" disabled={publishing} onClick={onPublish}>
           {INTERVIEW_TEMPLATE_PUBLISH}
         </Button>
+        {archive}
       </div>
     </div>
   )
