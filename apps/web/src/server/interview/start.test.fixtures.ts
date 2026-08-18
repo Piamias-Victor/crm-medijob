@@ -71,6 +71,11 @@ export function memoryStartDeps(seed: CandidateRow[] = []) {
     findTemplateQuestions: async () => [],
     findTemplateSections: async () => [],
     applyCandidatePatch: async () => undefined,
+    loadSnapshot: async () => null,
+    findDocumentByName: async () => null,
+    renderPdf: async () => Buffer.from('%PDF'),
+    uploadBlob: async () => ({ url: 'https://blob.example/x.pdf' }),
+    createDocument: async () => ({ id: 'd1' }),
     softDeleteInterview: async (id: string) => {
       const row = interviews.find((interview) => interview.id === id && !interview.deletedAt)
       if (!row) return null

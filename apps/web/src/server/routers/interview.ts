@@ -19,13 +19,20 @@ import {
   type InterviewCloseDeps,
 } from '@/server/routers/interview-close'
 import { interviewSoftDeleteMutation } from '@/server/routers/interview-soft-delete'
+import { interviewGeneratePdfMutation } from '@/server/routers/interview-generate-pdf'
+import {
+  storeInterviewCompteRendu,
+  type StoreInterviewPdfDeps,
+} from '@/server/interview/store-interview-pdf'
+import { interviewPdfLiveDeps } from '@/server/interview/interview-pdf-live'
 
 export type InterviewDeps = {
   listByCandidate: (candidateId: string) => Promise<InterviewRecord[]>
   findById: (id: string) => Promise<InterviewRecord | null>
 } & InterviewWriteDeps &
   LoadInterviewRunDeps &
-  InterviewCloseDeps
+  InterviewCloseDeps &
+  StoreInterviewPdfDeps
 
 export function makeInterviewRouter(deps: InterviewDeps) {
   return router({
@@ -41,12 +48,15 @@ export function makeInterviewRouter(deps: InterviewDeps) {
     saveDraft: interviewSaveDraftMutation(deps),
     close: interviewCloseMutation(deps),
     previewClose: interviewPreviewCloseQuery(deps),
+    generatePdf: interviewGeneratePdfMutation(deps),
     softDelete: interviewSoftDeleteMutation(deps),
     getRun: protectedProcedure.input(getInterviewSchema).query(async ({ input }) =>
       loadInterviewRun(input.id, deps),
     ),
   })
 }
+
+const interviewPdfStore = interviewPdfLiveDeps()
 
 export const interviewRouter = makeInterviewRouter({
   listByCandidate: (candidateId) => interviewRepository.listByCandidate(candidateId),
@@ -66,4 +76,6 @@ export const interviewRouter = makeInterviewRouter({
   findCandidateProfileKey: (candidateId) => candidateRepository.findJobTitleProfileKey(candidateId),
   findTemplate: (profileKey, mode) => interviewTemplateRepository.findByProfileMode(profileKey, mode),
   ...interviewCloseLiveDeps(),
+  ...interviewPdfStore,
+  storePdf: (id) => storeInterviewCompteRendu(id, interviewPdfStore),
 })

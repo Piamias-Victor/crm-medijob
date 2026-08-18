@@ -62,5 +62,6 @@ export function memoryCloseDeps(
     logActivity: async (input: { candidateId: string; authorId: string; content: string }) => {
       logs.push(input)
     },
+    storePdf: async () => null,
   }
 }
