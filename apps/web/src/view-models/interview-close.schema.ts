@@ -8,6 +8,7 @@ export const interviewCloseSchema = z.object({
   mappingEdits: z.record(z.string(), z.string()),
   applyStatus: z.boolean(),
   blacklist: z.boolean(),
+  cvSummary: z.string(),
 })
 
 export type InterviewCloseInput = z.infer<typeof interviewCloseSchema>

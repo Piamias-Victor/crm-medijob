@@ -16,7 +16,11 @@ export type CloseSideEffectInput = {
   blacklist?: boolean
 }
 
-export type CloseSideEffectProfile = InterviewMappingProfile & { status: CandidateStatus }
+export type CloseSideEffectProfile = InterviewMappingProfile & {
+  status: CandidateStatus
+  cvSummary: string | null
+  jobTitleName: string
+}
 
 export function buildCloseSideEffects(
   input: CloseSideEffectInput,

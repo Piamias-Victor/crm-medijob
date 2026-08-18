@@ -30,6 +30,7 @@ async function applyCandidatePatch(id: string, patch: Record<string, unknown>) {
     mobilityRadiusKm: patch.mobilityRadiusKm as number | undefined,
     salaryExpectations: patch.salaryExpectations as string | undefined,
     notes: patch.notes as string | undefined,
+    cvSummary: patch.cvSummary as string | undefined,
     status: patch.status as InterviewCandidatePatch['status'],
     softwareIds,
     contractTypes: patch.contractTypes as ContractType[] | undefined,

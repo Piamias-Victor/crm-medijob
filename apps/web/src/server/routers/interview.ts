@@ -20,6 +20,9 @@ import {
 } from '@/server/routers/interview-close'
 import { interviewSoftDeleteMutation } from '@/server/routers/interview-soft-delete'
 import { interviewGeneratePdfMutation } from '@/server/routers/interview-generate-pdf'
+import { interviewSuggestCvSummaryMutation } from '@/server/routers/interview-suggest'
+import type { SuggestCvSummaryDeps } from '@/server/interview/suggest-cv-summary'
+import { createAssistantProvider } from '@/server/ai/provider'
 import {
   storeInterviewCompteRendu,
   type StoreInterviewPdfDeps,
@@ -32,6 +35,7 @@ export type InterviewDeps = {
 } & InterviewWriteDeps &
   LoadInterviewRunDeps &
   InterviewCloseDeps &
+  SuggestCvSummaryDeps &
   StoreInterviewPdfDeps
 
 export function makeInterviewRouter(deps: InterviewDeps) {
@@ -48,6 +52,7 @@ export function makeInterviewRouter(deps: InterviewDeps) {
     saveDraft: interviewSaveDraftMutation(deps),
     close: interviewCloseMutation(deps),
     previewClose: interviewPreviewCloseQuery(deps),
+    suggestCvSummary: interviewSuggestCvSummaryMutation(deps),
     generatePdf: interviewGeneratePdfMutation(deps),
     softDelete: interviewSoftDeleteMutation(deps),
     getRun: protectedProcedure.input(getInterviewSchema).query(async ({ input }) =>
@@ -78,4 +83,5 @@ export const interviewRouter = makeInterviewRouter({
   ...interviewCloseLiveDeps(),
   ...interviewPdfStore,
   storePdf: (id) => storeInterviewCompteRendu(id, interviewPdfStore),
+  provider: createAssistantProvider(),
 })

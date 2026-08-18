@@ -1,4 +1,5 @@
 import type { InterviewRecord } from '@/view-models/interview-list'
+import { mockProvider } from '@/server/ai/mock-provider'
 
 export const interviewStartIdentity = {
   firstName: 'Camille',
@@ -76,6 +77,7 @@ export function memoryStartDeps(seed: CandidateRow[] = []) {
     renderPdf: async () => Buffer.from('%PDF'),
     uploadBlob: async () => ({ url: 'https://blob.example/x.pdf' }),
     createDocument: async () => ({ id: 'd1' }),
+    provider: mockProvider,
     softDeleteInterview: async (id: string) => {
       const row = interviews.find((interview) => interview.id === id && !interview.deletedAt)
       if (!row) return null

@@ -7,6 +7,12 @@ import { Button } from '@/components/atoms/Button'
 import { CandidateCvSummaryEditor } from '@/components/molecules/CandidateCvSummaryEditor'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import {
+  CV_SUMMARY_GENERATE,
+  CV_SUMMARY_GENERATING,
+  CV_SUMMARY_HINT,
+  CV_SUMMARY_TITLE,
+} from '@/view-models/cv-summary-copy'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 
 type Props = { profile: CandidateProfilePayload }
@@ -38,10 +44,8 @@ export function CandidateCvSummaryPanel({ profile }: Props) {
     <section className="flex flex-col gap-4 border-t border-border/60 pt-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-fg">Résumé IA</h3>
-          <p className="text-sm text-fg-muted">
-            Synthèse pour le matching. Générez, ajustez puis enregistrez.
-          </p>
+          <h3 className="text-sm font-semibold text-fg">{CV_SUMMARY_TITLE}</h3>
+          <p className="text-sm text-fg-muted">{CV_SUMMARY_HINT}</p>
         </div>
         <Button
           variant="accent"
@@ -60,7 +64,7 @@ export function CandidateCvSummaryPanel({ profile }: Props) {
           className="gap-2"
         >
           <Sparkles className="size-4" />
-          {generateSummary.isPending ? 'Génération…' : 'Générer résumé IA'}
+          {generateSummary.isPending ? CV_SUMMARY_GENERATING : CV_SUMMARY_GENERATE}
         </Button>
       </div>
       {error ? <p className="text-sm text-error">{error}</p> : null}

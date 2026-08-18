@@ -33,4 +33,14 @@ describe('previewInterviewClose', () => {
     expect(preview?.decision).toBe('ELIGIBLE')
     expect(preview?.proposedStatus).toBe('QUALIFIE')
   })
+
+  it('exposes the current fiche cvSummary', async () => {
+    const memory = memoryCloseDeps({}, { cvSummary: '## Pharmacien\n\nDéjà en fiche.' })
+    const preview = await previewInterviewClose('i1', {
+      findById: memory.findById,
+      findCandidate: memory.findCandidate,
+      findTemplateSections: async () => sections,
+    })
+    expect(preview?.cvSummary).toBe('## Pharmacien\n\nDéjà en fiche.')
+  })
 })

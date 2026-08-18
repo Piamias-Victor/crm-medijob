@@ -15,6 +15,7 @@ export function interviewCloseDefaults(
     mappingEdits: defaultMappingEdits(preview.diffs),
     applyStatus: preview.proposedStatus != null,
     blacklist: false,
+    cvSummary: preview.cvSummary ?? '',
   }
 }
 
