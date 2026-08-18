@@ -1,4 +1,4 @@
-export type RefItem = { id: string; name: string }
+export type RefItem = { id: string; name: string; profileKey?: string | null }
 
 export type CandidateFormReferentials = {
   jobTitles: RefItem[]

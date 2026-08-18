@@ -39,7 +39,11 @@ export function interviewCloseLiveDeps(): Omit<CloseInterviewDeps & PreviewClose
     },
     findTemplateQuestions: async (interview) => {
       const template = await loadLiveInterviewTemplate(interview)
-      return parseScoringCatalog(template?.sections).map(({ id, question }) => ({ id, question }))
+      return parseScoringCatalog(template?.sections).map(({ id, question, mapping }) => ({
+        id,
+        question,
+        mapping,
+      }))
     },
     findTemplateSections: async (interview) => {
       const template = await loadLiveInterviewTemplate(interview)

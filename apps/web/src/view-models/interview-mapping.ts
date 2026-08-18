@@ -3,6 +3,7 @@ import {
   extractMobilityRadiusKm,
   extractSalaryExpectations,
   extractSoftwareNames,
+  shouldMapContracts,
   type MappingQuestion,
 } from '@/view-models/interview-mapping-extract'
 import {
@@ -53,7 +54,9 @@ export function diffInterviewMapping(
     extractSalaryExpectations(answers, ctx.questions),
   )
   pushDiff(diffs, 'softwareNames', profile.softwareNames, extractSoftwareNames(answers, ctx.questions))
-  const contracts = ctx.mode === 'INTERIM' ? ['INTERIM'] : ['CDI', 'CDD']
-  pushDiff(diffs, 'contractTypes', profile.contractTypes, contracts)
+  if (shouldMapContracts(ctx.questions)) {
+    const contracts = ctx.mode === 'INTERIM' ? ['INTERIM'] : ['CDI', 'CDD']
+    pushDiff(diffs, 'contractTypes', profile.contractTypes, contracts)
+  }
   return diffs
 }

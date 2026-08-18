@@ -10,9 +10,9 @@ export function AdminLayoutShell({ children }: { children: ReactNode }) {
     <DashboardPage
       icon={<Settings2 className="size-5" />}
       title="Administration"
-      description="Référentiels MediJob — pipeline, logiciels, groupements, métiers, utilisateurs."
+      description="Référentiels MediJob — pipeline, métiers, utilisateurs."
       nav={<AdminNav />}
-      maxWidth="max-w-5xl"
+      maxWidth="max-w-6xl"
     >
       {children}
     </DashboardPage>

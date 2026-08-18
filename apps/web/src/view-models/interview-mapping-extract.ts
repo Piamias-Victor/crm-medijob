@@ -1,15 +1,30 @@
 import { INTERVIEW_AVAILABLE_NOW } from '@/view-models/interview-copy'
+import { isIsoDateChoice, splitChoiceLabels } from '@/view-models/interview-question-kind'
 import {
-  interviewQuestionKind,
-  isIsoDateChoice,
-  splitChoiceLabels,
-} from '@/view-models/interview-question-kind'
+  resolveCloseMapping,
+  type InterviewCloseMapping,
+} from '@/view-models/interview-close-mapping'
 import type { InterviewDraftAnswers } from '@/view-models/interview-draft.schema'
 
-export type MappingQuestion = { id: string; question: string }
+export type MappingQuestion = {
+  id: string
+  question: string
+  mapping?: InterviewCloseMapping | null
+}
 
-function choice(answers: InterviewDraftAnswers, questions: MappingQuestion[], kind: string) {
-  const question = questions.find((item) => interviewQuestionKind(item.question) === kind)
+function mapped(
+  questions: MappingQuestion[],
+  kind: InterviewCloseMapping,
+): MappingQuestion | undefined {
+  return questions.find((item) => resolveCloseMapping(item) === kind)
+}
+
+function choice(
+  answers: InterviewDraftAnswers,
+  questions: MappingQuestion[],
+  kind: InterviewCloseMapping,
+) {
+  const question = mapped(questions, kind)
   return question ? answers.questions[question.id]?.choiceLabel : undefined
 }
 
@@ -37,7 +52,7 @@ export function extractMobilityRadiusKm(
   answers: InterviewDraftAnswers,
   questions: MappingQuestion[],
 ): number | undefined {
-  const question = questions.find((item) => item.question.toLowerCase().includes('distance'))
+  const question = mapped(questions, 'mobility')
   const label = question ? answers.questions[question.id]?.choiceLabel : undefined
   const match = label?.match(/(\d+)/)
   return match ? Number(match[1]) : undefined
@@ -47,9 +62,15 @@ export function extractSalaryExpectations(
   answers: InterviewDraftAnswers,
   questions: MappingQuestion[],
 ): string | undefined {
-  const question = questions.find((item) => item.question.toLowerCase().includes('salarial'))
+  const question = mapped(questions, 'salary')
   if (!question) return undefined
   const answer = answers.questions[question.id]
   const text = answer?.note?.trim() || answer?.choiceLabel?.trim()
   return text || undefined
+}
+
+export function shouldMapContracts(questions: MappingQuestion[]): boolean {
+  const explicit = questions.some((item) => item.mapping != null)
+  if (!explicit) return true
+  return questions.some((item) => item.mapping === 'contracts')
 }

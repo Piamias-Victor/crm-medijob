@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { InterviewScoringQuestion } from '@/view-models/interview-scoring-catalog'
+import { INTERVIEW_CLOSE_MAPPINGS } from '@/view-models/interview-close-mapping'
 
 const suggestedSchema = z.object({
   label: z.string(),
@@ -12,6 +13,7 @@ const questionSchema = z.object({
   question: z.string(),
   eliminatoire: z.boolean().optional(),
   mainCritere: z.string().optional(),
+  mapping: z.enum(INTERVIEW_CLOSE_MAPPINGS).optional(),
   suggestedAnswers: z.array(suggestedSchema),
 })
 
@@ -26,6 +28,7 @@ export function parseScoringCatalog(raw: unknown): InterviewScoringQuestion[] {
       question: question.question,
       eliminatoire: question.eliminatoire === true,
       mainCritere: question.mainCritere,
+      mapping: question.mapping,
       suggestedAnswers: question.suggestedAnswers.map((answer) => ({
         label: answer.label,
         points: answer.points ?? 0,

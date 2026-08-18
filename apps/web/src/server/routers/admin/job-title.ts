@@ -9,7 +9,7 @@ import {
 } from '@/server/admin/schema'
 import type { CompatibilityPair } from '@/view-models/compatibility-matrix'
 
-type Ref = { id: string; name: string }
+type Ref = { id: string; name: string; profileKey?: string | null }
 
 export type JobTitleDeps = {
   list: () => Promise<Ref[]>
@@ -58,7 +58,10 @@ export function makeJobTitleRouter(deps: JobTitleDeps) {
 }
 
 export const jobTitleRouter = makeJobTitleRouter({
-  list: () => jobTitleRepository.list(),
+  list: async () => {
+    const rows = await jobTitleRepository.list()
+    return rows.map((row) => ({ id: row.id, name: row.name, profileKey: row.profileKey }))
+  },
   listCompatibilities: () => jobTitleRepository.listCompatibilities(),
   create: (name) => jobTitleRepository.create({ name }),
   update: (id, name) => jobTitleRepository.update(id, { name }),

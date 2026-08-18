@@ -6,5 +6,6 @@ import { PillNav } from '@/components/molecules/PillNav'
 
 export function AdminNav() {
   const pathname = usePathname()
-  return <PillNav items={adminSubNav} isActive={(href) => pathname === href} />
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+  return <PillNav items={adminSubNav} isActive={isActive} />
 }
