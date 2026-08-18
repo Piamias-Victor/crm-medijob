@@ -20,6 +20,9 @@ describe('startInterview', () => {
       mode: 'INTERIM',
       referentId: 'u1',
     })
+    expect(deps.logs).toEqual([
+      { candidateId: result.candidateId, authorId: 'u1', content: 'Entretien créé' },
+    ])
   })
 
   it('attaches a DRAFT to an existing candidate without creating another', async () => {
@@ -67,5 +70,19 @@ describe('startInterview', () => {
       startInterview({ ...interviewStartIdentity, candidateId: 'c-existing', mode: 'CDD_CDI' }, 'u1', deps),
     ).rejects.toMatchObject({ name: 'InterviewDraftOpenError', draftId: deps.interviews[0]?.id })
     expect(deps.interviews).toHaveLength(1)
+  })
+
+  it('allows a new DRAFT after a previous interview is CLOSED', async () => {
+    const deps = memoryStartDeps()
+    const first = await startInterview(interviewStartIdentity, 'u1', deps)
+    const open = deps.interviews.find((row) => row.id === first.interviewId)
+    if (open) open.status = 'CLOSED'
+    const second = await startInterview(
+      { ...interviewStartIdentity, candidateId: first.candidateId },
+      'u1',
+      deps,
+    )
+    expect(second.createdCandidate).toBe(false)
+    expect(deps.interviews.filter((row) => !row.deletedAt)).toHaveLength(2)
   })
 })

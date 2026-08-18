@@ -24,3 +24,10 @@ export const INTERVIEW_DECISION_LABELS = {
   NON_ELIGIBLE: 'Non éligible',
   REVIEW: 'À revoir',
 } as const
+
+export const INTERVIEW_DECISION_OPTIONS = (
+  Object.entries(INTERVIEW_DECISION_LABELS) as [
+    keyof typeof INTERVIEW_DECISION_LABELS,
+    string,
+  ][]
+).map(([value, label]) => ({ value, label }))

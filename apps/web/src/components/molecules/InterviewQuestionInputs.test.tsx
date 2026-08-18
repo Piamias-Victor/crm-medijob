@@ -61,4 +61,25 @@ describe('InterviewQuestionInputs', () => {
     expect(screen.getByRole('checkbox', { name: 'Non inscrit' })).not.toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Section A' })).toBeChecked()
   })
+
+  const qualityAnswers: InterviewRunQuestion['suggestedAnswers'] = [
+    { label: 'Réponse floue / évasive', text: '' },
+    { label: 'Réponse correcte, générique', text: '' },
+    { label: 'Réponse solide, structurée', text: '' },
+    { label: 'Réponse remarquable, exemples concrets', text: '' },
+  ]
+
+  it('selects a short quality chip even when the catalog label has a comma', () => {
+    render(
+      <Harness
+        item={question(
+          'Racontez-nous une réussite dont vous êtes particulièrement fier·e.',
+          qualityAnswers,
+        )}
+      />,
+    )
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Remarquable' }))
+    expect(screen.getByRole('checkbox', { name: 'Remarquable' })).toBeChecked()
+    expect(screen.queryByRole('checkbox', { name: /Réponse remarquable/ })).not.toBeInTheDocument()
+  })
 })

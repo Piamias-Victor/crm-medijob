@@ -3,11 +3,12 @@
 import { CheckboxGroup } from '@/components/molecules/CheckboxGroup'
 import { InterviewAvailabilityFields } from '@/components/molecules/InterviewAvailabilityFields'
 import { INTERVIEW_SOFTWARE_OPTIONS } from '@/view-models/interview-software'
+import { interviewChipDisplayLabel } from '@/view-models/interview-quality-chip-labels'
 import { pertinentInterviewChips } from '@/view-models/interview-pertinent-chips'
 import {
   interviewQuestionKind,
-  joinChoiceLabels,
-  splitChoiceLabels,
+  persistChoiceValues,
+  selectedChoiceValues,
 } from '@/view-models/interview-question-kind'
 import type { InterviewRunQuestion } from '@/view-models/interview-template'
 
@@ -21,7 +22,10 @@ type Props = {
 function chipOptions(question: InterviewRunQuestion) {
   if (interviewQuestionKind(question.question) === 'software') return INTERVIEW_SOFTWARE_OPTIONS
   const chips = pertinentInterviewChips(question.question) ?? question.suggestedAnswers
-  return chips.map((chip) => ({ value: chip.label, label: chip.label }))
+  return chips.map((chip) => ({
+    value: chip.label,
+    label: interviewChipDisplayLabel(chip.label),
+  }))
 }
 
 export function InterviewQuestionInputs({ question, choiceLabel, disabled, onChoice }: Props) {
@@ -37,8 +41,9 @@ export function InterviewQuestionInputs({ question, choiceLabel, disabled, onCho
     <CheckboxGroup
       exclusive={exclusive}
       options={options}
-      values={splitChoiceLabels(choiceLabel)}
-      onChange={(values) => onChoice(joinChoiceLabels(values))}
+      values={selectedChoiceValues(choiceLabel, exclusive)}
+      onChange={(values) => onChoice(persistChoiceValues(values, exclusive))}
+      disabled={disabled}
     />
   )
 }

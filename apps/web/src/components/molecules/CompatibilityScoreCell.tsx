@@ -40,18 +40,13 @@ export function CompatibilityScoreCell({
         <span className="truncate text-xs font-medium text-fg">{candidateName}</span>
         <span className="shrink-0 text-sm font-semibold tabular-nums">{local} %</span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/60">
-        <div
-          className={cn('h-full rounded-full transition-all', compatibilityScoreBarStyle(local))}
-          style={{ width: `${local}%` }}
-        />
-      </div>
       <Slider
         value={local}
         min={0}
         max={100}
         step={5}
         label={label}
+        fillClassName={compatibilityScoreBarStyle(local)}
         onChange={setLocal}
         onCommit={commit}
       />

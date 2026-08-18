@@ -50,6 +50,15 @@ export function makeInterviewRepository(db: PrismaClient = defaultDb) {
     updateAnswers: async (id: string, answers: Prisma.InputJsonValue) => {
       await db.interview.update({ where: { id }, data: { answers } })
     },
+    close: async (
+      id: string,
+      data: { scores: Prisma.InputJsonValue; decision: InterviewDecision },
+    ) => {
+      await db.interview.update({
+        where: { id },
+        data: { status: 'CLOSED', scores: data.scores, decision: data.decision },
+      })
+    },
   }
 }
 

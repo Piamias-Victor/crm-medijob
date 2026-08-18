@@ -12,12 +12,20 @@ import {
 } from '@/server/routers/interview-mutations'
 import { loadInterviewRun, type LoadInterviewRunDeps } from '@/server/interview/load-run'
 import { toInterviewCandidateCreate } from '@/view-models/interview-candidate-create'
+import { interviewCloseLiveDeps } from '@/server/interview/close-live'
+import {
+  interviewCloseMutation,
+  interviewPreviewCloseQuery,
+  type InterviewCloseDeps,
+} from '@/server/routers/interview-close'
+import { interviewSoftDeleteMutation } from '@/server/routers/interview-soft-delete'
 
 export type InterviewDeps = {
   listByCandidate: (candidateId: string) => Promise<InterviewRecord[]>
   findById: (id: string) => Promise<InterviewRecord | null>
 } & InterviewWriteDeps &
-  LoadInterviewRunDeps
+  LoadInterviewRunDeps &
+  InterviewCloseDeps
 
 export function makeInterviewRouter(deps: InterviewDeps) {
   return router({
@@ -31,6 +39,9 @@ export function makeInterviewRouter(deps: InterviewDeps) {
     start: interviewStartMutation(deps),
     abandon: interviewAbandonMutation(deps),
     saveDraft: interviewSaveDraftMutation(deps),
+    close: interviewCloseMutation(deps),
+    previewClose: interviewPreviewCloseQuery(deps),
+    softDelete: interviewSoftDeleteMutation(deps),
     getRun: protectedProcedure.input(getInterviewSchema).query(async ({ input }) =>
       loadInterviewRun(input.id, deps),
     ),
@@ -54,4 +65,5 @@ export const interviewRouter = makeInterviewRouter({
   updateAnswers: (id, answers) => interviewRepository.updateAnswers(id, answers),
   findCandidateProfileKey: (candidateId) => candidateRepository.findJobTitleProfileKey(candidateId),
   findTemplate: (profileKey, mode) => interviewTemplateRepository.findByProfileMode(profileKey, mode),
+  ...interviewCloseLiveDeps(),
 })

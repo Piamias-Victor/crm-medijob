@@ -9,7 +9,7 @@ import { InterviewQuestionBlock } from '@/components/molecules/InterviewQuestion
 import { useInterviewDraftAutosave } from '@/lib/hooks/use-interview-draft-autosave'
 import { useToastStore } from '@/stores/toast-store'
 import { INTERVIEW_SAVE_SUCCESS, INTERVIEW_VALIDATE } from '@/view-models/interview-copy'
-import { interviewCandidateFichePath } from '@/view-models/interview-href'
+import { interviewClosePath } from '@/view-models/interview-href'
 import {
   interviewDraftAnswersSchema,
   type InterviewDraftAnswers,
@@ -84,7 +84,7 @@ export function InterviewRunForm({ run }: Props) {
           onClick={() => {
             persist(form.getValues())
             push({ variant: 'success', message: INTERVIEW_SAVE_SUCCESS })
-            router.push(interviewCandidateFichePath(run.candidateId))
+            router.push(interviewClosePath(run.candidateId, run.id))
           }}
         >
           {INTERVIEW_VALIDATE}

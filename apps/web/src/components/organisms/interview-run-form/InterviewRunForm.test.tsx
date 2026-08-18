@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { InterviewRunForm } from '@/components/organisms/interview-run-form/InterviewRunForm'
 import { INTERVIEW_AVAILABLE_NOW, INTERVIEW_VALIDATE } from '@/view-models/interview-copy'
-import { interviewCandidateFichePath } from '@/view-models/interview-href'
+import { interviewClosePath } from '@/view-models/interview-href'
 import { interviewRunFixture } from '@/view-models/interview-run.fixture'
 import type { InterviewRun } from '@/view-models/interview-run'
 
@@ -73,9 +73,11 @@ describe('InterviewRunForm', () => {
     expect(screen.queryByText('Liberté')).not.toBeInTheDocument()
   })
 
-  it('exposes a Valider action that returns to the candidate fiche', () => {
+  it('exposes a Clôturer action that opens the close screen', () => {
     render(<InterviewRunForm run={interviewRunFixture} />)
     fireEvent.click(screen.getByRole('button', { name: INTERVIEW_VALIDATE }))
-    expect(routerPush).toHaveBeenCalledWith(interviewCandidateFichePath(interviewRunFixture.candidateId))
+    expect(routerPush).toHaveBeenCalledWith(
+      interviewClosePath(interviewRunFixture.candidateId, interviewRunFixture.id),
+    )
   })
 })
