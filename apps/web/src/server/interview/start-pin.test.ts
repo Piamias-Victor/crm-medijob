@@ -25,4 +25,23 @@ describe('startInterview pin', () => {
     await startInterview({ ...interviewStartIdentity, candidateId: 'c-existing' }, 'u1', deps)
     expect(deps.interviews[0]).toMatchObject({ templateId: 'tpl-v1' })
   })
+
+  it('keeps an existing DRAFT pin after the dedicated pair is archived', async () => {
+    let archived = false
+    const deps = memoryStartDeps()
+    deps.findPublishedTemplate = async (key) => ({
+      id: key === 'generique' ? 'tpl-g' : 'tpl-p',
+    })
+    deps.isPairArchived = async () => archived
+    await startInterview(interviewStartIdentity, 'u1', deps)
+    expect(deps.interviews[0]?.templateId).toBe('tpl-p')
+    archived = true
+    const next = await startInterview(
+      { ...interviewStartIdentity, email: 'other@example.com' },
+      'u1',
+      deps,
+    )
+    expect(deps.interviews[0]?.templateId).toBe('tpl-p')
+    expect(deps.interviews.find((row) => row.id === next.interviewId)?.templateId).toBe('tpl-g')
+  })
 })

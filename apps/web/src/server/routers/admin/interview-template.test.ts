@@ -10,9 +10,12 @@ import {
 function makeDeps(overrides: Partial<InterviewTemplateAdminDeps> = {}): InterviewTemplateAdminDeps {
   return {
     listPublished: vi.fn().mockResolvedValue([]),
+    listWorkingCopies: vi.fn().mockResolvedValue([]),
     getWorkingCopy: vi.fn(),
     saveWorkingCopy: vi.fn(),
     publish: vi.fn(),
+    create: vi.fn(),
+    archive: vi.fn(),
     ...overrides,
   }
 }
@@ -41,6 +44,18 @@ describe('interviewTemplateAdminRouter', () => {
     })
     await expect(
       caller.publish({ profileKey: 'pharmacien', mode: 'INTERIM' }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+  })
+
+  it('forbids RECRUTEUR from creating or archiving a trame', async () => {
+    const caller = createCallerFactory(makeInterviewTemplateAdminRouter(makeDeps()))({
+      session: { user: { id: 'u2', role: 'RECRUTEUR' }, expires: '2999-01-01' },
+    })
+    await expect(
+      caller.create({ jobTitleId: 'jt1', mode: 'INTERIM', profileKey: 'nouveau' }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+    await expect(
+      caller.archive({ profileKey: 'pharmacien', mode: 'INTERIM' }),
     ).rejects.toMatchObject({ code: 'FORBIDDEN' })
   })
 })

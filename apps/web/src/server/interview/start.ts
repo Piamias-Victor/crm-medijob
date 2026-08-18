@@ -35,6 +35,7 @@ export type StartInterviewDeps = {
     profileKey: string,
     mode: InterviewMode,
   ) => Promise<{ id: string } | null>
+  isPairArchived: (profileKey: string, mode: InterviewMode) => Promise<boolean>
   logActivity: (input: { candidateId: string; authorId: string; content: string }) => Promise<void>
 }
 

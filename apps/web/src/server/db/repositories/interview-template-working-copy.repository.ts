@@ -1,7 +1,13 @@
 import type { InterviewMode, Prisma, PrismaClient } from '@prisma/client'
 import { prisma as defaultDb } from './client'
 
-const copySelect = { profileKey: true, mode: true, label: true, sections: true } as const
+const copySelect = {
+  profileKey: true,
+  mode: true,
+  label: true,
+  sections: true,
+  archivedAt: true,
+} as const
 
 export function makeInterviewTemplateWorkingCopyRepository(db: PrismaClient = defaultDb) {
   return {
@@ -21,6 +27,16 @@ export function makeInterviewTemplateWorkingCopyRepository(db: PrismaClient = de
         create: data,
         update: { label: data.label, sections: data.sections },
         select: copySelect,
+      }),
+    setArchived: (profileKey: string, mode: InterviewMode, archivedAt: Date | null) =>
+      db.interviewTemplateWorkingCopy.update({
+        where: { profileKey_mode: { profileKey, mode } },
+        data: { archivedAt },
+        select: copySelect,
+      }),
+    list: () =>
+      db.interviewTemplateWorkingCopy.findMany({
+        select: { profileKey: true, mode: true, archivedAt: true },
       }),
   }
 }
