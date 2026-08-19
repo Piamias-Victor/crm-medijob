@@ -1,6 +1,6 @@
 # CRM MediJob
 
-Medijob est une agence de recrutement spécialisée en pharmacie d'officine. Ce CRM est l'outil interne des recruteurs pour gérer la CVthèque, le portefeuille pharmacies/contacts, et le cycle complet d'un besoin de staffing — du besoin client jusqu'au placement. Les offres publiques (site Webflow) et les candidatures entrantes y sont intégrées, mais restent distinctes du suivi opérationnel mission/candidat.
+Medijob est une agence de recrutement spécialisée en pharmacie d'officine. Ce CRM est l'outil interne des recruteurs pour gérer la CVthèque, le portefeuille pharmacies/contacts, et le cycle complet d'un besoin de staffing — du besoin client jusqu'au placement. Les offres publiques (site job board Medijob) et les candidatures entrantes y sont intégrées, mais restent distinctes du suivi opérationnel mission/candidat.
 
 ## Language
 
@@ -33,7 +33,7 @@ The date from which a Candidate can start a Mission. When unset, the Candidate i
 _Avoid_: Disponibilité (as free text), date de début, planning
 
 **Application**:
-An inbound candidacy received via the public website (Webflow), tied to a specific JobOffer. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters.
+An inbound candidacy received via the public job board, tied to a specific JobOffer. Each Application is one board submission, identified by that board’s submission id — ingest never creates a second Application for the same submission, and never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters.
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead
 
 **Interview**:
@@ -61,8 +61,8 @@ A staffing need at a Pharmacy — any contract type (CDI, CDD, intérim, vacatio
 _Avoid_: Poste, besoin, vacation (as entity name), annonce
 
 **JobOffer**:
-The optional public-facing job posting derived from a Mission, published on the Medijob website via Webflow. Every JobOffer belongs to exactly one Mission; a Mission may exist without a JobOffer.
-_Avoid_: Annonce (as entity name), offre (without qualifier), posting, publication
+The optional public-facing job posting derived from a Mission, published on the Medijob public job board. Every JobOffer belongs to exactly one Mission; a Mission may exist without a JobOffer. The board assigns its own listing identity; the CRM stores that identity on the JobOffer and never stamps the CRM id onto the public listing. Filling or cancelling the Mission unpublishes the JobOffer.
+_Avoid_: Annonce (as entity name), offre (without qualifier), posting, publication, Webflow item
 
 **PipelineStage**:
 An administrable step in the candidate progression on a Mission (e.g. Nouveau → Contacté → Entretien → Proposition → Placé → Pas retenu). Distinct from the Mission's own lifecycle status. « Pas retenu » is the terminal stage for candidates not selected when a Mission is filled.
@@ -156,13 +156,13 @@ Inbound: Candidate ID and Mission ID from sibling contexts.
 Outbound: stage mutations consumed by kanban UI (CVthèque + mission detail).
 
 **JobOffers** — public job postings.
-Owns: JobOffer, publication state, Webflow sync.
+Owns: JobOffer, publication state, sync to the public job board.
 Inbound: always derived from one Mission.
-Outbound: Applications (inbound candidacies from website).
+Outbound: Applications (inbound candidacies from the job board).
 
 **Applications** — website candidacy inbox.
 Owns: Application, deduplication logic, accept/refuse workflow.
-Inbound: Webflow webhook tied to JobOffer.
+Inbound: job-board candidacies tied to a JobOffer.
 Outbound: Candidate creation on acceptance (into Candidates).
 
 **AppProfiles** — Badakan app registration inbox ("Profils app").
