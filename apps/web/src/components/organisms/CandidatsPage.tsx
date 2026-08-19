@@ -19,7 +19,6 @@ export function CandidatsPage({
   list,
   inbox,
   appProfiles,
-  jobTitles,
   serverFilters,
   filterConfig,
   initialTab = 'cvtheque',
@@ -84,7 +83,6 @@ export function CandidatsPage({
             list={list}
             inbox={inbox}
             appProfiles={appProfiles}
-            jobTitles={jobTitles}
             serverFilters={serverFilters}
             filterConfig={filterConfig}
             onCountChange={setCvthequeCount}

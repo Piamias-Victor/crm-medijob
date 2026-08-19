@@ -15,3 +15,7 @@ export function readJobsBoardEnv(env: NodeJS.ProcessEnv = process.env): JobsBoar
 export function jobsBoardConfigured(config: JobsBoardEnv) {
   return Boolean(config.url && config.secret && config.contactEmail)
 }
+
+export function jobsBoardReadable(config: JobsBoardEnv) {
+  return Boolean(config.url && config.secret)
+}

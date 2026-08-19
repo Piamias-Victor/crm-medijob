@@ -24,6 +24,11 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       const rows = await deps.listPending()
       return rows.map(toAppProfileListItem)
     }),
+    getById: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
+      const row = await deps.findById(input.id)
+      if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
+      return toAppProfileListItem(row)
+    }),
     countPending: protectedProcedure.query(() => deps.countPending()),
     sync: protectedProcedure.mutation(async () => {
       const client = deps.getBadakanClient()
