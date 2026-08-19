@@ -18,6 +18,7 @@ export type TransitionDeps = {
     status: MissionStatus,
     stageUpdates: StageUpdate[],
   ) => Promise<{ id: string; status: MissionStatus }>
+  onTerminal?: (missionId: string, status: 'POURVU' | 'ANNULEE') => Promise<void>
 }
 
 export async function transitionMissionStatus(input: TransitionInput, deps: TransitionDeps) {
@@ -42,5 +43,6 @@ export async function transitionMissionStatus(input: TransitionInput, deps: Tran
         : stages.pasRetenu,
   }))
 
+  await deps.onTerminal?.(input.missionId, input.status)
   return deps.applyTerminalTransition(input.missionId, input.status, stageUpdates)
 }

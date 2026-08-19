@@ -444,7 +444,7 @@ model JobOffer {
   title         String
   content       String
   status        JobOfferStatus @default(BROUILLON)
-  webflowItemId String?
+  boardListingId String?
   publishedAt   DateTime?
   deletedAt     DateTime?
   createdAt     DateTime       @default(now())
