@@ -1,5 +1,7 @@
 # Prompt — Issue #234
 
+> **SUPERSEDED** — issue fermée. Spec : [#325](https://github.com/Piamias-Victor/crm-medijob/issues/325) · `docs/PRD_FINANCE_DEVIS_V1.md`. Ne pas lancer ce prompt.
+
 **Issue** : https://github.com/Piamias-Victor/crm-medijob/issues/234  
 **Parent** : Epic #210 · ADD Finance · Q13  
 **Blocked by** : #213  
