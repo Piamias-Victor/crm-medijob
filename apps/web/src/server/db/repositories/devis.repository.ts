@@ -1,0 +1,52 @@
+import type { PrismaClient } from '@prisma/client'
+import { prisma as defaultDb } from './client'
+import { NOT_DELETED } from './soft-delete'
+import type { DevisRecord, DevisWriteFields } from '@/view-models/devis'
+
+function toRecord(row: {
+  id: string
+  missionId: string
+  kind: DevisRecord['kind']
+  status: DevisRecord['status']
+  hours: number | null
+  hourlyRate: number | null
+  amountHt: number | null
+  amountTtc: number | null
+  htSource: DevisRecord['htSource']
+  updatedAt: Date
+}): DevisRecord {
+  return {
+    id: row.id,
+    missionId: row.missionId,
+    kind: row.kind,
+    status: row.status,
+    hours: row.hours,
+    hourlyRate: row.hourlyRate,
+    amountHt: row.amountHt,
+    amountTtc: row.amountTtc,
+    htSource: row.htSource,
+    updatedAt: row.updatedAt,
+  }
+}
+
+export function makeDevisRepository(db: PrismaClient = defaultDb) {
+  return {
+    findDraftByMission: async (missionId: string) => {
+      const row = await db.devis.findFirst({
+        where: { missionId, status: 'DRAFT', ...NOT_DELETED },
+        orderBy: { updatedAt: 'desc' },
+      })
+      return row ? toRecord(row) : null
+    },
+    createDraft: async (data: DevisWriteFields & { missionId: string }) => {
+      const row = await db.devis.create({ data: { ...data, status: 'DRAFT' } })
+      return toRecord(row)
+    },
+    updateDraft: async (id: string, data: DevisWriteFields) => {
+      const row = await db.devis.update({ where: { id }, data })
+      return toRecord(row)
+    },
+  }
+}
+
+export const devisRepository = makeDevisRepository()

@@ -5,6 +5,7 @@ const TABS: readonly MissionTab[] = [
   'pipeline',
   'matching',
   'offre',
+  'devis',
   'historique',
   'documents',
 ]

@@ -17,6 +17,10 @@ export const MISSION_TAB_META: Record<MissionTab, { title: string; description: 
     title: 'Offre d’emploi',
     description: 'Génération et publication de l’offre.',
   },
+  devis: {
+    title: 'Devis',
+    description: 'Devis et facturation de la mission.',
+  },
   historique: {
     title: 'Historique',
     description: 'Activités enregistrées sur la mission.',

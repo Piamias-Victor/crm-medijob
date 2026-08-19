@@ -116,6 +116,23 @@ enum InterviewDecision {
   REVIEW
 }
 
+enum DevisKind {
+  INTERIM
+  CDD
+  CDI
+}
+
+enum DevisStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+}
+
+enum DevisHtSource {
+  ENGINE
+  TYPED
+}
+
 // ─── Auth (NextAuth v5) ───────────────────────────────────────
 
 model Account {
@@ -414,10 +431,32 @@ model Mission {
   jobOffer   JobOffer?
   activities ActivityLog[]      @relation("MissionActivities")
   documents  Document[]         @relation("MissionDocuments")
+  devis      Devis[]
 
   @@index([deletedAt])
   @@index([pharmacyId])
   @@index([referentId])
+  @@index([status])
+}
+
+model Devis {
+  id         String        @id @default(cuid())
+  missionId  String
+  kind       DevisKind
+  status     DevisStatus   @default(DRAFT)
+  hours      Float?
+  hourlyRate Float?
+  amountHt   Float?
+  amountTtc  Float?
+  htSource   DevisHtSource @default(TYPED)
+  deletedAt  DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@index([missionId])
+  @@index([deletedAt])
   @@index([status])
 }
 
