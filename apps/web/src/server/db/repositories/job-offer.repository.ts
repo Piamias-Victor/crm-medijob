@@ -8,6 +8,7 @@ const missionOfferSelect = {
   title: true,
   description: true,
   contractType: true,
+  tempsPlein: true,
   startDate: true,
   planning: true,
   salaireMin: true,
@@ -21,6 +22,10 @@ const missionOfferSelect = {
     select: {
       name: true,
       city: true,
+      postalCode: true,
+      address: true,
+      latitude: true,
+      longitude: true,
       notes: true,
       software: { select: { name: true } },
     },
@@ -45,6 +50,7 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
         content?: string
         status?: JobOfferStatus
         publishedAt?: Date | null
+        boardListingId?: string | null
       },
     ) => db.jobOffer.update({ where: { id }, data }),
     listForTable: (limit = DEFAULT_LIST_LIMIT) =>

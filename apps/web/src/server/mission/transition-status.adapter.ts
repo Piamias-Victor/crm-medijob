@@ -3,9 +3,13 @@ import { TERMINAL_STAGE_NAMES } from '@/lib/pipeline-constants'
 import { pipelineStageRepository } from '@/server/db/repositories/pipeline-stage.repository'
 import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { missionCandidateRepository } from '@/server/db/repositories/mission-candidate.repository'
+import { jobOfferRepository } from '@/server/db/repositories/job-offer.repository'
 import { transitionMissionStatus } from '@/server/mission/transition-status'
 import { applyTerminalTransition } from '@/server/pipeline/mission-candidate.service'
 import { TransitionError } from '@/server/mission/transition-errors'
+import { unpublishOfferForClosedMission } from '@/server/job-board/unpublish-on-close'
+import { handleUnpublishJobOffer } from '@/server/routers/job-offer-lifecycle'
+import { makeLiveJobOfferLifecycleDeps } from '@/server/routers/job-offer.adapter'
 
 async function findStageIdsByNames() {
   const stages = await pipelineStageRepository.list()
@@ -47,6 +51,16 @@ export async function runMissionStatusTransition(
           applyTerminalTransition: (id, nextStatus, updates) =>
             missionCandidateRepository.applyTerminalTransition(id, nextStatus, updates),
         }),
+      onTerminal: async (missionId) => {
+        const lifecycle = makeLiveJobOfferLifecycleDeps()
+        await unpublishOfferForClosedMission(
+          {
+            findByMissionId: (id) => jobOfferRepository.findByMissionId(id),
+            unpublish: (id) => handleUnpublishJobOffer(lifecycle, id),
+          },
+          missionId,
+        )
+      },
     })
   } catch (error) {
     mapTransitionError(error)

@@ -63,4 +63,18 @@ describe('transitionMissionStatus', () => {
     ).rejects.toThrow(TransitionError)
     expect(deps.applyTerminalTransition).not.toHaveBeenCalled()
   })
+
+  it('unpublishes JobOffer before POURVU and ANNULEE', async () => {
+    const onTerminal = vi.fn()
+    await transitionMissionStatus(
+      { missionId: 'm1', status: 'POURVU', placedCandidateId: 'c2' },
+      makeDeps({ onTerminal }),
+    )
+    expect(onTerminal).toHaveBeenCalledWith('m1', 'POURVU')
+    await transitionMissionStatus(
+      { missionId: 'm1', status: 'ANNULEE' },
+      makeDeps({ onTerminal }),
+    )
+    expect(onTerminal).toHaveBeenCalledWith('m1', 'ANNULEE')
+  })
 })
