@@ -26,6 +26,7 @@ export function toMissionDetail(entity: MissionDetailEntity): MissionDetailPaylo
     jobTitleName: jobTitle.name,
     referentName: referent?.name ?? null,
     updatedAt: entity.updatedAt,
+    marge: entity.marge,
     formSource: {
       title: rest.title,
       description: rest.description,

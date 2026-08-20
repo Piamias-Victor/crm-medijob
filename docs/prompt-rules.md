@@ -8,11 +8,11 @@ Chaque session suit **strictement** cet ordre. Ne pas sauter de phase ni fusionn
 
 | Phase | Déclencheur | Actions agent | Livrable utilisateur |
 |-------|-------------|---------------|----------------------|
-| **1 — Setup** | Début de session | Lire règles + handoffs bloquants · branche · worktree (si parallèle) · `/caveman` | — |
+| **1 — Setup** | Début de session | Lire règles + handoffs bloquants · branche dans le repo principal · `/caveman` | — |
 | **2 — Implémentation** | Automatique | `/tdd` · vertical slices · commits locaux | — |
 | **3 — Prêt à tester** | Code terminé (tests auto verts) | **Poster obligatoirement** § Commande de test + § Tests manuels · push branche · ouvrir PR vers `dev` | Bloc shell copier-coller + checklist manuelle |
 | **4 — Handoff** | Instruction explicite (`/handoff`, « handoff ») | Rédiger `HANDOFF_ISSUE_{N}.md` · committer · pusher sur la PR | Handoff dans la PR |
-| **5 — Cleanup** | Après phase 4 **ou** merge confirmé | Supprimer worktree + branche locale (cf. `docs/github-rules.md`) | Dossier worktree supprimé |
+| **5 — Cleanup** | Après phase 4 **ou** merge confirmé | Supprimer la branche locale (cf. `docs/github-rules.md`) | Branche locale supprimée |
 
 ### Règles de phase 3 (critique)
 
@@ -22,7 +22,7 @@ Quand l'implémentation est terminée (`pnpm test` + `typecheck` + `lint` verts)
 ## Commande de test
 
 \`\`\`bash
-cd /chemin/worktree-ou-repo
+cd /Users/victorpiamias/Desktop/Dev/ia/medijob
 pnpm install   # première fois uniquement
 pnpm dev
 \`\`\`
@@ -39,8 +39,8 @@ L'agent **attend** la validation manuelle de l'utilisateur avant d'enchaîner co
 
 ### Règles de phase 5
 
-- Worktree créé en phase 1 → **suppression obligatoire** en fin de phase 4 ou 5 (cf. `docs/github-rules.md`).
-- Ne pas laisser de dossiers `../crm-medijob-issue-*` orphelins.
+- **Interdit : `git worktree`.** Toujours le repo `medijob`.
+- Après merge : supprimer la branche locale (cf. `docs/github-rules.md`).
 
 ## Stockage des prompts
 
@@ -91,11 +91,9 @@ Instructions explicites de :
 
 1. Lire `docs/prompt-rules.md` et `docs/github-rules.md`
 2. **Lire les handoffs des issues bloquantes** — pour chaque issue dans `Blocked by`, consulter `docs/handoffs/HANDOFF_ISSUE_{NNN}.md` s'il existe (contexte, dette, points d'attention)
-3. Choisir le mode Git (cf. `docs/github-rules.md` § Worktrees) :
-   - **Mode simple** (1 issue, pas de parallèle) : branche depuis `dev` dans le repo principal
-   - **Mode parallèle** : worktree dédié (un seul par issue)
-4. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}`
-5. Travailler exclusivement dans le worktree **ou** la branche checkoutée
+3. **Interdit : `git worktree`.** Toujours le clone principal `/Users/victorpiamias/Desktop/Dev/ia/medijob`
+4. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}` depuis `origin/dev`
+5. Travailler exclusivement sur cette branche checkoutée dans `medijob`
 
 ### 4. Contexte & périmètre
 
@@ -130,7 +128,7 @@ Voir **Workflow agent — 5 phases** en tête de ce fichier.
 2. Pusher la mise à jour sur la branche
 3. Mettre à jour la PR si nécessaire
 
-**Phase 5** — cleanup worktree (cf. `docs/github-rules.md`)
+**Phase 5** — supprimer la branche locale après merge (cf. `docs/github-rules.md`)
 
 **Après merge** (sur `dev`, humain ou agent sur `dev`) : déplacer le prompt `pending/` → `done/`
 
@@ -162,14 +160,13 @@ Format :
 ## Commande de test
 
 \`\`\`bash
-cd /Users/victorpiamias/Desktop/Dev/ia/crm-medijob-issue-{N}
+cd /Users/victorpiamias/Desktop/Dev/ia/medijob
 pnpm install   # première fois uniquement
 pnpm dev
 \`\`\`
 ```
 
-- Chemin worktree : `/Users/victorpiamias/Desktop/Dev/ia/crm-medijob-issue-{N}`
-- Adapter `{N}` au numéro d'issue
+- Toujours le repo principal `medijob` — **jamais** un chemin worktree
 - Ajouter d'autres commandes si pertinent (`pnpm test`, URL à ouvrir, etc.)
 
 Le prompt référence **toujours** les fichiers impactés listés par `/grill` (ou par exploration ciblée si `/grill` n'a pas été lancé). Format :
@@ -203,14 +200,14 @@ docs/handoffs/HANDOFF_ISSUE_{NNN}.md
 ```
 
 - Committer et pusher **avec le code** dans la même PR
-- Enchaîner immédiatement la **phase 5** (cleanup worktree) sauf si l'utilisateur demande de garder le worktree pour corrections
+- Enchaîner la **phase 5** après merge (supprimer la branche locale)
 
 Contenu minimal :
 
 - Ce qui a été livré
 - Ce qui reste / dette technique
 - Résultat des tests manuels (OK / KO / non testés — avec détail si KO)
-- Lien PR + chemin worktree (avant cleanup)
+- Lien PR
 - Points d'attention pour l'issue suivante
 
 ## Références

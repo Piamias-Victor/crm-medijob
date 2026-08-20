@@ -2,6 +2,8 @@
 
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
+import type { DevisMissionView } from '@/view-models/devis'
+import type { MissionQuoteState } from '@/view-models/mission-quote-state'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { MissionTab } from '@/view-models/mission-tabs'
 import type { MissionFormValues } from '@/view-models/mission-form.schema'
@@ -10,16 +12,16 @@ import { MISSION_TAB_META } from '@/view-models/mission-tab-meta'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { EntityActivityLogTab } from '@/components/molecules/EntityActivityLogTab'
 import { EntityDocumentsTab } from '@/components/molecules/EntityDocumentsTab'
-import { MissionInfoForm } from '@/components/molecules/MissionInfoForm'
-import { MissionStatusActions } from '@/components/molecules/MissionStatusActions'
+import { MissionInfosTab } from '@/components/molecules/MissionInfosTab'
 import { MissionPipelineSection } from '@/components/organisms/MissionPipelineSection'
 import { MissionMatchingTab } from '@/components/organisms/MissionMatchingTab'
 import { MissionOffreTab } from '@/components/organisms/MissionOffreTab'
+import { MissionDevisTab } from '@/components/organisms/MissionDevisTab'
 
 type Ref = { id: string; name: string }
 type ContactRef = { id: string; label: string }
 
-type Props = {
+export type MissionDetailTabPanelProps = {
   tab: MissionTab
   mission: MissionDetailPayload
   pipelineStages: PipelineStageRef[]
@@ -29,33 +31,19 @@ type Props = {
   contactsByPharmacy: Record<string, ContactRef[]>
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  devis: DevisMissionView
+  quote: MissionQuoteState
   submitting: boolean
   onUpdate: (data: MissionFormValues) => void
   onCreateJobTitle: (name: string) => Promise<Ref>
   onPharmacyChange: () => void
 }
 
-export function MissionDetailTabPanel(props: Props) {
+export function MissionDetailTabPanel(props: MissionDetailTabPanelProps) {
   const meta = MISSION_TAB_META[props.tab]
-
   return (
     <SectionCard variant="glass" title={meta.title} description={meta.description} bodyClassName="p-5 sm:p-6">
-      {props.tab === 'infos' ? (
-        <div className="flex flex-col gap-5">
-          <MissionInfoForm
-            mission={props.mission}
-            jobTitles={props.jobTitles}
-            pharmacies={props.pharmacies}
-            recruiters={props.recruiters}
-            contactsByPharmacy={props.contactsByPharmacy}
-            submitting={props.submitting}
-            onSubmit={props.onUpdate}
-            onCreateJobTitle={props.onCreateJobTitle}
-            onPharmacyChange={props.onPharmacyChange}
-          />
-          <MissionStatusActions mission={props.mission} />
-        </div>
-      ) : null}
+      {props.tab === 'infos' ? <MissionInfosTab {...props} /> : null}
       {props.tab === 'pipeline' ? (
         <MissionPipelineSection mission={props.mission} stages={props.pipelineStages} />
       ) : null}
@@ -70,6 +58,16 @@ export function MissionDetailTabPanel(props: Props) {
         />
       ) : null}
       {props.tab === 'offre' ? <MissionOffreTab missionId={props.mission.id} /> : null}
+      {props.tab === 'devis' ? (
+        <MissionDevisTab
+          missionId={props.mission.id}
+          contractType={props.mission.formSource.contractType}
+          heuresParSemaine={props.mission.formSource.heuresParSemaine}
+          marge={props.mission.marge}
+          devis={props.devis}
+          quote={props.quote}
+        />
+      ) : null}
       {props.tab === 'historique' ? (
         <EntityActivityLogTab
           scope={{ entityType: 'MISSION', entityId: props.mission.id }}

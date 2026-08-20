@@ -135,10 +135,10 @@ Product-facing labels only (SheetJS / Excel / jsPDF / English internals excluded
 - Admin-only paramètres (groupements, partenaires, objectifs)
 - Full screen behavior after login (validated rows, filters, permissions)
 
-## Scope CRM V1 — Q13 still open
+## Scope CRM V1 — Q13 answered (2026-08-19)
 
 Décision entretien (Q12): CRM remplace Netlify eval; tous profils in scope.
-**Q13 (op-medijob / finance-devis)** n’est **pas** tranchée: sous-ensemble V1 vs proto complet (devis, facturation, CA, marge, écrans) reste à décider avec le client.
+**Q13** : sous-ensemble CRM-native (Devis sur Mission + Facturation suivi). Pas le proto complet. Spec `docs/PRD_FINANCE_DEVIS_V1.md`. Ce scrape reste une **référence visuelle**, pas le backlog.
 
 ## Fichiers bruts
 

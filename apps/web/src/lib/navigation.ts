@@ -7,10 +7,18 @@ import {
   Megaphone,
   Sparkles,
   Settings,
+  Receipt,
   type LucideIcon,
 } from 'lucide-react'
+import type { AccessRole } from '@/server/auth/access'
+import { can, type PermissionAction } from '@/server/auth/permissions'
 
-export type NavItem = { label: string; href: string; icon: LucideIcon }
+export type NavItem = {
+  label: string
+  href: string
+  icon: LucideIcon
+  permission?: PermissionAction
+}
 
 export const navItems: NavItem[] = [
   { label: 'Accueil', href: '/accueil', icon: LayoutDashboard },
@@ -18,9 +26,14 @@ export const navItems: NavItem[] = [
   { label: 'Pharmacies', href: '/pharmacies', icon: Building2 },
   { label: 'Contacts', href: '/contacts', icon: User },
   { label: 'Missions', href: '/missions', icon: Briefcase },
+  { label: 'Facturation', href: '/facturation', icon: Receipt, permission: 'finance.view' },
   { label: 'Offres', href: '/offres', icon: Megaphone },
   { label: 'Assistant IA', href: '/assistant', icon: Sparkles },
 ]
+
+export function visibleNavItems(role: AccessRole): NavItem[] {
+  return navItems.filter((item) => !item.permission || (role != null && can(role, item.permission)))
+}
 
 export const adminNavItem: NavItem = { label: 'Admin', href: '/admin', icon: Settings }
 
@@ -32,4 +45,9 @@ export const adminSubNav: { label: string; href: string }[] = [
   { label: 'Rôles contact', href: '/admin/roles-contacts' },
   { label: 'Utilisateurs', href: '/admin/utilisateurs' },
   { label: 'RGPD', href: '/admin/rgpd' },
+]
+
+export const facturationSubNav: { label: string; href: string }[] = [
+  { label: 'Vue d’ensemble', href: '/facturation' },
+  { label: 'Suivi', href: '/facturation/suivi' },
 ]

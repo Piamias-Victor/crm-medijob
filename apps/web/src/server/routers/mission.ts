@@ -20,6 +20,7 @@ import type { MissionListFilters } from '@/view-models/mission-list-filters.sche
 import type { MissionQuickViewEntity } from '@/view-models/mission-quick-view.types'
 import { toMissionQuickView } from '@/view-models/mission-quick-view'
 import type { LeanMapPinRow } from '@/view-models/lean-map-pin-row'
+import { missionUpdateMarge } from '@/server/routers/mission-marge'
 
 type Ref = { id: string; name: string }
 const nameSchema = z.object({ name: z.string().trim().min(1) })
@@ -34,6 +35,7 @@ export type MissionDeps = {
   createJobTitle: (name: string) => Promise<Ref>
   referentials: () => ReturnType<typeof loadMissionReferentials>
   updateStatus: (input: UpdateMissionStatusInput) => Promise<{ id: string; status: UpdateMissionStatusInput['status'] }>
+  updateMarge: (id: string, marge: number | null) => Promise<unknown>
   logLifecycle: LogEntityLifecycle
 }
 
@@ -88,6 +90,7 @@ export function makeMissionRouter(deps: MissionDeps) {
     updateStatus: protectedProcedure
       .input(updateStatusInput)
       .mutation(({ input }) => deps.updateStatus(input)),
+    updateMarge: missionUpdateMarge(deps),
   })
 }
 

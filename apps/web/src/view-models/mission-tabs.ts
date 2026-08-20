@@ -3,5 +3,6 @@ export type MissionTab =
   | 'pipeline'
   | 'matching'
   | 'offre'
+  | 'devis'
   | 'historique'
   | 'documents'

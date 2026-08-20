@@ -48,3 +48,4 @@ export function permissionProcedure(action: PermissionAction) {
 }
 
 export const adminProcedure = permissionProcedure('admin')
+export const financeProcedure = permissionProcedure('finance.view')

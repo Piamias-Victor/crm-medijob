@@ -32,6 +32,7 @@
 ```bash
 cd /Users/victorpiamias/Desktop/Dev/ia/medijob
 git fetch origin
+# Interdit: git worktree — rester dans medijob
 git checkout -b feat/issue-315-interview-template-reuse-questions origin/dev
 ```
 
