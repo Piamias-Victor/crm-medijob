@@ -16,3 +16,10 @@ export function findPrimaryContactByPharmacy(
     select: { firstName: true, lastName: true },
   })
 }
+
+export function findPrimaryContactForDevis(db: PrismaClient, pharmacyId: string) {
+  return db.contact.findFirst({
+    where: { pharmacyId, ...NOT_DELETED, isPrimary: true },
+    select: { firstName: true, lastName: true, email: true },
+  })
+}

@@ -450,6 +450,7 @@ model Devis {
   amountHt   Float?
   amountTtc  Float?
   htSource   DevisHtSource @default(TYPED)
+  sentAt     DateTime?
   deletedAt  DateTime?
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
@@ -459,6 +460,7 @@ model Devis {
   @@index([missionId])
   @@index([deletedAt])
   @@index([status])
+  @@index([sentAt])
 }
 
 model MissionCandidate {

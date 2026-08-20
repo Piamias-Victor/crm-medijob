@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { DevisView } from '@/view-models/devis'
+import type { DevisMissionView } from '@/view-models/devis'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
@@ -25,7 +25,7 @@ type Props = {
   contactsByPharmacy: Record<string, ContactRef[]>
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
-  devis: DevisView | null
+  devis: DevisMissionView
   activityCount: number
   documentCount: number
   initialTab?: MissionTab

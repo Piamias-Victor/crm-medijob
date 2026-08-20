@@ -1,4 +1,5 @@
 import type { DevisKind, HtSource } from '@/lib/finance/devis-draft'
+import { pickCurrentDevis } from '@/lib/finance/pick-current-devis'
 
 export type DevisStatus = 'DRAFT' | 'SENT' | 'ACCEPTED'
 
@@ -12,6 +13,7 @@ export type DevisRecord = {
   amountHt: number | null
   amountTtc: number | null
   htSource: HtSource
+  sentAt: Date | null
   updatedAt: Date
 }
 
@@ -26,7 +28,12 @@ export type DevisView = {
   htSource: HtSource
 }
 
-export type DevisWriteFields = Omit<DevisRecord, 'id' | 'status' | 'updatedAt' | 'missionId'>
+export type DevisWriteFields = Omit<DevisRecord, 'id' | 'status' | 'sentAt' | 'updatedAt' | 'missionId'>
+
+export type DevisMissionView = {
+  draft: DevisView | null
+  current: DevisView | null
+}
 
 export function toDevisView(row: DevisRecord): DevisView {
   return {
@@ -38,5 +45,14 @@ export function toDevisView(row: DevisRecord): DevisView {
     amountHt: row.amountHt,
     amountTtc: row.amountTtc,
     htSource: row.htSource,
+  }
+}
+
+export function toDevisMissionView(rows: DevisRecord[]): DevisMissionView {
+  const draft = rows.find((row) => row.status === 'DRAFT') ?? null
+  const current = pickCurrentDevis(rows)
+  return {
+    draft: draft ? toDevisView(draft) : null,
+    current: current ? toDevisView(current) : null,
   }
 }

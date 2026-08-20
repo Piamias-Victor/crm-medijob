@@ -13,6 +13,7 @@ function toRecord(row: {
   amountHt: number | null
   amountTtc: number | null
   htSource: DevisRecord['htSource']
+  sentAt: Date | null
   updatedAt: Date
 }): DevisRecord {
   return {
@@ -25,6 +26,7 @@ function toRecord(row: {
     amountHt: row.amountHt,
     amountTtc: row.amountTtc,
     htSource: row.htSource,
+    sentAt: row.sentAt,
     updatedAt: row.updatedAt,
   }
 }
@@ -44,6 +46,31 @@ export function makeDevisRepository(db: PrismaClient = defaultDb) {
     },
     updateDraft: async (id: string, data: DevisWriteFields) => {
       const row = await db.devis.update({ where: { id }, data })
+      return toRecord(row)
+    },
+    markSent: async (id: string) => {
+      const row = await db.devis.update({
+        where: { id },
+        data: { status: 'SENT', sentAt: new Date() },
+      })
+      return toRecord(row)
+    },
+    listByMission: async (missionId: string) => {
+      const rows = await db.devis.findMany({
+        where: { missionId, ...NOT_DELETED },
+        orderBy: { updatedAt: 'desc' },
+      })
+      return rows.map(toRecord)
+    },
+    softDeleteDraft: async (id: string) => {
+      const existing = await db.devis.findFirst({
+        where: { id, status: 'DRAFT', ...NOT_DELETED },
+      })
+      if (!existing) return null
+      const row = await db.devis.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      })
       return toRecord(row)
     },
   }

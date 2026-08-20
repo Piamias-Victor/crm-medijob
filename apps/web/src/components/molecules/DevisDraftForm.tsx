@@ -5,17 +5,30 @@ import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { devisFormSchema } from '@/view-models/devis.schema'
 import type { DevisFormValues } from '@/view-models/devis-form'
-import { DEVIS_SAVE_LABEL } from '@/view-models/devis-copy'
-import { Button } from '@/components/atoms/Button'
 import { DevisDraftFields } from '@/components/molecules/DevisDraftFields'
+import { DevisDraftActions } from '@/components/molecules/DevisDraftActions'
 
 type Props = {
   values: DevisFormValues
   submitting: boolean
+  previewing: boolean
+  deleting: boolean
+  hasDraft: boolean
   onSubmit: (data: DevisFormValues) => void
+  onPreview: (data: DevisFormValues) => void
+  onDelete?: () => void
 }
 
-export function DevisDraftForm({ values, submitting, onSubmit }: Props) {
+export function DevisDraftForm({
+  values,
+  submitting,
+  previewing,
+  deleting,
+  hasDraft,
+  onSubmit,
+  onPreview,
+  onDelete,
+}: Props) {
   const form = useForm<DevisFormValues>({
     resolver: zodResolver(devisFormSchema) as Resolver<DevisFormValues>,
     defaultValues: values,
@@ -25,11 +38,13 @@ export function DevisDraftForm({ values, submitting, onSubmit }: Props) {
     form.reset(values)
   }, [form, values])
 
+  const parsed = (data: DevisFormValues) => devisFormSchema.parse(data)
+
   return (
     <form
       className="grid gap-4 sm:grid-cols-2"
       noValidate
-      onSubmit={form.handleSubmit((data) => onSubmit(devisFormSchema.parse(data)))}
+      onSubmit={form.handleSubmit((data) => onSubmit(parsed(data)))}
     >
       <input type="hidden" {...form.register('htSource')} />
       <DevisDraftFields
@@ -39,11 +54,14 @@ export function DevisDraftForm({ values, submitting, onSubmit }: Props) {
         watch={form.watch}
         errors={form.formState.errors}
       />
-      <div className="flex flex-wrap gap-2 sm:col-span-2">
-        <Button type="submit" variant="accent" disabled={submitting}>
-          {submitting ? 'Enregistrement…' : DEVIS_SAVE_LABEL}
-        </Button>
-      </div>
+      <DevisDraftActions
+        submitting={submitting}
+        previewing={previewing}
+        deleting={deleting}
+        hasDraft={hasDraft}
+        onDelete={onDelete}
+        onPreview={form.handleSubmit((data) => onPreview(parsed(data)))}
+      />
     </form>
   )
 }
