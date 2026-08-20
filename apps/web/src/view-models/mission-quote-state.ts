@@ -9,7 +9,8 @@ export function toMissionQuoteState(missionStatus: MissionStatus, current: Devis
   return {
     commercialStatus: deriveCommercialStatus(current),
     ca: deriveMissionCa(missionStatus, current),
-    canAccept: current?.status === 'SENT',
+    canAccept: current?.status === 'SENT' || current?.status === 'DRAFT',
+    canSend: current?.status === 'DRAFT',
     canInvoice: current?.status === 'ACCEPTED',
   }
 }

@@ -5,7 +5,7 @@ import type { DevisMissionView } from '@/view-models/devis'
 import { toDevisFormValues } from '@/view-models/devis-form'
 import type { MissionQuoteState } from '@/view-models/mission-quote-state'
 import { DevisDraftForm } from '@/components/molecules/DevisDraftForm'
-import { DevisCurrentCard } from '@/components/molecules/DevisCurrentCard'
+import { DevisCurrentSection } from '@/components/molecules/DevisCurrentSection'
 import { DevisInvoiceForm } from '@/components/molecules/DevisInvoiceForm'
 import { DevisPreviewModal } from '@/components/molecules/DevisPreviewModal'
 import { MissionMargeForm } from '@/components/molecules/MissionMargeForm'
@@ -47,13 +47,18 @@ export function MissionDevisTab({
 
   return (
     <div className="flex flex-col gap-8">
-      <DevisCurrentCard
-        current={devis.current}
-        commercialStatus={quote.commercialStatus}
-        ca={quote.ca}
-        canAccept={quote.canAccept}
+      <DevisCurrentSection
+        missionId={missionId}
+        contractType={contractType}
+        heuresParSemaine={heuresParSemaine}
+        devis={devis}
+        quote={quote}
+        previewing={previewPdf.isPending}
+        sending={send.isPending}
         accepting={accept.isPending}
-        onAccept={() => accept.mutate({ missionId })}
+        onPreview={flow.openPreview}
+        onSend={(input, opts) => send.mutate(input, opts)}
+        onAccept={(input) => accept.mutate(input)}
       />
       {quote.canInvoice ? (
         <DevisInvoiceForm

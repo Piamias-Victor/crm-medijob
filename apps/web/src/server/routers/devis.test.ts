@@ -12,17 +12,16 @@ describe('devisRouter', () => {
     expect(loaded?.draft?.amountHt).toBe(3000)
     expect(loaded?.draft?.amountTtc).toBe(3600)
     expect(loaded?.draft?.kind).toBe('CDD')
-    expect(loaded?.current).toBeNull()
+    expect(loaded?.current?.id).toBe(loaded?.draft?.id)
+    expect(loaded?.current?.status).toBe('DRAFT')
     expect(loaded?.draft).not.toHaveProperty('ca')
     expect(loaded?.draft).not.toHaveProperty('marge')
   })
 
-  it('rejects accept when no SENT devis is current', async () => {
+  it('accepts a lone DRAFT as current', async () => {
     const caller = devisCaller(makeInMemoryDevisDeps())
     await caller.save(cddDraft)
-    await expect(caller.accept({ missionId: 'm1' })).rejects.toMatchObject({
-      message: 'Aucun devis envoyé à accepter',
-    })
+    await expect(caller.accept({ missionId: 'm1' })).resolves.toMatchObject({ status: 'ACCEPTED' })
   })
 
   it('persists INTERIM hours × rate HT/TTC', async () => {

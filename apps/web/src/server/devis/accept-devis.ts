@@ -15,8 +15,8 @@ export async function acceptDevis(
   deps: AcceptDevisDeps,
 ) {
   const current = pickCurrentDevis(await deps.listByMission(missionId))
-  if (!current || current.status !== 'SENT') {
-    throw new SendDevisError('BAD_REQUEST', 'Aucun devis envoyé à accepter')
+  if (!current || (current.status !== 'SENT' && current.status !== 'DRAFT')) {
+    throw new SendDevisError('BAD_REQUEST', 'Aucun devis à accepter')
   }
   const accepted = await deps.markAccepted(current.id)
   if (!accepted) throw new SendDevisError('NOT_FOUND', 'Devis introuvable')

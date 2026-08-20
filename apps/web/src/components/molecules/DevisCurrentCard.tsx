@@ -1,17 +1,20 @@
 import type { DevisView } from '@/view-models/devis'
 import type { CommercialStatus } from '@/lib/finance/derive-commercial-status'
-import { DEVIS_ACCEPT_LABEL, DEVIS_ACCEPTING_LABEL, DEVIS_CURRENT_LABEL, CA_LABEL } from '@/view-models/devis-copy'
+import { DEVIS_CURRENT_LABEL, CA_LABEL } from '@/view-models/devis-copy'
 import { devisCurrentSummary } from '@/view-models/devis-current'
 import { formatDevisPdfAmount } from '@/view-models/devis-pdf-format'
 import { CommercialStatusBadge } from '@/components/molecules/CommercialStatusBadge'
-import { Button } from '@/components/atoms/Button'
+import { DevisCurrentActions } from '@/components/molecules/DevisCurrentActions'
 
 type Props = {
   current: DevisView | null
   commercialStatus: CommercialStatus
   ca: number
-  canAccept?: boolean
+  previewing?: boolean
+  sending?: boolean
   accepting?: boolean
+  onPreview?: () => void
+  onSend?: () => void
   onAccept?: () => void
 }
 
@@ -19,8 +22,11 @@ export function DevisCurrentCard({
   current,
   commercialStatus,
   ca,
-  canAccept,
+  previewing,
+  sending,
   accepting,
+  onPreview,
+  onSend,
   onAccept,
 }: Props) {
   return (
@@ -33,13 +39,14 @@ export function DevisCurrentCard({
       <p className="text-sm text-fg">
         {CA_LABEL} {formatDevisPdfAmount(ca)}
       </p>
-      {canAccept && onAccept ? (
-        <div>
-          <Button type="button" variant="accent" disabled={accepting} onClick={onAccept}>
-            {accepting ? DEVIS_ACCEPTING_LABEL : DEVIS_ACCEPT_LABEL}
-          </Button>
-        </div>
-      ) : null}
+      <DevisCurrentActions
+        previewing={previewing}
+        sending={sending}
+        accepting={accepting}
+        onPreview={onPreview}
+        onSend={onSend}
+        onAccept={onAccept}
+      />
     </div>
   )
 }
