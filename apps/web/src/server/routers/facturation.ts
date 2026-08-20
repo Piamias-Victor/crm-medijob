@@ -8,7 +8,7 @@ type Ref = { id: string; name: string }
 
 export type FacturationDeps = {
   listSuivi: (filters?: FacturationSuiviFilters) => Promise<FacturationSuiviRow[]>
-  overview: () => Promise<FacturationOverview>
+  overview: (filters?: FacturationSuiviFilters) => Promise<FacturationOverview>
   referentials: () => Promise<{ pharmacies: Ref[]; recruiters: Ref[] }>
 }
 
@@ -17,7 +17,9 @@ export function makeFacturationRouter(deps: FacturationDeps) {
     listSuivi: financeProcedure
       .input(facturationSuiviFiltersSchema.optional())
       .query(async ({ input }) => ({ rows: await deps.listSuivi(input) })),
-    overview: financeProcedure.query(() => deps.overview()),
+    overview: financeProcedure
+      .input(facturationSuiviFiltersSchema.optional())
+      .query(({ input }) => deps.overview(input)),
     referentials: financeProcedure.query(() => deps.referentials()),
   })
 }

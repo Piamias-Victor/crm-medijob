@@ -1,14 +1,20 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { facturationSubNav } from '@/lib/navigation'
 import { PillNav } from '@/components/molecules/PillNav'
 
 export function FacturationNav() {
   const pathname = usePathname()
+  const search = useSearchParams().toString()
+  const items = facturationSubNav.map((item) => ({
+    ...item,
+    href: search ? `${item.href}?${search}` : item.href,
+  }))
   const isActive = (href: string) => {
-    if (href === '/facturation') return pathname === '/facturation'
-    return pathname === href || pathname.startsWith(`${href}/`)
+    const path = href.split('?')[0] ?? href
+    if (path === '/facturation') return pathname === '/facturation'
+    return pathname === path || pathname.startsWith(`${path}/`)
   }
-  return <PillNav items={facturationSubNav} isActive={isActive} />
+  return <PillNav items={items} isActive={isActive} />
 }

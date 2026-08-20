@@ -1,8 +1,29 @@
+import { Suspense } from 'react'
 import { createServerCaller } from '@/lib/trpc/server'
 import { FacturationOverviewPage } from '@/components/organisms/FacturationOverviewPage'
+import { EntityListPageSkeleton } from '@/components/molecules/skeletons/EntityListPageSkeleton'
+import { readFacturationFilters } from '@/lib/filters/read-facturation-filters'
 
-export default async function Page() {
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> }
+
+export default async function Page({ searchParams }: Props) {
+  const params = await searchParams
   const caller = await createServerCaller()
-  const overview = await caller.facturation.overview()
-  return <FacturationOverviewPage overview={overview} />
+  const refs = await caller.facturation.referentials()
+  const { filterConfig, serverFilters } = readFacturationFilters(
+    params,
+    refs.pharmacies,
+    refs.recruiters,
+  )
+  const overview = await caller.facturation.overview(serverFilters)
+
+  return (
+    <Suspense fallback={<EntityListPageSkeleton />}>
+      <FacturationOverviewPage
+        initialOverview={overview}
+        serverFilters={serverFilters}
+        filterConfig={filterConfig}
+      />
+    </Suspense>
+  )
 }

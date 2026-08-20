@@ -11,7 +11,7 @@ async function loadMissions() {
 
 export const facturationRouter = makeFacturationRouter({
   listSuivi: async (filters) => listFacturationSuivi(await loadMissions(), filters),
-  overview: async () => buildFacturationOverview(await loadMissions()),
+  overview: async (filters) => buildFacturationOverview(await loadMissions(), filters),
   referentials: async () => {
     const [pharmacies, recruiters] = await Promise.all([
       listPharmacyPickerOptions(),

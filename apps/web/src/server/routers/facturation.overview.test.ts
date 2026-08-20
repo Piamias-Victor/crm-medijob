@@ -50,4 +50,21 @@ describe('facturationRouter overview', () => {
       marge: 800,
     })
   })
+
+  it('applies suivi filters to overview stats', async () => {
+    const missions = [...facturationMissions, accepted]
+    const caller = createCallerFactory(
+      makeFacturationRouter({
+        listSuivi: async () => [],
+        overview: async (filters) => buildFacturationOverview(missions, filters),
+        referentials: async () => ({ pharmacies: [], recruiters: [] }),
+      }),
+    )({ session: { user: { id: 'u1', role: 'DIRECTION' }, expires: '2999-01-01' } })
+
+    await expect(caller.overview({ contractTypes: ['INTERIM'] })).resolves.toEqual({
+      counts: { SANS_DEVIS: 1, ENVOYE: 0, ACCEPTE: 0, FACTURE: 0 },
+      ca: 0,
+      marge: 0,
+    })
+  })
 })
