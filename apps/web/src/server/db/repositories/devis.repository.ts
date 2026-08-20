@@ -14,6 +14,8 @@ function toRecord(row: {
   amountTtc: number | null
   htSource: DevisRecord['htSource']
   sentAt: Date | null
+  acceptedAt: Date | null
+  invoicedAt: Date | null
   updatedAt: Date
 }): DevisRecord {
   return {
@@ -27,6 +29,8 @@ function toRecord(row: {
     amountTtc: row.amountTtc,
     htSource: row.htSource,
     sentAt: row.sentAt,
+    acceptedAt: row.acceptedAt,
+    invoicedAt: row.invoicedAt,
     updatedAt: row.updatedAt,
   }
 }
@@ -52,6 +56,20 @@ export function makeDevisRepository(db: PrismaClient = defaultDb) {
       const row = await db.devis.update({
         where: { id },
         data: { status: 'SENT', sentAt: new Date() },
+      })
+      return toRecord(row)
+    },
+    markAccepted: async (id: string) => {
+      const row = await db.devis.update({
+        where: { id },
+        data: { status: 'ACCEPTED', acceptedAt: new Date() },
+      })
+      return toRecord(row)
+    },
+    markInvoiced: async (id: string, invoicedAt: Date) => {
+      const row = await db.devis.update({
+        where: { id },
+        data: { invoicedAt },
       })
       return toRecord(row)
     },

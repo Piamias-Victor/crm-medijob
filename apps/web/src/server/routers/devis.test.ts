@@ -17,6 +17,14 @@ describe('devisRouter', () => {
     expect(loaded?.draft).not.toHaveProperty('marge')
   })
 
+  it('rejects accept when no SENT devis is current', async () => {
+    const caller = devisCaller(makeInMemoryDevisDeps())
+    await caller.save(cddDraft)
+    await expect(caller.accept({ missionId: 'm1' })).rejects.toMatchObject({
+      message: 'Aucun devis envoyé à accepter',
+    })
+  })
+
   it('persists INTERIM hours × rate HT/TTC', async () => {
     const caller = devisCaller(makeInMemoryDevisDeps())
     await caller.save({

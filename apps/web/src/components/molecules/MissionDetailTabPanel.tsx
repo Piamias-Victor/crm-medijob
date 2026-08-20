@@ -3,6 +3,7 @@
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
 import type { DevisMissionView } from '@/view-models/devis'
+import type { MissionQuoteState } from '@/view-models/mission-quote-state'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { MissionTab } from '@/view-models/mission-tabs'
 import type { MissionFormValues } from '@/view-models/mission-form.schema'
@@ -31,6 +32,7 @@ export type MissionDetailTabPanelProps = {
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   devis: DevisMissionView
+  quote: MissionQuoteState
   submitting: boolean
   onUpdate: (data: MissionFormValues) => void
   onCreateJobTitle: (name: string) => Promise<Ref>
@@ -63,6 +65,7 @@ export function MissionDetailTabPanel(props: MissionDetailTabPanelProps) {
           heuresParSemaine={props.mission.formSource.heuresParSemaine}
           marge={props.mission.marge}
           devis={props.devis}
+          quote={props.quote}
         />
       ) : null}
       {props.tab === 'historique' ? (

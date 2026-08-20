@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { MissionDetailPage } from '@/components/organisms/MissionDetailPage'
 import { parseMissionTab } from '@/view-models/mission-tab-parse'
+import { toMissionQuoteState } from '@/view-models/mission-quote-state'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -36,6 +37,7 @@ export default async function Page({ params, searchParams }: Props) {
       activities={activities}
       documents={documents}
       devis={devis}
+      quote={toMissionQuoteState(mission.status, devis.current)}
       activityCount={activities.length}
       documentCount={documents.length}
       initialTab={parseMissionTab(tab)}

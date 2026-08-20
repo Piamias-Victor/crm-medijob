@@ -13,6 +13,8 @@ describe('devisCurrentSummary', () => {
         amountHt: 3000,
         amountTtc: 3600,
         htSource: 'TYPED',
+        acceptedAt: null,
+        invoicedAt: null,
       }),
     ).toBe('Envoyé · CDD · 3 000,00 € HT')
   })

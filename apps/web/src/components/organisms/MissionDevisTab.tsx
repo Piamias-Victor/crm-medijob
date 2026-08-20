@@ -3,8 +3,10 @@
 import type { ContractType } from '@prisma/client'
 import type { DevisMissionView } from '@/view-models/devis'
 import { toDevisFormValues } from '@/view-models/devis-form'
+import type { MissionQuoteState } from '@/view-models/mission-quote-state'
 import { DevisDraftForm } from '@/components/molecules/DevisDraftForm'
 import { DevisCurrentCard } from '@/components/molecules/DevisCurrentCard'
+import { DevisInvoiceForm } from '@/components/molecules/DevisInvoiceForm'
 import { DevisPreviewModal } from '@/components/molecules/DevisPreviewModal'
 import { MissionMargeForm } from '@/components/molecules/MissionMargeForm'
 import { useDevisDraftMutation } from '@/lib/hooks/use-devis-draft-mutation'
@@ -12,6 +14,8 @@ import { useDevisSendMutation } from '@/lib/hooks/use-devis-send-mutation'
 import { useDevisPreviewMutation } from '@/lib/hooks/use-devis-preview-mutation'
 import { useDevisPreviewFlow } from '@/lib/hooks/use-devis-preview-flow'
 import { useDevisDeleteDraftMutation } from '@/lib/hooks/use-devis-delete-draft-mutation'
+import { useDevisAcceptMutation } from '@/lib/hooks/use-devis-accept-mutation'
+import { useDevisInvoiceMutation } from '@/lib/hooks/use-devis-invoice-mutation'
 import { useMissionMargeMutation } from '@/lib/hooks/use-mission-marge-mutation'
 
 type Props = {
@@ -20,20 +24,44 @@ type Props = {
   heuresParSemaine: number | null
   marge: number | null
   devis: DevisMissionView
+  quote: MissionQuoteState
 }
 
-export function MissionDevisTab({ missionId, contractType, heuresParSemaine, marge, devis }: Props) {
+export function MissionDevisTab({
+  missionId,
+  contractType,
+  heuresParSemaine,
+  marge,
+  devis,
+  quote,
+}: Props) {
   const save = useDevisDraftMutation()
   const send = useDevisSendMutation()
   const previewPdf = useDevisPreviewMutation()
   const remove = useDevisDeleteDraftMutation()
+  const accept = useDevisAcceptMutation()
+  const invoice = useDevisInvoiceMutation()
   const saveMarge = useMissionMargeMutation()
   const flow = useDevisPreviewFlow(missionId, save, send, previewPdf)
   const values = toDevisFormValues(devis.draft, { contractType, hours: heuresParSemaine })
 
   return (
     <div className="flex flex-col gap-8">
-      <DevisCurrentCard current={devis.current} />
+      <DevisCurrentCard
+        current={devis.current}
+        commercialStatus={quote.commercialStatus}
+        ca={quote.ca}
+        canAccept={quote.canAccept}
+        accepting={accept.isPending}
+        onAccept={() => accept.mutate({ missionId })}
+      />
+      {quote.canInvoice ? (
+        <DevisInvoiceForm
+          invoicedAt={devis.current?.invoicedAt ?? null}
+          submitting={invoice.isPending}
+          onSubmit={(invoicedAt) => invoice.mutate({ missionId, invoicedAt })}
+        />
+      ) : null}
       <DevisDraftForm
         values={values}
         submitting={save.isPending}

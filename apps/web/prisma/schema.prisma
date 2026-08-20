@@ -451,6 +451,8 @@ model Devis {
   amountTtc  Float?
   htSource   DevisHtSource @default(TYPED)
   sentAt     DateTime?
+  acceptedAt DateTime?
+  invoicedAt DateTime?
   deletedAt  DateTime?
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
