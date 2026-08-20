@@ -21,6 +21,15 @@ describe('toMissionQuoteState', () => {
     expect(state.commercialStatus).toBe('ACCEPTE')
     expect(state.ca).toBe(3000)
     expect(state.canAccept).toBe(false)
+    expect(state.canSend).toBe(false)
     expect(state.canInvoice).toBe(true)
+  })
+
+  it('lets a lone DRAFT be sent or accepted', () => {
+    const draft = { ...accepted, status: 'DRAFT' as const, acceptedAt: null }
+    const state = toMissionQuoteState('EN_RECHERCHE', draft)
+    expect(state.canAccept).toBe(true)
+    expect(state.canSend).toBe(true)
+    expect(state.ca).toBe(0)
   })
 })

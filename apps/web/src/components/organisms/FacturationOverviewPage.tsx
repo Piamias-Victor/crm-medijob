@@ -2,17 +2,18 @@
 
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { StatTiles } from '@/components/molecules/StatTiles'
+import { FacturationCharts } from '@/components/organisms/FacturationCharts'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { useFacturationOverviewQuery } from '@/lib/hooks/use-facturation-overview-query'
 import { buildFacturationKpis } from '@/view-models/facturation-kpi'
 import type { FacturationOverview } from '@/view-models/facturation-overview'
-import type { FacturationFilterConfig } from '@/lib/filters/facturation-filter-config'
+import type { FacturationOverviewFilterConfig } from '@/lib/filters/facturation-filter-config'
 import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
 
 type Props = {
   initialOverview: FacturationOverview
   serverFilters: FacturationSuiviFilters
-  filterConfig: FacturationFilterConfig
+  filterConfig: FacturationOverviewFilterConfig
 }
 
 export function FacturationOverviewPage({ initialOverview, serverFilters, filterConfig }: Props) {
@@ -38,6 +39,7 @@ export function FacturationOverviewPage({ initialOverview, serverFilters, filter
       >
         <StatTiles items={buildFacturationKpis(overview)} />
       </SectionCard>
+      <FacturationCharts slices={overview.slices} />
     </div>
   )
 }

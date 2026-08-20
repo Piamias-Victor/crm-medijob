@@ -14,6 +14,6 @@ describe('devisRouter.send blob failure', () => {
     await expect(caller.send({ missionId: 'm1' })).rejects.toThrow(DOCUMENT_UPLOAD_BLOB_DENIED)
     const loaded = await caller.getByMission({ missionId: 'm1' })
     expect(loaded.draft?.status).toBe('DRAFT')
-    expect(loaded.current).toBeNull()
+    expect(loaded.current?.status).toBe('DRAFT')
   })
 })

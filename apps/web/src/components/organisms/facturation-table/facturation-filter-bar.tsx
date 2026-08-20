@@ -1,17 +1,21 @@
 'use client'
 
 import { EntityListFilterBar } from '@/components/organisms/entity-list-filter-bar/entity-list-filter-bar'
-import type { FacturationFilterConfig } from '@/lib/filters/facturation-filter-config'
-import type { FacturationFilterValues } from '@/lib/filters/facturation-filter-map'
+import type { FilterConfig, FilterValues } from '@/lib/filters/filter-types'
 
-type Props = {
-  filterConfig: FacturationFilterConfig
-  values: FacturationFilterValues
-  onChange: (values: FacturationFilterValues) => void
+type Props<C extends readonly FilterConfig[]> = {
+  filterConfig: C
+  values: FilterValues<C>
+  onChange: (values: FilterValues<C>) => void
   onReset: () => void
 }
 
-export function FacturationFilterBar({ filterConfig, values, onChange, onReset }: Props) {
+export function FacturationFilterBar<C extends readonly FilterConfig[]>({
+  filterConfig,
+  values,
+  onChange,
+  onReset,
+}: Props<C>) {
   return (
     <EntityListFilterBar
       primary={[...filterConfig]}

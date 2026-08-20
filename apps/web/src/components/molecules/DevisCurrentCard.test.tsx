@@ -1,13 +1,17 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { DevisCurrentCard } from '@/components/molecules/DevisCurrentCard'
-import { DEVIS_ACCEPT_LABEL } from '@/view-models/devis-copy'
+import {
+  DEVIS_ACCEPT_LABEL,
+  DEVIS_PREVIEW_LABEL,
+  DEVIS_SEND_LABEL,
+} from '@/view-models/devis-copy'
 import type { DevisView } from '@/view-models/devis'
 
-const sent: DevisView = {
+const draft: DevisView = {
   id: 'd1',
   kind: 'CDD',
-  status: 'SENT',
+  status: 'DRAFT',
   hours: null,
   hourlyRate: null,
   amountHt: 3000,
@@ -18,18 +22,21 @@ const sent: DevisView = {
 }
 
 describe('DevisCurrentCard', () => {
-  it('shows commercial status and accept on a SENT devis', () => {
+  it('shows preview, send and accept on a lone DRAFT', () => {
     render(
       <DevisCurrentCard
-        current={sent}
-        commercialStatus="ENVOYE"
+        current={draft}
+        commercialStatus="SANS_DEVIS"
         ca={0}
-        canAccept
+        onPreview={vi.fn()}
+        onSend={vi.fn()}
         onAccept={vi.fn()}
       />,
     )
-    expect(screen.getByText('Envoyé')).toBeInTheDocument()
-    expect(screen.getByText('CA 0,00 €')).toBeInTheDocument()
+    expect(screen.getByText('Devis courant')).toBeInTheDocument()
+    expect(screen.getByText(/Brouillon/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: DEVIS_PREVIEW_LABEL })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: DEVIS_SEND_LABEL })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: DEVIS_ACCEPT_LABEL })).toBeInTheDocument()
   })
 })

@@ -44,7 +44,7 @@ describe('facturationRouter overview', () => {
       }),
     )({ session: { user: { id: 'u1', role: 'DIRECTION' }, expires: '2999-01-01' } })
 
-    await expect(caller.overview()).resolves.toEqual({
+    await expect(caller.overview()).resolves.toMatchObject({
       counts: { SANS_DEVIS: 2, ENVOYE: 2, ACCEPTE: 1, FACTURE: 0 },
       ca: 4000,
       marge: 800,
@@ -61,7 +61,7 @@ describe('facturationRouter overview', () => {
       }),
     )({ session: { user: { id: 'u1', role: 'DIRECTION' }, expires: '2999-01-01' } })
 
-    await expect(caller.overview({ contractTypes: ['INTERIM'] })).resolves.toEqual({
+    await expect(caller.overview({ contractTypes: ['INTERIM'] })).resolves.toMatchObject({
       counts: { SANS_DEVIS: 1, ENVOYE: 0, ACCEPTE: 0, FACTURE: 0 },
       ca: 0,
       marge: 0,
