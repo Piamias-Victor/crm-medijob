@@ -44,7 +44,7 @@ describe('facturationRouter listSuivi', () => {
         missionId: 'm-draft',
         commercialStatus: 'SANS_DEVIS',
         sentAt: null,
-        amountHt: null,
+        amountHt: 3000,
       }),
       expect.objectContaining({
         missionId: 'm-two',
