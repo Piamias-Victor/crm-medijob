@@ -17,4 +17,13 @@ describe('candidateRouter discardCvDraft', () => {
     await caller(deps).discardCvDraft({ cvUrl })
     expect(deps.deleteCvBlob).toHaveBeenCalledWith(cvUrl)
   })
+
+  it('does not delete a candidate profile CV blob', async () => {
+    const deps = makeCvDeps()
+    const profileCvUrl =
+      'https://abc123.public.blob.vercel-storage.com/candidate/cand_1/cv/cv.pdf'
+    const result = await caller(deps).discardCvDraft({ cvUrl: profileCvUrl })
+    expect(result).toEqual({ ok: true })
+    expect(deps.deleteCvBlob).not.toHaveBeenCalled()
+  })
 })
