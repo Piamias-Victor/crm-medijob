@@ -2,25 +2,19 @@
 import { describe, expect, it } from 'vitest'
 import { createCallerFactory } from '@/server/trpc'
 import { makeDevisRouter } from '@/server/routers/devis'
-import { devisCaller, makeInMemoryDevisDeps } from '@/server/routers/devis.test.fixtures'
+import { cddDraft, devisCaller, makeInMemoryDevisDeps } from '@/server/routers/devis.test.fixtures'
 
 describe('devisRouter', () => {
   it('saves a CDD DRAFT and reloads the same forfait', async () => {
     const caller = devisCaller(makeInMemoryDevisDeps())
-    await caller.save({
-      missionId: 'm1',
-      kind: 'CDD',
-      hours: null,
-      hourlyRate: null,
-      amountHt: 3000,
-      htSource: 'TYPED',
-    })
+    await caller.save(cddDraft)
     const loaded = await caller.getByMission({ missionId: 'm1' })
-    expect(loaded?.amountHt).toBe(3000)
-    expect(loaded?.amountTtc).toBe(3600)
-    expect(loaded?.kind).toBe('CDD')
-    expect(loaded).not.toHaveProperty('ca')
-    expect(loaded).not.toHaveProperty('marge')
+    expect(loaded?.draft?.amountHt).toBe(3000)
+    expect(loaded?.draft?.amountTtc).toBe(3600)
+    expect(loaded?.draft?.kind).toBe('CDD')
+    expect(loaded?.current).toBeNull()
+    expect(loaded?.draft).not.toHaveProperty('ca')
+    expect(loaded?.draft).not.toHaveProperty('marge')
   })
 
   it('persists INTERIM hours × rate HT/TTC', async () => {
@@ -34,10 +28,10 @@ describe('devisRouter', () => {
       htSource: 'ENGINE',
     })
     const loaded = await caller.getByMission({ missionId: 'm1' })
-    expect(loaded?.hours).toBe(151.67)
-    expect(loaded?.hourlyRate).toBe(28)
-    expect(loaded?.amountHt).toBe(4246.76)
-    expect(loaded?.amountTtc).toBe(5096.11)
+    expect(loaded?.draft?.hours).toBe(151.67)
+    expect(loaded?.draft?.hourlyRate).toBe(28)
+    expect(loaded?.draft?.amountHt).toBe(4246.76)
+    expect(loaded?.draft?.amountTtc).toBe(5096.11)
   })
 
   it('rejects unauthenticated callers', async () => {

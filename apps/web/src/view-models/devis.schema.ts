@@ -19,3 +19,5 @@ export const saveDevisDraftSchema = z.object({
 
 export type SaveDevisDraftInput = z.infer<typeof saveDevisDraftSchema>
 export const devisFormSchema = saveDevisDraftSchema.omit({ missionId: true })
+export const sendDevisSchema = getDevisByMissionSchema
+export const deleteDevisDraftSchema = getDevisByMissionSchema

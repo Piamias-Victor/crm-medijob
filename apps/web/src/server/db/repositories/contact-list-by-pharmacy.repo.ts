@@ -25,3 +25,17 @@ export function listContactsByPharmacyWithEmail(
     take: limit,
   })
 }
+
+export function listContactsByPharmacyIds(
+  db: PrismaClient,
+  pharmacyIds: string[],
+  limitPerPharmacy = DEFAULT_LIST_LIMIT,
+) {
+  if (pharmacyIds.length === 0) return Promise.resolve([])
+  return db.contact.findMany({
+    where: { pharmacyId: { in: pharmacyIds }, ...NOT_DELETED },
+    select: { id: true, firstName: true, lastName: true, pharmacyId: true },
+    orderBy: { createdAt: 'desc' },
+    take: limitPerPharmacy * pharmacyIds.length,
+  })
+}
