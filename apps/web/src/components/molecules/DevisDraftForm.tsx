@@ -11,22 +11,22 @@ import { DevisDraftActions } from '@/components/molecules/DevisDraftActions'
 type Props = {
   values: DevisFormValues
   submitting: boolean
-  sending: boolean
+  previewing: boolean
   deleting: boolean
   hasDraft: boolean
   onSubmit: (data: DevisFormValues) => void
-  onSend: (data: DevisFormValues) => void
+  onPreview: (data: DevisFormValues) => void
   onDelete?: () => void
 }
 
 export function DevisDraftForm({
   values,
   submitting,
-  sending,
+  previewing,
   deleting,
   hasDraft,
   onSubmit,
-  onSend,
+  onPreview,
   onDelete,
 }: Props) {
   const form = useForm<DevisFormValues>({
@@ -56,11 +56,11 @@ export function DevisDraftForm({
       />
       <DevisDraftActions
         submitting={submitting}
-        sending={sending}
+        previewing={previewing}
         deleting={deleting}
         hasDraft={hasDraft}
         onDelete={onDelete}
-        onSend={form.handleSubmit((data) => onSend(parsed(data)))}
+        onPreview={form.handleSubmit((data) => onPreview(parsed(data)))}
       />
     </form>
   )

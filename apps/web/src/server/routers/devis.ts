@@ -1,7 +1,10 @@
 import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '@/server/trpc'
 import { ttcFromHt } from '@/lib/finance/calculate-interim-libre'
-import { sendDevis, SendDevisError, type SendDevisDeps } from '@/server/devis/send-devis'
+import { sendDevis, type SendDevisDeps } from '@/server/devis/send-devis'
+import { previewDevisPdf } from '@/server/devis/preview-devis-pdf'
+import { mapDevisSendError } from '@/server/devis/map-devis-send-error'
+import { DEVIS_PREVIEW_FAILED } from '@/view-models/devis-copy'
 import {
   getDevisByMissionSchema,
   saveDevisDraftSchema,
@@ -55,10 +58,14 @@ export function makeDevisRouter(deps: DevisDeps) {
           composeUrl: result.composeUrl,
         }
       } catch (error) {
-        if (error instanceof SendDevisError) {
-          throw new TRPCError({ code: error.code, message: error.message })
-        }
-        throw error
+        throw mapDevisSendError(error)
+      }
+    }),
+    previewPdf: protectedProcedure.input(saveDevisDraftSchema).mutation(async ({ input }) => {
+      try {
+        return await previewDevisPdf({ missionId: input.missionId, ...writeFields(input) }, deps)
+      } catch (error) {
+        throw mapDevisSendError(error, DEVIS_PREVIEW_FAILED)
       }
     }),
     deleteDraft: protectedProcedure.input(deleteDevisDraftSchema).mutation(async ({ input }) => {

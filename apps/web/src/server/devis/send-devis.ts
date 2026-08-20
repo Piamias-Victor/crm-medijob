@@ -37,15 +37,15 @@ export async function sendDevis(missionId: string, authorId: string, deps: SendD
   if (!mission) throw new SendDevisError('NOT_FOUND', 'Mission introuvable')
   const draft = await deps.findDraftByMission(missionId)
   if (!draft) throw new SendDevisError('BAD_REQUEST', 'Aucun brouillon à envoyer')
-  const sent = await deps.markSent(draft.id)
-  if (!sent) throw new SendDevisError('NOT_FOUND', 'Devis introuvable')
   const primary = await deps.findPrimaryContact(mission.pharmacyId)
   const destinataire = resolveDevisDestinataire(mission.contact, primary)
   const document = await storeDevisPdf(
-    sent,
+    draft,
     { ...mission, contact: mission.contact ?? primary },
     deps,
   )
+  const sent = await deps.markSent(draft.id)
+  if (!sent) throw new SendDevisError('NOT_FOUND', 'Devis introuvable')
   await deps.logActivity({
     entityType: 'MISSION',
     entityId: mission.id,

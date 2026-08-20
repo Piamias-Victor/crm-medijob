@@ -14,6 +14,6 @@ describe('devisCurrentSummary', () => {
         amountTtc: 3600,
         htSource: 'TYPED',
       }),
-    ).toBe('Envoyé · CDD · 3000,00 € HT')
+    ).toBe('Envoyé · CDD · 3 000,00 € HT')
   })
 })

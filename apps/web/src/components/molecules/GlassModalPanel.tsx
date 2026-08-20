@@ -74,7 +74,7 @@ export function GlassModalPanel({
             <X className="size-5" />
           </Button>
         </header>
-        <div className="overflow-y-auto p-5 sm:p-6">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-5 sm:p-6">{children}</div>
       </motion.div>
     </>
   )

@@ -19,4 +19,26 @@ describe('buildDevisPdfModel', () => {
     expect(model.amountHt).toBe(4246.76)
     expect(model.amountTtc).toBe(5096.11)
   })
+
+  it('builds a quote line, TVA and issue date', () => {
+    const model = buildDevisPdfModel({
+      pharmacyName: 'Pharmacie du Centre',
+      contactName: 'Marie Curie',
+      kind: 'INTERIM',
+      hours: 151.67,
+      hourlyRate: 28,
+      amountHt: 4246.76,
+      amountTtc: 5096.11,
+      missionTitle: 'Remplacement',
+      issuedAt: new Date(2026, 7, 20),
+    })
+    expect(model.issuedLabel).toBe('20/08/2026')
+    expect(model.tvaAmount).toBe(849.35)
+    expect(model.line).toEqual({
+      designation: 'Mission Intérim — Remplacement',
+      quantity: '151,67 h',
+      unitPrice: '28,00 €',
+      totalHt: '4 246,76 €',
+    })
+  })
 })
