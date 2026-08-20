@@ -28,6 +28,7 @@ export const detailEntity = {
   contactId: null,
   referentId: 'u1',
   jobTitleId: 'jt1',
+  marge: null,
   updatedAt: new Date('2026-02-01'),
   pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon' },
   jobTitle: { name: 'Pharmacien' },
@@ -49,6 +50,7 @@ export function makeMissionDeps(overrides: Partial<MissionDeps> = {}): MissionDe
     createJobTitle: vi.fn().mockResolvedValue({ id: 'jt1', name: 'Préparateur' }),
     referentials: vi.fn().mockResolvedValue({ jobTitles: [], recruiters: [], pharmacies: [] }),
     updateStatus: vi.fn().mockResolvedValue({ id: 'm1', status: 'EN_RECHERCHE' }),
+    updateMarge: vi.fn().mockResolvedValue(undefined),
     logLifecycle: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }

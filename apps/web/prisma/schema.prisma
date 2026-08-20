@@ -419,6 +419,7 @@ model Mission {
   tempsPlein       Boolean       @default(true)
   profilRecherche  String?
   notes            String?
+  marge            Float?
   deletedAt        DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt

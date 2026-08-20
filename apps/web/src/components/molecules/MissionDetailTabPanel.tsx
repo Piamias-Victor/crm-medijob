@@ -61,6 +61,7 @@ export function MissionDetailTabPanel(props: MissionDetailTabPanelProps) {
           missionId={props.mission.id}
           contractType={props.mission.formSource.contractType}
           heuresParSemaine={props.mission.formSource.heuresParSemaine}
+          marge={props.mission.marge}
           devis={props.devis}
         />
       ) : null}

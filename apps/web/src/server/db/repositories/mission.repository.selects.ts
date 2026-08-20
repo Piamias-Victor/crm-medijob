@@ -20,6 +20,7 @@ export const missionDetailSelect = {
   contactId: true,
   referentId: true,
   jobTitleId: true,
+  marge: true,
   updatedAt: true,
   pharmacy: { select: { name: true, city: true } },
   jobTitle: { select: { name: true } },
