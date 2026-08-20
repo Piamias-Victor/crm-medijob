@@ -17,6 +17,7 @@ import { matchingRouter } from '@/server/routers/matching'
 import { dashboardRouter } from '@/server/routers/dashboard'
 import { searchRouter } from '@/server/routers/search'
 import { interviewRouter } from '@/server/routers/interview'
+import { devisRouter } from '@/server/routers/devis.adapter'
 
 export const appRouter = router({
   health: healthRouter,
@@ -37,6 +38,7 @@ export const appRouter = router({
   document: documentRouter,
   matching: matchingRouter,
   interview: interviewRouter,
+  devis: devisRouter,
 })
 
 export type AppRouter = typeof appRouter

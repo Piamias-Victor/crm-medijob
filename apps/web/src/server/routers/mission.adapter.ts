@@ -36,4 +36,5 @@ export const missionRouter = makeMissionRouter({
       placedCandidateId: input.placedCandidateId,
     }),
   logLifecycle: defaultLogLifecycle,
+  updateMarge: (id, marge) => missionRepository.update(id, { marge }),
 })

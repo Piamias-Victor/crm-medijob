@@ -1,0 +1,15 @@
+import { describe, expect, it } from 'vitest'
+import { calculateInterimLibre, parseAmount } from './calculate-interim-libre'
+
+describe('calculateInterimLibre', () => {
+  it('fills HT and TTC from hours × rate', () => {
+    const result = calculateInterimLibre({ hours: 151.67, hourlyRate: 28 })
+    expect(result.amountHt).toBe(4246.76)
+    expect(result.amountTtc).toBe(5096.11)
+  })
+
+  it('treats empty and NaN as a missing amount', () => {
+    expect(parseAmount('')).toBeNull()
+    expect(parseAmount(Number.NaN)).toBeNull()
+  })
+})

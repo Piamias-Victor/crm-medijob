@@ -47,7 +47,7 @@ Voir le détail complet : `docs/prompt-rules.md` (5 phases).
 Avant tout travail sur une issue :
 
 1. Lire `docs/prompt-rules.md` et `docs/github-rules.md`
-2. Créer la branche : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}` (worktree seulement si parallèle)
+2. Créer la branche dans **`medijob`** : `feat/issue-{N}-{slug}` ou `fix/issue-{N}-{slug}` — **interdit `git worktree`**
 3. Lancer `/caveman` puis `/tdd`
 
 Quand le code est prêt (phase 3) :
@@ -58,4 +58,4 @@ Quand le code est prêt (phase 3) :
 Sur `/handoff` (phase 4) :
 
 1. Déposer `docs/handoffs/HANDOFF_ISSUE_{N}.md` dans la PR
-2. Cleanup worktree (phase 5) si applicable
+2. Phase 5 après merge : supprimer la branche locale (pas de worktree)

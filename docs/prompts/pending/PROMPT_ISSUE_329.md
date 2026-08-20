@@ -34,6 +34,7 @@ Lire `docs/prompt-rules.md` et `docs/github-rules.md`. Handoff `#328` si présen
 ```bash
 cd /Users/victorpiamias/Desktop/Dev/ia/medijob
 git fetch origin
+# Interdit: git worktree — rester dans medijob
 git checkout -b feat/issue-329-facturation-nav-list origin/dev
 ```
 

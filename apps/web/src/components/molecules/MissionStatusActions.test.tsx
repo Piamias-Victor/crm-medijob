@@ -40,6 +40,7 @@ const missionEntity: MissionDetailEntity = {
   contactId: null,
   referentId: 'u1',
   jobTitleId: 'jt1',
+  marge: null,
   updatedAt: new Date(),
   pharmacy: { name: 'Pharmacie', city: 'Lyon' },
   jobTitle: { name: 'Pharmacien' },

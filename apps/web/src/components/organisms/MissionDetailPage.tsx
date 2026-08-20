@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import type { DevisView } from '@/view-models/devis'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
@@ -24,6 +25,7 @@ type Props = {
   contactsByPharmacy: Record<string, ContactRef[]>
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
+  devis: DevisView | null
   activityCount: number
   documentCount: number
   initialTab?: MissionTab
@@ -38,6 +40,7 @@ export function MissionDetailPage({
   contactsByPharmacy,
   activities,
   documents,
+  devis,
   activityCount,
   documentCount,
   initialTab = 'infos',
@@ -69,6 +72,7 @@ export function MissionDetailPage({
         contactsByPharmacy={contactsByPharmacy}
         activities={activities}
         documents={documents}
+        devis={devis}
         submitting={update.isPending}
         onUpdate={(data) => update.mutate({ id: mission.id, data })}
         onCreateJobTitle={(name) => createJobTitle.mutateAsync({ name })}
