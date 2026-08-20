@@ -1,33 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import {
-  applyCalculate,
-  applyHours,
-  applyTypedHt,
-  emptyInterimDraft,
-  type DevisDraftState,
-} from './devis-draft'
+import { applyLinkedAmounts, type DevisDraftState } from './devis-draft'
 
-describe('devis draft amounts', () => {
-  it('keeps typed HT when hours change until Calculate', () => {
-    let draft = applyTypedHt(emptyInterimDraft({ hours: 151.67, hourlyRate: 28 }), 4500)
-    draft = applyHours(draft, 200)
-    expect(draft.amountHt).toBe(4500)
-    expect(draft.hours).toBe(200)
+const base = (patch: Partial<DevisDraftState>): DevisDraftState => ({
+  kind: 'CDI',
+  hours: 35,
+  hourlyRate: null,
+  amountHt: null,
+  amountTtc: null,
+  htSource: 'TYPED',
+  ...patch,
+})
 
-    draft = applyCalculate(draft)
-    expect(draft.amountHt).toBe(5600)
-    expect(draft.amountTtc).toBe(6720)
+describe('devis linked amounts', () => {
+  it('fills HT from hours × rate', () => {
+    const next = applyLinkedAmounts(base({ hourlyRate: 10 }), 'hourlyRate')
+    expect(next.amountHt).toBe(350)
+    expect(next.amountTtc).toBe(420)
   })
 
-  it('keeps CDD typed forfait even if hours and rate are set', () => {
-    const cdd: DevisDraftState = {
-      kind: 'CDD',
-      hours: 151,
-      hourlyRate: 28,
-      amountHt: 3000,
-      amountTtc: 3600,
-      htSource: 'TYPED',
-    }
-    expect(applyCalculate(cdd).amountHt).toBe(3000)
+  it('fills rate from HT ÷ hours', () => {
+    expect(applyLinkedAmounts(base({ amountHt: 350 }), 'amountHt').hourlyRate).toBe(10)
+  })
+
+  it('recalculates HT when hours change if a rate is set', () => {
+    const next = applyLinkedAmounts(base({ hours: 200, hourlyRate: 28, amountHt: 4500 }), 'hours')
+    expect(next.amountHt).toBe(5600)
+    expect(next.amountTtc).toBe(6720)
   })
 })

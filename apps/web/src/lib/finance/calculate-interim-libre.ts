@@ -1,5 +1,11 @@
 export const TVA_RATE = 0.2
 
+export function parseAmount(value: unknown): number | null {
+  if (value === '' || value == null) return null
+  const n = Number(value)
+  return Number.isFinite(n) ? n : null
+}
+
 export function roundMoney(value: number): number {
   return Math.round(value * 100) / 100
 }

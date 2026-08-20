@@ -1,10 +1,8 @@
 import { z } from 'zod'
+import { parseAmount } from '@/lib/finance/calculate-interim-libre'
 import { DEVIS_KINDS } from '@/lib/finance/devis-draft'
 
-const optionalAmount = z.preprocess(
-  (v) => (v === '' || v === null || v === undefined ? null : Number(v)),
-  z.number().min(0).nullable(),
-)
+const optionalAmount = z.preprocess(parseAmount, z.number().min(0).nullable())
 
 export const getDevisByMissionSchema = z.object({
   missionId: z.string().min(1),
