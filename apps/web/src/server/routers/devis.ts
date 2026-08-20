@@ -4,6 +4,7 @@ import { ttcFromHt } from '@/lib/finance/calculate-interim-libre'
 import { sendDevis, type SendDevisDeps } from '@/server/devis/send-devis'
 import { previewDevisPdf } from '@/server/devis/preview-devis-pdf'
 import { mapDevisSendError } from '@/server/devis/map-devis-send-error'
+import { devisAcceptMutation, devisMarkInvoicedMutation } from '@/server/routers/devis-lifecycle'
 import { DEVIS_PREVIEW_FAILED } from '@/view-models/devis-copy'
 import {
   getDevisByMissionSchema,
@@ -19,6 +20,8 @@ export type DevisDeps = SendDevisDeps & {
   updateDraft: (id: string, data: DevisWriteFields) => Promise<DevisRecord | null>
   listByMission: (missionId: string) => Promise<DevisRecord[]>
   softDeleteDraft: (id: string) => Promise<DevisRecord | null>
+  markAccepted: (id: string) => Promise<DevisRecord | null>
+  markInvoiced: (id: string, invoicedAt: Date) => Promise<DevisRecord | null>
 }
 
 function writeFields(input: SaveDevisDraftInput): DevisWriteFields {
@@ -61,6 +64,8 @@ export function makeDevisRouter(deps: DevisDeps) {
         throw mapDevisSendError(error)
       }
     }),
+    accept: devisAcceptMutation(deps),
+    markInvoiced: devisMarkInvoicedMutation(deps),
     previewPdf: protectedProcedure.input(saveDevisDraftSchema).mutation(async ({ input }) => {
       try {
         return await previewDevisPdf({ missionId: input.missionId, ...writeFields(input) }, deps)

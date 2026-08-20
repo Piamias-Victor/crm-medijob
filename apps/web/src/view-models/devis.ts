@@ -14,6 +14,8 @@ export type DevisRecord = {
   amountTtc: number | null
   htSource: HtSource
   sentAt: Date | null
+  acceptedAt: Date | null
+  invoicedAt: Date | null
   updatedAt: Date
 }
 
@@ -26,9 +28,14 @@ export type DevisView = {
   amountHt: number | null
   amountTtc: number | null
   htSource: HtSource
+  acceptedAt: Date | null
+  invoicedAt: Date | null
 }
 
-export type DevisWriteFields = Omit<DevisRecord, 'id' | 'status' | 'sentAt' | 'updatedAt' | 'missionId'>
+export type DevisWriteFields = Omit<
+  DevisRecord,
+  'id' | 'status' | 'sentAt' | 'acceptedAt' | 'invoicedAt' | 'updatedAt' | 'missionId'
+>
 
 export type DevisMissionView = {
   draft: DevisView | null
@@ -45,6 +52,8 @@ export function toDevisView(row: DevisRecord): DevisView {
     amountHt: row.amountHt,
     amountTtc: row.amountTtc,
     htSource: row.htSource,
+    acceptedAt: row.acceptedAt,
+    invoicedAt: row.invoicedAt,
   }
 }
 

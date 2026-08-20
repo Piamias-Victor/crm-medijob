@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { DevisMissionView } from '@/view-models/devis'
+import type { MissionQuoteState } from '@/view-models/mission-quote-state'
 import type { MissionDetailPayload } from '@/view-models/mission-detail.types'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
@@ -26,6 +27,7 @@ type Props = {
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   devis: DevisMissionView
+  quote: MissionQuoteState
   activityCount: number
   documentCount: number
   initialTab?: MissionTab
@@ -41,6 +43,7 @@ export function MissionDetailPage({
   activities,
   documents,
   devis,
+  quote,
   activityCount,
   documentCount,
   initialTab = 'infos',
@@ -50,7 +53,7 @@ export function MissionDetailPage({
 
   return (
     <EntityDetailShell
-      header={<MissionDetailHeader mission={mission} />}
+      header={<MissionDetailHeader mission={mission} commercialStatus={quote.commercialStatus} />}
       tabs={
         <MissionDetailTabs
           active={tab}
@@ -73,6 +76,7 @@ export function MissionDetailPage({
         activities={activities}
         documents={documents}
         devis={devis}
+        quote={quote}
         submitting={update.isPending}
         onUpdate={(data) => update.mutate({ id: mission.id, data })}
         onCreateJobTitle={(name) => createJobTitle.mutateAsync({ name })}
