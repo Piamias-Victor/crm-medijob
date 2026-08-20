@@ -18,6 +18,7 @@ import { dashboardRouter } from '@/server/routers/dashboard'
 import { searchRouter } from '@/server/routers/search'
 import { interviewRouter } from '@/server/routers/interview'
 import { devisRouter } from '@/server/routers/devis.adapter'
+import { facturationRouter } from '@/server/routers/facturation.adapter'
 
 export const appRouter = router({
   health: healthRouter,
@@ -39,6 +40,7 @@ export const appRouter = router({
   matching: matchingRouter,
   interview: interviewRouter,
   devis: devisRouter,
+  facturation: facturationRouter,
 })
 
 export type AppRouter = typeof appRouter

@@ -34,6 +34,9 @@ describe('login + role gate', () => {
     const user = await authorizeCredentials({ email: 'recruteur@medijob.fr', password: 'recruteur-pw' }, deps)
     expect(user?.role).toBe('RECRUTEUR')
     expect(evaluateAccess({ loggedIn: true, role: user!.role, pathname: '/admin' })).toBe('forbid-admin')
+    expect(evaluateAccess({ loggedIn: true, role: user!.role, pathname: '/facturation' })).toBe(
+      'forbid-admin',
+    )
     expect(evaluateAccess({ loggedIn: true, role: user!.role, pathname: '/candidats' })).toBe('allow')
   })
 

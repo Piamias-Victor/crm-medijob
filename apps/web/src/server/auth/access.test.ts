@@ -1,11 +1,19 @@
 import { describe, it, expect } from 'vitest'
-import { evaluateAccess, isAdminPath } from './access'
+import { evaluateAccess, isAdminPath, isFacturationPath } from './access'
 
 describe('isAdminPath', () => {
   it('flags /admin and nested admin routes', () => {
     expect(isAdminPath('/admin')).toBe(true)
     expect(isAdminPath('/admin/utilisateurs')).toBe(true)
     expect(isAdminPath('/candidats')).toBe(false)
+  })
+})
+
+describe('isFacturationPath', () => {
+  it('flags /facturation and nested facturation routes', () => {
+    expect(isFacturationPath('/facturation')).toBe(true)
+    expect(isFacturationPath('/facturation/suivi')).toBe(true)
+    expect(isFacturationPath('/missions')).toBe(false)
   })
 })
 
@@ -26,6 +34,24 @@ describe('evaluateAccess', () => {
     expect(evaluateAccess({ loggedIn: true, role: 'RECRUTEUR', pathname: '/admin' })).toBe(
       'forbid-admin',
     )
+  })
+
+  it('forbids a recruiter from facturation routes', () => {
+    expect(
+      evaluateAccess({ loggedIn: true, role: 'RECRUTEUR', pathname: '/facturation' }),
+    ).toBe('forbid-admin')
+    expect(
+      evaluateAccess({ loggedIn: true, role: 'COMMUNICATION', pathname: '/facturation/suivi' }),
+    ).toBe('forbid-admin')
+  })
+
+  it('lets Direction and RH-Admin reach facturation routes', () => {
+    expect(evaluateAccess({ loggedIn: true, role: 'DIRECTION', pathname: '/facturation' })).toBe(
+      'allow',
+    )
+    expect(
+      evaluateAccess({ loggedIn: true, role: 'RH_ADMIN', pathname: '/facturation/suivi' }),
+    ).toBe('allow')
   })
 
   it('lets Direction and RH-Admin reach admin routes', () => {
