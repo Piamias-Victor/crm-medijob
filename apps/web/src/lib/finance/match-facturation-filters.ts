@@ -1,22 +1,7 @@
 import { REFERENT_NONE } from '@/lib/constants/referent-none'
+import { matchesIsoDateRange } from '@/lib/finance/match-iso-date-range'
 import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
-
-function dayStartUtc(isoDate: string) {
-  return new Date(`${isoDate}T00:00:00.000Z`)
-}
-
-function dayEndUtc(isoDate: string) {
-  return new Date(`${isoDate}T23:59:59.999Z`)
-}
-
-function matchesSentAt(row: FacturationSuiviRow, filters: FacturationSuiviFilters) {
-  if (!filters.sentFrom && !filters.sentTo) return true
-  if (!row.sentAt) return false
-  if (filters.sentFrom && row.sentAt < dayStartUtc(filters.sentFrom)) return false
-  if (filters.sentTo && row.sentAt > dayEndUtc(filters.sentTo)) return false
-  return true
-}
 
 function matchesReferent(row: FacturationSuiviRow, referentIds: string[]) {
   const wantsNone = referentIds.includes(REFERENT_NONE)
@@ -44,5 +29,6 @@ export function matchesFacturationFilters(
   if (filters.referentIds?.length && !matchesReferent(row, filters.referentIds)) {
     return false
   }
-  return matchesSentAt(row, filters)
+  if (!matchesIsoDateRange(row.sentAt, filters.sentFrom, filters.sentTo)) return false
+  return matchesIsoDateRange(row.acceptedAt, filters.acceptedFrom, filters.acceptedTo)
 }

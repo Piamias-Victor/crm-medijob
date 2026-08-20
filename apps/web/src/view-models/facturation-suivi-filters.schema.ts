@@ -9,6 +9,8 @@ export const facturationSuiviFiltersSchema = z.object({
   commercialStatuses: z.array(z.enum(COMMERCIAL_STATUSES)).optional(),
   sentFrom: z.string().optional(),
   sentTo: z.string().optional(),
+  acceptedFrom: z.string().optional(),
+  acceptedTo: z.string().optional(),
 })
 
 export type FacturationSuiviFilters = z.infer<typeof facturationSuiviFiltersSchema>

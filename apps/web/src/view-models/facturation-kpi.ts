@@ -16,7 +16,9 @@ function statusHref(status: CommercialStatus) {
   return `/facturation/suivi?etat=${status}`
 }
 
-export function buildFacturationKpis(overview: FacturationOverview): HomeKpiDef[] {
+export function buildFacturationKpis(
+  overview: Pick<FacturationOverview, 'counts' | 'ca' | 'marge'>,
+): HomeKpiDef[] {
   const counts = COMMERCIAL_STATUSES.map((status) => ({
     href: statusHref(status),
     label: COMMERCIAL_STATUS_LABELS[status],

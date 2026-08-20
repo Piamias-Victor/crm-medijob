@@ -6,7 +6,7 @@ import { COMMERCIAL_STATUS_LABELS } from '@/view-models/commercial-status'
 
 type Ref = { id: string; name: string }
 
-export function buildFacturationFilterConfig(pharmacies: Ref[], recruiters: Ref[]) {
+function dimensionFilters(pharmacies: Ref[], recruiters: Ref[]) {
   return [
     {
       id: 'contrat',
@@ -39,8 +39,25 @@ export function buildFacturationFilterConfig(pharmacies: Ref[], recruiters: Ref[
       unit: 'référents',
       options: buildReferentFilterOptions(recruiters),
     },
+  ] as const
+}
+
+export function buildFacturationFilterConfig(pharmacies: Ref[], recruiters: Ref[]) {
+  return [
+    ...dimensionFilters(pharmacies, recruiters),
     { id: 'periode', label: 'Date d’envoi', type: 'date-range' },
   ] as const satisfies readonly FilterConfig[]
 }
 
+export function buildFacturationOverviewFilterConfig(pharmacies: Ref[], recruiters: Ref[]) {
+  return [
+    ...dimensionFilters(pharmacies, recruiters),
+    { id: 'acceptation', label: 'Date d’acceptation', type: 'date-range' },
+  ] as const satisfies readonly FilterConfig[]
+}
+
 export type FacturationFilterConfig = ReturnType<typeof buildFacturationFilterConfig>
+export type FacturationOverviewFilterConfig = ReturnType<typeof buildFacturationOverviewFilterConfig>
+
+export const FACTURATION_LIST_DATE_QUERY_KEYS = ['periode.from', 'periode.to'] as const
+export const FACTURATION_OVERVIEW_DATE_QUERY_KEYS = ['acceptation.from', 'acceptation.to'] as const

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   ASAP_DATE_LABEL,
   WEEKDAY_LABELS,
+  currentMonthRange,
   formatDisplayDate,
   formatIsoDate,
   parseIsoDate,
@@ -25,5 +26,12 @@ describe('date-picker-utils', () => {
   it('uses unique weekday labels for calendar headers', () => {
     expect(new Set(WEEKDAY_LABELS).size).toBe(WEEKDAY_LABELS.length)
     expect(WEEKDAY_LABELS).toHaveLength(7)
+  })
+
+  it('returns first and last local day of the month', () => {
+    expect(currentMonthRange(new Date(2026, 7, 20))).toEqual({
+      from: '2026-08-01',
+      to: '2026-08-31',
+    })
   })
 })
