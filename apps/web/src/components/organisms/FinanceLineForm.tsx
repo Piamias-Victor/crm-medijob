@@ -34,10 +34,10 @@ export function FinanceLineForm({ pharmacies, candidates, missions, onDone }: Pr
         <Button type="button" variant="outline" disabled={busy} onClick={() => submit('save')}>
           Enregistrer
         </Button>
-        <Button type="button" variant="outline" disabled={busy || !hasMission} onClick={() => submit('generate')}>
+        <Button type="button" variant="outline" disabled={busy} onClick={() => submit('generate')}>
           Générer un devis
         </Button>
-        <Button type="button" disabled={busy || !hasMission} onClick={() => submit('send')}>
+        <Button type="button" disabled={busy} onClick={() => submit('send')}>
           Envoyer le devis
         </Button>
       </div>
