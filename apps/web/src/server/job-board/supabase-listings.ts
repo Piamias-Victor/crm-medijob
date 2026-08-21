@@ -1,21 +1,14 @@
 import type { BoardListing, JobBoardListingsPort } from '@/server/job-board/port'
+import {
+  boardRestHeaders,
+  boardRestUrl,
+  throwBoardError,
+  type JobsBoardConfig,
+} from '@/server/job-board/supabase-rest'
 
-export type JobsBoardConfig = { url: string; secret: string }
+export type { JobsBoardConfig }
 
 type FetchFn = typeof fetch
-
-function restUrl(config: JobsBoardConfig, path: string) {
-  return `${config.url.replace(/\/$/, '')}/rest/v1/${path}`
-}
-
-function headers(secret: string): Record<string, string> {
-  return {
-    apikey: secret,
-    Authorization: `Bearer ${secret}`,
-    'Content-Type': 'application/json',
-    Prefer: 'return=representation',
-  }
-}
 
 function offresBody(listing: BoardListing) {
   return {
@@ -42,16 +35,12 @@ function offresBody(listing: BoardListing) {
   }
 }
 
-async function parseError(res: Response) {
-  throw new Error(`Job board ${res.status}: ${await res.text()}`)
-}
-
 export function createSupabaseListingsPort(
   config: JobsBoardConfig,
   fetchFn: FetchFn = fetch,
 ): JobBoardListingsPort {
-  const offres = restUrl(config, 'offres')
-  const auth = headers(config.secret)
+  const offres = boardRestUrl(config, 'offres')
+  const auth = boardRestHeaders(config.secret)
 
   return {
     async upsert(listing) {
@@ -61,7 +50,7 @@ export function createSupabaseListingsPort(
           headers: auth,
           body: JSON.stringify(offresBody(listing)),
         })
-        if (!res.ok) await parseError(res)
+        if (!res.ok) await throwBoardError(res)
         return { id: listing.id }
       }
       const res = await fetchFn(offres, {
@@ -69,7 +58,7 @@ export function createSupabaseListingsPort(
         headers: auth,
         body: JSON.stringify(offresBody(listing)),
       })
-      if (!res.ok) await parseError(res)
+      if (!res.ok) await throwBoardError(res)
       const rows = (await res.json()) as { id: string }[]
       const id = rows[0]?.id
       if (!id) throw new Error('Job board insert returned no id')
@@ -81,7 +70,7 @@ export function createSupabaseListingsPort(
         headers: auth,
         body: JSON.stringify({ publiee }),
       })
-      if (!res.ok) await parseError(res)
+      if (!res.ok) await throwBoardError(res)
     },
   }
 }

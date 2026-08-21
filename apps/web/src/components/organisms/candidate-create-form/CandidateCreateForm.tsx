@@ -15,9 +15,18 @@ import type { CandidateFormReferentials } from '@/view-models/referential'
 type Props = {
   defaultValues: CandidateCreateInput
   referentials: CandidateFormReferentials
+  submitLabel?: string
+  submitting?: boolean
+  onSubmitCandidate?: (data: CandidateCreateInput) => void
 }
 
-export function CandidateCreateForm({ defaultValues, referentials }: Props) {
+export function CandidateCreateForm({
+  defaultValues,
+  referentials,
+  submitLabel,
+  submitting,
+  onSubmitCandidate,
+}: Props) {
   const { create, createJobTitle } = useCandidateCreateMutations()
   const [jobTitles, setJobTitles] = useState(referentials.jobTitles)
   const form = useCandidateCreateForm(defaultValues)
@@ -34,18 +43,22 @@ export function CandidateCreateForm({ defaultValues, referentials }: Props) {
       email,
       phone,
     },
-    { mode: 'create', returnPath: '/candidats/new' },
+    { mode: 'create', returnPath: '/candidats/new', enabled: !onSubmitCandidate },
   )
 
   return (
     <>
       <CandidateDuplicateAlertModal {...duplicateFlow.mergeAlertProps} />
       <form
-        onSubmit={handleSubmit(duplicateFlow.guardSubmit((data) => create.mutate(data)))}
+        onSubmit={handleSubmit(
+          duplicateFlow.guardSubmit((data) =>
+            onSubmitCandidate ? onSubmitCandidate(data) : create.mutate(data),
+          ),
+        )}
         className="flex flex-col gap-8"
         noValidate
       >
-        {create.error ? <FormErrorBanner message={create.error.message} /> : null}
+        {create.error && !onSubmitCandidate ? <FormErrorBanner message={create.error.message} /> : null}
         <CandidateCreateFormSections
           register={register}
           errors={formState.errors}
@@ -61,8 +74,19 @@ export function CandidateCreateForm({ defaultValues, referentials }: Props) {
           }}
         />
         <div className="flex justify-end border-t border-border/60 pt-4">
-          <Button type="submit" variant="accent" disabled={create.isPending} className="shadow-md shadow-accent/20">
-            {create.isPending ? 'Création…' : 'Créer le candidat'}
+          <Button
+            type="submit"
+            variant="accent"
+            disabled={onSubmitCandidate ? submitting : create.isPending}
+            className="shadow-md shadow-accent/20"
+          >
+            {onSubmitCandidate
+              ? submitting
+                ? 'Enregistrement…'
+                : (submitLabel ?? 'Créer le candidat')
+              : create.isPending
+                ? 'Création…'
+                : 'Créer le candidat'}
           </Button>
         </div>
       </form>
