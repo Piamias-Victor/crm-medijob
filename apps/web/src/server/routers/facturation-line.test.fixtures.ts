@@ -59,9 +59,13 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
         candidateName: CANDIDATE.name,
         missionId: input.missionId ?? null,
         devisId: null,
+        hours: input.hours ?? null,
+        hourlyRate: input.hourlyRate ?? null,
         amountHt: input.amountHt,
+        htSource: input.htSource ?? 'TYPED',
         marge: input.marge ?? null,
         occurredAt: input.occurredAt,
+        devisStatus: null,
       }
       lines.unshift(line)
       return line
@@ -75,7 +79,10 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
         updateDraft: async (id, data) => draftFrom({ ...data, missionId: line.missionId ?? id }, id),
         attachDevis: async (lineId, devisId) => {
           const target = lines.find((row) => row.id === lineId)
-          if (target) target.devisId = devisId
+          if (target) {
+            target.devisId = devisId
+            target.devisStatus = 'DRAFT'
+          }
         },
       })
     },

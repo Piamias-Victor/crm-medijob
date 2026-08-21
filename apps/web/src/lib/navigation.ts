@@ -50,5 +50,4 @@ export const adminSubNav: { label: string; href: string }[] = [
 export const facturationSubNav: { label: string; href: string }[] = [
   { label: 'Vue d’ensemble', href: '/facturation' },
   { label: 'Suivi', href: '/facturation/suivi' },
-  { label: 'Nouvelle ligne', href: '/facturation/nouvelle-ligne' },
 ]

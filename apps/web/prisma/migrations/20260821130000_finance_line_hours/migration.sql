@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "FinanceLine" ADD COLUMN "hours" DOUBLE PRECISION;
+ALTER TABLE "FinanceLine" ADD COLUMN "hourlyRate" DOUBLE PRECISION;
+ALTER TABLE "FinanceLine" ADD COLUMN "htSource" "DevisHtSource" NOT NULL DEFAULT 'TYPED';

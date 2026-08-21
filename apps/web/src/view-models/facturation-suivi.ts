@@ -22,6 +22,7 @@ export type FacturationSuiviRow = {
   candidateName?: string | null
   lineKind?: FinanceLineKind | null
   devisId?: string | null
+  devisStatus?: 'DRAFT' | 'SENT' | 'ACCEPTED' | null
   pharmacyId: string
   pharmacyName: string
   referentId: string | null

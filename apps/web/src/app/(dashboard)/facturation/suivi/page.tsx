@@ -23,6 +23,9 @@ export default async function Page({ searchParams }: Props) {
         initialRows={rows}
         serverFilters={serverFilters}
         filterConfig={filterConfig}
+        pharmacies={refs.pharmacies}
+        candidates={refs.candidates}
+        missions={refs.missions}
       />
     </Suspense>
   )

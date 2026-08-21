@@ -4,7 +4,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { Combobox } from '@/components/molecules/Combobox'
 import { DatePicker } from '@/components/molecules/DatePicker'
 import { FormField } from '@/components/molecules/FormField'
-import { Input } from '@/components/atoms/Input'
+import { FinanceLineAmountFields } from '@/components/molecules/FinanceLineAmountFields'
 import { FINANCE_LINE_KIND_OPTIONS, type FinanceLineFormValues } from '@/view-models/finance-line-form'
 import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
 
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export function FinanceLineFormFields({ form, pharmacies, candidates, missions }: Props) {
-  const { watch, setValue, register, formState } = form
+  const { watch, setValue, formState } = form
   const errors = formState.errors
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -65,12 +65,7 @@ export function FinanceLineFormFields({ form, pharmacies, candidates, missions }
           ariaLabel="Date de la ligne"
         />
       </FormField>
-      <FormField label="Montant HT" error={errors.amountHt?.message}>
-        <Input id="amountHt" type="number" min="0" step="0.01" {...register('amountHt')} />
-      </FormField>
-      <FormField label="Marge" error={errors.marge?.message}>
-        <Input id="marge" type="number" min="0" step="0.01" {...register('marge')} />
-      </FormField>
+      <FinanceLineAmountFields form={form} />
     </div>
   )
 }

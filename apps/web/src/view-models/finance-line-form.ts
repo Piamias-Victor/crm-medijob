@@ -7,7 +7,10 @@ export const financeLineFormSchema = z.object({
   candidateId: z.string().min(1, 'Candidat requis'),
   missionId: z.string(),
   kind: z.enum(FINANCE_LINE_KINDS),
+  hours: z.string(),
+  hourlyRate: z.string(),
   amountHt: z.string().min(1, 'Montant HT requis'),
+  htSource: z.enum(['ENGINE', 'TYPED']),
   marge: z.string(),
   occurredAt: z.string().min(1, 'Date requise'),
 })
@@ -25,7 +28,10 @@ export function defaultFinanceLineFormValues(): FinanceLineFormValues {
     candidateId: '',
     missionId: '',
     kind: 'PLACEMENT',
+    hours: '',
+    hourlyRate: '',
     amountHt: '',
+    htSource: 'TYPED',
     marge: '',
     occurredAt: new Date().toISOString().slice(0, 10),
   }
@@ -37,7 +43,10 @@ export function toCreateFinanceLineInput(values: FinanceLineFormValues): CreateF
     candidateId: values.candidateId,
     missionId: values.missionId || null,
     kind: values.kind,
+    hours: values.hours === '' ? null : Number(values.hours),
+    hourlyRate: values.hourlyRate === '' ? null : Number(values.hourlyRate),
     amountHt: Number(values.amountHt),
+    htSource: values.htSource,
     marge: values.marge === '' ? null : Number(values.marge),
     occurredAt: values.occurredAt,
   })

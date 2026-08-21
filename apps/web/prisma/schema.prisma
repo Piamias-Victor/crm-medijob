@@ -481,7 +481,10 @@ model FinanceLine {
   candidateId String
   missionId   String?
   devisId     String?         @unique
+  hours       Float?
+  hourlyRate  Float?
   amountHt    Float
+  htSource    DevisHtSource   @default(TYPED)
   marge       Float?
   occurredAt  DateTime
   deletedAt   DateTime?

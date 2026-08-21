@@ -58,6 +58,27 @@ describe('facturation createLine', () => {
     expect(rows[0]?.devisId).toBe(generated.devis.id)
   })
 
+  it('copies optional hours and rate onto the generated Devis', async () => {
+    const api = caller('DIRECTION')
+    const line = await api.createLine({
+      ...financeLineInput,
+      missionId: 'm1',
+      kind: 'INTERIM',
+      hours: 10,
+      hourlyRate: 40,
+      amountHt: 400,
+      htSource: 'ENGINE',
+    })
+    const generated = await api.generateDevisFromLine({ id: line.id })
+    expect(generated.devis).toMatchObject({
+      kind: 'INTERIM',
+      hours: 10,
+      hourlyRate: 40,
+      amountHt: 400,
+      htSource: 'ENGINE',
+    })
+  })
+
   it('refuses to generate a Devis when the line has no Mission', async () => {
     const api = caller('DIRECTION')
     const line = await api.createLine(financeLineInput)

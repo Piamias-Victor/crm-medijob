@@ -10,10 +10,10 @@ export function devisKindFromFinanceLine(kind: FinanceLineKind): DevisKind {
 export function devisWriteFromFinanceLine(line: FinanceLineRecord): DevisWriteFields {
   return {
     kind: devisKindFromFinanceLine(line.kind),
-    hours: null,
-    hourlyRate: null,
+    hours: line.hours,
+    hourlyRate: line.hourlyRate,
     amountHt: line.amountHt,
     amountTtc: ttcFromHt(line.amountHt),
-    htSource: 'TYPED',
+    htSource: line.htSource,
   }
 }

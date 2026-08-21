@@ -10,6 +10,7 @@ export function toFinanceLineSuiviRow(line: FinanceLineRecord): FacturationSuivi
     candidateName: line.candidateName,
     lineKind: line.kind,
     devisId: line.devisId,
+    devisStatus: line.devisStatus,
     referentId: null,
     referentName: null,
     contractType: line.kind === 'INTERIM' ? 'INTERIM' : 'CDD',

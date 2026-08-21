@@ -11,8 +11,12 @@ export function toFinanceLineRecord(row: FinanceLineQueryRow): FinanceLineRecord
     candidateName: `${row.candidate.firstName} ${row.candidate.lastName}`.trim(),
     missionId: row.missionId,
     devisId: row.devisId,
+    hours: row.hours,
+    hourlyRate: row.hourlyRate,
     amountHt: row.amountHt,
+    htSource: row.htSource,
     marge: row.marge,
     occurredAt: row.occurredAt,
+    devisStatus: row.devis?.status ?? null,
   }
 }

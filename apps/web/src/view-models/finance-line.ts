@@ -11,9 +11,13 @@ export type FinanceLineRecord = {
   candidateName: string
   missionId: string | null
   devisId: string | null
+  hours: number | null
+  hourlyRate: number | null
   amountHt: number
+  htSource: 'ENGINE' | 'TYPED'
   marge: number | null
   occurredAt: Date
+  devisStatus: 'DRAFT' | 'SENT' | 'ACCEPTED' | null
 }
 
 export type FacturationMissionOption = { id: string; title: string; pharmacyId: string }
