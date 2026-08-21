@@ -79,11 +79,14 @@ describe('facturation createLine', () => {
     })
   })
 
-  it('refuses to generate a Devis when the line has no Mission', async () => {
+  it('generates a Devis without a Mission, tied to the Pharmacy', async () => {
     const api = caller('DIRECTION')
     const line = await api.createLine(financeLineInput)
-    await expect(api.generateDevisFromLine({ id: line.id })).rejects.toMatchObject({
-      code: 'BAD_REQUEST',
+    const generated = await api.generateDevisFromLine({ id: line.id })
+    expect(generated).toMatchObject({
+      pharmacyId: 'p1',
+      missionId: null,
+      devis: { amountHt: 5000, status: 'DRAFT', kind: 'CDD' },
     })
   })
 })

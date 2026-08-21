@@ -37,6 +37,7 @@ export function makeFinanceLineRepository(db: PrismaClient = defaultDb) {
           htSource: input.htSource ?? 'TYPED',
           marge: input.marge ?? null,
           occurredAt: input.occurredAt,
+          devisId: input.devisId,
         },
         select: financeLineSelect,
       })

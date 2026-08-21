@@ -11,6 +11,22 @@ const unusedGenerateDevis: FacturationDeps['generateDevisFromLine'] = async () =
   throw new Error('generateDevisFromLine unused')
 }
 
+const unusedSendDevis: FacturationDeps['sendDevisFromLine'] = async () => {
+  throw new Error('sendDevisFromLine unused')
+}
+
+const unusedPreviewDevis: FacturationDeps['previewDevis'] = async () => {
+  throw new Error('previewDevis unused')
+}
+
+const unusedSaveDevis: FacturationDeps['saveDevis'] = async () => {
+  throw new Error('saveDevis unused')
+}
+
+const unusedSendFormDevis: FacturationDeps['sendDevis'] = async () => {
+  throw new Error('sendDevis unused')
+}
+
 export function facturationTestDeps(
   listSuivi: FacturationDeps['listSuivi'] = async () => [],
 ): FacturationDeps {
@@ -20,5 +36,9 @@ export function facturationTestDeps(
     referentials: async () => emptyRefs,
     createLine: unusedCreateLine,
     generateDevisFromLine: unusedGenerateDevis,
+    sendDevisFromLine: unusedSendDevis,
+    previewDevis: unusedPreviewDevis,
+    saveDevis: unusedSaveDevis,
+    sendDevis: unusedSendFormDevis,
   }
 }

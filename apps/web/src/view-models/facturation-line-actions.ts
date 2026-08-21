@@ -1,11 +1,11 @@
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
 export function canGenerateDevisFromRow(row: FacturationSuiviRow): boolean {
-  return Boolean(row.financeLineId && row.missionId && !row.devisId)
+  return Boolean(row.financeLineId && !row.devisId)
 }
 
 export function canSendDevisFromRow(row: FacturationSuiviRow): boolean {
-  if (!row.financeLineId || !row.missionId) return false
+  if (!row.financeLineId) return false
   return row.devisStatus !== 'SENT' && row.devisStatus !== 'ACCEPTED'
 }
 

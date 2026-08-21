@@ -16,7 +16,7 @@ import {
 import { toDevisView, toDevisMissionView, type DevisRecord, type DevisWriteFields } from '@/view-models/devis'
 
 export type DevisDeps = SendDevisDeps & {
-  createDraft: (data: DevisWriteFields & { missionId: string }) => Promise<DevisRecord>
+  createDraft: (data: DevisWriteFields & { missionId: string | null }) => Promise<DevisRecord>
   updateDraft: (id: string, data: DevisWriteFields) => Promise<DevisRecord | null>
   listByMission: (missionId: string) => Promise<DevisRecord[]>
   softDeleteDraft: (id: string) => Promise<DevisRecord | null>

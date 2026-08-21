@@ -7,13 +7,25 @@ export function devisKindFromFinanceLine(kind: FinanceLineKind): DevisKind {
   return kind === 'INTERIM' ? 'INTERIM' : 'CDD'
 }
 
-export function devisWriteFromFinanceLine(line: FinanceLineRecord): DevisWriteFields {
+export type DevisLineFormFields = {
+  kind: FinanceLineKind
+  hours?: number | null
+  hourlyRate?: number | null
+  amountHt: number
+  htSource?: 'ENGINE' | 'TYPED'
+}
+
+export function devisWriteFromLineForm(input: DevisLineFormFields): DevisWriteFields {
   return {
-    kind: devisKindFromFinanceLine(line.kind),
-    hours: line.hours,
-    hourlyRate: line.hourlyRate,
-    amountHt: line.amountHt,
-    amountTtc: ttcFromHt(line.amountHt),
-    htSource: line.htSource,
+    kind: devisKindFromFinanceLine(input.kind),
+    hours: input.hours ?? null,
+    hourlyRate: input.hourlyRate ?? null,
+    amountHt: input.amountHt,
+    amountTtc: ttcFromHt(input.amountHt),
+    htSource: input.htSource ?? 'TYPED',
   }
+}
+
+export function devisWriteFromFinanceLine(line: FinanceLineRecord): DevisWriteFields {
+  return devisWriteFromLineForm(line)
 }

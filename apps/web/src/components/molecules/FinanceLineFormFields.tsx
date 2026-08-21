@@ -36,7 +36,7 @@ export function FinanceLineFormFields({ form, pharmacies, candidates, missions }
           placeholder="Choisir un candidat"
         />
       </FormField>
-      <FormField label="Mission (pour générer / envoyer un devis)" error={errors.missionId?.message}>
+      <FormField label="Mission" error={errors.missionId?.message}>
         <Combobox
           value={watch('missionId')}
           onChange={(value) => setValue('missionId', value)}

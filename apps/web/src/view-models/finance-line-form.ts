@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { FINANCE_LINE_KINDS } from '@/view-models/finance-line'
-import { createFinanceLineSchema, type CreateFinanceLineInput } from '@/view-models/finance-line.schema'
+import { createFinanceLineSchema, financeLineDevisSchema, type CreateFinanceLineInput, type FinanceLineDevisInput } from '@/view-models/finance-line.schema'
 
 export const financeLineFormSchema = z.object({
   pharmacyId: z.string().min(1, 'Pharmacie requise'),
@@ -37,7 +37,10 @@ export function defaultFinanceLineFormValues(): FinanceLineFormValues {
   }
 }
 
-export function toCreateFinanceLineInput(values: FinanceLineFormValues): CreateFinanceLineInput {
+export function toCreateFinanceLineInput(
+  values: FinanceLineFormValues,
+  devisId?: string | null,
+): CreateFinanceLineInput {
   return createFinanceLineSchema.parse({
     pharmacyId: values.pharmacyId,
     candidateId: values.candidateId,
@@ -49,5 +52,23 @@ export function toCreateFinanceLineInput(values: FinanceLineFormValues): CreateF
     htSource: values.htSource,
     marge: values.marge === '' ? null : Number(values.marge),
     occurredAt: values.occurredAt,
+    devisId: devisId || undefined,
+  })
+}
+
+export function toFinanceLineDevisInput(
+  values: FinanceLineFormValues,
+  devisId?: string | null,
+): FinanceLineDevisInput {
+  return financeLineDevisSchema.parse({
+    pharmacyId: values.pharmacyId,
+    candidateId: values.candidateId,
+    missionId: values.missionId || null,
+    devisId: devisId || undefined,
+    kind: values.kind,
+    hours: values.hours === '' ? null : Number(values.hours),
+    hourlyRate: values.hourlyRate === '' ? null : Number(values.hourlyRate),
+    amountHt: Number(values.amountHt),
+    htSource: values.htSource,
   })
 }

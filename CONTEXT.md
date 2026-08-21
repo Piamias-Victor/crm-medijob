@@ -73,11 +73,11 @@ The lifecycle of a staffing need itself (A_POURVOIR → EN_RECHERCHE → … →
 _Avoid_: Pipeline stage, phase candidat, étape, état commercial (that is Commercial status)
 
 **Devis**:
-A commercial quote on a Mission for a Pharmacy (intérim or CDD/CDI) — stored inputs, amounts, send/accept cycle, PDF. Price is free: hours and rate (engine computes HT) or a typed HT total; hours can always be edited; CDD/CDI is a typed forfait, not one month of salary. The current Devis is the last one sent or accepted; a draft never replaces it. Sending retires the previous current Devis, writes a DEVIS Document on the Mission, and opens Gmail compose to the Pharmacy Contact. CA stays 0 until the current Devis is accepted. Any role that can write the Mission may create, send, and accept. Distinct from Document and from an ActivityLog line typed DEVIS.
+A commercial quote for a Pharmacy (intérim or CDD/CDI), optionally on a Mission — stored inputs, amounts, send/accept cycle, PDF. Price is free: hours and rate (engine computes HT) or a typed HT total; hours can always be edited; CDD/CDI is a typed forfait, not one month of salary. The current Devis is the last one sent or accepted; a draft never replaces it. Sending retires the previous current Devis, writes a DEVIS Document on the Mission (or on the Pharmacy when there is no Mission), and opens Gmail compose to the Pharmacy Contact. CA stays 0 until the current Devis is accepted. Any role that can write the Mission may create, send, and accept. Distinct from Document and from an ActivityLog line typed DEVIS.
 _Avoid_: quote (as UI label), facture, ActivityLog DEVIS (as the quote itself), estimateur rémunération, tarif Medijob (as a locked pack)
 
 **Ligne de suivi**:
-A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one placement) or Intérim (one line = the whole mission). Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated from the line only when a Mission is set — that Devis is a draft document, not a second CA booking.
+A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one placement) or Intérim (one line = the whole mission). Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated and sent from the line even without a Mission — that Devis is a draft document, not a second CA booking.
 _Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice)
 
 **Commercial status**:

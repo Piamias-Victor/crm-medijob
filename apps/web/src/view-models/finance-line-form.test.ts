@@ -53,10 +53,10 @@ describe('filterMissionsForPharmacy', () => {
 })
 
 describe('canGenerateDevisFromRow', () => {
-  it('allows generate only for a line with Mission and no Devis yet', () => {
+  it('allows generate for a line with no Devis yet, even without Mission', () => {
     expect(
       canGenerateDevisFromRow({
-        missionId: 'm1',
+        missionId: null,
         financeLineId: 'l1',
         devisId: null,
         pharmacyId: 'p1',
@@ -72,10 +72,10 @@ describe('canGenerateDevisFromRow', () => {
     ).toBe(true)
   })
 
-  it('allows send when the line has a Mission and the Devis is not already sent', () => {
+  it('allows send when the Devis is not already sent, even without Mission', () => {
     expect(
       canSendDevisFromRow({
-        missionId: 'm1',
+        missionId: null,
         financeLineId: 'l1',
         devisId: 'd1',
         devisStatus: 'DRAFT',

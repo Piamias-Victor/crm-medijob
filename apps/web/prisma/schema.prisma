@@ -450,7 +450,7 @@ model Mission {
 
 model Devis {
   id         String        @id @default(cuid())
-  missionId  String
+  missionId  String?
   kind       DevisKind
   status     DevisStatus   @default(DRAFT)
   hours      Float?
@@ -465,7 +465,7 @@ model Devis {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 
-  mission     Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  mission     Mission?     @relation(fields: [missionId], references: [id], onDelete: Cascade)
   financeLine FinanceLine?
 
   @@index([missionId])

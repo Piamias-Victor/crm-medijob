@@ -20,7 +20,7 @@ export function FinanceLineCreateModal({ open, onClose, pharmacies, candidates, 
       open={open}
       onClose={onClose}
       title="Nouvelle ligne"
-      description="Pharmacie, candidat, montants. Heures et taux optionnels. Devis si une Mission est liée."
+      description="Pharmacie, candidat, montants. Heures, taux et mission optionnels."
       className="max-w-2xl"
     >
       <FinanceLineForm
