@@ -1,0 +1,3 @@
+export const FINANCE_LINE_DEVIS_EXISTS = 'Un devis est déjà lié à cette ligne'
+export const FINANCE_LINE_CREATED = 'Ligne de suivi créée'
+export const FINANCE_LINE_DEVIS_GENERATED = 'Devis généré'

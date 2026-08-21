@@ -5,6 +5,7 @@ import { pickCurrentDevis } from '@/lib/finance/pick-current-devis'
 import type { FacturationSliceBucket, FacturationSlices } from '@/view-models/facturation-slice-bucket'
 import { facturationMonthKey, facturationMonthLabel } from '@/view-models/facturation-month-key'
 import { limitPharmacySlices } from '@/view-models/limit-pharmacy-slices'
+import type { FinanceLineRecord } from '@/view-models/finance-line'
 import type { FacturationMissionRecord } from '@/view-models/facturation-suivi'
 
 export type { FacturationSliceBucket, FacturationSlices } from '@/view-models/facturation-slice-bucket'
@@ -20,7 +21,10 @@ function addBucket(
   buckets.set(key, { key, label, ca: prev.ca + ca, marge: prev.marge + marge })
 }
 
-export function buildFacturationSlices(missions: FacturationMissionRecord[]): FacturationSlices {
+export function buildFacturationSlices(
+  missions: FacturationMissionRecord[],
+  lines: FinanceLineRecord[] = [],
+): FacturationSlices {
   const byReferent = new Map<string, FacturationSliceBucket>()
   const byPharmacy = new Map<string, FacturationSliceBucket>()
   const byContract = new Map<string, FacturationSliceBucket>()
@@ -49,6 +53,19 @@ export function buildFacturationSlices(missions: FacturationMissionRecord[]): Fa
     if (acceptedAt) {
       addBucket(byMonth, facturationMonthKey(acceptedAt), facturationMonthLabel(acceptedAt), ca, marge)
     }
+  }
+  for (const line of lines) {
+    const contractType = line.kind === 'INTERIM' ? 'INTERIM' : 'CDD'
+    addBucket(byReferent, REFERENT_NONE, REFERENT_NONE_OPTION.label, line.amountHt, line.marge ?? 0)
+    addBucket(byPharmacy, line.pharmacyId, line.pharmacyName, line.amountHt, line.marge ?? 0)
+    addBucket(byContract, contractType, CONTRACT_TYPE_LABELS[contractType], line.amountHt, line.marge ?? 0)
+    addBucket(
+      byMonth,
+      facturationMonthKey(line.occurredAt),
+      facturationMonthLabel(line.occurredAt),
+      line.amountHt,
+      line.marge ?? 0,
+    )
   }
   return {
     byReferent: [...byReferent.values()],

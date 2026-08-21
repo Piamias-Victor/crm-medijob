@@ -47,7 +47,7 @@ export function useAnchoredPanel(open: boolean, panelWidth?: number) {
     left: rect.left,
     width: rect.width,
     maxHeight: rect.maxHeight,
-    zIndex: 50,
+    zIndex: 80,
   }
 
   return { anchorRef, panelRef, style }
