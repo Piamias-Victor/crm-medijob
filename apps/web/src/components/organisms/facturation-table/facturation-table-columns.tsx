@@ -6,6 +6,7 @@ import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import { CONTRACT_TYPE_LABELS } from '@/lib/candidate-options'
 import { formatDateFr } from '@/view-models/format-date-fr'
 import { formatDevisPdfOrEmpty } from '@/view-models/devis-pdf-format'
+import { facturationRowOriginLabel } from '@/view-models/facturation-line-actions'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
 export const facturationTableColumns: ColumnDef<FacturationSuiviRow>[] = [
@@ -13,6 +14,18 @@ export const facturationTableColumns: ColumnDef<FacturationSuiviRow>[] = [
     id: 'pharmacyName',
     header: 'Pharmacie',
     accessor: (row) => row.pharmacyName,
+    sortable: true,
+  },
+  {
+    id: 'candidateName',
+    header: 'Candidat',
+    accessor: (row) => row.candidateName ?? TABLE_EMPTY_CELL,
+    sortable: true,
+  },
+  {
+    id: 'origin',
+    header: 'Ligne',
+    accessor: (row) => facturationRowOriginLabel(row),
     sortable: true,
   },
   {

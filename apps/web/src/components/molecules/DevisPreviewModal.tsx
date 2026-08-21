@@ -32,6 +32,7 @@ export function DevisPreviewModal({ open, quote, saving, sending, onClose, onSav
       onClose={onClose}
       title={DEVIS_PREVIEW_TITLE}
       className="!max-w-3xl w-full"
+      overlayClassName="z-[60]"
       trapFocus
       preventDismiss={busy}
     >

@@ -1,6 +1,7 @@
 import type { CommercialStatus } from '@/lib/finance/derive-commercial-status'
 import type { CONTRACT_TYPES } from '@/view-models/candidate-profile.schema'
 import type { DevisRecord } from '@/view-models/devis'
+import type { FinanceLineKind } from '@/view-models/finance-line'
 import type { MissionStatus } from '@prisma/client'
 
 export type FacturationMissionRecord = {
@@ -16,7 +17,12 @@ export type FacturationMissionRecord = {
 }
 
 export type FacturationSuiviRow = {
-  missionId: string
+  missionId: string | null
+  financeLineId?: string | null
+  candidateName?: string | null
+  lineKind?: FinanceLineKind | null
+  devisId?: string | null
+  devisStatus?: 'DRAFT' | 'SENT' | 'ACCEPTED' | null
   pharmacyId: string
   pharmacyName: string
   referentId: string | null

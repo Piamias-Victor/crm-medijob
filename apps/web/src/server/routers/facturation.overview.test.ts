@@ -4,6 +4,7 @@ import { createCallerFactory } from '@/server/trpc'
 import { makeFacturationRouter } from '@/server/routers/facturation'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
 import { facturationMissions } from '@/server/routers/facturation.test.fixtures'
+import { facturationTestDeps } from '@/server/routers/facturation.test.deps'
 import type { FacturationMissionRecord } from '@/view-models/facturation-suivi'
 
 const accepted: FacturationMissionRecord = {
@@ -26,9 +27,8 @@ describe('facturationRouter overview', () => {
   it('forbids Recruteur from overview', async () => {
     const caller = createCallerFactory(
       makeFacturationRouter({
-        listSuivi: async () => [],
+        ...facturationTestDeps(),
         overview: async () => buildFacturationOverview([]),
-        referentials: async () => ({ pharmacies: [], recruiters: [] }),
       }),
     )({ session: { user: { id: 'u1', role: 'RECRUTEUR' }, expires: '2999-01-01' } })
 
@@ -38,9 +38,8 @@ describe('facturationRouter overview', () => {
   it('summarizes commercial counts, CA and Marge', async () => {
     const caller = createCallerFactory(
       makeFacturationRouter({
-        listSuivi: async () => [],
+        ...facturationTestDeps(),
         overview: async () => buildFacturationOverview([...facturationMissions, accepted]),
-        referentials: async () => ({ pharmacies: [], recruiters: [] }),
       }),
     )({ session: { user: { id: 'u1', role: 'DIRECTION' }, expires: '2999-01-01' } })
 
@@ -55,9 +54,8 @@ describe('facturationRouter overview', () => {
     const missions = [...facturationMissions, accepted]
     const caller = createCallerFactory(
       makeFacturationRouter({
-        listSuivi: async () => [],
+        ...facturationTestDeps(),
         overview: async (filters) => buildFacturationOverview(missions, filters),
-        referentials: async () => ({ pharmacies: [], recruiters: [] }),
       }),
     )({ session: { user: { id: 'u1', role: 'DIRECTION' }, expires: '2999-01-01' } })
 

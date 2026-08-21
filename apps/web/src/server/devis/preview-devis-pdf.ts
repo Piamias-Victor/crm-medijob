@@ -9,24 +9,32 @@ export type PreviewDevisPdfDeps = {
   findPrimaryContact: (pharmacyId: string) => Promise<DevisContactRef | null>
 }
 
-export async function previewDevisPdf(
-  input: DevisWriteFields & { missionId: string },
-  deps: PreviewDevisPdfDeps,
+export async function previewDevisQuote(
+  fields: DevisWriteFields,
+  mission: DevisMissionRef,
+  deps: Pick<PreviewDevisPdfDeps, 'findPrimaryContact'>,
 ) {
-  const mission = await deps.findMission(input.missionId)
-  if (!mission) throw new SendDevisError('NOT_FOUND', 'Mission introuvable')
   const primary = await deps.findPrimaryContact(mission.pharmacyId)
   const destinataire = resolveDevisDestinataire(mission.contact, primary)
   return {
     quote: buildDevisPdfModel({
       pharmacyName: mission.pharmacyName,
       contactName: destinataire.contactName,
-      kind: input.kind,
-      hours: input.hours,
-      hourlyRate: input.hourlyRate,
-      amountHt: input.amountHt,
-      amountTtc: input.amountTtc,
+      kind: fields.kind,
+      hours: fields.hours,
+      hourlyRate: fields.hourlyRate,
+      amountHt: fields.amountHt,
+      amountTtc: fields.amountTtc,
       missionTitle: mission.title,
     }),
   }
+}
+
+export async function previewDevisPdf(
+  input: DevisWriteFields & { missionId: string },
+  deps: PreviewDevisPdfDeps,
+) {
+  const mission = await deps.findMission(input.missionId)
+  if (!mission) throw new SendDevisError('NOT_FOUND', 'Mission introuvable')
+  return previewDevisQuote(input, mission, deps)
 }

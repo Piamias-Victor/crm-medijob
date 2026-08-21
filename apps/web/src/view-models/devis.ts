@@ -5,7 +5,7 @@ export type DevisStatus = 'DRAFT' | 'SENT' | 'ACCEPTED'
 
 export type DevisRecord = {
   id: string
-  missionId: string
+  missionId: string | null
   kind: DevisKind
   status: DevisStatus
   hours: number | null

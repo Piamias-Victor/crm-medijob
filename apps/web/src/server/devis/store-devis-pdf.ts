@@ -7,6 +7,8 @@ import {
 import type { DevisRecord } from '@/view-models/devis'
 import type { DevisMissionRef } from '@/view-models/devis-mission-ref'
 
+export type DevisPdfEntity = 'MISSION' | 'PHARMACY'
+
 export type DevisPdfDocument = {
   id: string
   url: string
@@ -23,13 +25,14 @@ export type StoreDevisPdfDeps = {
     contentType: string
   }) => Promise<{ url: string }>
   createDocument: (data: {
-    entityType: 'MISSION'
+    entityType: DevisPdfEntity
     category: 'DEVIS'
     name: string
     url: string
     size: number
     mimeType: string
-    missionId: string
+    missionId?: string
+    pharmacyId?: string
   }) => Promise<{ id: string; url: string }>
 }
 
@@ -37,6 +40,7 @@ export async function storeDevisPdf(
   devis: DevisRecord,
   mission: DevisMissionRef,
   deps: StoreDevisPdfDeps,
+  entity: DevisPdfEntity = 'MISSION',
 ): Promise<DevisPdfDocument> {
   const name = devisPdfFilename(devis.id)
   const buffer = await deps.renderPdf(
@@ -51,19 +55,20 @@ export async function storeDevisPdf(
       missionTitle: mission.title,
     }),
   )
+  const folder = entity === 'PHARMACY' ? `pharmacy/${mission.pharmacyId}` : `mission/${mission.id}`
   const blob = await deps.uploadBlob({
-    pathname: `mission/${mission.id}/${name}`,
+    pathname: `${folder}/${name}`,
     body: buffer,
     contentType: 'application/pdf',
   })
   const doc = await deps.createDocument({
-    entityType: 'MISSION',
+    entityType: entity,
     category: 'DEVIS',
     name,
     url: blob.url,
     size: buffer.length,
     mimeType: 'application/pdf',
-    missionId: mission.id,
+    ...(entity === 'PHARMACY' ? { pharmacyId: mission.pharmacyId } : { missionId: mission.id }),
   })
   return { id: doc.id, url: doc.url, name, category: 'DEVIS', mimeType: 'application/pdf' }
 }
