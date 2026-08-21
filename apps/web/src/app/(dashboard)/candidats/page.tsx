@@ -33,7 +33,6 @@ export default async function Page({ searchParams }: Props) {
         list={list}
         inbox={inbox}
         appProfiles={appProfiles}
-        jobTitles={referentials.jobTitles}
         serverFilters={listFilters}
         filterConfig={filterConfig}
         initialTab={parseCandidatsTab(typeof tab === 'string' ? tab : undefined)}

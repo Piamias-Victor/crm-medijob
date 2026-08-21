@@ -10,14 +10,12 @@ import type { AppProfileListItem } from '@/view-models/app-profile-list'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
-import type { RefItem } from '@/view-models/referential'
 
 type Props = {
   tab: CandidatsTab
   list: { rows: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
   appProfiles: AppProfileListItem[]
-  jobTitles: RefItem[]
   serverFilters: CandidateListFilters
   filterConfig: CvthequeFilterConfig
   onCountChange: (n: number) => void
@@ -28,7 +26,6 @@ export function CandidatsTabPanel({
   list,
   inbox,
   appProfiles,
-  jobTitles,
   serverFilters,
   filterConfig,
   onCountChange,
@@ -44,13 +41,13 @@ export function CandidatsTabPanel({
     )
   }
   if (tab === 'app-profiles') {
-    return <AppProfilesSection initialItems={appProfiles} jobTitles={jobTitles} />
+    return <AppProfilesSection initialItems={appProfiles} />
   }
   return (
     <SectionCard
       variant="glass"
       title="Candidatures reçues"
-      description="Flux entrant Webflow — validez ou refusez avant intégration à la CVthèque."
+      description="Candidatures du site — ouvrez une fiche pour convertir, refuser ou lancer un entretien."
       bodyClassName="p-4 sm:p-5"
     >
       <ApplicationInbox items={inbox} />

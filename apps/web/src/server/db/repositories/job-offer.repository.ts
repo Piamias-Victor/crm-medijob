@@ -67,6 +67,15 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
           _count: { select: { applications: true } },
         },
       }),
+    listBoardListingIds: async () => {
+      const rows = await db.jobOffer.findMany({
+        where: { boardListingId: { not: null }, ...NOT_DELETED },
+        select: { boardListingId: true },
+      })
+      return rows
+        .map((row) => row.boardListingId)
+        .filter((id): id is string => Boolean(id))
+    },
     softDelete: (id: string) =>
       db.jobOffer.update({ where: { id }, data: { deletedAt: new Date() } }),
   }

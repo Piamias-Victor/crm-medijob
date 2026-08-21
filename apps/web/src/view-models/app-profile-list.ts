@@ -12,6 +12,7 @@ export type AppProfileListItem = {
   jobTitleId: string | null
   jobTitleName: string | null
   hasResume: boolean
+  status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
   syncedAt: Date
 }
 
@@ -28,6 +29,7 @@ export function toAppProfileListItem(row: {
   activityLabel: string | null
   jobTitleId: string | null
   hasResume: boolean
+  status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
   syncedAt: Date
   jobTitle: { id: string; name: string } | null
 }): AppProfileListItem {
@@ -45,6 +47,7 @@ export function toAppProfileListItem(row: {
     jobTitleId: row.jobTitleId,
     jobTitleName: row.jobTitle?.name ?? null,
     hasResume: row.hasResume,
+    status: row.status,
     syncedAt: row.syncedAt,
   }
 }

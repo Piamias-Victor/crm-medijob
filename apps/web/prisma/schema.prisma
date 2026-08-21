@@ -506,6 +506,7 @@ model JobOffer {
 model Application {
   id          String            @id @default(cuid())
   jobOfferId  String
+  boardSubmissionId String?     @unique
   firstName   String
   lastName    String
   email       String
