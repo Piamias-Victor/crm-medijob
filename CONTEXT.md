@@ -76,6 +76,10 @@ _Avoid_: Pipeline stage, phase candidat, étape, état commercial (that is Comme
 A commercial quote on a Mission for a Pharmacy (intérim or CDD/CDI) — stored inputs, amounts, send/accept cycle, PDF. Price is free: hours and rate (engine computes HT) or a typed HT total; hours can always be edited; CDD/CDI is a typed forfait, not one month of salary. The current Devis is the last one sent or accepted; a draft never replaces it. Sending retires the previous current Devis, writes a DEVIS Document on the Mission, and opens Gmail compose to the Pharmacy Contact. CA stays 0 until the current Devis is accepted. Any role that can write the Mission may create, send, and accept. Distinct from Document and from an ActivityLog line typed DEVIS.
 _Avoid_: quote (as UI label), facture, ActivityLog DEVIS (as the quote itself), estimateur rémunération, tarif Medijob (as a locked pack)
 
+**Ligne de suivi**:
+A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one placement) or Intérim (one line = the whole mission). Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated from the line only when a Mission is set — that Devis is a draft document, not a second CA booking.
+_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice)
+
 **Commercial status**:
 The commercial lifecycle of a Mission, derived from its current Devis: Sans devis → Envoyé → Accepté → Facturé. Facturé is a mark (with a date) on that Devis — not a separate invoice record. Independent from Mission status — a Mission can be EN_RECHERCHE and Envoyé at the same time.
 _Avoid_: Mission status, statut devis (as a second Mission enum), pipeline commercial (as entity name), Facture (as entity)
@@ -113,7 +117,7 @@ One of four internal access roles: Direction, Recruteur, Communication, RH-Admin
 _Avoid_: ADMIN, RECRUTEUR (legacy two-role model), rôle (without qualifier)
 
 **CA / Marge**:
-Financial figures shown in the CRM (revenue and margin). Visibility is gated by UserRole — Recruteur and Communication never see them. CA of a Mission is 0 until its current Devis is accepted; the accepted amount is the CA once (never multiplied by mission duration), dated on that acceptance day for follow-up. If the Mission is ANNULEE, CA returns to 0. Marge of a Mission is typed by Direction or RH-Admin; the simulator's margin is indicative only and does not feed follow-up. Marge uses the same acceptance date as CA and also clears on ANNULEE. Follow-up slices by Referent, Pharmacy, contract type, and dates — not by Candidate.
+Financial figures shown in the CRM (revenue and margin). Visibility is gated by UserRole — Recruteur and Communication never see them. CA of a Mission is 0 until its current Devis is accepted; the accepted amount is the CA once (never multiplied by mission duration), dated on that acceptance day for follow-up. If the Mission is ANNULEE, CA returns to 0. A Ligne de suivi also books CA and Marge on its date, without an accepted Devis. Marge of a Mission is typed by Direction or RH-Admin; the simulator's margin is indicative only and does not feed follow-up. Marge uses the same acceptance date as CA and also clears on ANNULEE. Follow-up slices by Referent, Pharmacy, contract type, and dates — not by Candidate (the Candidate on a Ligne de suivi is identity on the line, not a CA slice).
 _Avoid_: chiffre d'affaires (as free UI label without the CA token), rentabilité (as synonym for Marge), marge calculée (as the follow-up figure), CA candidat
 
 **Groupement**:
@@ -184,9 +188,9 @@ Inbound: Candidate ID, optional Referent (User). JobTitle `profileKey` selects t
 Outbound: later write-back to Candidate at close. Never a PipelineStage and never an Application.
 
 **Finance** — commercial quotes and performance follow-up.
-Owns: Devis, Commercial status (derived), CA and Marge on the Mission.
-Inbound: Mission, Pharmacy, Referent.
-Outbound: Mission — where Recruteur / Communication create, send, and accept a Devis. Facturation (global follow-up + Devis list) is Direction / RH-Admin only. Never a candidate salary estimator.
+Owns: Devis, Ligne de suivi, Commercial status (derived), CA and Marge on the Mission and on Lignes de suivi.
+Inbound: Mission (optional on a Ligne de suivi), Pharmacy, Candidate, Referent.
+Outbound: Mission — where Recruteur / Communication create, send, and accept a Devis. Facturation (global follow-up, Ligne de suivi, Devis list) is Direction / RH-Admin only. Never a candidate salary estimator.
 
 **AI** — assisted extraction, generation, and matching.
 Owns: provider abstraction, Zod-validated AI responses, assistant chat.

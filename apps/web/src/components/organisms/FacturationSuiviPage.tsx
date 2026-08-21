@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { FacturationTable } from '@/components/organisms/facturation-table/facturation-table'
+import { FinanceLineDevisAction } from '@/components/molecules/FinanceLineDevisAction'
 import { useFacturationSuiviQuery } from '@/lib/hooks/use-facturation-suivi-query'
 import type { FacturationFilterConfig } from '@/lib/filters/facturation-filter-config'
 import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
@@ -26,14 +27,17 @@ export function FacturationSuiviPage({ initialRows, serverFilters, filterConfig 
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-fg-muted">{count} mission(s) — devis courant.</p>
+      <p className="text-sm text-fg-muted">{count} ligne(s) — devis et suivi.</p>
       <FacturationFilterBar
         filterConfig={filterConfig}
         values={values}
         onChange={setFilters}
         onReset={reset}
       />
-      <FacturationTable rows={rows} />
+      <FacturationTable
+        rows={rows}
+        renderActions={(row) => <FinanceLineDevisAction row={row} />}
+      />
     </div>
   )
 }

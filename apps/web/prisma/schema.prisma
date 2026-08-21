@@ -133,6 +133,11 @@ enum DevisHtSource {
   TYPED
 }
 
+enum FinanceLineKind {
+  PLACEMENT
+  INTERIM
+}
+
 // ─── Auth (NextAuth v5) ───────────────────────────────────────
 
 model Account {
@@ -297,6 +302,7 @@ model Candidate {
   missions            MissionCandidate[]
   activities          ActivityLog[]                 @relation("CandidateActivities")
   documents           Document[]                    @relation("CandidateDocuments")
+  financeLines        FinanceLine[]
   applications        Application[]
   appProfiles         AppProfile[]
   interviews          Interview[]
@@ -355,8 +361,9 @@ model Pharmacy {
   software   Software?     @relation(fields: [softwareId], references: [id])
   referent   User?         @relation("ReferentPharmacies", fields: [referentId], references: [id], onDelete: SetNull)
   contacts   Contact[]
-  missions   Mission[]
-  activities ActivityLog[] @relation("PharmacyActivities")
+  missions     Mission[]
+  financeLines FinanceLine[]
+  activities   ActivityLog[] @relation("PharmacyActivities")
   documents  Document[]    @relation("PharmacyDocuments")
 
   @@index([deletedAt])
@@ -432,7 +439,8 @@ model Mission {
   jobOffer   JobOffer?
   activities ActivityLog[]      @relation("MissionActivities")
   documents  Document[]         @relation("MissionDocuments")
-  devis      Devis[]
+  devis        Devis[]
+  financeLines FinanceLine[]
 
   @@index([deletedAt])
   @@index([pharmacyId])
@@ -457,12 +465,39 @@ model Devis {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 
-  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  mission     Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  financeLine FinanceLine?
 
   @@index([missionId])
   @@index([deletedAt])
   @@index([status])
   @@index([sentAt])
+}
+
+model FinanceLine {
+  id          String          @id @default(cuid())
+  kind        FinanceLineKind
+  pharmacyId  String
+  candidateId String
+  missionId   String?
+  devisId     String?         @unique
+  amountHt    Float
+  marge       Float?
+  occurredAt  DateTime
+  deletedAt   DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  pharmacy  Pharmacy  @relation(fields: [pharmacyId], references: [id])
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+  mission   Mission?  @relation(fields: [missionId], references: [id], onDelete: SetNull)
+  devis     Devis?    @relation(fields: [devisId], references: [id], onDelete: SetNull)
+
+  @@index([pharmacyId])
+  @@index([candidateId])
+  @@index([missionId])
+  @@index([deletedAt])
+  @@index([occurredAt])
 }
 
 model MissionCandidate {

@@ -10,7 +10,7 @@ export function FacturationLayoutShell({ children }: { children: ReactNode }) {
     <DashboardPage
       icon={<Receipt className="size-5" />}
       title="Facturation"
-      description="Stats globales et suivi des devis courants."
+      description="CA, marge, devis et lignes de suivi."
       nav={
         <Suspense fallback={null}>
           <FacturationNav />
