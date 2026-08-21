@@ -4,8 +4,8 @@ import type { ContactListFilters } from '@/view-models/contact-list-filters.sche
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { searchContacts } from './contact-search.repo'
-import { listContactsByPharmacyWithEmail } from './contact-list-by-pharmacy.repo'
-import { findPrimaryContactByPharmacy } from './contact-primary.repo'
+import { listContactsByPharmacyWithEmail, listContactsByPharmacyIds } from './contact-list-by-pharmacy.repo'
+import { findPrimaryContactByPharmacy, findPrimaryContactForDevis } from './contact-primary.repo'
 import { softDeleteContact } from './contact-soft-delete.repo'
 import { buildContactListQueryWhere, contactListInclude } from './contact-list-where'
 
@@ -65,15 +65,9 @@ export function makeContactRepository(db: PrismaClient = defaultDb) {
       listContactsByPharmacyWithEmail(db, pharmacyId, limit),
     findPrimaryByPharmacy: (pharmacyId: string, excludeContactId?: string) =>
       findPrimaryContactByPharmacy(db, pharmacyId, excludeContactId),
-    listByPharmacyIds: (pharmacyIds: string[], limitPerPharmacy = DEFAULT_LIST_LIMIT) => {
-      if (pharmacyIds.length === 0) return Promise.resolve([])
-      return db.contact.findMany({
-        where: { pharmacyId: { in: pharmacyIds }, ...NOT_DELETED },
-        select: { id: true, firstName: true, lastName: true, pharmacyId: true },
-        orderBy: { createdAt: 'desc' },
-        take: limitPerPharmacy * pharmacyIds.length,
-      })
-    },
+    findPrimaryForDevis: (pharmacyId: string) => findPrimaryContactForDevis(db, pharmacyId),
+    listByPharmacyIds: (pharmacyIds: string[], limitPerPharmacy = DEFAULT_LIST_LIMIT) =>
+      listContactsByPharmacyIds(db, pharmacyIds, limitPerPharmacy),
     update: async (id: string, data: Prisma.ContactUncheckedUpdateInput) => {
       if (!data.isPrimary) return db.contact.update({ where: { id }, data })
       return db.$transaction(async (tx) => {

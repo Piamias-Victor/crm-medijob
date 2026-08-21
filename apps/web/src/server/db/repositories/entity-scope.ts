@@ -6,7 +6,16 @@ export function entityFilter(
 ): Prisma.DocumentWhereInput {
   switch (entityType) {
     case 'PHARMACY':
-      return { pharmacyId: entityId }
+      return {
+        OR: [
+          { pharmacyId: entityId },
+          {
+            entityType: 'MISSION',
+            category: 'DEVIS',
+            mission: { pharmacyId: entityId, deletedAt: null },
+          },
+        ],
+      }
     case 'CONTACT':
       return { contactId: entityId }
     case 'MISSION':

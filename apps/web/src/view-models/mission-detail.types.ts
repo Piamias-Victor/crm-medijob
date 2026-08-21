@@ -34,6 +34,7 @@ export type MissionDetailEntity = {
   contactId: string | null
   referentId: string | null
   jobTitleId: string
+  marge: number | null
   updatedAt: Date
   pharmacy: { name: string; city: string | null }
   jobTitle: { name: string }
@@ -81,6 +82,7 @@ export type MissionDetailPayload = {
   jobTitleName: string
   referentName: string | null
   updatedAt: Date
+  marge: number | null
   formSource: MissionFormSource
   candidates: MissionCandidateRow[]
 }

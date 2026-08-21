@@ -6,15 +6,14 @@ import type { FilterConfig, FilterValues } from '@/lib/filters/filter-types'
 import { buildDefaultFilterValues } from '@/lib/filters/filter-types'
 import { deserializeFilters, serializeFilters } from '@/lib/filters/serialize'
 import { filterQueriesEqual } from '@/lib/filters/filter-query-equal'
-import {
-  FILTER_URL_WRITE_DEBOUNCE_MS,
-  shouldApplyUrlFilters,
-} from '@/lib/filters/filter-url-sync'
+import { FILTER_URL_WRITE_DEBOUNCE_MS, shouldApplyUrlFilters } from '@/lib/filters/filter-url-sync'
+import { mergeEmptyDateRanges } from '@/lib/filters/merge-empty-date-ranges'
 
 type Options<TConfigs extends readonly FilterConfig[]> = {
   syncUrl?: boolean
   preserveSearchParams?: readonly string[]
   values?: FilterValues<TConfigs>
+  defaults?: FilterValues<TConfigs>
   onValuesChange?: (values: FilterValues<TConfigs>) => void
 }
 
@@ -29,13 +28,16 @@ export function useEntityFilters<TConfigs extends readonly FilterConfig[]>(
   const searchKey = searchParams.toString()
   const pathname = usePathname()
   const router = useRouter()
-  const defaults = useMemo(() => buildDefaultFilterValues(config), [config])
+  const defaults = useMemo(
+    () => options.defaults ?? buildDefaultFilterValues(config),
+    [config, options.defaults],
+  )
   const pendingWrittenQuery = useRef<string | null>(null)
   const writeGeneration = useRef(0)
 
   const readFromUrl = useCallback(
-    () => deserializeFilters(config, searchParams),
-    [config, searchParams],
+    () => mergeEmptyDateRanges(config, deserializeFilters(config, searchParams), defaults),
+    [config, defaults, searchParams],
   )
 
   const [values, setValues] = useState<FilterValues<TConfigs>>(

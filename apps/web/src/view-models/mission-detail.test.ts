@@ -22,6 +22,7 @@ const entity: MissionDetailEntity = {
   contactId: 'c1',
   referentId: 'u1',
   jobTitleId: 'jt1',
+  marge: 800,
   updatedAt: new Date('2026-02-01'),
   pharmacy: { name: 'Pharmacie du Centre', city: 'Lyon' },
   jobTitle: { name: 'Pharmacien' },
@@ -64,6 +65,7 @@ describe('toMissionDetail', () => {
     expect(payload.formSource.title).toBe('Titulaire CDI')
     expect(payload.formSource.profilRecherche).toBe('Profil senior')
     expect(payload.formSource.contactId).toBe('c1')
+    expect(payload.marge).toBe(800)
     expect(payload.candidates).toEqual([
       {
         id: 'ca1',

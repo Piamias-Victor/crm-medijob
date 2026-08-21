@@ -11,6 +11,10 @@ export function isAdminPath(pathname: string): boolean {
   return pathname === '/admin' || pathname.startsWith('/admin/')
 }
 
+export function isFacturationPath(pathname: string): boolean {
+  return pathname === '/facturation' || pathname.startsWith('/facturation/')
+}
+
 export function isLoginPath(pathname: string): boolean {
   return pathname === LOGIN_PATH
 }
@@ -29,6 +33,9 @@ export function evaluateAccess(input: {
     return 'redirect-login'
   }
   if (isAdminPath(pathname) && (!role || !can(role, 'admin'))) {
+    return 'forbid-admin'
+  }
+  if (isFacturationPath(pathname) && (!role || !can(role, 'finance.view'))) {
     return 'forbid-admin'
   }
   return 'allow'

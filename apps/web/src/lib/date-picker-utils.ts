@@ -19,6 +19,12 @@ export function formatIsoDate(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
+export function currentMonthRange(now = new Date()): { from: string; to: string } {
+  const from = new Date(now.getFullYear(), now.getMonth(), 1)
+  const to = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+  return { from: formatIsoDate(from), to: formatIsoDate(to) }
+}
+
 export function monthLabel(month: number): string {
   return MONTHS[month] ?? ''
 }

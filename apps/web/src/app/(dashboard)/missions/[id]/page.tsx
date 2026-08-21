@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { MissionDetailPage } from '@/components/organisms/MissionDetailPage'
 import { parseMissionTab } from '@/view-models/mission-tab-parse'
+import { toMissionQuoteState } from '@/view-models/mission-quote-state'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -18,10 +19,11 @@ export default async function Page({ params, searchParams }: Props) {
 
   const refs = await caller.mission.referentials()
   const candidateRefs = await caller.candidate.referentials()
-  const [documents, activities, contactsByPharmacy] = await Promise.all([
+  const [documents, activities, contactsByPharmacy, devis] = await Promise.all([
     caller.document.listByEntity({ entityType: 'MISSION', entityId: id }),
     caller.activityLog.listByEntity({ entityType: 'MISSION', entityId: id }),
     caller.contact.listByPharmacyIds({ pharmacyIds: refs.pharmacies.map((pharmacy) => pharmacy.id) }),
+    caller.devis.getByMission({ missionId: id }),
   ])
 
   return (
@@ -34,6 +36,8 @@ export default async function Page({ params, searchParams }: Props) {
       contactsByPharmacy={contactsByPharmacy}
       activities={activities}
       documents={documents}
+      devis={devis}
+      quote={toMissionQuoteState(mission.status, devis.current)}
       activityCount={activities.length}
       documentCount={documents.length}
       initialTab={parseMissionTab(tab)}
