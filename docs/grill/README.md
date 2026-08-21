@@ -12,6 +12,6 @@
 - Prompts : `docs/prompts/pending/PROMPT_ISSUE_211.md` … `235.md`
 
 ## Suite
-1. Trancher `QUESTIONS_CLIENT_V1.md` (HITL #226 #230 #234 #235)
+1. Trancher `QUESTIONS_CLIENT_V1.md` (HITL #234 #235 ; Q9/#230 tranché 2026-08-19)
 2. Lancer slices AFK sans blockers : #211 #212 #213 #214 #215 #216 #217 #218
 3. `Lis et exécute docs/prompts/pending/PROMPT_ISSUE_{N}.md`

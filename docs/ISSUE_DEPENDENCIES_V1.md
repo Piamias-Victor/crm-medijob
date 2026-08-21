@@ -1,7 +1,7 @@
 # Graphe de dépendances — Issues CRM MediJob V1 Opérationnel
 
 > **Epic parente** : [#210 — PRD V1 Opérationnel](https://github.com/Piamias-Victor/crm-medijob/issues/210)  
-> **Sources** : `docs/PRD_V1_OPERATIONNEL.md` · `docs/Guide_CRM_V1_Operationnel.csv` · `docs/grill/CSV_V1_DECISIONS.md` · `docs/PRD_FINANCE_DEVIS_V1.md` (#325)
+> **Sources** : `docs/PRD_V1_OPERATIONNEL.md` · `docs/PRD_JOB_BOARD_V1.md` (#321) · `docs/Guide_CRM_V1_Operationnel.csv` · `docs/grill/CSV_V1_DECISIONS.md` · `docs/PRD_FINANCE_DEVIS_V1.md` (#325)
 
 ## Mapping
 
@@ -25,8 +25,8 @@
 | 16 | #227 | AFK | [MISSIONS] Tableau + filtres CSV + profilRecherche |
 | 17 | #228 | AFK | [MAPS] Vues map Pharmacies / Candidats / Missions |
 | 18 | #229 | AFK | [OFFRES] Génération IA + cycle de vie + liste/actions |
-| 19 | #230 | HITL | [OFFRES] Publish/unpublish CMS (Webflow hypo) |
-| 20 | #231 | AFK | [CANDIDATURES] Webhook + inbox tableau accept/refus/dédup |
+| 19 | #230 | AFK | [OFFRES] Publish/unpublish job board (`offres`) |
+| 20 | #231 | AFK | [CANDIDATURES] Ingest `candidatures` + inbox accept/refus/dédup |
 | 21 | #232 | AFK | [IA] Matching critères prétentions + multi-select contact |
 | 22 | #233 | AFK | [IA] CR hebdo data-driven + raccourci meilleurs profils P2 |
 | 23 | #218 | AFK | [DASHBOARD] KPI CSV + centre d’alertes |
@@ -48,6 +48,13 @@
 | I | #313 | AFK | [CANDIDATS][Interview] Admin trames — copie de travail + Publier |
 | J | #314 | AFK | [CANDIDATS][Interview] Créer et archiver une trame |
 | K | #315 | AFK | [CANDIDATS][Interview] Dupliquer / insérer questions depuis une autre trame |
+
+## Children of #321 (Job board)
+
+| Slice | GitHub | Type | Titre |
+|-------|--------|------|-------|
+| A | #230 | AFK | [OFFRES] Publish/unpublish job board (`offres`) |
+| B | #231 | AFK | [CANDIDATURES] Ingest `candidatures` + inbox accept/refus/dédup |
 
 ## Blocked by
 

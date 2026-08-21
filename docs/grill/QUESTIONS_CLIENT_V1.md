@@ -80,6 +80,9 @@ Nos statuts CRM sont **Client / Prospect / Inactif**. Faut-il d’autres statuts
 ### Q9 — CMS du site Medijob
 La diffusion des offres est prévue via **Webflow CMS**. Confirmez-vous que le site carrières / offres est toujours sur Webflow ? Sinon, quel outil / API faut-il brancher ?
 
+#### Answer (2026-08-19)
+**Pas Webflow.** Site public = [medijob-offres](https://medijob-offres.netlify.app/offres) (app **medijob-jobs**). Le CRM écrit/lit le Supabase du job board (`offres` / `candidatures`), sans modifier leur code, sans `source_crm_id` (sinon Postuler → T4S). Décisions : ADR 0016 · issues #230 / #231.
+
 ---
 
 ## Matching — contact candidats (V1-055)
