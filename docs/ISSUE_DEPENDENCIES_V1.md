@@ -1,8 +1,7 @@
 # Graphe de dépendances — Issues CRM MediJob V1 Opérationnel
 
 > **Epic parente** : [#210 — PRD V1 Opérationnel](https://github.com/Piamias-Victor/crm-medijob/issues/210)  
-> **Sources** : `docs/PRD_V1_OPERATIONNEL.md` · `docs/PRD_JOB_BOARD_V1.md` (#321) · `docs/Guide_CRM_V1_Operationnel.csv` · `docs/grill/CSV_V1_DECISIONS.md`  
-> **25 slices** (22 AFK `ready-for-agent` · 3 HITL `ready-for-human`)
+> **Sources** : `docs/PRD_V1_OPERATIONNEL.md` · `docs/PRD_JOB_BOARD_V1.md` (#321) · `docs/Guide_CRM_V1_Operationnel.csv` · `docs/grill/CSV_V1_DECISIONS.md` · `docs/PRD_FINANCE_DEVIS_V1.md` (#325)
 
 ## Mapping
 
@@ -31,7 +30,7 @@
 | 21 | #232 | AFK | [IA] Matching critères prétentions + multi-select contact |
 | 22 | #233 | AFK | [IA] CR hebdo data-driven + raccourci meilleurs profils P2 |
 | 23 | #218 | AFK | [DASHBOARD] KPI CSV + centre d’alertes |
-| 24 | #234 | HITL | [FINANCE] Perf + Facturation/Devis (inventaire proto) |
+| 24 | #325 | AFK PRD | [FINANCE] Devis Mission + Facturation suivi (Q13) — supersedes HITL #234 |
 | 25 | #235 | HITL | [RGPD] Consentement / rétention / effacement / registre |
 
 ## Children of #226 (Interview)
@@ -95,7 +94,8 @@
 #231  →  #230, #224
 #232  →  #224, #227
 #233  →  #232
-#234  →  #213
+#325  →  #213
+#234  →  (closed — superseded by #325)
 #235  →  #213
 ```
 

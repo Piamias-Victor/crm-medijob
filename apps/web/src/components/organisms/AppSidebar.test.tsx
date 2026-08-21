@@ -62,3 +62,17 @@ describe('AppSidebar admin gating', () => {
     expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument()
   })
 })
+
+describe('AppSidebar facturation gating', () => {
+  it('shows Facturation for Direction', () => {
+    render(<AppSidebar role="DIRECTION" />)
+
+    expect(screen.getByRole('link', { name: 'Facturation' })).toBeInTheDocument()
+  })
+
+  it.each(['RECRUTEUR', 'COMMUNICATION'] as const)('hides Facturation from %s', (role) => {
+    render(<AppSidebar role={role} />)
+
+    expect(screen.queryByRole('link', { name: 'Facturation' })).not.toBeInTheDocument()
+  })
+})

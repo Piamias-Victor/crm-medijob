@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { navItems, adminNavItem } from '@/lib/navigation'
+import { visibleNavItems, adminNavItem } from '@/lib/navigation'
 import type { AccessRole } from '@/server/auth/access'
 import { can } from '@/server/auth/permissions'
 import { useSidebarStore } from '@/stores/sidebar-store'
@@ -49,7 +49,7 @@ export function AppSidebar({ role }: { role: AccessRole }) {
           <GlobalSearchTrigger expanded={expanded} />
         </div>
         <nav className="mt-2 flex flex-1 flex-col gap-1">
-          {navItems.map((item) => (
+          {visibleNavItems(role).map((item) => (
             <NavLink key={item.href} item={item} active={isActive(item.href)} expanded={expanded} />
           ))}
         </nav>

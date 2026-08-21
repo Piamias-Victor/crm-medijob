@@ -3,7 +3,7 @@
 **Issue** : https://github.com/Piamias-Victor/crm-medijob/issues/231  
 **Parent** : PRD #321 — Job board  
 **Blocked by** : #230 · #224  
-**Slug branche** : `feat/issue-231-applications-ingest`
+**Slug branche** : `feat/issue-231-applications-inbox`
 
 ---
 
@@ -35,7 +35,8 @@ Lire `docs/prompt-rules.md` et `docs/github-rules.md`. Handoffs #230 / #224 s’
 ```bash
 cd /Users/victorpiamias/Desktop/Dev/ia/medijob
 git fetch origin
-git checkout -b feat/issue-231-applications-ingest origin/dev
+# Interdit: git worktree — rester dans medijob
+git checkout -b feat/issue-231-applications-inbox origin/dev
 ```
 
 ---

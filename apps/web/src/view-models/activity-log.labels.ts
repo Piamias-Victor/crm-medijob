@@ -14,3 +14,5 @@ export const ACTIVITY_TYPE_LABELS: Record<ActivityTypeValue, string> = {
 export const ACTIVITY_TYPE_OPTIONS = (
   Object.entries(ACTIVITY_TYPE_LABELS) as [ActivityTypeValue, string][]
 ).map(([value, label]) => ({ value, label }))
+
+export const ACTIVITY_LOG_FILTER_LABEL = 'Filtrer par type'

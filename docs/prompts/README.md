@@ -29,10 +29,10 @@ Si des fichiers réapparaissent dans `pending/` après un merge : supprimer les 
 
 | Phase | Action |
 |-------|--------|
-| 1 Setup | Lire règles · branche · worktree si parallèle · `/caveman` |
+| 1 Setup | Lire règles · branche dans `medijob` · `/caveman` (**interdit worktree**) |
 | 2 Implémentation | `/tdd` |
 | 3 Prêt à tester | Push + PR + **commande de test + tests manuels** (obligatoire) |
 | 4 Handoff | `/handoff` → commit handoff dans la PR |
-| 5 Cleanup | Supprimer worktree · `pending/` → `done/` après merge |
+| 5 Cleanup | Supprimer la branche locale · `pending/` → `done/` après merge |
 
 Détail : `docs/prompt-rules.md`

@@ -116,6 +116,23 @@ enum InterviewDecision {
   REVIEW
 }
 
+enum DevisKind {
+  INTERIM
+  CDD
+  CDI
+}
+
+enum DevisStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+}
+
+enum DevisHtSource {
+  ENGINE
+  TYPED
+}
+
 // ─── Auth (NextAuth v5) ───────────────────────────────────────
 
 model Account {
@@ -402,6 +419,7 @@ model Mission {
   tempsPlein       Boolean       @default(true)
   profilRecherche  String?
   notes            String?
+  marge            Float?
   deletedAt        DateTime?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
@@ -414,11 +432,37 @@ model Mission {
   jobOffer   JobOffer?
   activities ActivityLog[]      @relation("MissionActivities")
   documents  Document[]         @relation("MissionDocuments")
+  devis      Devis[]
 
   @@index([deletedAt])
   @@index([pharmacyId])
   @@index([referentId])
   @@index([status])
+}
+
+model Devis {
+  id         String        @id @default(cuid())
+  missionId  String
+  kind       DevisKind
+  status     DevisStatus   @default(DRAFT)
+  hours      Float?
+  hourlyRate Float?
+  amountHt   Float?
+  amountTtc  Float?
+  htSource   DevisHtSource @default(TYPED)
+  sentAt     DateTime?
+  acceptedAt DateTime?
+  invoicedAt DateTime?
+  deletedAt  DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@index([missionId])
+  @@index([deletedAt])
+  @@index([status])
+  @@index([sentAt])
 }
 
 model MissionCandidate {
@@ -444,7 +488,7 @@ model JobOffer {
   title         String
   content       String
   status        JobOfferStatus @default(BROUILLON)
-  webflowItemId String?
+  boardListingId String?
   publishedAt   DateTime?
   deletedAt     DateTime?
   createdAt     DateTime       @default(now())

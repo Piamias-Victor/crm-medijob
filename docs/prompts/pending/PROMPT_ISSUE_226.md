@@ -13,4 +13,6 @@
 Parcours recruteur : prompts `done/` #297–#303.  
 Admin trames : `docs/prompts/pending/PROMPT_ISSUE_312.md` … `315.md`, dans l’ordre des dépendances.
 
+**Interdit : `git worktree`.** Une branche à la fois dans `/Users/victorpiamias/Desktop/Dev/ia/medijob`.
+
 PRD : `docs/PRD_ENTRETIENS_V1.md`

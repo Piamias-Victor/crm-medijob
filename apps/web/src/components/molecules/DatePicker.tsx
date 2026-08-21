@@ -22,6 +22,7 @@ type Props = {
   id?: string
   emptyLabel?: string
   clearLabel?: string
+  ariaLabel?: string
 }
 
 export function DatePicker({
@@ -30,6 +31,7 @@ export function DatePicker({
   id,
   emptyLabel = ASAP_DATE_LABEL,
   clearLabel = ASAP_DATE_LABEL,
+  ariaLabel,
 }: Props) {
   const selected = parseIsoDate(value)
   const today = new Date()
@@ -81,6 +83,7 @@ export function DatePicker({
       <button
         id={id}
         type="button"
+        aria-label={ariaLabel}
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm text-fg outline-none transition-colors hover:border-accent focus:border-accent focus:ring-2 focus:ring-accent-muted"
       >

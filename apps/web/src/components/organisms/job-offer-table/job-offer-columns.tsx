@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { ColumnDef } from '@/components/organisms/entity-table/entity-table-types'
 import type { JobOfferListRow } from '@/view-models/job-offer-list'
 import { jobOfferStatusLabel } from '@/view-models/job-offer-status'
+import { missionOffreHref } from '@/view-models/mission-offer-picker'
 
 export const jobOfferColumns: ColumnDef<JobOfferListRow>[] = [
   {
@@ -26,7 +27,7 @@ export const jobOfferColumns: ColumnDef<JobOfferListRow>[] = [
     sortable: true,
     cell: (row) => (
       <Link
-        href={`/missions/${row.missionId}?tab=offre`}
+        href={missionOffreHref(row.missionId)}
         className="text-sm text-accent hover:underline"
         onClick={(event) => event.stopPropagation()}
       >

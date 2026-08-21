@@ -5,6 +5,8 @@ import { makeUserRouter } from '@/server/routers/admin/user'
 import { makeUserDeps } from '@/server/routers/admin/user.test.fixtures'
 import { makePharmacyRouter } from '@/server/routers/pharmacy'
 import { makeDeps as makePharmacyDeps } from '@/server/routers/pharmacy.test.deps'
+import { makeFacturationRouter } from '@/server/routers/facturation'
+import { facturationTestDeps } from '@/server/routers/facturation.test.deps'
 import type { UserRole } from '@/server/auth/permissions'
 
 function sess(role: UserRole) {
@@ -36,6 +38,23 @@ describe('permission matrix via createCaller', () => {
         session: sess(role),
       })
       await expect(caller.softDelete({ id: 'p1' })).rejects.toMatchObject({ code: 'FORBIDDEN' })
+    },
+  )
+
+  it.each(['DIRECTION', 'RH_ADMIN'] as const)('%s can list facturation suivi', async (role) => {
+    const caller = createCallerFactory(makeFacturationRouter(facturationTestDeps()))({
+      session: sess(role),
+    })
+    await expect(caller.listSuivi()).resolves.toBeDefined()
+  })
+
+  it.each(['RECRUTEUR', 'COMMUNICATION'] as const)(
+    '%s cannot list facturation suivi',
+    async (role) => {
+      const caller = createCallerFactory(makeFacturationRouter(facturationTestDeps()))({
+        session: sess(role),
+      })
+      await expect(caller.listSuivi()).rejects.toMatchObject({ code: 'FORBIDDEN' })
     },
   )
 })

@@ -169,7 +169,7 @@ Session passée en validation par lots (OK / écarts / questions client).
 ## LOT I — Dashboard + ajouts — CONFIRMÉ
 - **V1-066 / V1-067** : KPI + centre d’alertes (Q11 relances)
 - **ADD Entretien** : in scope — champs CRM (Q12)
-- **ADD Finance** : **IN SCOPE V1** (présent dans CSV) — inventaire proto + Facturation/Devis (Q13)
+- **ADD Finance** : **IN SCOPE V1** — Q13 tranché (2026-08-19) : sous-ensemble CRM-native, spec `docs/PRD_FINANCE_DEVIS_V1.md` (remplace HITL inventaire #234)
 - Source de vérité CSV : `docs/Guide_CRM_V1_Operationnel.csv`
 
 ## Grill CSV V1 — STATUT

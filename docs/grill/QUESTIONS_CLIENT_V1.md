@@ -122,3 +122,10 @@ Confirmez que https://medijob-eval.netlify.app/ est la référence des champs d�
 Le CSV demande le tableau de suivi perf + Facturation/Devis (https://op-medijob.netlify.app).
 Quels écrans / indicateurs / entités (devis, factures, CA, marge) doivent être dans le CRM V1 ? Tout le proto, ou un sous-ensemble ?
 
+#### Answer (2026-08-19)
+**Sous-ensemble CRM-native** — pas tout le proto, pas d’iframe Netlify. Confirmé grill (Victor).
+
+V1 = **Devis** first-class sur la **Mission** (prix libre, PDF + Gmail) + **Facturation** (stats + liste) pour Direction / RH-Admin. **Commercial status** parallèle au Mission status. CA = montant du Devis **accepté** (une fois, date d’acceptation) ; Marge saisie manuelle ; Facturé = marque + date. Annulée → CA 0. Pas d’estimateur candidat, pas de coupe par candidat, pas d’entité Facture, pas d’admin tarifs.
+
+Spec : `docs/PRD_FINANCE_DEVIS_V1.md`.
+

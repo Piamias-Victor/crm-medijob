@@ -28,6 +28,8 @@ describe('dashboardRouter', () => {
     const caller = createCallerFactory(makeDashboardRouter({ getOverview }))({ session })
 
     await expect(caller.overview()).resolves.toEqual(overview)
+    expect(overview).not.toHaveProperty('ca')
+    expect(overview).not.toHaveProperty('marge')
     expect(getOverview).toHaveBeenCalledOnce()
   })
 })
