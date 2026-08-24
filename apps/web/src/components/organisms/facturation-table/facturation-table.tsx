@@ -3,7 +3,6 @@
 import { Receipt } from 'lucide-react'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import { facturationTableColumns } from '@/components/organisms/facturation-table/facturation-table-columns'
-import { facturationLineStatusColumns } from '@/components/organisms/facturation-table/facturation-line-status-columns'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 import type { ReactNode } from 'react'
 
@@ -16,7 +15,7 @@ export function FacturationTable({ rows, renderActions }: Props) {
   return (
     <EntityTable
       rows={rows}
-      columns={[...facturationTableColumns, ...facturationLineStatusColumns]}
+      columns={facturationTableColumns}
       getRowId={(row) => row.financeLineId ?? row.missionId ?? ''}
       getRowHref={(row) => (row.missionId ? `/missions/${row.missionId}` : '')}
       emptyIcon={Receipt}

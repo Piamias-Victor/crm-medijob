@@ -5,8 +5,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { FacturationTable } from '@/components/organisms/facturation-table/facturation-table'
-import { FinanceLineDevisAction } from '@/components/molecules/FinanceLineDevisAction'
-import { FinanceLineStatusActions } from '@/components/molecules/FinanceLineStatusActions'
+import { FinanceLineRowActions } from '@/components/molecules/FinanceLineRowActions'
 import { FinanceLineCreateModal } from '@/components/organisms/FinanceLineCreateModal'
 import { useFacturationSuiviQuery } from '@/lib/hooks/use-facturation-suivi-query'
 import type { FacturationFilterConfig } from '@/lib/filters/facturation-filter-config'
@@ -62,12 +61,7 @@ export function FacturationSuiviPage({
       />
       <FacturationTable
         rows={rows}
-        renderActions={(row) => (
-          <div className="flex justify-end gap-1">
-            <FinanceLineStatusActions row={row} />
-            <FinanceLineDevisAction row={row} />
-          </div>
-        )}
+        renderActions={(row) => <FinanceLineRowActions row={row} />}
       />
       <FinanceLineCreateModal
         open={open}
