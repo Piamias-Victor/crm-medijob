@@ -19,11 +19,17 @@ function caller(role: UserRole) {
 }
 
 describe('facturationRouter listLines', () => {
-  it.each(['RECRUTEUR', 'COMMUNICATION'] as const)('%s cannot list Placements', async (role) => {
-    await expect(caller(role).listLines({ kind: 'PLACEMENT' })).rejects.toMatchObject({
-      code: 'FORBIDDEN',
-    })
-  })
+  it.each(['RECRUTEUR', 'COMMUNICATION'] as const)(
+    '%s cannot list Placements or Intérim',
+    async (role) => {
+      await expect(caller(role).listLines({ kind: 'PLACEMENT' })).rejects.toMatchObject({
+        code: 'FORBIDDEN',
+      })
+      await expect(caller(role).listLines({ kind: 'INTERIM' })).rejects.toMatchObject({
+        code: 'FORBIDDEN',
+      })
+    },
+  )
 
   it('lists Placement lines only for Direction', async () => {
     const api = caller('DIRECTION')
