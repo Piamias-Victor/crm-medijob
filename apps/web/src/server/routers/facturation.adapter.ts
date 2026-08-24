@@ -7,6 +7,7 @@ import { listFacturationSuivi } from '@/lib/finance/list-facturation-suivi'
 import { listFinanceLines } from '@/lib/finance/list-finance-lines'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
 import { buildPilotage } from '@/view-models/facturation-pilotage'
+import { objectifRepository } from '@/server/db/repositories/objectif.repository'
 import { generateDevisFromLineId, sendDevisFromLineId } from '@/server/finance/finance-line-devis'
 import {
   previewDevisFromForm,
@@ -16,11 +17,12 @@ import {
 import { makeFacturationRouter } from '@/server/routers/facturation'
 
 async function loadSources() {
-  const [missions, lines] = await Promise.all([
+  const [missions, lines, objectif] = await Promise.all([
     facturationRepository.listMissions(),
     financeLineRepository.list(),
+    objectifRepository.get(),
   ])
-  return { missions, lines }
+  return { missions, lines, objectif }
 }
 
 export const facturationRouter = makeFacturationRouter({
@@ -37,8 +39,8 @@ export const facturationRouter = makeFacturationRouter({
     return buildFacturationOverview(missions, filters, lines)
   },
   pilotage: async (filters) => {
-    const { missions, lines } = await loadSources()
-    return buildPilotage(lines, missions, filters)
+    const { missions, lines, objectif } = await loadSources()
+    return buildPilotage(lines, missions, filters, new Date(), objectif)
   },
   referentials: async () => {
     const [pharmacies, recruiters, candidates, missions] = await Promise.all([

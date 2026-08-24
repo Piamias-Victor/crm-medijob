@@ -1,13 +1,14 @@
 import { deriveMissionCa } from '@/lib/finance/derive-mission-finance'
 import { pickCurrentDevis } from '@/lib/finance/pick-current-devis'
 import type { FacturationMissionRecord } from '@/view-models/facturation-suivi'
-import type { FinanceLineRecord } from '@/view-models/finance-line'
+import type { FinanceLineRecord, PlacementContractType } from '@/view-models/finance-line'
 
 export type PilotagePole = 'placement' | 'interim'
 
 export type PilotageContribution = {
   cancelled: boolean
   pole: PilotagePole
+  placementType: PlacementContractType | null
   ca: number
   marge: number
   pharmacyId: string
@@ -20,11 +21,16 @@ function poleFromContract(contractType: string): PilotagePole {
   return contractType === 'CDD' || contractType === 'CDI' ? 'placement' : 'interim'
 }
 
+function placementTypeOf(contractType: string): PlacementContractType | null {
+  return contractType === 'CDD' || contractType === 'CDI' ? contractType : null
+}
+
 export function contributionFromLine(line: FinanceLineRecord): PilotageContribution {
   const pole: PilotagePole = line.kind === 'INTERIM' ? 'interim' : 'placement'
   return {
     cancelled: line.cancelled,
     pole,
+    placementType: pole === 'placement' ? line.placementContractType : null,
     ca: line.amountHt,
     marge: line.marge ?? 0,
     pharmacyId: line.pharmacyId,
@@ -43,6 +49,7 @@ export function contributionFromMission(
   return {
     cancelled: false,
     pole: poleFromContract(mission.contractType),
+    placementType: placementTypeOf(mission.contractType),
     ca,
     marge: mission.marge ?? 0,
     pharmacyId: mission.pharmacyId,
