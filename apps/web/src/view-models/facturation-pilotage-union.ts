@@ -6,14 +6,18 @@ import type { FinanceLineRecord, PlacementContractType } from '@/view-models/fin
 export type PilotagePole = 'placement' | 'interim'
 
 export type PilotageContribution = {
+  id: string
   cancelled: boolean
   pole: PilotagePole
   placementType: PlacementContractType | null
   ca: number
   marge: number
   pharmacyId: string
+  pharmacyName: string
+  candidateName: string
   occurredAt: Date
   referentId: string | null
+  referentName: string | null
   countsAsPlacement: boolean
 }
 
@@ -28,14 +32,18 @@ function placementTypeOf(contractType: string): PlacementContractType | null {
 export function contributionFromLine(line: FinanceLineRecord): PilotageContribution {
   const pole: PilotagePole = line.kind === 'INTERIM' ? 'interim' : 'placement'
   return {
+    id: line.id,
     cancelled: line.cancelled,
     pole,
     placementType: pole === 'placement' ? line.placementContractType : null,
     ca: line.amountHt,
     marge: line.marge ?? 0,
     pharmacyId: line.pharmacyId,
+    pharmacyName: line.pharmacyName,
+    candidateName: line.candidateName,
     occurredAt: line.occurredAt,
     referentId: line.referentId,
+    referentName: line.referentName,
     countsAsPlacement: pole === 'placement',
   }
 }
@@ -47,14 +55,18 @@ export function contributionFromMission(
   const ca = deriveMissionCa(mission.status, current)
   if (ca === 0 || !current?.acceptedAt) return null
   return {
+    id: mission.id,
     cancelled: false,
     pole: poleFromContract(mission.contractType),
     placementType: placementTypeOf(mission.contractType),
     ca,
     marge: mission.marge ?? 0,
     pharmacyId: mission.pharmacyId,
+    pharmacyName: mission.pharmacyName,
+    candidateName: '',
     occurredAt: current.acceptedAt,
     referentId: mission.referentId,
+    referentName: mission.referentName,
     countsAsPlacement: false,
   }
 }

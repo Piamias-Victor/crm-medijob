@@ -4,7 +4,11 @@ import { Alert } from '@/components/atoms/Alert'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { StatTiles } from '@/components/molecules/StatTiles'
 import { FacturationPilotageCharts } from '@/components/organisms/FacturationPilotageCharts'
+import { FacturationPilotageConversion } from '@/components/organisms/FacturationPilotageConversion'
 import { FacturationPilotageGauge } from '@/components/organisms/FacturationPilotageGauge'
+import { FacturationPilotageGoNoGo } from '@/components/organisms/FacturationPilotageGoNoGo'
+import { FacturationPilotageMatrix } from '@/components/organisms/FacturationPilotageMatrix'
+import { FacturationPilotageMonthly } from '@/components/organisms/FacturationPilotageMonthly'
 import { FacturationPilotagePoles } from '@/components/organisms/FacturationPilotagePoles'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { useFacturationPilotageQuery } from '@/lib/hooks/use-facturation-pilotage-query'
@@ -48,6 +52,10 @@ export function FacturationPilotagePage({ initialPilotage, serverFilters, filter
       <FacturationPilotageGauge gauge={pilotage.gauge} />
       <FacturationPilotagePoles key={pilotage.months.join(',')} poles={pilotage.poles} />
       <FacturationPilotageCharts charts={pilotage.charts} />
+      <FacturationPilotageConversion conversion={pilotage.conversion} />
+      <FacturationPilotageGoNoGo goNoGo={pilotage.goNoGo} />
+      <FacturationPilotageMonthly key={pilotage.months.join(',')} monthly={pilotage.monthly} />
+      <FacturationPilotageMatrix matrix={pilotage.matrix} />
     </div>
   )
 }
