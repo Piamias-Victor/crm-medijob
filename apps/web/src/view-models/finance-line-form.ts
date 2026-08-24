@@ -1,19 +1,27 @@
 import { z } from 'zod'
-import { FINANCE_LINE_KINDS } from '@/view-models/finance-line'
+import { FINANCE_LINE_KINDS, PLACEMENT_CONTRACT_TYPES } from '@/view-models/finance-line'
 import { createFinanceLineSchema, financeLineDevisSchema, type CreateFinanceLineInput, type FinanceLineDevisInput } from '@/view-models/finance-line.schema'
+import { requirePlacementContract } from '@/view-models/finance-line-placement'
 
-export const financeLineFormSchema = z.object({
-  pharmacyId: z.string().min(1, 'Pharmacie requise'),
-  candidateId: z.string().min(1, 'Candidat requis'),
-  missionId: z.string(),
-  kind: z.enum(FINANCE_LINE_KINDS),
-  hours: z.string(),
-  hourlyRate: z.string(),
-  amountHt: z.string().min(1, 'Montant HT requis'),
-  htSource: z.enum(['ENGINE', 'TYPED']),
-  marge: z.string(),
-  occurredAt: z.string().min(1, 'Date requise'),
-})
+export const financeLineFormSchema = z
+  .object({
+    pharmacyId: z.string().min(1, 'Pharmacie requise'),
+    candidateId: z.string().min(1, 'Candidat requis'),
+    missionId: z.string(),
+    kind: z.enum(FINANCE_LINE_KINDS),
+    placementContractType: z.string(),
+    referentId: z.string(),
+    hours: z.string(),
+    hourlyRate: z.string(),
+    amountHt: z.string().min(1, 'Montant HT requis'),
+    htSource: z.enum(['ENGINE', 'TYPED']),
+    marge: z.string(),
+    occurredAt: z.string().min(1, 'Date requise'),
+  })
+  .refine((data) => requirePlacementContract(data.kind, data.placementContractType), {
+    path: ['placementContractType'],
+    message: 'CDD ou CDI requis',
+  })
 
 export type FinanceLineFormValues = z.infer<typeof financeLineFormSchema>
 
@@ -22,12 +30,19 @@ export const FINANCE_LINE_KIND_OPTIONS = [
   { value: 'INTERIM', label: 'Intérim' },
 ] as const
 
+export const PLACEMENT_TYPE_OPTIONS = PLACEMENT_CONTRACT_TYPES.map((value) => ({
+  value,
+  label: value,
+}))
+
 export function defaultFinanceLineFormValues(): FinanceLineFormValues {
   return {
     pharmacyId: '',
     candidateId: '',
     missionId: '',
     kind: 'PLACEMENT',
+    placementContractType: '',
+    referentId: '',
     hours: '',
     hourlyRate: '',
     amountHt: '',
@@ -53,6 +68,8 @@ export function toCreateFinanceLineInput(
     marge: values.marge === '' ? null : Number(values.marge),
     occurredAt: values.occurredAt,
     devisId: devisId || undefined,
+    placementContractType: values.placementContractType || null,
+    referentId: values.referentId || null,
   })
 }
 

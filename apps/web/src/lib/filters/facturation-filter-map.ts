@@ -17,6 +17,7 @@ type DimensionValues = {
   etat: string[]
   pharmacie: string[]
   referent: string[]
+  annulation: string
 }
 
 function mapDimensions(values: DimensionValues): FacturationSuiviFilters {
@@ -28,11 +29,14 @@ function mapDimensions(values: DimensionValues): FacturationSuiviFilters {
     (value): value is (typeof COMMERCIAL_STATUSES)[number] =>
       (COMMERCIAL_STATUSES as readonly string[]).includes(value),
   )
+  const cancelled =
+    values.annulation === 'CANCELLED' ? true : values.annulation === 'ACTIVE' ? false : undefined
   return {
     contractTypes: contractTypes.length ? contractTypes : undefined,
     pharmacyIds: values.pharmacie.length ? values.pharmacie : undefined,
     referentIds: values.referent.length ? values.referent : undefined,
     commercialStatuses: commercialStatuses.length ? commercialStatuses : undefined,
+    ...(cancelled === undefined ? {} : { cancelled }),
   }
 }
 

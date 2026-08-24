@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { FacturationTable } from '@/components/organisms/facturation-table/facturation-table'
-import { FinanceLineDevisAction } from '@/components/molecules/FinanceLineDevisAction'
+import { FinanceLineRowActions } from '@/components/molecules/FinanceLineRowActions'
 import { FinanceLineCreateModal } from '@/components/organisms/FinanceLineCreateModal'
 import { useFacturationSuiviQuery } from '@/lib/hooks/use-facturation-suivi-query'
 import type { FacturationFilterConfig } from '@/lib/filters/facturation-filter-config'
@@ -22,6 +22,7 @@ type Props = {
   pharmacies: Ref[]
   candidates: Ref[]
   missions: FacturationMissionOption[]
+  recruiters: Ref[]
 }
 
 export function FacturationSuiviPage({
@@ -31,6 +32,7 @@ export function FacturationSuiviPage({
   pharmacies,
   candidates,
   missions,
+  recruiters,
 }: Props) {
   const [open, setOpen] = useState(false)
   const [count, setCount] = useState(initialRows.length)
@@ -59,7 +61,7 @@ export function FacturationSuiviPage({
       />
       <FacturationTable
         rows={rows}
-        renderActions={(row) => <FinanceLineDevisAction row={row} />}
+        renderActions={(row) => <FinanceLineRowActions row={row} />}
       />
       <FinanceLineCreateModal
         open={open}
@@ -67,6 +69,7 @@ export function FacturationSuiviPage({
         pharmacies={pharmacies}
         candidates={candidates}
         missions={missions}
+        recruiters={recruiters}
       />
     </div>
   )

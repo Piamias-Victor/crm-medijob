@@ -193,6 +193,7 @@ model User {
   activities    ActivityLog[]
   gdprErases     GdprEraseAudit[]
   interviewRefs  Interview[]      @relation("ReferentInterviews")
+  financeLineRefs FinanceLine[]    @relation("ReferentFinanceLines")
   accounts       Account[]
   sessions       Session[]
 
@@ -487,6 +488,11 @@ model FinanceLine {
   htSource    DevisHtSource   @default(TYPED)
   marge       Float?
   occurredAt  DateTime
+  referentId  String?
+  placementContractType ContractType?
+  cancelled   Boolean         @default(false)
+  invoiced    Boolean         @default(false)
+  paid        Boolean         @default(false)
   deletedAt   DateTime?
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -495,12 +501,14 @@ model FinanceLine {
   candidate Candidate @relation(fields: [candidateId], references: [id])
   mission   Mission?  @relation(fields: [missionId], references: [id], onDelete: SetNull)
   devis     Devis?    @relation(fields: [devisId], references: [id], onDelete: SetNull)
+  referent  User?     @relation("ReferentFinanceLines", fields: [referentId], references: [id], onDelete: SetNull)
 
   @@index([pharmacyId])
   @@index([candidateId])
   @@index([missionId])
   @@index([deletedAt])
   @@index([occurredAt])
+  @@index([referentId])
 }
 
 model MissionCandidate {

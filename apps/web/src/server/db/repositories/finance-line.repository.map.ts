@@ -1,3 +1,4 @@
+import { isPlacementContractType } from '@/view-models/finance-line-placement'
 import type { FinanceLineRecord } from '@/view-models/finance-line'
 import type { FinanceLineQueryRow } from '@/server/db/repositories/finance-line.repository.select'
 
@@ -18,5 +19,13 @@ export function toFinanceLineRecord(row: FinanceLineQueryRow): FinanceLineRecord
     marge: row.marge,
     occurredAt: row.occurredAt,
     devisStatus: row.devis?.status ?? null,
+    referentId: row.referentId,
+    referentName: row.referent?.name ?? null,
+    placementContractType: isPlacementContractType(row.placementContractType)
+      ? row.placementContractType
+      : null,
+    cancelled: row.cancelled,
+    invoiced: row.invoiced,
+    paid: row.paid,
   }
 }

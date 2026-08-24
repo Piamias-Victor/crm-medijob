@@ -32,4 +32,7 @@ export type FacturationSuiviRow = {
   sentAt: Date | null
   acceptedAt: Date | null
   amountHt: number | null
+  cancelled?: boolean
+  invoiced?: boolean
+  paid?: boolean
 }

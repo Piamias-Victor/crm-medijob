@@ -11,6 +11,7 @@ export const facturationSuiviFiltersSchema = z.object({
   sentTo: z.string().optional(),
   acceptedFrom: z.string().optional(),
   acceptedTo: z.string().optional(),
+  cancelled: z.boolean().optional(),
 })
 
 export type FacturationSuiviFilters = z.infer<typeof facturationSuiviFiltersSchema>

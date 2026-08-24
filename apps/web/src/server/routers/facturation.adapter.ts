@@ -45,4 +45,8 @@ export const facturationRouter = makeFacturationRouter({
   previewDevis: previewDevisFromForm,
   saveDevis: saveDevisFromForm,
   sendDevis: sendDevisFromForm,
+  cancelLine: (id) => financeLineRepository.setCancelled(id, true),
+  restoreLine: (id) => financeLineRepository.setCancelled(id, false),
+  setInvoiced: (id, invoiced) => financeLineRepository.setInvoiced(id, invoiced),
+  setPaid: (id, paid) => financeLineRepository.setPaid(id, paid),
 })

@@ -11,15 +11,16 @@ type Props = {
   onChange: (value: string | null) => void
   recruiters: readonly Ref[]
   error?: string
+  emptyLabel?: string
 }
 
-export function ReferentField({ value, onChange, recruiters, error }: Props) {
+export function ReferentField({ value, onChange, recruiters, error, emptyLabel }: Props) {
   return (
     <FormField label="Référent" error={error}>
       <Combobox
         value={value ?? ''}
         onChange={(next) => onChange(next || null)}
-        options={buildReferentSelectOptions(recruiters)}
+        options={buildReferentSelectOptions(recruiters, emptyLabel)}
         placeholder="Choisir un référent"
       />
     </FormField>
