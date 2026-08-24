@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
 export default function Page() {
-  redirect('/facturation/suivi')
+  redirect('/facturation/placements')
 }

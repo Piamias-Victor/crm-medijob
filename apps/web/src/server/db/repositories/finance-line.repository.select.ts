@@ -19,7 +19,7 @@ export const financeLineSelect = {
   referentId: true,
   placementContractType: true,
   pharmacy: { select: { name: true } },
-  candidate: { select: { firstName: true, lastName: true } },
+  candidate: { select: { firstName: true, lastName: true, jobTitle: { select: { name: true } } } },
   referent: { select: { name: true } },
   devis: { select: { status: true } },
 } satisfies Prisma.FinanceLineSelect

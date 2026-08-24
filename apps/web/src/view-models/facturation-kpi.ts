@@ -13,7 +13,7 @@ const STATUS_ICONS = {
 } as const
 
 function statusHref(status: CommercialStatus) {
-  return `/facturation/suivi?etat=${status}`
+  return `/facturation?etat=${status}`
 }
 
 export function buildFacturationKpis(
@@ -30,7 +30,7 @@ export function buildFacturationKpis(
   return [
     ...counts,
     {
-      href: '/facturation/suivi',
+      href: '/facturation',
       label: 'CA',
       caption: 'HT accepté',
       value: formatDevisPdfAmount(overview.ca),
@@ -38,7 +38,7 @@ export function buildFacturationKpis(
       accent: true,
     },
     {
-      href: '/facturation/suivi',
+      href: '/facturation',
       label: 'Marge',
       caption: 'Missions acceptées',
       value: formatDevisPdfAmount(overview.marge),

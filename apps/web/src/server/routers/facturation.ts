@@ -1,5 +1,6 @@
 import { router, financeProcedure } from '@/server/trpc'
 import { facturationSuiviFiltersSchema } from '@/view-models/facturation-suivi-filters.schema'
+import { facturationLineListFiltersSchema } from '@/view-models/facturation-line-filters.schema'
 import {
   createFinanceLineSchema,
   financeLineDevisSchema,
@@ -15,6 +16,9 @@ export function makeFacturationRouter(deps: FacturationDeps) {
     listSuivi: financeProcedure
       .input(facturationSuiviFiltersSchema.optional())
       .query(async ({ input }) => ({ rows: await deps.listSuivi(input) })),
+    listLines: financeProcedure
+      .input(facturationLineListFiltersSchema)
+      .query(async ({ input }) => ({ rows: await deps.listLines(input) })),
     overview: financeProcedure
       .input(facturationSuiviFiltersSchema.optional())
       .query(({ input }) => deps.overview(input)),

@@ -4,6 +4,7 @@ import { userRepository } from '@/server/db/repositories/user.repository'
 import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { listCandidatePickerOptions } from '@/server/read-models/candidate-picker'
 import { listFacturationSuivi } from '@/lib/finance/list-facturation-suivi'
+import { listFinanceLines } from '@/lib/finance/list-finance-lines'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
 import { generateDevisFromLineId, sendDevisFromLineId } from '@/server/finance/finance-line-devis'
 import {
@@ -25,6 +26,10 @@ export const facturationRouter = makeFacturationRouter({
   listSuivi: async (filters) => {
     const { missions, lines } = await loadSources()
     return listFacturationSuivi(missions, filters, lines)
+  },
+  listLines: async (filters) => {
+    const { lines } = await loadSources()
+    return listFinanceLines(lines, filters)
   },
   overview: async (filters) => {
     const { missions, lines } = await loadSources()

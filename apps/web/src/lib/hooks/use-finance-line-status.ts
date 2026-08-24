@@ -2,15 +2,13 @@
 
 import { trpc } from '@/lib/trpc/client'
 import { useToastStore } from '@/stores/toast-store'
+import { invalidateFacturationQueries } from '@/lib/hooks/invalidate-facturation-queries'
 import { financeLineActionToast } from '@/view-models/finance-line-action-toast'
 
 export function useFinanceLineStatus() {
   const utils = trpc.useUtils()
   const push = useToastStore((s) => s.push)
-  const refresh = () => {
-    void utils.facturation.listSuivi.invalidate()
-    void utils.facturation.overview.invalidate()
-  }
+  const refresh = () => invalidateFacturationQueries(utils)
   const fail = (error: { message?: string }) => {
     push({ variant: 'error', message: error.message ?? 'Erreur' })
   }

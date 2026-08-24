@@ -10,6 +10,7 @@ vi.mock('@/lib/trpc/client', () => {
       useUtils: () => ({
         facturation: {
           listSuivi: { invalidate: vi.fn() },
+          listLines: { invalidate: vi.fn() },
           overview: { invalidate: vi.fn() },
         },
       }),

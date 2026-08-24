@@ -1,31 +1,38 @@
 'use client'
 
-import { useCallback, useState } from 'react'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/atoms/Button'
+import { useState } from 'react'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { FacturationTable } from '@/components/organisms/facturation-table/facturation-table'
+import { FacturationLinesHeader } from '@/components/organisms/FacturationLinesHeader'
 import { FinanceLineRowActions } from '@/components/molecules/FinanceLineRowActions'
 import { FinanceLineCreateModal } from '@/components/organisms/FinanceLineCreateModal'
-import { useFacturationSuiviQuery } from '@/lib/hooks/use-facturation-suivi-query'
-import type { FacturationFilterConfig } from '@/lib/filters/facturation-filter-config'
-import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
+import { useFacturationLinesQuery } from '@/lib/hooks/use-facturation-lines-query'
+import type { FacturationLinesFilterConfig } from '@/lib/filters/facturation-lines-filter-config'
+import type { FacturationLineListFiltersInput } from '@/view-models/facturation-line-filters.schema'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
-import type { FacturationMissionOption } from '@/view-models/finance-line'
+import type { FacturationMissionOption, FinanceLineKind } from '@/view-models/finance-line'
 
 type Ref = { id: string; name: string }
 
 type Props = {
+  kind: FinanceLineKind
+  createLabel: string
+  createTitle: string
+  csvFilename: string
   initialRows: FacturationSuiviRow[]
-  serverFilters: FacturationSuiviFilters
-  filterConfig: FacturationFilterConfig
+  serverFilters: FacturationLineListFiltersInput
+  filterConfig: FacturationLinesFilterConfig
   pharmacies: Ref[]
   candidates: Ref[]
   missions: FacturationMissionOption[]
   recruiters: Ref[]
 }
 
-export function FacturationSuiviPage({
+export function FacturationLinesPage({
+  kind,
+  createLabel,
+  createTitle,
+  csvFilename,
   initialRows,
   serverFilters,
   filterConfig,
@@ -35,37 +42,32 @@ export function FacturationSuiviPage({
   recruiters,
 }: Props) {
   const [open, setOpen] = useState(false)
-  const [count, setCount] = useState(initialRows.length)
-  const onCountChange = useCallback((next: number) => setCount(next), [])
-  const { values, setFilters, reset, rows } = useFacturationSuiviQuery(
+  const { values, setFilters, reset, rows } = useFacturationLinesQuery(
+    kind,
     initialRows,
     serverFilters,
     filterConfig,
-    onCountChange,
   )
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-fg-muted">{count} ligne(s) — devis et suivi.</p>
-        <Button variant="accent" className="shadow-md shadow-accent/20" onClick={() => setOpen(true)}>
-          <Plus className="size-4" />
-          Nouvelle ligne
-        </Button>
-      </div>
+      <FacturationLinesHeader
+        rows={rows}
+        csvFilename={csvFilename}
+        createLabel={createLabel}
+        onCreate={() => setOpen(true)}
+      />
       <FacturationFilterBar
         filterConfig={filterConfig}
         values={values}
         onChange={setFilters}
         onReset={reset}
       />
-      <FacturationTable
-        rows={rows}
-        renderActions={(row) => <FinanceLineRowActions row={row} />}
-      />
+      <FacturationTable rows={rows} renderActions={(row) => <FinanceLineRowActions row={row} />} />
       <FinanceLineCreateModal
         open={open}
         onClose={() => setOpen(false)}
+        title={createTitle}
+        defaultKind={kind}
         pharmacies={pharmacies}
         candidates={candidates}
         missions={missions}

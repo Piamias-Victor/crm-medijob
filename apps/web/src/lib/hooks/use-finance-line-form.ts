@@ -13,8 +13,9 @@ import {
 } from '@/view-models/finance-line-form'
 import { filterMissionsForPharmacy } from '@/view-models/filter-missions-for-pharmacy'
 import { financeLineActionToast } from '@/view-models/finance-line-action-toast'
+import { invalidateFacturationQueries } from '@/lib/hooks/invalidate-facturation-queries'
 import type { useFinanceLineDevisPreview } from '@/lib/hooks/use-finance-line-devis-preview'
-import type { FacturationMissionOption } from '@/view-models/finance-line'
+import type { FacturationMissionOption, FinanceLineKind } from '@/view-models/finance-line'
 
 export type FinanceLineSubmitAction = 'save' | 'generate'
 
@@ -24,13 +25,14 @@ export function useFinanceLineForm(
   missions: FacturationMissionOption[],
   preview: Preview,
   onDone?: () => void,
+  defaultKind: FinanceLineKind = 'PLACEMENT',
 ) {
   const router = useRouter()
   const utils = trpc.useUtils()
   const push = useToastStore((s) => s.push)
   const form = useForm<FinanceLineFormValues>({
     resolver: zodResolver(financeLineFormSchema),
-    defaultValues: defaultFinanceLineFormValues(),
+    defaultValues: defaultFinanceLineFormValues(defaultKind),
   })
   const create = trpc.facturation.createLine.useMutation()
   const pharmacyId = form.watch('pharmacyId')
@@ -38,8 +40,7 @@ export function useFinanceLineForm(
 
   const finish = () => {
     push({ variant: 'success', message: financeLineActionToast.save })
-    void utils.facturation.listSuivi.invalidate()
-    void utils.facturation.overview.invalidate()
+    invalidateFacturationQueries(utils)
     router.refresh()
     onDone?.()
   }
