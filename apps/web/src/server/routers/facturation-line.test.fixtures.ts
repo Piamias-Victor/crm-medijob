@@ -1,6 +1,7 @@
 import { listFacturationSuivi } from '@/lib/finance/list-facturation-suivi'
 import { listFinanceLines } from '@/lib/finance/list-finance-lines'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
+import { buildPilotage } from '@/view-models/facturation-pilotage'
 import { memoryLineDevisMutations } from '@/server/routers/facturation-line.test.mutations'
 import { memoryFormDevis } from '@/server/routers/facturation-line.test.form-devis'
 import { memoryLineStatus } from '@/server/routers/facturation-line.test.status'
@@ -39,6 +40,7 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
     listSuivi: async (filters) => listFacturationSuivi([], filters, lines),
     listLines: async (filters) => listFinanceLines(lines, filters),
     overview: async (filters) => buildFacturationOverview([], filters, lines),
+    pilotage: async (filters) => buildPilotage(lines, [], filters),
     referentials: async () => ({
       pharmacies: [PHARMACY],
       recruiters: RECRUITERS,

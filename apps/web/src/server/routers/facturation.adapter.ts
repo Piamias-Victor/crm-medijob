@@ -6,6 +6,7 @@ import { listCandidatePickerOptions } from '@/server/read-models/candidate-picke
 import { listFacturationSuivi } from '@/lib/finance/list-facturation-suivi'
 import { listFinanceLines } from '@/lib/finance/list-finance-lines'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
+import { buildPilotage } from '@/view-models/facturation-pilotage'
 import { generateDevisFromLineId, sendDevisFromLineId } from '@/server/finance/finance-line-devis'
 import {
   previewDevisFromForm,
@@ -34,6 +35,10 @@ export const facturationRouter = makeFacturationRouter({
   overview: async (filters) => {
     const { missions, lines } = await loadSources()
     return buildFacturationOverview(missions, filters, lines)
+  },
+  pilotage: async (filters) => {
+    const { missions, lines } = await loadSources()
+    return buildPilotage(lines, missions, filters)
   },
   referentials: async () => {
     const [pharmacies, recruiters, candidates, missions] = await Promise.all([

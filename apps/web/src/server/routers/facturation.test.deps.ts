@@ -1,4 +1,5 @@
 import { EMPTY_FACTURATION_OVERVIEW } from '@/view-models/facturation-overview'
+import { EMPTY_PILOTAGE } from '@/view-models/facturation-pilotage'
 import type { FacturationDeps } from '@/server/routers/facturation'
 
 const emptyRefs = { pharmacies: [], recruiters: [], candidates: [], missions: [] }
@@ -51,6 +52,7 @@ export function facturationTestDeps(
     listSuivi,
     listLines,
     overview: async () => EMPTY_FACTURATION_OVERVIEW,
+    pilotage: async () => EMPTY_PILOTAGE,
     referentials: async () => emptyRefs,
     createLine: unusedCreateLine,
     generateDevisFromLine: unusedGenerateDevis,

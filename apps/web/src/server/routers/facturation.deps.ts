@@ -8,6 +8,8 @@ import type { GenerateDevisFromLineResult } from '@/lib/finance/generate-devis-f
 import type { SendDevisFromLineResult } from '@/server/finance/send-devis-from-line'
 import type { DevisView } from '@/view-models/devis'
 import type { DevisPdfModel } from '@/view-models/devis-pdf-model'
+import type { Pilotage } from '@/view-models/facturation-pilotage'
+import type { PilotageFilters } from '@/view-models/facturation-pilotage-filters.schema'
 
 type Ref = { id: string; name: string }
 
@@ -15,6 +17,7 @@ export type FacturationDeps = {
   listSuivi: (filters?: FacturationSuiviFilters) => Promise<FacturationSuiviRow[]>
   listLines: (filters: FacturationLineListFiltersInput) => Promise<FacturationSuiviRow[]>
   overview: (filters?: FacturationSuiviFilters) => Promise<FacturationOverview>
+  pilotage: (filters?: PilotageFilters) => Promise<Pilotage>
   referentials: () => Promise<{
     pharmacies: Ref[]
     recruiters: Ref[]

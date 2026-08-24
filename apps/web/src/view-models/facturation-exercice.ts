@@ -22,3 +22,11 @@ export function exerciceWindow(startYear: number) {
     to: new Date(Date.UTC(startYear + 1, 8, 30, 23, 59, 59, 999)),
   }
 }
+
+export function exerciceMonths(startYear: number): string[] {
+  return Array.from({ length: 12 }, (_, index) => {
+    const month = 9 + index
+    const year = startYear + Math.floor(month / 12)
+    return `${year}-${String((month % 12) + 1).padStart(2, '0')}`
+  })
+}

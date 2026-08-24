@@ -64,4 +64,11 @@ describe('permission matrix via createCaller', () => {
       await expect(caller.listSuivi()).rejects.toMatchObject({ code: 'FORBIDDEN' })
     },
   )
+
+  it.each(['RECRUTEUR', 'COMMUNICATION'] as const)('%s cannot read Pilotage', async (role) => {
+    const caller = createCallerFactory(makeFacturationRouter(facturationTestDeps()))({
+      session: sess(role),
+    })
+    await expect(caller.pilotage()).rejects.toMatchObject({ code: 'FORBIDDEN' })
+  })
 })
