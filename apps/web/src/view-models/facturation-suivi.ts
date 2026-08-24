@@ -32,6 +32,7 @@ export type FacturationSuiviRow = {
   commercialStatus: CommercialStatus
   sentAt: Date | null
   acceptedAt: Date | null
+  hours?: number | null
   amountHt: number | null
   marge?: number | null
   cancelled?: boolean

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { FacturationLinesPage } from '@/components/organisms/FacturationLinesPage'
+import { FacturationInterimPage } from '@/components/organisms/FacturationInterimPage'
 import { EntityListPageSkeleton } from '@/components/molecules/skeletons/EntityListPageSkeleton'
 import { loadFacturationLinesPage } from '@/lib/finance/load-facturation-lines-page'
 
@@ -9,8 +9,7 @@ export default async function Page({ searchParams }: Props) {
   const loaded = await loadFacturationLinesPage('INTERIM', await searchParams)
   return (
     <Suspense fallback={<EntityListPageSkeleton />}>
-      <FacturationLinesPage
-        kind="INTERIM"
+      <FacturationInterimPage
         createLabel="Nouvelle mission"
         createTitle="Nouvelle mission"
         csvFilename="interim"

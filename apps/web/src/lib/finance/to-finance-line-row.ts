@@ -25,6 +25,7 @@ export function toFinanceLineSuiviRow(line: FinanceLineRecord): FacturationSuivi
     commercialStatus: 'ACCEPTE',
     sentAt: null,
     acceptedAt: line.occurredAt,
+    hours: line.hours,
     amountHt: line.amountHt,
     marge: line.marge,
     cancelled: line.cancelled,
