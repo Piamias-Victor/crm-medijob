@@ -25,6 +25,12 @@ export const facturationTableColumns: ColumnDef<FacturationSuiviRow>[] = [
     sortable: true,
   },
   {
+    id: 'jobTitle',
+    header: 'Métier',
+    accessor: (row) => row.jobTitle ?? TABLE_EMPTY_CELL,
+    sortable: true,
+  },
+  {
     id: 'origin',
     header: 'Ligne',
     accessor: (row) => facturationRowOriginLabel(row),

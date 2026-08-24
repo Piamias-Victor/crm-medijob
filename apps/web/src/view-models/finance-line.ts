@@ -11,6 +11,7 @@ export type FinanceLineRecord = {
   pharmacyName: string
   candidateId: string
   candidateName: string
+  jobTitle: string | null
   missionId: string | null
   devisId: string | null
   hours: number | null

@@ -1,4 +1,5 @@
 import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
+import type { FacturationLineListFiltersInput } from '@/view-models/facturation-line-filters.schema'
 import type { CreateFinanceLineInput, FinanceLineDevisInput } from '@/view-models/finance-line.schema'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 import type { FacturationOverview } from '@/view-models/facturation-overview'
@@ -12,6 +13,7 @@ type Ref = { id: string; name: string }
 
 export type FacturationDeps = {
   listSuivi: (filters?: FacturationSuiviFilters) => Promise<FacturationSuiviRow[]>
+  listLines: (filters: FacturationLineListFiltersInput) => Promise<FacturationSuiviRow[]>
   overview: (filters?: FacturationSuiviFilters) => Promise<FacturationOverview>
   referentials: () => Promise<{
     pharmacies: Ref[]

@@ -48,6 +48,13 @@ describe('permission matrix via createCaller', () => {
     await expect(caller.listSuivi()).resolves.toBeDefined()
   })
 
+  it.each(['DIRECTION', 'RH_ADMIN'] as const)('%s can list facturation lines', async (role) => {
+    const caller = createCallerFactory(makeFacturationRouter(facturationTestDeps()))({
+      session: sess(role),
+    })
+    await expect(caller.listLines({ kind: 'PLACEMENT' })).resolves.toBeDefined()
+  })
+
   it.each(['RECRUTEUR', 'COMMUNICATION'] as const)(
     '%s cannot list facturation suivi',
     async (role) => {

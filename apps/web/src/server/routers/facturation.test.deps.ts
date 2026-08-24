@@ -45,9 +45,11 @@ const unusedSetPaid: FacturationDeps['setPaid'] = async () => {
 
 export function facturationTestDeps(
   listSuivi: FacturationDeps['listSuivi'] = async () => [],
+  listLines: FacturationDeps['listLines'] = async () => [],
 ): FacturationDeps {
   return {
     listSuivi,
+    listLines,
     overview: async () => EMPTY_FACTURATION_OVERVIEW,
     referentials: async () => emptyRefs,
     createLine: unusedCreateLine,

@@ -20,6 +20,7 @@ type Props = {
   missions: ComboboxOption[]
   missionRecords: FacturationMissionOption[]
   recruiters: Ref[]
+  lockKind?: boolean
 }
 
 export function FinanceLineFormFields({
@@ -29,6 +30,7 @@ export function FinanceLineFormFields({
   missions,
   missionRecords,
   recruiters,
+  lockKind = false,
 }: Props) {
   const { watch, setValue, formState } = form
   const errors = formState.errors
@@ -63,6 +65,7 @@ export function FinanceLineFormFields({
           placeholder="Aucune mission"
         />
       </FormField>
+      {lockKind ? null : (
       <FormField label="Type" error={errors.kind?.message}>
         <Combobox
           value={watch('kind')}
@@ -74,6 +77,7 @@ export function FinanceLineFormFields({
           placeholder="Type"
         />
       </FormField>
+      )}
       <FormField label="Date" error={errors.occurredAt?.message}>
         <DatePicker
           id="occurredAt"

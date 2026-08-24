@@ -10,6 +10,7 @@ export function toFinanceLineRecord(row: FinanceLineQueryRow): FinanceLineRecord
     pharmacyName: row.pharmacy.name,
     candidateId: row.candidateId,
     candidateName: `${row.candidate.firstName} ${row.candidate.lastName}`.trim(),
+    jobTitle: row.candidate.jobTitle.name,
     missionId: row.missionId,
     devisId: row.devisId,
     hours: row.hours,

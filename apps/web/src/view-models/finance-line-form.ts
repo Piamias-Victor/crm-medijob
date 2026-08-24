@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FINANCE_LINE_KINDS, PLACEMENT_CONTRACT_TYPES } from '@/view-models/finance-line'
+import { FINANCE_LINE_KINDS, PLACEMENT_CONTRACT_TYPES, type FinanceLineKind } from '@/view-models/finance-line'
 import { createFinanceLineSchema, financeLineDevisSchema, type CreateFinanceLineInput, type FinanceLineDevisInput } from '@/view-models/finance-line.schema'
 import { requirePlacementContract } from '@/view-models/finance-line-placement'
 
@@ -35,12 +35,14 @@ export const PLACEMENT_TYPE_OPTIONS = PLACEMENT_CONTRACT_TYPES.map((value) => ({
   label: value,
 }))
 
-export function defaultFinanceLineFormValues(): FinanceLineFormValues {
+export function defaultFinanceLineFormValues(
+  kind: FinanceLineKind = 'PLACEMENT',
+): FinanceLineFormValues {
   return {
     pharmacyId: '',
     candidateId: '',
     missionId: '',
-    kind: 'PLACEMENT',
+    kind,
     placementContractType: '',
     referentId: '',
     hours: '',
