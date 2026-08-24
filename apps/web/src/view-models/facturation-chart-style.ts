@@ -1,6 +1,12 @@
 export const FACTURATION_CHART_HEIGHT_CLASS = 'h-60'
+export const FACTURATION_CHART_COMPOSED_HEIGHT_CLASS = 'h-72'
 export const FACTURATION_CHART_CA_FILL = 'var(--color-accent)'
 export const FACTURATION_CHART_MARGE_FILL = 'var(--color-sky)'
+export const FACTURATION_CHART_PLACEMENT_FILL = 'var(--color-accent)'
+export const FACTURATION_CHART_INTERIM_FILL = 'var(--color-sky)'
+export const FACTURATION_CHART_OBJECTIF_STROKE = 'var(--color-primary)'
+export const FACTURATION_CHART_CUMUL_STROKE = 'var(--color-rose)'
+export const FACTURATION_CHART_SEUIL_STROKE = 'var(--color-warning)'
 export const FACTURATION_CHART_GRID = 'var(--color-border)'
 export const FACTURATION_CHART_TICK = 'var(--color-fg-muted)'
 export const FACTURATION_CHART_LABEL_MAX = 14

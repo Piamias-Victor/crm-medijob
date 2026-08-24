@@ -3,6 +3,9 @@
 import { Alert } from '@/components/atoms/Alert'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { StatTiles } from '@/components/molecules/StatTiles'
+import { FacturationPilotageCharts } from '@/components/organisms/FacturationPilotageCharts'
+import { FacturationPilotageGauge } from '@/components/organisms/FacturationPilotageGauge'
+import { FacturationPilotagePoles } from '@/components/organisms/FacturationPilotagePoles'
 import { FacturationFilterBar } from '@/components/organisms/facturation-table/facturation-filter-bar'
 import { useFacturationPilotageQuery } from '@/lib/hooks/use-facturation-pilotage-query'
 import { buildPilotageCancelledCopy } from '@/view-models/facturation-pilotage-cancelled-copy'
@@ -42,6 +45,9 @@ export function FacturationPilotagePage({ initialPilotage, serverFilters, filter
       >
         <StatTiles items={buildPilotageKpis(pilotage.kpis)} />
       </SectionCard>
+      <FacturationPilotageGauge gauge={pilotage.gauge} />
+      <FacturationPilotagePoles key={pilotage.months.join(',')} poles={pilotage.poles} />
+      <FacturationPilotageCharts charts={pilotage.charts} />
     </div>
   )
 }

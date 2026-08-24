@@ -8,7 +8,7 @@ function pct(marge: number, ca: number) {
 export function aggregatePilotage(
   items: PilotageContribution[],
   months: string[],
-): Pilotage {
+): Pick<Pilotage, 'kpis' | 'cancelled' | 'months'> {
   let ca = 0
   let caPlacement = 0
   let caInterim = 0
