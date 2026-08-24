@@ -29,6 +29,8 @@ export function matchesFacturationFilters(
   if (filters.referentIds?.length && !matchesReferent(row, filters.referentIds)) {
     return false
   }
+  if (filters.cancelled === true && !row.cancelled) return false
+  if (filters.cancelled === false && row.cancelled) return false
   if (!matchesIsoDateRange(row.sentAt, filters.sentFrom, filters.sentTo)) return false
   return matchesIsoDateRange(row.acceptedAt, filters.acceptedFrom, filters.acceptedTo)
 }

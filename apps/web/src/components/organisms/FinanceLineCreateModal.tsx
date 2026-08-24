@@ -12,9 +12,17 @@ type Props = {
   pharmacies: Ref[]
   candidates: Ref[]
   missions: FacturationMissionOption[]
+  recruiters: Ref[]
 }
 
-export function FinanceLineCreateModal({ open, onClose, pharmacies, candidates, missions }: Props) {
+export function FinanceLineCreateModal({
+  open,
+  onClose,
+  pharmacies,
+  candidates,
+  missions,
+  recruiters,
+}: Props) {
   return (
     <GlassModal
       open={open}
@@ -27,6 +35,7 @@ export function FinanceLineCreateModal({ open, onClose, pharmacies, candidates, 
         pharmacies={pharmacies}
         candidates={candidates}
         missions={missions}
+        recruiters={recruiters}
         onDone={onClose}
       />
     </GlassModal>

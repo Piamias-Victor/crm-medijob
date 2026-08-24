@@ -7,6 +7,7 @@ import { CONTRACT_TYPE_LABELS } from '@/lib/candidate-options'
 import { formatDateFr } from '@/view-models/format-date-fr'
 import { formatDevisPdfOrEmpty } from '@/view-models/devis-pdf-format'
 import { facturationRowOriginLabel } from '@/view-models/facturation-line-actions'
+import { UNASSIGNED_REFERENT_LABEL } from '@/view-models/finance-line-referent'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
 export const facturationTableColumns: ColumnDef<FacturationSuiviRow>[] = [
@@ -31,7 +32,7 @@ export const facturationTableColumns: ColumnDef<FacturationSuiviRow>[] = [
   {
     id: 'referent',
     header: 'Référent',
-    accessor: (row) => row.referentName ?? TABLE_EMPTY_CELL,
+    accessor: (row) => row.referentName ?? UNASSIGNED_REFERENT_LABEL,
     sortable: true,
   },
   {

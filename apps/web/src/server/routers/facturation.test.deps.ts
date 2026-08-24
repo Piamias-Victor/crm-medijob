@@ -27,6 +27,22 @@ const unusedSendFormDevis: FacturationDeps['sendDevis'] = async () => {
   throw new Error('sendDevis unused')
 }
 
+const unusedCancelLine: FacturationDeps['cancelLine'] = async () => {
+  throw new Error('cancelLine unused')
+}
+
+const unusedRestoreLine: FacturationDeps['restoreLine'] = async () => {
+  throw new Error('restoreLine unused')
+}
+
+const unusedSetInvoiced: FacturationDeps['setInvoiced'] = async () => {
+  throw new Error('setInvoiced unused')
+}
+
+const unusedSetPaid: FacturationDeps['setPaid'] = async () => {
+  throw new Error('setPaid unused')
+}
+
 export function facturationTestDeps(
   listSuivi: FacturationDeps['listSuivi'] = async () => [],
 ): FacturationDeps {
@@ -40,5 +56,9 @@ export function facturationTestDeps(
     previewDevis: unusedPreviewDevis,
     saveDevis: unusedSaveDevis,
     sendDevis: unusedSendFormDevis,
+    cancelLine: unusedCancelLine,
+    restoreLine: unusedRestoreLine,
+    setInvoiced: unusedSetInvoiced,
+    setPaid: unusedSetPaid,
   }
 }

@@ -39,6 +39,16 @@ function dimensionFilters(pharmacies: Ref[], recruiters: Ref[]) {
       unit: 'référents',
       options: buildReferentFilterOptions(recruiters),
     },
+    {
+      id: 'annulation',
+      label: 'Statut',
+      type: 'select',
+      options: [
+        { value: 'ACTIVE', label: 'Actifs' },
+        { value: 'CANCELLED', label: 'Annulés' },
+      ],
+      placeholder: 'Tous',
+    },
   ] as const
 }
 

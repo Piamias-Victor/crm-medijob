@@ -23,6 +23,7 @@ describe('toFacturationSuiviFilters', () => {
         etat: ['ENVOYE'],
         pharmacie: ['p-nord'],
         referent: ['u-alice'],
+        annulation: '',
         periode: { from: '2026-08-01', to: '2026-08-31' },
       }),
     ).toEqual({
@@ -33,6 +34,19 @@ describe('toFacturationSuiviFilters', () => {
       sentFrom: '2026-08-01',
       sentTo: '2026-08-31',
     })
+  })
+
+  it('maps Annulés to cancelled lines only', () => {
+    expect(
+      toFacturationSuiviFilters({
+        contrat: [],
+        etat: [],
+        pharmacie: [],
+        referent: [],
+        annulation: 'CANCELLED',
+        periode: { from: '', to: '' },
+      }),
+    ).toEqual({ cancelled: true })
   })
 
   it('ignores empty values', () => {
@@ -48,6 +62,7 @@ describe('toFacturationOverviewFilters', () => {
         etat: [],
         pharmacie: [],
         referent: [],
+        annulation: '',
         acceptation: { from: '2026-08-01', to: '2026-08-31' },
       }),
     ).toEqual({ acceptedFrom: '2026-08-01', acceptedTo: '2026-08-31' })

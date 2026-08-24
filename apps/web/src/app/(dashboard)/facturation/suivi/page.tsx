@@ -26,6 +26,7 @@ export default async function Page({ searchParams }: Props) {
         pharmacies={refs.pharmacies}
         candidates={refs.candidates}
         missions={refs.missions}
+        recruiters={refs.recruiters}
       />
     </Suspense>
   )

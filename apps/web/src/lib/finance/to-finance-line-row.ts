@@ -1,7 +1,14 @@
+import { isPlacementContractType } from '@/view-models/finance-line-placement'
 import type { FinanceLineRecord } from '@/view-models/finance-line'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
 export function toFinanceLineSuiviRow(line: FinanceLineRecord): FacturationSuiviRow {
+  const contractType =
+    line.kind === 'INTERIM'
+      ? 'INTERIM'
+      : isPlacementContractType(line.placementContractType)
+        ? line.placementContractType
+        : 'CDD'
   return {
     missionId: line.missionId,
     financeLineId: line.id,
@@ -11,12 +18,15 @@ export function toFinanceLineSuiviRow(line: FinanceLineRecord): FacturationSuivi
     lineKind: line.kind,
     devisId: line.devisId,
     devisStatus: line.devisStatus,
-    referentId: null,
-    referentName: null,
-    contractType: line.kind === 'INTERIM' ? 'INTERIM' : 'CDD',
+    referentId: line.referentId,
+    referentName: line.referentName,
+    contractType,
     commercialStatus: 'ACCEPTE',
     sentAt: null,
     acceptedAt: line.occurredAt,
     amountHt: line.amountHt,
+    cancelled: line.cancelled,
+    invoiced: line.invoiced,
+    paid: line.paid,
   }
 }

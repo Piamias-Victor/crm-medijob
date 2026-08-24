@@ -77,16 +77,40 @@ A commercial quote for a Pharmacy (intérim or CDD/CDI), optionally on a Mission
 _Avoid_: quote (as UI label), facture, ActivityLog DEVIS (as the quote itself), estimateur rémunération, tarif Medijob (as a locked pack)
 
 **Ligne de suivi**:
-A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one placement) or Intérim (one line = the whole mission). Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated and sent from the line even without a Mission — that Devis is a draft document, not a second CA booking.
-_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice)
+A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one CDD or CDI hire) or Intérim (one line = the whole mission). A Placement line has an explicit CDD or CDI type (prefilled from the Mission when linked). One Referent (User) is chosen on the line. Direction / RH-Admin may cancel the line (reversible status: the line stays visible, excluded from active KPIs, counts as NoGo if Placement). Cancel is not a soft delete. A Placement may book 0 CA (NoGo). Independent **Facturé** and **Encaissé** marks on the line do not change CA or Marge. Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated and sent from the line even without a Mission — that Devis is a draft document, not a second CA booking.
+_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice), recruteur (as free text)
+
+**Encaissé**:
+A mark on a Ligne de suivi that the Pharmacy has paid. Independent of Facturé. Does not book CA. Distinct from Commercial status.
+_Avoid_: payé, payment, Facturé (that's the invoice-sent mark)
+
+**Objectif**:
+Monthly CA and Marge targets by pole (Placement vs Intérim) and a monthly rentability threshold, set in Admin by Direction / RH-Admin. Annual figures in Pilotage are twelve times the monthly ones. Distinct from Commercial status and from Accueil KPIs.
+_Avoid_: KPI (that's a count), cap (as entity), cible (unqualified), paramètre (unqualified)
+
+**Pilotage**:
+The Facturation steering view for Direction / RH-Admin — exercice KPIs, objectives by pole, cumulative charts, Go/NoGo, monthly table and commercial matrix. Distinct from Vue d'ensemble (commercial-status counts and Devis pipeline), from Placements (CDD/CDI line list), and from Intérim (intérim line list).
+_Avoid_: Tableau de bord (ambiguous with Accueil), dashboard, Vue d'ensemble, Suivi (removed as a tab)
+
+**Exercice**:
+The Medijob year used in Facturation follow-up: 1 October through 30 September. Named by the two calendar years it spans (25/26 = October 2025 – September 2026). Distinct from a calendar year.
+_Avoid_: année civile, année (unqualified), fiscal year (as UI label)
+
+**Placement**:
+A Ligne de suivi of kind Placement — one CDD or CDI hire booked in Facturation. The line carries CDD vs CDI itself (not only via an optional Mission). Distinct from MissionCandidate (operational positioning on a Mission). May be cancelled on the line or booked with zero CA and zero Marge (NoGo).
+_Avoid_: matching, affectation, positioning, MissionCandidate (as the financial line)
+
+**NoGo**:
+A Placement counted as lost in Pilotage: the line is cancelled, or it has no CA and no Marge. Lost CA is projected from the average billed CA of that type (CDI vs CDD), not from the line amount. Intérim lines are never NoGo. Distinct from Mission status ANNULEE.
+_Avoid_: perdu (as entity), annulé (as Mission status), Pas retenu
 
 **Commercial status**:
-The commercial lifecycle of a Mission, derived from its current Devis: Sans devis → Envoyé → Accepté → Facturé. Facturé is a mark (with a date) on that Devis — not a separate invoice record. Independent from Mission status — a Mission can be EN_RECHERCHE and Envoyé at the same time.
-_Avoid_: Mission status, statut devis (as a second Mission enum), pipeline commercial (as entity name), Facture (as entity)
+The commercial lifecycle of a Mission, derived from its current Devis: Sans devis → Envoyé → Accepté → Facturé. Facturé is a mark (with a date) on that Devis — not a separate invoice record, and not the Facturé mark on a Ligne de suivi. Independent from Mission status — a Mission can be EN_RECHERCHE and Envoyé at the same time.
+_Avoid_: Mission status, statut devis (as a second Mission enum), pipeline commercial (as entity name), Facture (as entity), Encaissé
 
 **MissionCandidate**:
 The positioning of a Candidate on a Mission at a given PipelineStage. A Candidate may be positioned on multiple Missions in parallel, each with its own stage. Only non-terminal positionings appear on the active CVthèque kanban card.
-_Avoid_: Matching, placement, affectation, liaison
+_Avoid_: Matching, affectation, liaison, Placement (that's the financial line)
 
 **Pharmacy**:
 The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person.
@@ -109,15 +133,15 @@ An administrable function of a Contact at a Pharmacy (e.g. Titulaire, Comptabili
 _Avoid_: ContactRole enum (legacy fixed list), fonction (as free text)
 
 **Referent**:
-The Medijob User responsible for follow-up on a Pharmacy, Contact, Candidate, or Mission. Optional on all four entities — informational and for reporting/filters; visibility and reassignment rights depend on UserRole permissions. CA and Marge of a Mission are attributed to that Mission's Referent.
-_Avoid_: Owner, propriétaire, assigné (implies exclusivity), gestionnaire, opérateur, compte opérateur
+The Medijob User responsible for follow-up on a Pharmacy, Contact, Candidate, Mission, or Ligne de suivi. Optional on the four operational entities — informational and for reporting/filters; visibility and reassignment rights depend on UserRole permissions. CA and Marge of a Mission are attributed to that Mission's Referent. CA and Marge of a Ligne de suivi are attributed to the Referent chosen on that line (one User). No co-credit: a line never counts for two commerciaux.
+_Avoid_: Owner, propriétaire, assigné (implies exclusivity), gestionnaire, opérateur, compte opérateur, recruteur (as a free-text field)
 
 **UserRole**:
 One of four internal access roles: Direction, Recruteur, Communication, RH-Admin. Rights are differentiated per module for actions; financial fields (CA, Marge) have separate view rights by role. Operational records are otherwise visible to all roles.
 _Avoid_: ADMIN, RECRUTEUR (legacy two-role model), rôle (without qualifier)
 
 **CA / Marge**:
-Financial figures shown in the CRM (revenue and margin). Visibility is gated by UserRole — Recruteur and Communication never see them. CA of a Mission is 0 until its current Devis is accepted; the accepted amount is the CA once (never multiplied by mission duration), dated on that acceptance day for follow-up. If the Mission is ANNULEE, CA returns to 0. A Ligne de suivi also books CA and Marge on its date, without an accepted Devis. Marge of a Mission is typed by Direction or RH-Admin; the simulator's margin is indicative only and does not feed follow-up. Marge uses the same acceptance date as CA and also clears on ANNULEE. Follow-up slices by Referent, Pharmacy, contract type, and dates — not by Candidate (the Candidate on a Ligne de suivi is identity on the line, not a CA slice).
+Financial figures shown in the CRM (revenue and margin). Visibility is gated by UserRole — Recruteur and Communication never see them. CA of a Mission is 0 until its current Devis is accepted; the accepted amount is the CA once (never multiplied by mission duration), dated on that acceptance day for follow-up. If the Mission is ANNULEE, CA returns to 0. A Ligne de suivi also books CA and Marge on its date, without an accepted Devis. Marge of a Mission is typed by Direction or RH-Admin; the simulator's margin is indicative only and does not feed follow-up. Marge uses the same acceptance date as CA and also clears on ANNULEE. Follow-up unions Ligne de suivi amounts with Mission Devis CA, except a Mission that has a linked Ligne de suivi contributes only those lines — its Devis CA is not added. An unlinked line never hides a Devis. Follow-up buckets dates into an Exercice (October–September) and slices by Referent, Pharmacy, contract type, and dates — not by Candidate (the Candidate on a Ligne de suivi is identity on the line, not a CA slice).
 _Avoid_: chiffre d'affaires (as free UI label without the CA token), rentabilité (as synonym for Marge), marge calculée (as the follow-up figure), CA candidat
 
 **Groupement**:
@@ -188,9 +212,9 @@ Inbound: Candidate ID, optional Referent (User). JobTitle `profileKey` selects t
 Outbound: later write-back to Candidate at close. Never a PipelineStage and never an Application.
 
 **Finance** — commercial quotes and performance follow-up.
-Owns: Devis, Ligne de suivi, Commercial status (derived), CA and Marge on the Mission and on Lignes de suivi.
+Owns: Devis, Ligne de suivi, Commercial status (derived), CA and Marge on the Mission and on Lignes de suivi, Objectif.
 Inbound: Mission (optional on a Ligne de suivi), Pharmacy, Candidate, Referent.
-Outbound: Mission — where Recruteur / Communication create, send, and accept a Devis. Facturation (global follow-up, Ligne de suivi, Devis list) is Direction / RH-Admin only. Never a candidate salary estimator.
+Outbound: Mission — where Recruteur / Communication create, send, and accept a Devis. Facturation (Vue d'ensemble, Pilotage, Placements, Intérim) is Direction / RH-Admin only. Never a candidate salary estimator.
 
 **AI** — assisted extraction, generation, and matching.
 Owns: provider abstraction, Zod-validated AI responses, assistant chat.
@@ -203,7 +227,7 @@ Provides: Referent identity for Pharmacies, Contacts, Candidates, and Missions. 
 ### Cross-cutting
 
 **Soft delete**:
-Marking a record as deleted without physical removal. The only deletion mechanism in the CRM UI. Soft-deleted records are hidden from all users — no restore UI in V2 (script only).
-_Avoid_: Suppression définitive, purge (in UI context), archivage, corbeille
+Marking a record as deleted without physical removal. The only deletion mechanism in the CRM UI. Soft-deleted records are hidden from all users — no restore UI in V2 (script only). Cancelling a Ligne de suivi is a reversible status, not a soft delete.
+_Avoid_: Suppression définitive, purge (in UI context), archivage, corbeille, Annuler (on a Ligne de suivi — that is cancel status)
 
 **ActivityLog** and **Document** are polymorphic records spanning Candidates, Pharmacies, Contacts, and Missions — not standalone contexts. Each entry belongs to exactly one entity in one of those four contexts.

@@ -14,10 +14,11 @@ type Props = {
   pharmacies: Ref[]
   candidates: Ref[]
   missions: FacturationMissionOption[]
+  recruiters: Ref[]
   onDone?: () => void
 }
 
-export function FinanceLineForm({ pharmacies, candidates, missions, onDone }: Props) {
+export function FinanceLineForm({ pharmacies, candidates, missions, recruiters, onDone }: Props) {
   const preview = useFinanceLineDevisPreview()
   const { form, busy, submit, missionOptions } = useFinanceLineForm(missions, preview, onDone)
   return (
@@ -31,6 +32,8 @@ export function FinanceLineForm({ pharmacies, candidates, missions, onDone }: Pr
             { value: '', label: 'Aucune' },
             ...missionOptions.map((mission) => ({ value: mission.id, label: mission.title })),
           ]}
+          missionRecords={missionOptions}
+          recruiters={recruiters}
         />
         <div className="flex flex-wrap justify-end gap-2">
           <Button type="button" variant="outline" disabled={busy} onClick={() => submit('save')}>

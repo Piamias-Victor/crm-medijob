@@ -13,8 +13,14 @@ export const financeLineSelect = {
   htSource: true,
   marge: true,
   occurredAt: true,
+  cancelled: true,
+  invoiced: true,
+  paid: true,
+  referentId: true,
+  placementContractType: true,
   pharmacy: { select: { name: true } },
   candidate: { select: { firstName: true, lastName: true } },
+  referent: { select: { name: true } },
   devis: { select: { status: true } },
 } satisfies Prisma.FinanceLineSelect
 
