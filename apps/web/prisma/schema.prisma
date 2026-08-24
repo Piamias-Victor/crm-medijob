@@ -253,6 +253,18 @@ model ContactRole {
   contacts Contact[]
 }
 
+// Singleton Admin — monthly CA/Marge per pole + rentability threshold.
+model Objectif {
+  id                          String   @id
+  monthlyCaPlacement          Float
+  monthlyMargePlacement       Float
+  monthlyCaInterim            Float
+  monthlyMargeInterim         Float
+  monthlyRentabilityThreshold Float
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
 model JobTitleCompatibility {
   missionJobTitleId   String
   candidateJobTitleId String

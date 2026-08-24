@@ -11,6 +11,7 @@ import { seedDemo } from './seed-demo'
 import { seedDemoRich } from './seed-demo-rich'
 import { seedJobTitles } from './seed-job-titles'
 import { seedInterviewTemplates } from './seed-interview-templates'
+import { seedObjectif } from './seed-objectif'
 
 const prisma = new PrismaClient()
 
@@ -71,6 +72,7 @@ async function main() {
   )
   await seedCompatibility()
   await seedInterviewTemplates(prisma)
+  await seedObjectif(prisma)
   await seedDemo(prisma)
   await seedDemoRich(prisma)
 }
