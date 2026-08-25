@@ -605,16 +605,21 @@ model AppProfile {
   hasResume     Boolean          @default(false)
   snapshot      Json?
   status        AppProfileStatus @default(EN_ATTENTE)
-  candidateId   String?
-  syncedAt      DateTime         @default(now())
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  candidateId          String?
+  hireflixInterviewId  String?
+  hireflixUrl          String?
+  inviteEmailSentAt    DateTime?
+  inviteLastError      String?
+  syncedAt             DateTime         @default(now())
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
 
   jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
   candidate Candidate? @relation(fields: [candidateId], references: [id])
 
   @@index([status])
   @@index([candidateId])
+  @@index([status, inviteEmailSentAt])
 }
 
 // ─── Historique polymorphe ────────────────────────────────────

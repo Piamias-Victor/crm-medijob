@@ -8,6 +8,7 @@ export function appProfileDetailFields(item: AppProfileListItem): DetailField[] 
     { label: 'Métier', value: item.jobTitleName ?? item.activityLabel },
     { label: 'Téléphone', value: item.phone },
     { label: 'Email', value: item.email },
+    { label: 'Invitation', value: item.invitationLabel },
     { label: 'Ville', value: item.city },
     { label: 'Code postal', value: item.postalCode },
     { label: 'Adresse', value: item.address },

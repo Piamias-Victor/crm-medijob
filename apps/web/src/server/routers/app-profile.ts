@@ -1,6 +1,5 @@
 import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '@/server/trpc'
-import { syncAppProfiles } from '@/server/app-profile/sync'
 import { acceptAppProfile, ignoreAppProfile, AppProfileError } from '@/server/app-profile/accept'
 import { toAppProfileListItem } from '@/view-models/app-profile-list'
 import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-profile-accept.schema'
@@ -30,15 +29,6 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       return toAppProfileListItem(row)
     }),
     countPending: protectedProcedure.query(() => deps.countPending()),
-    sync: protectedProcedure.mutation(async () => {
-      const client = deps.getBadakanClient()
-      return syncAppProfiles({
-        searchNewEmployees: () => client.searchNewEmployees(),
-        findByBadakanIds: deps.findByBadakanIds,
-        upsertPending: deps.upsertPending,
-        findJobTitleIdByName: deps.findJobTitleIdByName,
-      })
-    }),
     ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
       try {
         return await ignoreAppProfile(input.id, {
