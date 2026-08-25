@@ -1,18 +1,23 @@
 import { listFacturationSuivi } from '@/lib/finance/list-facturation-suivi'
+import { listFinanceLines } from '@/lib/finance/list-finance-lines'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
+import { buildPilotage } from '@/view-models/facturation-pilotage'
 import { memoryLineDevisMutations } from '@/server/routers/facturation-line.test.mutations'
 import { memoryFormDevis } from '@/server/routers/facturation-line.test.form-devis'
+import { memoryLineStatus } from '@/server/routers/facturation-line.test.status'
 import type { FacturationDeps } from '@/server/routers/facturation'
 import type { CreateFinanceLineInput } from '@/view-models/finance-line.schema'
 import type { FinanceLineRecord } from '@/view-models/finance-line'
 
 const PHARMACY = { id: 'p1', name: 'Pharma Nord' }
 const CANDIDATE = { id: 'c1', name: 'Ada Lovelace' }
+const RECRUITERS = [{ id: 'u-alice', name: 'Alice' }]
 
 export const financeLineInput: CreateFinanceLineInput = {
   pharmacyId: PHARMACY.id,
   candidateId: CANDIDATE.id,
   kind: 'PLACEMENT',
+  placementContractType: 'CDD',
   amountHt: 5000,
   marge: 1500,
   occurredAt: new Date('2026-08-01T00:00:00Z'),
@@ -30,14 +35,17 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
   const lines: FinanceLineRecord[] = []
   const lineDevis = memoryLineDevisMutations(lines)
   const formDevis = memoryFormDevis(PHARMACY, CANDIDATE.id)
+  const lineStatus = memoryLineStatus(lines)
   return {
     listSuivi: async (filters) => listFacturationSuivi([], filters, lines),
+    listLines: async (filters) => listFinanceLines(lines, filters),
     overview: async (filters) => buildFacturationOverview([], filters, lines),
+    pilotage: async (filters) => buildPilotage(lines, [], filters),
     referentials: async () => ({
       pharmacies: [PHARMACY],
-      recruiters: [],
+      recruiters: RECRUITERS,
       candidates: [CANDIDATE],
-      missions: [{ id: 'm1', title: 'Mission Nord', pharmacyId: PHARMACY.id }],
+      missions: [{ id: 'm1', title: 'Mission Nord', pharmacyId: PHARMACY.id, contractType: 'CDD' }],
     }),
     createLine: async (input) => {
       const line: FinanceLineRecord = {
@@ -47,6 +55,7 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
         pharmacyName: PHARMACY.name,
         candidateId: input.candidateId,
         candidateName: CANDIDATE.name,
+        jobTitle: 'Pharmacien',
         missionId: input.missionId ?? null,
         devisId: input.devisId ?? null,
         hours: input.hours ?? null,
@@ -56,6 +65,12 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
         marge: input.marge ?? null,
         occurredAt: input.occurredAt,
         devisStatus: input.devisId ? (formDevis.statusOf(input.devisId) ?? 'DRAFT') : null,
+        referentId: input.referentId ?? null,
+        referentName: RECRUITERS.find((row) => row.id === input.referentId)?.name ?? null,
+        placementContractType: input.placementContractType ?? null,
+        cancelled: false,
+        invoiced: false,
+        paid: false,
       }
       lines.unshift(line)
       return line
@@ -65,5 +80,9 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
     previewDevis: formDevis.previewDevis,
     saveDevis: formDevis.saveDevis,
     sendDevis: formDevis.sendDevis,
+    cancelLine: lineStatus.cancelLine,
+    restoreLine: lineStatus.restoreLine,
+    setInvoiced: lineStatus.setInvoiced,
+    setPaid: lineStatus.setPaid,
   }
 }

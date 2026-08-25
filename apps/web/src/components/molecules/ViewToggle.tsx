@@ -1,12 +1,17 @@
 'use client'
 
-import { LayoutGrid, List, Map as MapIcon, Table2, type LucideIcon } from 'lucide-react'
+import { Building2, LayoutGrid, List, Map as MapIcon, Table2, type LucideIcon } from 'lucide-react'
 import { PillTabs } from '@/components/molecules/PillTabs'
+import {
+  INTERIM_VIEW_CLIENT,
+  INTERIM_VIEW_MISSIONS,
+} from '@/view-models/facturation-interim-copy'
 
 export type ListKanbanView = 'list' | 'kanban'
 export type MissionView = 'list' | 'kanban' | 'map'
 export type CvthequeView = 'table' | 'kanban' | 'map'
 export type PharmacyView = 'list' | 'map'
+export type InterimView = 'client' | 'missions'
 
 export type ViewToggleItem<T extends string> = {
   id: T
@@ -29,6 +34,11 @@ export const cvthequeViewOptions: ViewToggleItem<CvthequeView>[] = [
 export const pharmacyViewOptions: ViewToggleItem<PharmacyView>[] = [
   { id: 'list', label: 'Liste', icon: List },
   { id: 'map', label: 'Carte', icon: MapIcon },
+]
+
+export const interimViewOptions: ViewToggleItem<InterimView>[] = [
+  { id: 'client', label: INTERIM_VIEW_CLIENT, icon: Building2 },
+  { id: 'missions', label: INTERIM_VIEW_MISSIONS, icon: List },
 ]
 
 type Props<T extends string> = {

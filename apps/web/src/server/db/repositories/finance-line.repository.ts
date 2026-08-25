@@ -38,6 +38,8 @@ export function makeFinanceLineRepository(db: PrismaClient = defaultDb) {
           marge: input.marge ?? null,
           occurredAt: input.occurredAt,
           devisId: input.devisId,
+          referentId: input.referentId ?? null,
+          placementContractType: input.placementContractType ?? null,
         },
         select: financeLineSelect,
       })
@@ -46,10 +48,34 @@ export function makeFinanceLineRepository(db: PrismaClient = defaultDb) {
     setDevisId: async (id: string, devisId: string) => {
       await db.financeLine.update({ where: { id }, data: { devisId } })
     },
+    setCancelled: async (id: string, cancelled: boolean) => {
+      const row = await db.financeLine.update({
+        where: { id },
+        data: { cancelled },
+        select: financeLineSelect,
+      })
+      return toFinanceLineRecord(row)
+    },
+    setInvoiced: async (id: string, invoiced: boolean) => {
+      const row = await db.financeLine.update({
+        where: { id },
+        data: { invoiced },
+        select: financeLineSelect,
+      })
+      return toFinanceLineRecord(row)
+    },
+    setPaid: async (id: string, paid: boolean) => {
+      const row = await db.financeLine.update({
+        where: { id },
+        data: { paid },
+        select: financeLineSelect,
+      })
+      return toFinanceLineRecord(row)
+    },
     listMissionOptions: () =>
       db.mission.findMany({
         where: NOT_DELETED,
-        select: { id: true, title: true, pharmacyId: true },
+        select: { id: true, title: true, pharmacyId: true, contractType: true },
         orderBy: { createdAt: 'desc' },
         take: DEFAULT_LIST_LIMIT,
       }),

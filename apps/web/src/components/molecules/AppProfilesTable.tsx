@@ -17,7 +17,7 @@ export function AppProfilesTable({ items }: Props) {
       getRowHref={(row) => appProfileDetailPath(row.id)}
       emptyIcon={Smartphone}
       emptyTitle="Aucun profil app en attente"
-      emptyDescription="Synchronisez les nouveaux inscrits Badakan pour les faire apparaître ici."
+      emptyDescription="Les nouveaux inscrits Badakan apparaissent ici automatiquement."
     />
   )
 }

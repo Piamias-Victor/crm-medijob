@@ -4,7 +4,10 @@ import { userRepository } from '@/server/db/repositories/user.repository'
 import { listPharmacyPickerOptions } from '@/server/read-models/pharmacy-picker'
 import { listCandidatePickerOptions } from '@/server/read-models/candidate-picker'
 import { listFacturationSuivi } from '@/lib/finance/list-facturation-suivi'
+import { listFinanceLines } from '@/lib/finance/list-finance-lines'
 import { buildFacturationOverview } from '@/view-models/facturation-overview'
+import { buildPilotage } from '@/view-models/facturation-pilotage'
+import { objectifRepository } from '@/server/db/repositories/objectif.repository'
 import { generateDevisFromLineId, sendDevisFromLineId } from '@/server/finance/finance-line-devis'
 import {
   previewDevisFromForm,
@@ -14,11 +17,12 @@ import {
 import { makeFacturationRouter } from '@/server/routers/facturation'
 
 async function loadSources() {
-  const [missions, lines] = await Promise.all([
+  const [missions, lines, objectif] = await Promise.all([
     facturationRepository.listMissions(),
     financeLineRepository.list(),
+    objectifRepository.get(),
   ])
-  return { missions, lines }
+  return { missions, lines, objectif }
 }
 
 export const facturationRouter = makeFacturationRouter({
@@ -26,9 +30,17 @@ export const facturationRouter = makeFacturationRouter({
     const { missions, lines } = await loadSources()
     return listFacturationSuivi(missions, filters, lines)
   },
+  listLines: async (filters) => {
+    const { lines } = await loadSources()
+    return listFinanceLines(lines, filters)
+  },
   overview: async (filters) => {
     const { missions, lines } = await loadSources()
     return buildFacturationOverview(missions, filters, lines)
+  },
+  pilotage: async (filters) => {
+    const { missions, lines, objectif } = await loadSources()
+    return buildPilotage(lines, missions, filters, new Date(), objectif)
   },
   referentials: async () => {
     const [pharmacies, recruiters, candidates, missions] = await Promise.all([
@@ -45,4 +57,8 @@ export const facturationRouter = makeFacturationRouter({
   previewDevis: previewDevisFromForm,
   saveDevis: saveDevisFromForm,
   sendDevis: sendDevisFromForm,
+  cancelLine: (id) => financeLineRepository.setCancelled(id, true),
+  restoreLine: (id) => financeLineRepository.setCancelled(id, false),
+  setInvoiced: (id, invoiced) => financeLineRepository.setInvoiced(id, invoiced),
+  setPaid: (id, paid) => financeLineRepository.setPaid(id, paid),
 })

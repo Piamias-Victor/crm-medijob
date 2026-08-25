@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/applications",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/app-profiles",
+      "schedule": "*/2 * * * *"
     }
   ]
 }

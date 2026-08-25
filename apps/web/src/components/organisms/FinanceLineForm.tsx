@@ -6,7 +6,7 @@ import { DevisPreviewModal } from '@/components/molecules/DevisPreviewModal'
 import { useFinanceLineForm } from '@/lib/hooks/use-finance-line-form'
 import { useFinanceLineDevisPreview } from '@/lib/hooks/use-finance-line-devis-preview'
 import { toNamedOptions } from '@/view-models/named-options'
-import type { FacturationMissionOption } from '@/view-models/finance-line'
+import type { FacturationMissionOption, FinanceLineKind } from '@/view-models/finance-line'
 
 type Ref = { id: string; name: string }
 
@@ -14,12 +14,26 @@ type Props = {
   pharmacies: Ref[]
   candidates: Ref[]
   missions: FacturationMissionOption[]
+  recruiters: Ref[]
+  defaultKind?: FinanceLineKind
   onDone?: () => void
 }
 
-export function FinanceLineForm({ pharmacies, candidates, missions, onDone }: Props) {
+export function FinanceLineForm({
+  pharmacies,
+  candidates,
+  missions,
+  recruiters,
+  defaultKind = 'PLACEMENT',
+  onDone,
+}: Props) {
   const preview = useFinanceLineDevisPreview()
-  const { form, busy, submit, missionOptions } = useFinanceLineForm(missions, preview, onDone)
+  const { form, busy, submit, missionOptions } = useFinanceLineForm(
+    missions,
+    preview,
+    onDone,
+    defaultKind,
+  )
   return (
     <>
       <form className="space-y-6" noValidate onSubmit={(event) => event.preventDefault()}>
@@ -31,6 +45,9 @@ export function FinanceLineForm({ pharmacies, candidates, missions, onDone }: Pr
             { value: '', label: 'Aucune' },
             ...missionOptions.map((mission) => ({ value: mission.id, label: mission.title })),
           ]}
+          missionRecords={missionOptions}
+          recruiters={recruiters}
+          lockKind
         />
         <div className="flex flex-wrap justify-end gap-2">
           <Button type="button" variant="outline" disabled={busy} onClick={() => submit('save')}>

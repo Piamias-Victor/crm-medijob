@@ -44,10 +44,13 @@ export const adminSubNav: { label: string; href: string }[] = [
   { label: 'Métiers', href: '/admin/metiers' },
   { label: 'Rôles contact', href: '/admin/roles-contacts' },
   { label: 'Utilisateurs', href: '/admin/utilisateurs' },
+  { label: 'Objectifs', href: '/admin/objectifs' },
   { label: 'RGPD', href: '/admin/rgpd' },
 ]
 
 export const facturationSubNav: { label: string; href: string }[] = [
   { label: 'Vue d’ensemble', href: '/facturation' },
-  { label: 'Suivi', href: '/facturation/suivi' },
+  { label: 'Pilotage', href: '/facturation/pilotage' },
+  { label: 'Placements', href: '/facturation/placements' },
+  { label: 'Intérim', href: '/facturation/interim' },
 ]

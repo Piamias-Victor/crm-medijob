@@ -6,6 +6,7 @@ import { jobTitleRouter } from '@/server/routers/admin/job-title'
 import { contactRoleRouter } from '@/server/routers/admin/contact-role'
 import { userRouter } from '@/server/routers/admin/user'
 import { interviewTemplateAdminRouter } from '@/server/routers/admin/interview-template'
+import { objectifRouter } from '@/server/routers/admin/objectif'
 
 export const adminRouter = router({
   pipeline: pipelineRouter,
@@ -15,4 +16,5 @@ export const adminRouter = router({
   contactRole: contactRoleRouter,
   user: userRouter,
   interviewTemplate: interviewTemplateAdminRouter,
+  objectif: objectifRouter,
 })

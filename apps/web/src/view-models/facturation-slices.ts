@@ -55,8 +55,19 @@ export function buildFacturationSlices(
     }
   }
   for (const line of lines) {
-    const contractType = line.kind === 'INTERIM' ? 'INTERIM' : 'CDD'
-    addBucket(byReferent, REFERENT_NONE, REFERENT_NONE_OPTION.label, line.amountHt, line.marge ?? 0)
+    const contractType =
+      line.kind === 'INTERIM'
+        ? 'INTERIM'
+        : line.placementContractType === 'CDI'
+          ? 'CDI'
+          : 'CDD'
+    addBucket(
+      byReferent,
+      line.referentId ?? REFERENT_NONE,
+      line.referentName ?? REFERENT_NONE_OPTION.label,
+      line.amountHt,
+      line.marge ?? 0,
+    )
     addBucket(byPharmacy, line.pharmacyId, line.pharmacyName, line.amountHt, line.marge ?? 0)
     addBucket(byContract, contractType, CONTRACT_TYPE_LABELS[contractType], line.amountHt, line.marge ?? 0)
     addBucket(

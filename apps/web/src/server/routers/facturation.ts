@@ -1,47 +1,31 @@
 import { router, financeProcedure } from '@/server/trpc'
 import { facturationSuiviFiltersSchema } from '@/view-models/facturation-suivi-filters.schema'
+import { facturationLineListFiltersSchema } from '@/view-models/facturation-line-filters.schema'
 import {
   createFinanceLineSchema,
   financeLineDevisSchema,
   generateDevisFromLineSchema,
 } from '@/view-models/finance-line.schema'
-import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
-import type { CreateFinanceLineInput, FinanceLineDevisInput } from '@/view-models/finance-line.schema'
-import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
-import type { FacturationOverview } from '@/view-models/facturation-overview'
-import type { FacturationMissionOption, FinanceLineRecord } from '@/view-models/finance-line'
-import type { GenerateDevisFromLineResult } from '@/lib/finance/generate-devis-from-line'
-import type { SendDevisFromLineResult } from '@/server/finance/send-devis-from-line'
-import type { DevisView } from '@/view-models/devis'
-import type { DevisPdfModel } from '@/view-models/devis-pdf-model'
+import { setLineInvoicedSchema, setLinePaidSchema } from '@/view-models/finance-line-marks.schema'
+import { pilotageFiltersSchema } from '@/view-models/facturation-pilotage-filters.schema'
+import type { FacturationDeps } from '@/server/routers/facturation.deps'
 
-type Ref = { id: string; name: string }
-
-export type FacturationDeps = {
-  listSuivi: (filters?: FacturationSuiviFilters) => Promise<FacturationSuiviRow[]>
-  overview: (filters?: FacturationSuiviFilters) => Promise<FacturationOverview>
-  referentials: () => Promise<{
-    pharmacies: Ref[]
-    recruiters: Ref[]
-    candidates: Ref[]
-    missions: FacturationMissionOption[]
-  }>
-  createLine: (input: CreateFinanceLineInput) => Promise<FinanceLineRecord>
-  generateDevisFromLine: (id: string) => Promise<GenerateDevisFromLineResult>
-  sendDevisFromLine: (id: string, authorId: string) => Promise<SendDevisFromLineResult>
-  previewDevis: (input: FinanceLineDevisInput) => Promise<{ quote: DevisPdfModel }>
-  saveDevis: (input: FinanceLineDevisInput) => Promise<DevisView>
-  sendDevis: (input: FinanceLineDevisInput, authorId: string) => Promise<SendDevisFromLineResult>
-}
+export type { FacturationDeps } from '@/server/routers/facturation.deps'
 
 export function makeFacturationRouter(deps: FacturationDeps) {
   return router({
     listSuivi: financeProcedure
       .input(facturationSuiviFiltersSchema.optional())
       .query(async ({ input }) => ({ rows: await deps.listSuivi(input) })),
+    listLines: financeProcedure
+      .input(facturationLineListFiltersSchema)
+      .query(async ({ input }) => ({ rows: await deps.listLines(input) })),
     overview: financeProcedure
       .input(facturationSuiviFiltersSchema.optional())
       .query(({ input }) => deps.overview(input)),
+    pilotage: financeProcedure
+      .input(pilotageFiltersSchema.optional())
+      .query(({ input }) => deps.pilotage(input)),
     referentials: financeProcedure.query(() => deps.referentials()),
     createLine: financeProcedure
       .input(createFinanceLineSchema)
@@ -61,5 +45,17 @@ export function makeFacturationRouter(deps: FacturationDeps) {
     sendDevis: financeProcedure
       .input(financeLineDevisSchema)
       .mutation(({ ctx, input }) => deps.sendDevis(input, ctx.session.user.id)),
+    cancelLine: financeProcedure
+      .input(generateDevisFromLineSchema)
+      .mutation(({ input }) => deps.cancelLine(input.id)),
+    restoreLine: financeProcedure
+      .input(generateDevisFromLineSchema)
+      .mutation(({ input }) => deps.restoreLine(input.id)),
+    setInvoiced: financeProcedure
+      .input(setLineInvoicedSchema)
+      .mutation(({ input }) => deps.setInvoiced(input.id, input.invoiced)),
+    setPaid: financeProcedure
+      .input(setLinePaidSchema)
+      .mutation(({ input }) => deps.setPaid(input.id, input.paid)),
   })
 }

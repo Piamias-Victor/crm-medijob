@@ -13,6 +13,9 @@ describe('isFacturationPath', () => {
   it('flags /facturation and nested facturation routes', () => {
     expect(isFacturationPath('/facturation')).toBe(true)
     expect(isFacturationPath('/facturation/suivi')).toBe(true)
+    expect(isFacturationPath('/facturation/placements')).toBe(true)
+    expect(isFacturationPath('/facturation/interim')).toBe(true)
+    expect(isFacturationPath('/facturation/pilotage')).toBe(true)
     expect(isFacturationPath('/missions')).toBe(false)
   })
 })

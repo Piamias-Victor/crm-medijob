@@ -44,6 +44,7 @@ export function buildFacturationOverview(
     if (missionCa > 0) marge += mission.marge ?? 0
   }
   for (const line of lines) {
+    if (line.cancelled) continue
     const row = toFinanceLineSuiviRow(line)
     if (!matchesFacturationFilters(row, filters)) continue
     matchedLines.push(line)

@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { toCreateFinanceLineInput } from '@/view-models/finance-line-form'
+import {
+  defaultFinanceLineFormValues,
+  financeLineFormSchema,
+  toCreateFinanceLineInput,
+} from '@/view-models/finance-line-form'
 import { filterMissionsForPharmacy } from '@/view-models/filter-missions-for-pharmacy'
-import { canGenerateDevisFromRow, canSendDevisFromRow } from '@/view-models/facturation-line-actions'
+import { placementTypeFromMission } from '@/view-models/finance-line-placement'
+import type { FacturationMissionOption } from '@/view-models/finance-line'
 
 describe('finance line form', () => {
   it('sends null Mission when the field is empty', () => {
@@ -10,6 +15,8 @@ describe('finance line form', () => {
       candidateId: 'c1',
       missionId: '',
       kind: 'PLACEMENT',
+      placementContractType: 'CDD',
+      referentId: '',
       hours: '',
       hourlyRate: '',
       amountHt: '5000',
@@ -20,6 +27,27 @@ describe('finance line form', () => {
     expect(input.missionId).toBeNull()
     expect(input.amountHt).toBe(5000)
     expect(input.hours).toBeNull()
+    expect(input.referentId).toBeNull()
+  })
+
+  it('sends Placement CDI, CA 0 and a Referent', () => {
+    const input = toCreateFinanceLineInput({
+      pharmacyId: 'p1',
+      candidateId: 'c1',
+      missionId: '',
+      kind: 'PLACEMENT',
+      placementContractType: 'CDI',
+      referentId: 'u-alice',
+      hours: '',
+      hourlyRate: '',
+      amountHt: '0',
+      htSource: 'TYPED',
+      marge: '',
+      occurredAt: '2026-08-01',
+    })
+    expect(input.placementContractType).toBe('CDI')
+    expect(input.referentId).toBe('u-alice')
+    expect(input.amountHt).toBe(0)
   })
 
   it('keeps hours and rate when typed', () => {
@@ -28,6 +56,8 @@ describe('finance line form', () => {
       candidateId: 'c1',
       missionId: 'm1',
       kind: 'INTERIM',
+      placementContractType: '',
+      referentId: '',
       hours: '10',
       hourlyRate: '40',
       amountHt: '400',
@@ -39,56 +69,31 @@ describe('finance line form', () => {
     expect(input.hourlyRate).toBe(40)
     expect(input.htSource).toBe('ENGINE')
   })
+
+  it('prefills CDD or CDI from a Mission, not intérim', () => {
+    expect(placementTypeFromMission('CDI')).toBe('CDI')
+    expect(placementTypeFromMission('INTERIM')).toBe('')
+  })
+
+  it('rejects Placement form without CDD or CDI', () => {
+    expect(() =>
+      financeLineFormSchema.parse({
+        ...defaultFinanceLineFormValues(),
+        pharmacyId: 'p1',
+        candidateId: 'c1',
+        amountHt: '0',
+      }),
+    ).toThrow()
+  })
 })
 
 describe('filterMissionsForPharmacy', () => {
-  const missions = [
-    { id: 'm1', title: 'Nord', pharmacyId: 'p1' },
-    { id: 'm2', title: 'Sud', pharmacyId: 'p2' },
+  const missions: FacturationMissionOption[] = [
+    { id: 'm1', title: 'Nord', pharmacyId: 'p1', contractType: 'CDD' },
+    { id: 'm2', title: 'Sud', pharmacyId: 'p2', contractType: 'CDI' },
   ]
 
   it('keeps only missions of the selected pharmacy', () => {
     expect(filterMissionsForPharmacy(missions, 'p1').map((row) => row.id)).toEqual(['m1'])
-  })
-})
-
-describe('canGenerateDevisFromRow', () => {
-  it('allows generate for a line with no Devis yet, even without Mission', () => {
-    expect(
-      canGenerateDevisFromRow({
-        missionId: null,
-        financeLineId: 'l1',
-        devisId: null,
-        pharmacyId: 'p1',
-        pharmacyName: 'Nord',
-        referentId: null,
-        referentName: null,
-        contractType: 'CDD',
-        commercialStatus: 'ACCEPTE',
-        sentAt: null,
-        acceptedAt: null,
-        amountHt: 5000,
-      }),
-    ).toBe(true)
-  })
-
-  it('allows send when the Devis is not already sent, even without Mission', () => {
-    expect(
-      canSendDevisFromRow({
-        missionId: null,
-        financeLineId: 'l1',
-        devisId: 'd1',
-        devisStatus: 'DRAFT',
-        pharmacyId: 'p1',
-        pharmacyName: 'Nord',
-        referentId: null,
-        referentName: null,
-        contractType: 'CDD',
-        commercialStatus: 'ACCEPTE',
-        sentAt: null,
-        acceptedAt: null,
-        amountHt: 5000,
-      }),
-    ).toBe(true)
   })
 })

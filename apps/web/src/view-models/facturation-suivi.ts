@@ -20,6 +20,7 @@ export type FacturationSuiviRow = {
   missionId: string | null
   financeLineId?: string | null
   candidateName?: string | null
+  jobTitle?: string | null
   lineKind?: FinanceLineKind | null
   devisId?: string | null
   devisStatus?: 'DRAFT' | 'SENT' | 'ACCEPTED' | null
@@ -31,5 +32,10 @@ export type FacturationSuiviRow = {
   commercialStatus: CommercialStatus
   sentAt: Date | null
   acceptedAt: Date | null
+  hours?: number | null
   amountHt: number | null
+  marge?: number | null
+  cancelled?: boolean
+  invoiced?: boolean
+  paid?: boolean
 }
