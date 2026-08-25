@@ -1,3 +1,5 @@
+import { appProfileInvitationLabel } from './app-profile-invitation'
+
 export type AppProfileListItem = {
   id: string
   badakanId: string
@@ -13,6 +15,7 @@ export type AppProfileListItem = {
   jobTitleName: string | null
   hasResume: boolean
   status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
+  invitationLabel: string
   syncedAt: Date
 }
 
@@ -30,6 +33,8 @@ export function toAppProfileListItem(row: {
   jobTitleId: string | null
   hasResume: boolean
   status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
+  inviteEmailSentAt?: Date | null
+  inviteLastError?: string | null
   syncedAt: Date
   jobTitle: { id: string; name: string } | null
 }): AppProfileListItem {
@@ -48,6 +53,11 @@ export function toAppProfileListItem(row: {
     jobTitleName: row.jobTitle?.name ?? null,
     hasResume: row.hasResume,
     status: row.status,
+    invitationLabel: appProfileInvitationLabel({
+      email: row.email,
+      inviteEmailSentAt: row.inviteEmailSentAt ?? null,
+      inviteLastError: row.inviteLastError ?? null,
+    }),
     syncedAt: row.syncedAt,
   }
 }

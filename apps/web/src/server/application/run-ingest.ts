@@ -3,6 +3,8 @@ import { jobsBoardReadable, readJobsBoardEnv } from '@/server/job-board/env'
 import { createSupabaseApplicationsPort } from '@/server/job-board/supabase-applications'
 import { defaultApplicationDeps } from '@/server/routers/application.deps'
 
+export { isCronAuthorized } from '@/server/cron/auth'
+
 export async function runApplicationIngest() {
   const config = readJobsBoardEnv()
   if (!jobsBoardReadable(config)) return { skipped: true as const }
@@ -13,8 +15,4 @@ export async function runApplicationIngest() {
     findByBoardSubmissionIds: defaultApplicationDeps.findByBoardSubmissionIds,
     createPending: defaultApplicationDeps.createFromIngest,
   })
-}
-
-export function isCronAuthorized(header: string | null, secret = process.env.CRON_SECRET) {
-  return Boolean(secret) && header === `Bearer ${secret}`
 }

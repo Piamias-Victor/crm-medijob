@@ -45,8 +45,12 @@ A versioned question bank (trame) for one JobTitle `profileKey` × InterviewMode
 _Avoid_: questionnaire, eval config, brouillon (that word means Interview status DRAFT, not an unpublished template)
 
 **AppProfile**:
-A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it and creates or merges a Candidate. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync.
-_Avoid_: Application, candidature app, recipient (as UI label), Badakan candidate
+A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it and creates or merges a Candidate. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync. A Hireflix invitation does not change this status and does not remove the profile from the inbox.
+_Avoid_: Application, candidature app, recipient (as UI label), Badakan candidate, envoyé (as AppProfile status)
+
+**Hireflix invitation**:
+A one-shot outbound video-interview invite on an AppProfile, always the same Hireflix Position. It is owed once an email exists (wait if missing; includes profiles already in the inbox), only while the AppProfile is EN_ATTENTE, and complete only when the Hireflix URL and the Brevo mail both succeed. Accept or ignore before completion cancels it (no mail). It is not a qualification and does not track whether the person recorded the video. Completeness is visible on the Profils app inbox. Medijob mail is the only notification; Hireflix does not email. Distinct from Interview.
+_Avoid_: envoyé (as lifecycle status), statut envoyé, sent (as AppProfileStatus), video completed (as AppProfile state)
 
 **JobTitle**:
 An administrable job role in the pharmacy staffing domain (e.g. Pharmacien, Préparateur). Referenced by Candidate and Mission — replaces the former fixed enum.
@@ -202,7 +206,7 @@ Inbound: job-board candidacies tied to a JobOffer.
 Outbound: Candidate creation on acceptance (into Candidates).
 
 **AppProfiles** — Badakan app registration inbox ("Profils app").
-Owns: AppProfile, manual sync from Badakan `searchNewEmployees`, accept/ignore workflow.
+Owns: AppProfile, Hireflix invitation (send-once), periodic sync from Badakan `searchNewEmployees`, accept/ignore workflow.
 Inbound: Badakan API (read-only).
 Outbound: Candidate creation or merge on acceptance (into Candidates). Never auto-writes the CVthèque.
 

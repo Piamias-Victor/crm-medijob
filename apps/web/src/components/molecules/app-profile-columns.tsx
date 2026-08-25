@@ -15,6 +15,11 @@ export function buildAppProfileColumns(): ColumnDef<AppProfileListItem>[] {
       accessor: (row) => row.jobTitleName ?? row.activityLabel ?? TABLE_EMPTY_CELL,
     },
     {
+      id: 'invitation',
+      header: 'Invitation',
+      accessor: (row) => row.invitationLabel,
+    },
+    {
       id: 'syncedAt',
       header: 'Sync',
       accessor: (row) => new Date(row.syncedAt).toLocaleDateString('fr-FR'),
