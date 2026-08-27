@@ -6,7 +6,7 @@
 
 - Issue : https://github.com/Piamias-Victor/crm-medijob/issues/362
 - Parent : PRD #345 · `docs/PRD_FACTURATION_PILOTAGE_V1.md` · ADR `docs/adr/0020`
-- PR : (à remplir à l’ouverture)
+- PR : https://github.com/Piamias-Victor/crm-medijob/pull/363 → `dev`
 - Branche : `fix/issue-362-pilotage-poles-ui` — **repo `medijob` only, jamais `git worktree`**
 - Glossaire : `CONTEXT.md` (Exercice, Objectif, Placement, Pilotage)
 - Prompt : `docs/prompts/done/PROMPT_ISSUE_362.md`
