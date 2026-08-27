@@ -45,6 +45,18 @@ describe('buildPilotage poles', () => {
     })
   })
 
+  it('buckets months when Exercice is Tous so Mois can match Annuel', () => {
+    const result = buildPilotage(
+      [pilotageLine({ id: 'p', amountHt: 3_120, marge: 1_150 })],
+      [],
+      { exercice: 'all' },
+      now,
+    )
+    expect(result.months).toEqual(['2026-08'])
+    expect(result.poles.placement.months).toEqual([{ month: '2026-08', ca: 3_120, marge: 1_150 }])
+    expect(result.poles.monthly.caPlacement).toBe(DEFAULT_OBJECTIF.monthlyCaPlacement)
+  })
+
   it('excludes cancelled lines from pole totals', () => {
     const result = buildPilotage(
       [

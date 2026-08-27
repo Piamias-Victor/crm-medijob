@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { defaultPoleMonth, poleProgress } from '@/view-models/facturation-pilotage-pole-progress'
+import { polePeriodCaption } from '@/view-models/facturation-pilotage-poles-copy'
 import type { PilotagePoleSeries } from '@/view-models/facturation-pilotage-poles'
 
 const series: PilotagePoleSeries = {
@@ -40,5 +41,10 @@ describe('poleProgress', () => {
     expect(defaultPoleMonth(['2026-10', '2027-09'], new Date('2026-08-24T00:00:00Z'))).toBe(
       '2027-09',
     )
+  })
+
+  it('labels Annuel vs the selected month on pole cards', () => {
+    expect(polePeriodCaption('year', '2026-08')).toBe('Annuel')
+    expect(polePeriodCaption('month', '2026-08')).toBe('Août 2026')
   })
 })
