@@ -1,4 +1,5 @@
 import { REFERENT_NONE } from '@/lib/constants/referent-none'
+import { uniqueFacturationMonthKeys } from '@/view-models/facturation-month-key'
 import {
   currentExerciceStartYear,
   exerciceMonths,
@@ -30,10 +31,13 @@ export function filterPilotageContributions(
 ) {
   const startYear = parseStartYear(filters.exercice, now)
   const window = startYear == null ? null : exerciceWindow(startYear)
-  const months = startYear == null ? [] : exerciceMonths(startYear)
   const filtered = items.filter((item) => {
     if (window && !inWindow(item.occurredAt, window.from, window.to)) return false
     return matchesReferent(item.referentId, filters.referentId)
   })
+  const months =
+    startYear == null
+      ? uniqueFacturationMonthKeys(filtered.map((item) => item.occurredAt))
+      : exerciceMonths(startYear)
   return { items: filtered, months }
 }

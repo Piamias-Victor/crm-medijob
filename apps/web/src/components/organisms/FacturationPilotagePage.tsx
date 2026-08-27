@@ -2,7 +2,7 @@
 
 import { Alert } from '@/components/atoms/Alert'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { StatTiles } from '@/components/molecules/StatTiles'
+import { PilotageStatTiles } from '@/components/molecules/PilotageStatTiles'
 import { FacturationPilotageCharts } from '@/components/organisms/FacturationPilotageCharts'
 import { FacturationPilotageConversion } from '@/components/organisms/FacturationPilotageConversion'
 import { FacturationPilotageGauge } from '@/components/organisms/FacturationPilotageGauge'
@@ -47,14 +47,14 @@ export function FacturationPilotagePage({ initialPilotage, serverFilters, filter
         description="CA, Marge, placements et pharmacies de l’Exercice."
         bodyClassName="p-4 sm:p-5"
       >
-        <StatTiles items={buildPilotageKpis(pilotage.kpis)} />
+        <PilotageStatTiles items={buildPilotageKpis(pilotage.kpis)} />
       </SectionCard>
       <FacturationPilotageGauge gauge={pilotage.gauge} />
-      <FacturationPilotagePoles key={pilotage.months.join(',')} poles={pilotage.poles} />
+      <FacturationPilotagePoles key={`poles-${pilotage.months.join(',')}`} poles={pilotage.poles} />
       <FacturationPilotageCharts charts={pilotage.charts} />
       <FacturationPilotageConversion conversion={pilotage.conversion} />
       <FacturationPilotageGoNoGo goNoGo={pilotage.goNoGo} />
-      <FacturationPilotageMonthly key={pilotage.months.join(',')} monthly={pilotage.monthly} />
+      <FacturationPilotageMonthly key={`monthly-${pilotage.months.join(',')}`} monthly={pilotage.monthly} />
       <FacturationPilotageMatrix matrix={pilotage.matrix} />
     </div>
   )
