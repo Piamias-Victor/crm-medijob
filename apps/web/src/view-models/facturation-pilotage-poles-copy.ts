@@ -1,5 +1,6 @@
 import { formatDevisPdfAmount } from '@/view-models/devis-pdf-format'
 import { facturationMonthLabelFromKey } from '@/view-models/facturation-month-key'
+import type { PolePeriod } from '@/view-models/facturation-pilotage-pole-progress'
 
 export const PILOTAGE_POLE_TITLE = 'Objectifs par pôle'
 export const PILOTAGE_POLE_PLACEMENT = 'Placement'
@@ -19,4 +20,8 @@ export function formatPilotageRatio(value: number, objectif: number) {
 
 export function poleMonthOptions(months: string[]) {
   return months.map((month) => ({ value: month, label: facturationMonthLabelFromKey(month) }))
+}
+
+export function polePeriodCaption(period: PolePeriod, month: string) {
+  return period === 'year' ? PILOTAGE_POLE_YEAR : facturationMonthLabelFromKey(month)
 }

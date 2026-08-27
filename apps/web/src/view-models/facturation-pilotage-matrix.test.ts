@@ -71,7 +71,7 @@ describe('buildPilotage matrix', () => {
         referentId: null,
         referentName: '— Non attribué —',
         total: 2_000,
-        values: [],
+        values: [2_000],
       },
     ])
     expect(result.matrix.total).toBe(result.kpis.ca)

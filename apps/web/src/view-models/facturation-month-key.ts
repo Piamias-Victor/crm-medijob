@@ -12,3 +12,7 @@ export function facturationMonthLabelFromKey(month: string) {
   const [year, monthNum] = month.split('-').map(Number)
   return facturationMonthLabel(new Date(Date.UTC(year ?? 0, (monthNum ?? 1) - 1, 1)))
 }
+
+export function uniqueFacturationMonthKeys(dates: Date[]): string[] {
+  return [...new Set(dates.map((date) => facturationMonthKey(date)))].sort()
+}
