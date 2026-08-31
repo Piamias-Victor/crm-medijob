@@ -11,11 +11,20 @@ import { appProfileDetailFields } from '@/view-models/app-profile-detail-fields'
 import { candidatsPageHref } from '@/view-models/candidats-tab'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 import type { CandidateCreateInput } from '@/view-models/candidate-profile.schema'
+import {
+  BADAKAN_COMMENTS_TITLE,
+  type BadakanCommentRow,
+} from '@/view-models/badakan-comment'
+import { BadakanCommentList } from '@/components/molecules/BadakanCommentList'
 import { useRouter } from 'next/navigation'
 
-type Props = { profile: AppProfileListItem; defaults: CandidateCreateInput }
+type Props = {
+  profile: AppProfileListItem
+  defaults: CandidateCreateInput
+  comments: BadakanCommentRow[]
+}
 
-export function AppProfileDetailPage({ profile, defaults }: Props) {
+export function AppProfileDetailPage({ profile, defaults, comments }: Props) {
   const router = useRouter()
   const actions = useAppProfileDetailActions(profile.id, defaults)
   const pending = profile.status === 'EN_ATTENTE'
@@ -50,6 +59,14 @@ export function AppProfileDetailPage({ profile, defaults }: Props) {
           onIgnore={actions.ignore}
           onInterview={actions.startInterview}
         />
+      </SectionCard>
+      <SectionCard
+        variant="glass"
+        title={BADAKAN_COMMENTS_TITLE}
+        description="Résumés d’appel lus depuis l’app. Les nouvelles notes vont dans l’historique CRM."
+        bodyClassName="p-5 sm:p-6"
+      >
+        <BadakanCommentList comments={comments} />
       </SectionCard>
       <CandidateDuplicateAlertModal
         open={actions.matches.length > 0}

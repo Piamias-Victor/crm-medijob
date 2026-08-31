@@ -1,6 +1,7 @@
 import { mapBadakanRecipient, type BadakanRecipient } from './map-recipient'
 import { mapBadakanMission, type BadakanMission } from './map-mission'
-import { badakanGetRecipient, badakanLogin } from './auth'
+import { mapBadakanComments, type BadakanComment } from './map-comment'
+import { badakanGetComments, badakanGetRecipient, badakanLogin } from './auth'
 import { searchPages } from './paged-search'
 
 export type BadakanClientConfig = {
@@ -15,6 +16,7 @@ export type BadakanClient = {
   searchEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
   searchMissions: (pageSize?: number) => Promise<BadakanMission[]>
   getRecipient: (badakanId: string) => Promise<BadakanRecipient | null>
+  getComments: (targetId: string) => Promise<BadakanComment[]>
 }
 
 export function createBadakanClient(config: BadakanClientConfig): BadakanClient {
@@ -61,6 +63,11 @@ export function createBadakanClient(config: BadakanClientConfig): BadakanClient 
         fetchFn,
       )
       return mapBadakanRecipient(raw)
+    },
+    async getComments(targetId) {
+      const token = await login()
+      const raw = await badakanGetComments(config.baseUrl, token, targetId, fetchFn)
+      return mapBadakanComments(raw)
     },
   }
 }

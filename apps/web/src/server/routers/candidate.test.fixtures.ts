@@ -83,6 +83,7 @@ export function makeCandidateDeps(overrides: Partial<CandidateDeps> = {}): Candi
       hardDeleteCandidateCascade: vi.fn().mockResolvedValue(undefined),
       createAudit: vi.fn().mockResolvedValue(undefined),
     },
+    getComments: vi.fn().mockResolvedValue([]),
     ...overrides,
   }
 }
