@@ -13,6 +13,7 @@ import { buildCandidateExportSelect } from './candidate-export-select.builder'
 import { buildCandidateListQuery } from './candidate-list-query'
 import { makeCandidateDuplicateRepository } from './candidate-duplicate.repo'
 import { makeCandidateMergeRepository } from './candidate-merge.repo'
+import { makeCandidateAppOriginRepository } from './candidate-app-origin.repo'
 import type { CandidateProfileUpdate } from './candidate-profile.repository'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-column-ids'
@@ -26,6 +27,7 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
   const profile = makeCandidateProfileRepository(db)
   const duplicate = makeCandidateDuplicateRepository(db)
   const merge = makeCandidateMergeRepository(db)
+  const appOrigin = makeCandidateAppOriginRepository(db)
 
   return {
     create: (data: Prisma.CandidateCreateInput) => db.candidate.create({ data }),
@@ -44,6 +46,9 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
         orderBy: { createdAt: 'desc' },
         take: limit,
       }),
+    findByBadakanId: appOrigin.findByBadakanId,
+    createAppCandidate: appOrigin.createAppCandidate,
+    linkAppOrigin: appOrigin.linkAppOrigin,
     findIdentityByEmail: duplicate.findIdentityByEmail,
     findIdentityByEmailAny: duplicate.findIdentityByEmailAny,
     findIdentityByPhoneAny: duplicate.findIdentityByPhoneAny,

@@ -1,6 +1,8 @@
+import type { AppProfileStatus } from '@prisma/client'
+
 export type InviteDueProfile = {
   id: string
-  status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
+  status: AppProfileStatus
   firstName: string
   lastName: string
   email: string | null

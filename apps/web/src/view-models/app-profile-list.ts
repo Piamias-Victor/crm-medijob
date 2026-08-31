@@ -1,3 +1,4 @@
+import type { AppProfileStatus } from '@prisma/client'
 import { appProfileInvitationLabel } from './app-profile-invitation'
 
 export type AppProfileListItem = {
@@ -14,7 +15,7 @@ export type AppProfileListItem = {
   jobTitleId: string | null
   jobTitleName: string | null
   hasResume: boolean
-  status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
+  status: AppProfileStatus
   invitationLabel: string
   syncedAt: Date
 }
@@ -32,7 +33,7 @@ export function toAppProfileListItem(row: {
   activityLabel: string | null
   jobTitleId: string | null
   hasResume: boolean
-  status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE'
+  status: AppProfileStatus
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
   syncedAt: Date

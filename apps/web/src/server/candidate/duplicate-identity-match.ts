@@ -50,3 +50,26 @@ export function pickNamePhoneMatch(
     ) ?? null
   )
 }
+
+export function pickPhoneMatch(
+  probe: DuplicateProbeIdentity,
+  candidates: DuplicateIdentity[],
+  excludeId?: string,
+): DuplicateIdentity | null {
+  if (!probe.phone) return null
+  return (
+    candidates.find(
+      (candidate) =>
+        candidate.id !== excludeId &&
+        Boolean(candidate.phone) &&
+        phonesMatch(candidate.phone!, probe.phone!),
+    ) ?? null
+  )
+}
+
+export function pickAppValidatedMatch(
+  probe: DuplicateProbeIdentity,
+  candidates: DuplicateIdentity[],
+): DuplicateIdentity | null {
+  return pickEmailMatch(probe, candidates) ?? pickPhoneMatch(probe, candidates)
+}
