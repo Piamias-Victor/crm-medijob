@@ -50,6 +50,7 @@ export function makeCandidateRepository(db: PrismaClient = defaultDb) {
     createAppCandidate: appOrigin.createAppCandidate,
     linkAppOrigin: appOrigin.linkAppOrigin,
     patchAppIdentity: appOrigin.patchAppIdentity,
+    findDossierState: appOrigin.findDossierState,
     findIdentityByEmail: duplicate.findIdentityByEmail,
     findIdentityByEmailAny: duplicate.findIdentityByEmailAny,
     findIdentityByPhoneAny: duplicate.findIdentityByPhoneAny,

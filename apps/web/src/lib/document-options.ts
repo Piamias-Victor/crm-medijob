@@ -9,4 +9,7 @@ export const DOCUMENT_CATEGORY_LABELS: Record<DocumentCategoryValue, string> = {
   FACTURE: 'Facture',
   CONVENTION: 'Convention',
   AUTRE: 'Autre',
+  CNI: 'CNI',
+  RIB: 'RIB',
+  DIPLOME: 'Diplôme',
 }

@@ -72,6 +72,9 @@ enum DocumentCategory {
   FACTURE
   CONVENTION
   AUTRE
+  CNI
+  RIB
+  DIPLOME
 }
 
 enum DocumentEntityType {
@@ -306,6 +309,8 @@ model Candidate {
   mobilityNotes      String?
   availableFrom      DateTime?
   cvUrl              String?
+  nir                String?
+  iban               String?
   cvSummary          String?
   anonymizedProfile  String?
   notes              String?

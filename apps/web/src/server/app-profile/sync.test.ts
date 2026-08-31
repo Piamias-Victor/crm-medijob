@@ -17,6 +17,8 @@ describe('syncAppProfiles', () => {
           postalCode: null,
           activityLabel: 'Pharmacien',
           hasResume: false,
+          nir: null,
+          iban: null,
           snapshot: { id: 'new' },
         },
         {
@@ -30,6 +32,8 @@ describe('syncAppProfiles', () => {
           postalCode: null,
           activityLabel: null,
           hasResume: false,
+          nir: null,
+          iban: null,
           snapshot: { id: 'old' },
         },
       ],

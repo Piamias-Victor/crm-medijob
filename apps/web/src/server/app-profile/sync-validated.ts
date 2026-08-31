@@ -35,6 +35,7 @@ export async function syncAppValidated(
     if (existing) {
       await patchIdentityFromRow(row, existing.id, deps)
       await leaveInboxIfPending(row.badakanId, existing.id, deps)
+      await deps.syncDossier(existing.id, row.badakanId)
       result.skipped += 1
       continue
     }
@@ -48,6 +49,7 @@ export async function syncAppValidated(
       await deps.linkAppOrigin(match.id, row.badakanId)
       await patchIdentityFromRow(row, match.id, deps)
       await leaveInboxIfPending(row.badakanId, match.id, deps)
+      await deps.syncDossier(match.id, row.badakanId)
       result.linked += 1
       continue
     }
@@ -70,6 +72,7 @@ export async function syncAppValidated(
       badakanId: row.badakanId,
     })
     await leaveInboxIfPending(row.badakanId, created.id, deps)
+    await deps.syncDossier(created.id, row.badakanId)
     result.created += 1
   }
   return result
