@@ -55,7 +55,7 @@ export function CandidateDetailPage({
           chips={candidateBlacklistHeaderChips(profile.effectiveStatus)}
         />
       }
-      meta={<CandidateDetailHeaderActions candidateId={profile.id} candidateName={name} />}
+      meta={<CandidateDetailHeaderActions candidateId={profile.id} candidateName={name} origin={profile.origin} />}
       tabs={
         <CandidateDetailTabs
           active={tab}

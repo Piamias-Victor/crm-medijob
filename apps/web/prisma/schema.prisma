@@ -39,6 +39,11 @@ enum CandidateOrigin {
   APP
 }
 
+enum WeeklyAvailabilityPeriod {
+  AM
+  PM
+}
+
 enum ContractType {
   CDI
   CDD
@@ -195,16 +200,16 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  referents     Candidate[] @relation("ReferentCandidates")
-  missionRefs   Mission[]   @relation("ReferentMissions")
-  pharmacyRefs  Pharmacy[]  @relation("ReferentPharmacies")
-  contactRefs   Contact[]   @relation("ReferentContacts")
-  activities    ActivityLog[]
-  gdprErases     GdprEraseAudit[]
-  interviewRefs  Interview[]      @relation("ReferentInterviews")
+  referents       Candidate[]      @relation("ReferentCandidates")
+  missionRefs     Mission[]        @relation("ReferentMissions")
+  pharmacyRefs    Pharmacy[]       @relation("ReferentPharmacies")
+  contactRefs     Contact[]        @relation("ReferentContacts")
+  activities      ActivityLog[]
+  gdprErases      GdprEraseAudit[]
+  interviewRefs   Interview[]      @relation("ReferentInterviews")
   financeLineRefs FinanceLine[]    @relation("ReferentFinanceLines")
-  accounts       Account[]
-  sessions       Session[]
+  accounts        Account[]
+  sessions        Session[]
 
   @@index([deletedAt])
 }
@@ -277,7 +282,7 @@ model Objectif {
 model JobTitleCompatibility {
   missionJobTitleId   String
   candidateJobTitleId String
-  score               Int      @default(100)
+  score               Int    @default(100)
 
   missionJobTitle   JobTitle @relation("MissionJobTitle", fields: [missionJobTitleId], references: [id], onDelete: Cascade)
   candidateJobTitle JobTitle @relation("AcceptedCandidateJobTitle", fields: [candidateJobTitleId], references: [id], onDelete: Cascade)
@@ -321,17 +326,19 @@ model Candidate {
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
 
-  referent            User?                         @relation("ReferentCandidates", fields: [referentId], references: [id], onDelete: SetNull)
-  jobTitle            JobTitle                      @relation(fields: [jobTitleId], references: [id])
-  softwares           CandidateSoftware[]
-  contractPreferences CandidateContractPreference[]
-  missions            MissionCandidate[]
-  activities          ActivityLog[]                 @relation("CandidateActivities")
-  documents           Document[]                    @relation("CandidateDocuments")
-  financeLines        FinanceLine[]
-  applications        Application[]
-  appProfiles         AppProfile[]
-  interviews          Interview[]
+  referent                User?                         @relation("ReferentCandidates", fields: [referentId], references: [id], onDelete: SetNull)
+  jobTitle                JobTitle                      @relation(fields: [jobTitleId], references: [id])
+  softwares               CandidateSoftware[]
+  contractPreferences     CandidateContractPreference[]
+  missions                MissionCandidate[]
+  activities              ActivityLog[]                 @relation("CandidateActivities")
+  documents               Document[]                    @relation("CandidateDocuments")
+  financeLines            FinanceLine[]
+  applications            Application[]
+  appProfiles             AppProfile[]
+  interviews              Interview[]
+  weeklyAvailabilityToken WeeklyAvailabilityToken?
+  weeklyAvailabilityWeeks WeeklyAvailabilityWeek[]
 
   @@index([deletedAt])
   @@index([jobTitleId])
@@ -359,6 +366,41 @@ model CandidateSoftware {
   @@id([candidateId, softwareId])
 }
 
+model WeeklyAvailabilityToken {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  candidateId String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model WeeklyAvailabilityWeek {
+  id          String   @id @default(cuid())
+  candidateId String
+  weekStart   DateTime @db.Date
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  candidate Candidate                @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  slots     WeeklyAvailabilitySlot[]
+
+  @@unique([candidateId, weekStart])
+  @@index([candidateId])
+}
+
+model WeeklyAvailabilitySlot {
+  id     String                   @id @default(cuid())
+  weekId String
+  date   DateTime                 @db.Date
+  period WeeklyAvailabilityPeriod
+  week   WeeklyAvailabilityWeek   @relation(fields: [weekId], references: [id], onDelete: Cascade)
+
+  @@unique([weekId, date, period])
+  @@index([weekId])
+}
+
 // ─── Pharmacies ───────────────────────────────────────────────
 
 model Pharmacy {
@@ -384,14 +426,14 @@ model Pharmacy {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
-  groupement Groupement?   @relation(fields: [groupementId], references: [id])
-  software   Software?     @relation(fields: [softwareId], references: [id])
-  referent   User?         @relation("ReferentPharmacies", fields: [referentId], references: [id], onDelete: SetNull)
-  contacts   Contact[]
+  groupement   Groupement?   @relation(fields: [groupementId], references: [id])
+  software     Software?     @relation(fields: [softwareId], references: [id])
+  referent     User?         @relation("ReferentPharmacies", fields: [referentId], references: [id], onDelete: SetNull)
+  contacts     Contact[]
   missions     Mission[]
   financeLines FinanceLine[]
   activities   ActivityLog[] @relation("PharmacyActivities")
-  documents  Document[]    @relation("PharmacyDocuments")
+  documents    Document[]    @relation("PharmacyDocuments")
 
   @@index([deletedAt])
   @@index([groupementId])
@@ -458,14 +500,14 @@ model Mission {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  pharmacy   Pharmacy           @relation(fields: [pharmacyId], references: [id])
-  contact    Contact?           @relation(fields: [contactId], references: [id])
-  referent   User?              @relation("ReferentMissions", fields: [referentId], references: [id], onDelete: SetNull)
-  jobTitle   JobTitle           @relation(fields: [jobTitleId], references: [id])
-  candidates MissionCandidate[]
-  jobOffer   JobOffer?
-  activities ActivityLog[]      @relation("MissionActivities")
-  documents  Document[]         @relation("MissionDocuments")
+  pharmacy     Pharmacy           @relation(fields: [pharmacyId], references: [id])
+  contact      Contact?           @relation(fields: [contactId], references: [id])
+  referent     User?              @relation("ReferentMissions", fields: [referentId], references: [id], onDelete: SetNull)
+  jobTitle     JobTitle           @relation(fields: [jobTitleId], references: [id])
+  candidates   MissionCandidate[]
+  jobOffer     JobOffer?
+  activities   ActivityLog[]      @relation("MissionActivities")
+  documents    Document[]         @relation("MissionDocuments")
   devis        Devis[]
   financeLines FinanceLine[]
 
@@ -502,26 +544,26 @@ model Devis {
 }
 
 model FinanceLine {
-  id          String          @id @default(cuid())
-  kind        FinanceLineKind
-  pharmacyId  String
-  candidateId String
-  missionId   String?
-  devisId     String?         @unique
-  hours       Float?
-  hourlyRate  Float?
-  amountHt    Float
-  htSource    DevisHtSource   @default(TYPED)
-  marge       Float?
-  occurredAt  DateTime
-  referentId  String?
+  id                    String          @id @default(cuid())
+  kind                  FinanceLineKind
+  pharmacyId            String
+  candidateId           String
+  missionId             String?
+  devisId               String?         @unique
+  hours                 Float?
+  hourlyRate            Float?
+  amountHt              Float
+  htSource              DevisHtSource   @default(TYPED)
+  marge                 Float?
+  occurredAt            DateTime
+  referentId            String?
   placementContractType ContractType?
-  cancelled   Boolean         @default(false)
-  invoiced    Boolean         @default(false)
-  paid        Boolean         @default(false)
-  deletedAt   DateTime?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  cancelled             Boolean         @default(false)
+  invoiced              Boolean         @default(false)
+  paid                  Boolean         @default(false)
+  deletedAt             DateTime?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 
   pharmacy  Pharmacy  @relation(fields: [pharmacyId], references: [id])
   candidate Candidate @relation(fields: [candidateId], references: [id])
@@ -555,16 +597,16 @@ model MissionCandidate {
 // ─── Offres d'emploi ──────────────────────────────────────────
 
 model JobOffer {
-  id            String         @id @default(cuid())
-  missionId     String         @unique
-  title         String
-  content       String
-  status        JobOfferStatus @default(BROUILLON)
+  id             String         @id @default(cuid())
+  missionId      String         @unique
+  title          String
+  content        String
+  status         JobOfferStatus @default(BROUILLON)
   boardListingId String?
-  publishedAt   DateTime?
-  deletedAt     DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  publishedAt    DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   mission      Mission       @relation(fields: [missionId], references: [id])
   applications Application[]
@@ -576,24 +618,24 @@ model JobOffer {
 // ─── Candidatures site internet ───────────────────────────────
 
 model Application {
-  id          String            @id @default(cuid())
-  jobOfferId  String
-  boardSubmissionId String?     @unique
-  firstName   String
-  lastName    String
-  email       String
-  phone       String?
-  city        String?
-  jobTitleId  String?
-  cvUrl       String?
-  message     String?
-  status      ApplicationStatus @default(EN_ATTENTE)
-  candidateId String?
-  consentGivenAt DateTime?
-  consentSource  ConsentSource?
-  deletedAt   DateTime?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id                String            @id @default(cuid())
+  jobOfferId        String
+  boardSubmissionId String?           @unique
+  firstName         String
+  lastName          String
+  email             String
+  phone             String?
+  city              String?
+  jobTitleId        String?
+  cvUrl             String?
+  message           String?
+  status            ApplicationStatus @default(EN_ATTENTE)
+  candidateId       String?
+  consentGivenAt    DateTime?
+  consentSource     ConsentSource?
+  deletedAt         DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
   jobOffer  JobOffer   @relation(fields: [jobOfferId], references: [id])
   jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
@@ -605,28 +647,28 @@ model Application {
 }
 
 model AppProfile {
-  id            String           @id @default(cuid())
-  badakanId     String           @unique
-  firstName     String
-  lastName      String
-  email         String?
-  phone         String?
-  address       String?
-  city          String?
-  postalCode    String?
-  activityLabel String?
-  jobTitleId    String?
-  hasResume     Boolean          @default(false)
-  snapshot      Json?
-  status        AppProfileStatus @default(EN_ATTENTE)
-  candidateId          String?
-  hireflixInterviewId  String?
-  hireflixUrl          String?
-  inviteEmailSentAt    DateTime?
-  inviteLastError      String?
-  syncedAt             DateTime         @default(now())
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  id                  String           @id @default(cuid())
+  badakanId           String           @unique
+  firstName           String
+  lastName            String
+  email               String?
+  phone               String?
+  address             String?
+  city                String?
+  postalCode          String?
+  activityLabel       String?
+  jobTitleId          String?
+  hasResume           Boolean          @default(false)
+  snapshot            Json?
+  status              AppProfileStatus @default(EN_ATTENTE)
+  candidateId         String?
+  hireflixInterviewId String?
+  hireflixUrl         String?
+  inviteEmailSentAt   DateTime?
+  inviteLastError     String?
+  syncedAt            DateTime         @default(now())
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
 
   jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
   candidate Candidate? @relation(fields: [candidateId], references: [id])
@@ -667,14 +709,14 @@ model ActivityLog {
 // ─── Documents polymorphes ────────────────────────────────────
 
 model Document {
-  id         String           @id @default(cuid())
+  id         String             @id @default(cuid())
   entityType DocumentEntityType
-  category   DocumentCategory @default(AUTRE)
+  category   DocumentCategory   @default(AUTRE)
   name       String
   url        String
   size       Int?
   mimeType   String?
-  createdAt  DateTime         @default(now())
+  createdAt  DateTime           @default(now())
 
   pharmacyId  String?
   contactId   String?
@@ -695,21 +737,21 @@ model Document {
 // ─── Interviews ───────────────────────────────────────────────
 
 model Interview {
-  id          String              @id @default(cuid())
-  status      InterviewStatus     @default(DRAFT)
+  id          String             @id @default(cuid())
+  status      InterviewStatus    @default(DRAFT)
   mode        InterviewMode
   decision    InterviewDecision?
-  answers     Json                @default("{}")
-  scores      Json                @default("{}")
+  answers     Json               @default("{}")
+  scores      Json               @default("{}")
   candidateId String
   referentId  String?
   templateId  String?
   deletedAt   DateTime?
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
-  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  referent  User?     @relation("ReferentInterviews", fields: [referentId], references: [id], onDelete: SetNull)
+  candidate Candidate          @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  referent  User?              @relation("ReferentInterviews", fields: [referentId], references: [id], onDelete: SetNull)
   template  InterviewTemplate? @relation(fields: [templateId], references: [id], onDelete: Restrict)
 
   // One DRAFT per candidate: partial unique index Interview_one_draft_per_candidate

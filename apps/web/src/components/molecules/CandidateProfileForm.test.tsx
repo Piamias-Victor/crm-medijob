@@ -29,6 +29,7 @@ const baseProfile: CandidateProfilePayload = {
   postalCode: '69001',
   jobTitleId: 'jt1',
   jobTitleName: 'Pharmacien',
+  origin: 'CRM',
   status: 'NOUVEAU',
   effectiveStatus: 'NOUVEAU',
   salaryExpectations: null,

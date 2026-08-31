@@ -19,6 +19,10 @@ export function isLoginPath(pathname: string): boolean {
   return pathname === LOGIN_PATH
 }
 
+export function isDispoPath(pathname: string): boolean {
+  return pathname === '/dispo' || pathname.startsWith('/dispo/')
+}
+
 export function evaluateAccess(input: {
   loggedIn: boolean
   role: AccessRole
@@ -28,6 +32,9 @@ export function evaluateAccess(input: {
 
   if (isLoginPath(pathname)) {
     return loggedIn ? 'redirect-home' : 'allow'
+  }
+  if (isDispoPath(pathname)) {
+    return 'allow'
   }
   if (!loggedIn) {
     return 'redirect-login'

@@ -29,6 +29,7 @@ export function toCandidateProfilePayload(candidate: CandidateProfileRecord) {
     postalCode: candidate.postalCode,
     jobTitleId: candidate.jobTitleId,
     jobTitleName: candidate.jobTitle.name,
+    origin: candidate.origin,
     status: candidate.status,
     effectiveStatus,
     salaryExpectations: candidate.salaryExpectations,

@@ -51,6 +51,11 @@ describe('toCandidateProfilePayload', () => {
     expect(payload.missingMatchingFields).not.toContain('iban')
   })
 
+  it('exposes origin App so the fiche can copy the weekly availability link', () => {
+    const payload = toCandidateProfilePayload({ ...baseProfile, origin: 'APP' })
+    expect(payload.origin).toBe('APP')
+  })
+
   it('exposes NIR and IBAN on the fiche payload', () => {
     const payload = toCandidateProfilePayload({
       ...baseProfile,
