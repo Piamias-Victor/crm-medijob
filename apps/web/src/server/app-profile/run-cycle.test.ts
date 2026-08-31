@@ -23,6 +23,7 @@ const stubDeps: AppProfileCycleDeps = {
     cancelled: 0,
     failed: 0,
   }),
+  syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
 }
 
 describe('runAppProfileCycle', () => {

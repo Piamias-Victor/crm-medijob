@@ -10,4 +10,10 @@ describe('Candidate origin schema', () => {
     expect(schema).toMatch(/origin\s+CandidateOrigin @default\(CRM\)/)
     expect(schema).toMatch(/badakanId\s+String\?\s+@unique/)
   })
+
+  it('declares AppProfileStatus APP_VALIDATED', () => {
+    expect(schema).toContain(
+      'enum AppProfileStatus {\n  EN_ATTENTE\n  ACCEPTE\n  IGNORE\n  APP_VALIDATED\n}',
+    )
+  })
 })

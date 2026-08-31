@@ -59,10 +59,12 @@ Vocabulaire : App-validated, Candidate origin, AppProfile, Hireflix invitation. 
 
 ## Fichiers impactés
 
-- `apps/web/src/server/app-profile/sync.ts` — COMPLETED → Candidate
-- `apps/web/src/server/db/repositories/candidate.repository.ts` — origin / badakanId
-- `apps/web/src/server/candidate/duplicate-identity-match.ts` — fusion
-- `apps/web/src/server/app-profile/invite-due.ts` — cancel si plus EN_ATTENTE
+- `apps/web/src/server/app-profile/sync-validated.ts` — COMPLETED → create/link Candidate origine App
+- `apps/web/src/server/app-profile/run-cycle.ts` — searchEmployees → syncValidated puis inviteDue
+- `apps/web/src/server/db/repositories/candidate-app-origin.repo.ts` — origin APP / badakanId, status inchangé au link
+- `apps/web/src/server/candidate/duplicate-identity-match.ts` — email puis tél (`pickPhoneMatch`)
+- `apps/web/src/server/app-profile/invite-due.ts` — cancel si plus EN_ATTENTE (APP_VALIDATED)
+- `apps/web/prisma/schema.prisma` — `AppProfileStatus.APP_VALIDATED`
 
 ---
 

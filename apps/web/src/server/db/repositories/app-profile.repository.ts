@@ -37,6 +37,11 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         where: { badakanId: { in: ids } },
         select: { id: true, badakanId: true, status: true },
       }),
+    findByBadakanId: (badakanId: string) =>
+      db.appProfile.findUnique({
+        where: { badakanId },
+        select: { id: true, status: true },
+      }),
     upsertPending: (data: AppProfileUpsertInput) =>
       db.appProfile.upsert({
         where: { badakanId: data.badakanId },
@@ -58,7 +63,7 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
       }),
     markStatus: (
       id: string,
-      status: Extract<AppProfileStatus, 'ACCEPTE' | 'IGNORE'>,
+      status: Extract<AppProfileStatus, 'ACCEPTE' | 'IGNORE' | 'APP_VALIDATED'>,
       candidateId?: string | null,
     ) =>
       db.appProfile.update({

@@ -34,4 +34,15 @@ describe('appProfileRepository', () => {
       data: { status: 'IGNORE', candidateId: undefined },
     })
   })
+
+  it('marks App-validated without IGNORE', async () => {
+    const db = mockDb()
+    db.appProfile.update.mockResolvedValue({ id: 'p1', status: 'APP_VALIDATED' })
+    const repo = makeAppProfileRepository(db as never)
+    await repo.markStatus('p1', 'APP_VALIDATED', 'c1')
+    expect(db.appProfile.update).toHaveBeenCalledWith({
+      where: { id: 'p1' },
+      data: { status: 'APP_VALIDATED', candidateId: 'c1' },
+    })
+  })
 })

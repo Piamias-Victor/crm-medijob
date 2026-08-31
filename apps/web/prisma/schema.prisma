@@ -97,6 +97,7 @@ enum AppProfileStatus {
   EN_ATTENTE
   ACCEPTE
   IGNORE
+  APP_VALIDATED
 }
 
 enum JobOfferStatus {
