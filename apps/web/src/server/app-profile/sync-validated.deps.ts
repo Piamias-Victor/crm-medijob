@@ -8,6 +8,8 @@ import type { SyncValidatedDeps } from '@/server/app-profile/sync-validated.type
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 
 export function defaultSyncValidatedDeps(): SyncValidatedDeps {
+  const mapJobTitleId = (label: string) =>
+    defaultAppProfileDeps.findJobTitleIdByName(label)
   return {
     findByBadakanId: candidateRepository.findByBadakanId,
     findMatch: (probe) =>
@@ -17,17 +19,19 @@ export function defaultSyncValidatedDeps(): SyncValidatedDeps {
       }),
     createAppCandidate: candidateRepository.createAppCandidate,
     linkAppOrigin: candidateRepository.linkAppOrigin,
+    patchIdentity: candidateRepository.patchAppIdentity,
     findAppProfileByBadakanId: appProfileRepository.findByBadakanId,
     markAppValidated: (id, candidateId) =>
       appProfileRepository.markStatus(id, 'APP_VALIDATED', candidateId),
     resolveJobTitleId: async (label) => {
       if (label) {
-        const mapped = await defaultAppProfileDeps.findJobTitleIdByName(label)
+        const mapped = await mapJobTitleId(label)
         if (mapped) return mapped
       }
       const titles = await jobTitleRepository.list()
       return titles[0]?.id ?? null
     },
+    mapJobTitleId,
   }
 }
 

@@ -1,4 +1,5 @@
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
+import { identityPatchFromBadakan } from './merge-badakan-identity'
 import type { SyncValidatedDeps, SyncValidatedResult } from './sync-validated.types'
 
 async function leaveInboxIfPending(
@@ -11,6 +12,19 @@ async function leaveInboxIfPending(
   await deps.markAppValidated(profile.id, candidateId)
 }
 
+async function patchIdentityFromRow(
+  row: BadakanRecipient,
+  candidateId: string,
+  deps: SyncValidatedDeps,
+) {
+  const jobTitleId = row.activityLabel
+    ? await deps.mapJobTitleId(row.activityLabel)
+    : null
+  const patch = identityPatchFromBadakan(row, jobTitleId)
+  if (Object.keys(patch).length === 0) return
+  await deps.patchIdentity(candidateId, patch)
+}
+
 export async function syncAppValidated(
   rows: BadakanRecipient[],
   deps: SyncValidatedDeps,
@@ -19,6 +33,7 @@ export async function syncAppValidated(
   for (const row of rows) {
     const existing = await deps.findByBadakanId(row.badakanId)
     if (existing) {
+      await patchIdentityFromRow(row, existing.id, deps)
       await leaveInboxIfPending(row.badakanId, existing.id, deps)
       result.skipped += 1
       continue
@@ -31,6 +46,7 @@ export async function syncAppValidated(
     })
     if (match) {
       await deps.linkAppOrigin(match.id, row.badakanId)
+      await patchIdentityFromRow(row, match.id, deps)
       await leaveInboxIfPending(row.badakanId, match.id, deps)
       result.linked += 1
       continue

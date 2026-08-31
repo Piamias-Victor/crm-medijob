@@ -1,6 +1,17 @@
 import type { PrismaClient } from '@prisma/client'
 import { NOT_DELETED } from './soft-delete'
 
+export type AppIdentityPatch = {
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  address?: string
+  city?: string
+  postalCode?: string
+  jobTitleId?: string
+}
+
 export type AppOriginCreateInput = {
   firstName: string
   lastName: string
@@ -43,6 +54,12 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
       db.candidate.update({
         where: { id },
         data: { origin: 'APP', badakanId },
+        select: { id: true },
+      }),
+    patchAppIdentity: (id: string, patch: AppIdentityPatch) =>
+      db.candidate.update({
+        where: { id },
+        data: patch,
         select: { id: true },
       }),
   }

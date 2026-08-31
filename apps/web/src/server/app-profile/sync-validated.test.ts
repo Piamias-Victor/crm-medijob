@@ -36,6 +36,12 @@ describe('syncAppValidated', () => {
     expect(result).toEqual({ created: 0, linked: 1, skipped: 0 })
     expect(deps.createAppCandidate).not.toHaveBeenCalled()
     expect(deps.linkAppOrigin).toHaveBeenCalledWith('c-qualifie', 'bk-marie')
+    expect(deps.patchIdentity).toHaveBeenCalledWith('c-qualifie', {
+      firstName: 'Marie',
+      lastName: 'App',
+      email: 'marie@app.fr',
+      phone: '0600000001',
+    })
   })
 
   it('removes matching AppProfile from inbox without IGNORE', async () => {

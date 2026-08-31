@@ -45,4 +45,20 @@ describe('candidate app origin repository', () => {
     })
     expect(update.mock.calls[0]?.[0].data).not.toHaveProperty('status')
   })
+
+  it('patches identity without interview fields', async () => {
+    const update = vi.fn().mockResolvedValue({ id: 'c1' })
+    const repo = makeCandidateAppOriginRepository({
+      candidate: { update },
+    } as unknown as PrismaClient)
+    await repo.patchAppIdentity('c1', { address: '12 rue Test', city: 'Lyon' })
+    expect(update).toHaveBeenCalledWith({
+      where: { id: 'c1' },
+      data: { address: '12 rue Test', city: 'Lyon' },
+      select: { id: true },
+    })
+    expect(update.mock.calls[0]?.[0].data).not.toHaveProperty('notes')
+    expect(update.mock.calls[0]?.[0].data).not.toHaveProperty('availableFrom')
+    expect(update.mock.calls[0]?.[0].data).not.toHaveProperty('salaryExpectations')
+  })
 })
