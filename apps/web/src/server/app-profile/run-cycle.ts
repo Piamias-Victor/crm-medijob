@@ -1,21 +1,26 @@
 import { syncAppProfiles } from '@/server/app-profile/sync'
-import { inviteDueAppProfiles } from '@/server/app-profile/invite-due'
-import { defaultInviteDueDeps } from '@/server/app-profile/invite-due.deps'
-import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
-import { defaultAppProfileDeps } from '@/server/routers/app-profile.deps'
-import { badakanClientFromEnv } from '@/server/badakan/client'
+import {
+  defaultAppProfileCycleDeps,
+  type AppProfileCycleDeps,
+} from '@/server/app-profile/run-cycle.deps'
 
-export async function runAppProfileCycle(env: NodeJS.ProcessEnv = process.env) {
+export type { AppProfileCycleDeps }
+
+export async function runAppProfileCycle(
+  env: NodeJS.ProcessEnv = process.env,
+  deps?: AppProfileCycleDeps,
+) {
   if (!env.BADAKAN_EMAIL || !env.BADAKAN_PASSWORD) {
     return { skipped: true as const }
   }
-  const client = badakanClientFromEnv(env)
+  const resolved = deps ?? defaultAppProfileCycleDeps(env)
   const sync = await syncAppProfiles({
-    searchNewEmployees: () => client.searchNewEmployees(),
-    findByBadakanIds: appProfileRepository.findByBadakanIds,
-    upsertPending: appProfileRepository.upsertPending,
-    findJobTitleIdByName: defaultAppProfileDeps.findJobTitleIdByName,
+    searchNewEmployees: () => resolved.client.searchNewEmployees(),
+    findByBadakanIds: resolved.findByBadakanIds,
+    upsertPending: resolved.upsertPending,
+    findJobTitleIdByName: resolved.findJobTitleIdByName,
   })
-  const invite = await inviteDueAppProfiles(defaultInviteDueDeps(env))
-  return { sync, invite }
+  const employees = await resolved.client.searchEmployees()
+  const invite = await resolved.inviteDue()
+  return { sync, invite, employees: { fetched: employees.length } }
 }

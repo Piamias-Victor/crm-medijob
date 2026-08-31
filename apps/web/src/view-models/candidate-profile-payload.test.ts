@@ -17,6 +17,8 @@ const baseProfile = {
   latitude: null,
   longitude: null,
   jobTitleId: 'jt1',
+  origin: 'CRM',
+  badakanId: null,
   status: 'NOUVEAU',
   salaryExpectations: null,
   salaryMin: null,

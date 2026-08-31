@@ -1,0 +1,3 @@
+# Badakan enterprises become Pharmacies only after recruiter verification
+
+Each Badakan enterprise can enter the CRM portfolio as a Pharmacy, but not blindly: a verification screen shows the imported card (name, SIRET, address, principal contact) before it is validated. If the SIRET already exists, that screen shows the existing Pharmacy — never a second file. The same screen offers to create or link a **Contact** from the Badakan principal user (email then phone; no duplicate). Auto-creating a Pharmacy on every sync without review was rejected (dirty duplicates). Leaving unmatched enterprises only on Intérim mission cards was rejected: Mathieu wants pharmacies in the CRM, with a human check when possible.

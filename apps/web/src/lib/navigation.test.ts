@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { facturationSubNav } from '@/lib/navigation'
+import { facturationSubNav, navItems, visibleNavItems } from '@/lib/navigation'
 
 describe('facturationSubNav', () => {
   it('lists Vue d’ensemble, Pilotage, Placements and Intérim', () => {
@@ -9,5 +9,21 @@ describe('facturationSubNav', () => {
       ['Placements', '/facturation/placements'],
       ['Intérim', '/facturation/interim'],
     ])
+  })
+})
+
+describe('navItems', () => {
+  it('lists operational Intérim apart from Facturation Intérim', () => {
+    expect(navItems.map((item) => [item.label, item.href])).toContainEqual([
+      'Intérim',
+      '/interim',
+    ])
+    expect(navItems.some((item) => item.href === '/facturation/interim')).toBe(false)
+  })
+
+  it('shows Intérim to a recruteur', () => {
+    expect(visibleNavItems('RECRUTEUR').some((item) => item.href === '/interim')).toBe(
+      true,
+    )
   })
 })
