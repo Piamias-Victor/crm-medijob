@@ -67,6 +67,26 @@ describe('activityLogRouter', () => {
     })
   })
 
+  it('creates recruiter note as ActivityLog on Candidate', async () => {
+    const deps = makeActivityLogDeps()
+    await activityLogCaller(deps).create({
+      entityType: 'CANDIDATE',
+      entityId: 'c1',
+      type: 'NOTE',
+      content: 'Appel Tounkara',
+      date: new Date('2026-03-12T14:32:00Z'),
+    })
+    expect(deps.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        entityType: 'CANDIDATE',
+        entityId: 'c1',
+        type: 'NOTE',
+        content: 'Appel Tounkara',
+        authorId: 'u1',
+      }),
+    )
+  })
+
   it('rejects unauthenticated callers', async () => {
     const unauth = createCallerFactory(makeActivityLogRouter(makeActivityLogDeps()))({ session: null })
     await expect(

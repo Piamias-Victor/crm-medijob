@@ -14,6 +14,7 @@ import type { CvthequeExportColumnId } from '@/view-models/cvtheque-export-colum
 import type { CandidateQuickViewEntity } from '@/view-models/candidate-quick-view.types'
 import type { EraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate'
 import type { LeanMapPinRow } from '@/view-models/lean-map-pin-row'
+import type { BadakanComment } from '@/server/badakan/map-comment'
 
 export type CandidateDeps = CandidateCvDeps &
   CandidateDocumentsDeps &
@@ -44,4 +45,5 @@ export type CandidateDeps = CandidateCvDeps &
     listMapPins: () => Promise<LeanMapPinRow[]>
     logLifecycle: LogEntityLifecycle
     gdprErase: EraseCandidateGdprDeps
+    getComments: (targetId: string) => Promise<BadakanComment[]>
   }

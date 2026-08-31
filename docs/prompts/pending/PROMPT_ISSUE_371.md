@@ -55,8 +55,11 @@ Vocabulaire : Badakan comment ≠ ActivityLog. ADR 0024.
 ## Fichiers impactés
 
 - `apps/web/src/server/badakan/client.ts` — GET comments/target/{id}
-- fiche AppProfile / Candidate
-- `apps/web/src/server/routers/activity-log.ts` — notes CRM
+- `apps/web/src/server/badakan/map-comment.ts` — Zod map texte / auteur / date
+- `apps/web/src/server/routers/app-profile.ts` — `listComments` CREATED
+- `apps/web/src/server/routers/candidate-comments.ts` — `listComments` si `badakanId`
+- `apps/web/src/server/routers/activity-log.ts` — notes CRM (inchangé, test NOTE Candidate)
+- fiche AppProfile + Candidate historique — `BadakanCommentList`
 
 ---
 

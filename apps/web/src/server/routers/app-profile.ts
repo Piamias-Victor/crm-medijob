@@ -6,6 +6,7 @@ import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-pr
 import { toCandidateCreateData } from '@/view-models/candidate-profile-map'
 import type { CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
+import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
 
 function mapError(error: unknown): never {
   if (error instanceof AppProfileError) {
@@ -27,6 +28,11 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       const row = await deps.findById(input.id)
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
       return toAppProfileListItem(row)
+    }),
+    listComments: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
+      const row = await deps.findById(input.id)
+      if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
+      return readCommentsOrEmpty(() => deps.getBadakanClient().getComments(row.badakanId))
     }),
     countPending: protectedProcedure.query(() => deps.countPending()),
     ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {

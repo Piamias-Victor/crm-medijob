@@ -14,6 +14,7 @@ const stubDeps: AppProfileCycleDeps = {
     searchEmployees: async () => (employee ? [employee] : []),
     searchMissions: async () => [],
     getRecipient: async () => null,
+    getComments: async () => [],
   },
   findByBadakanIds: async () => [],
   upsertPending: async () => ({}),

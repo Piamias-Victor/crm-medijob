@@ -19,6 +19,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
       searchEmployees: async () => [],
       searchMissions: async () => [mission],
       getRecipient: async () => null,
+      getComments: async () => [],
     },
     findByBadakanIds: async () => [],
     upsertPending: async () => ({}),
