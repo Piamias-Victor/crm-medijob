@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { facturationSubNav, navItems, visibleNavItems } from '@/lib/navigation'
+import { facturationSubNav, interimSubNav, navItems, visibleNavItems } from '@/lib/navigation'
 
 describe('facturationSubNav', () => {
   it('lists Vue d’ensemble, Pilotage, Placements and Intérim', () => {
@@ -25,5 +25,14 @@ describe('navItems', () => {
     expect(visibleNavItems('RECRUTEUR').some((item) => item.href === '/interim')).toBe(
       true,
     )
+  })
+})
+
+describe('interimSubNav', () => {
+  it('lists Badakan missions apart from the CRM Mission kanban', () => {
+    expect(interimSubNav.map((item) => [item.label, item.href])).toEqual([
+      ['Missions Badakan', '/interim/missions'],
+    ])
+    expect(interimSubNav.some((item) => item.href === '/missions')).toBe(false)
   })
 })

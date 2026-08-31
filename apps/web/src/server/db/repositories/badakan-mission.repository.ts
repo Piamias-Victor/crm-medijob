@@ -1,0 +1,43 @@
+import type { Prisma, PrismaClient } from '@prisma/client'
+import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { prisma as defaultDb } from './client'
+import type { BadakanMission } from '@/server/badakan/map-mission'
+
+const includeApplied = { searchApplied: true } as const
+
+function persistFields(data: BadakanMission) {
+  return {
+    badakanId: data.badakanId,
+    pharmacyName: data.pharmacyName,
+    step: data.step,
+    periods: data.periods as Prisma.InputJsonValue,
+    syncedAt: new Date(),
+  }
+}
+
+export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
+  return {
+    list: (limit = DEFAULT_LIST_LIMIT) =>
+      db.badakanMission.findMany({
+        orderBy: { syncedAt: 'desc' },
+        take: limit,
+        include: includeApplied,
+      }),
+    findById: (id: string) =>
+      db.badakanMission.findUnique({ where: { id }, include: includeApplied }),
+    upsertFromRead: (data: BadakanMission) =>
+      db.badakanMission.upsert({
+        where: { badakanId: data.badakanId },
+        create: {
+          ...persistFields(data),
+          searchApplied: { create: data.searchApplied },
+        },
+        update: {
+          ...persistFields(data),
+          searchApplied: { deleteMany: {}, create: data.searchApplied },
+        },
+      }),
+  }
+}
+
+export const badakanMissionRepository = makeBadakanMissionRepository()

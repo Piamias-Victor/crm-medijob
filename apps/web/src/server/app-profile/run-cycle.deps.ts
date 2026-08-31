@@ -2,8 +2,10 @@ import { inviteDueAppProfiles } from '@/server/app-profile/invite-due'
 import { syncValidatedEmployees } from '@/server/app-profile/sync-validated.deps'
 import { defaultInviteDueDeps } from '@/server/app-profile/invite-due.deps'
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
+import { badakanMissionRepository } from '@/server/db/repositories/badakan-mission.repository'
 import { defaultAppProfileDeps } from '@/server/routers/app-profile.deps'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
+import { syncBadakanMissions } from '@/server/badakan-mission/sync'
 import type { SyncDeps } from '@/server/app-profile/sync'
 import type { SyncValidatedResult } from '@/server/app-profile/sync-validated.types'
 import type { InviteDueResult } from '@/server/app-profile/invite-due.types'
@@ -16,18 +18,25 @@ export type AppProfileCycleDeps = {
   findJobTitleIdByName: SyncDeps['findJobTitleIdByName']
   inviteDue: () => Promise<InviteDueResult>
   syncValidated: (rows: BadakanRecipient[]) => Promise<SyncValidatedResult>
+  syncMissions: () => Promise<{ fetched: number; upserted: number }>
 }
 
 export function defaultAppProfileCycleDeps(
   env: NodeJS.ProcessEnv,
   fetchFn?: typeof fetch,
 ): AppProfileCycleDeps {
+  const client = badakanClientFromEnv(env, fetchFn)
   return {
-    client: badakanClientFromEnv(env, fetchFn),
+    client,
     findByBadakanIds: appProfileRepository.findByBadakanIds,
     upsertPending: appProfileRepository.upsertPending,
     findJobTitleIdByName: defaultAppProfileDeps.findJobTitleIdByName,
     inviteDue: () => inviteDueAppProfiles(defaultInviteDueDeps(env)),
     syncValidated: syncValidatedEmployees,
+    syncMissions: () =>
+      syncBadakanMissions({
+        searchMissions: () => client.searchMissions(),
+        upsertFromRead: badakanMissionRepository.upsertFromRead,
+      }),
   }
 }

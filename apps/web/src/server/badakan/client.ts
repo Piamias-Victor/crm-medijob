@@ -1,6 +1,7 @@
 import { mapBadakanRecipient, type BadakanRecipient } from './map-recipient'
+import { mapBadakanMission, type BadakanMission } from './map-mission'
 import { badakanGetRecipient, badakanLogin } from './auth'
-import { searchRecipientPages } from './paged-search'
+import { searchPages } from './paged-search'
 
 export type BadakanClientConfig = {
   baseUrl: string
@@ -12,6 +13,7 @@ export type BadakanClientConfig = {
 export type BadakanClient = {
   searchNewEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
   searchEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
+  searchMissions: (pageSize?: number) => Promise<BadakanMission[]>
   getRecipient: (badakanId: string) => Promise<BadakanRecipient | null>
 }
 
@@ -19,15 +21,14 @@ export function createBadakanClient(config: BadakanClientConfig): BadakanClient 
   const fetchFn = config.fetchFn ?? fetch
   const login = () =>
     badakanLogin(config.baseUrl, config.email, config.password, fetchFn)
-  const search = (path: string, pageSize: number, failLabel: string) =>
+  const search = <T>(
+    path: string,
+    pageSize: number,
+    failLabel: string,
+    mapItem: (raw: unknown) => T | null,
+  ) =>
     login().then((token) =>
-      searchRecipientPages(
-        fetchFn,
-        `${config.baseUrl}${path}`,
-        token,
-        pageSize,
-        failLabel,
-      ),
+      searchPages(fetchFn, `${config.baseUrl}${path}`, token, pageSize, failLabel, mapItem),
     )
   return {
     searchNewEmployees: (pageSize = 100) =>
@@ -35,12 +36,21 @@ export function createBadakanClient(config: BadakanClientConfig): BadakanClient 
         '/services/v3/recipients/searchNewEmployees',
         pageSize,
         'Badakan searchNewEmployees',
+        mapBadakanRecipient,
       ),
     searchEmployees: (pageSize = 100) =>
       search(
         '/services/v3/recipients/searchEmployees',
         pageSize,
         'Badakan searchEmployees',
+        mapBadakanRecipient,
+      ),
+    searchMissions: (pageSize = 100) =>
+      search(
+        '/services/v3/missions/search',
+        pageSize,
+        'Badakan searchMissions',
+        mapBadakanMission,
       ),
     async getRecipient(badakanId) {
       const token = await login()
