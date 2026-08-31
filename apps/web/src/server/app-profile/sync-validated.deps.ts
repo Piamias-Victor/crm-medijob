@@ -4,6 +4,7 @@ import { jobTitleRepository } from '@/server/db/repositories/job-title.repositor
 import { defaultAppProfileDeps } from '@/server/routers/app-profile.deps'
 import { syncAppValidated } from '@/server/app-profile/sync-validated'
 import { findAppValidatedMatch } from '@/server/app-profile/find-app-validated-match'
+import { syncCandidateDossier } from '@/server/app-profile/apply-dossier.deps'
 import type { SyncValidatedDeps } from '@/server/app-profile/sync-validated.types'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 
@@ -32,6 +33,7 @@ export function defaultSyncValidatedDeps(): SyncValidatedDeps {
       return titles[0]?.id ?? null
     },
     mapJobTitleId,
+    syncDossier: syncCandidateDossier,
   }
 }
 

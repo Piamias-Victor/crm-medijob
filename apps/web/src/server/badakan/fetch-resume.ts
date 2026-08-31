@@ -1,4 +1,5 @@
 import { badakanGetRecipient, badakanLogin } from './auth'
+import { downloadBadakanFile } from './download-file'
 
 export type ResumeFile = {
   body: Buffer
@@ -27,13 +28,5 @@ export async function fetchBadakanResume(input: {
   const detail = await badakanGetRecipient(input.baseUrl, token, input.badakanId, fetchFn)
   const resume = resumeUrl(detail)
   if (!resume) return null
-  const res = await fetchFn(resume.url, { headers: { security_token: token } })
-  if (!res.ok) throw new Error(`Badakan CV download failed (${res.status})`)
-  const contentType = resume.format ?? res.headers.get('content-type') ?? 'application/octet-stream'
-  const ext = contentType.includes('pdf') ? 'pdf' : contentType.includes('png') ? 'png' : 'jpg'
-  return {
-    body: Buffer.from(await res.arrayBuffer()),
-    contentType,
-    filename: `badakan-${input.badakanId}.${ext}`,
-  }
+  return downloadBadakanFile(fetchFn, token, resume.url, resume.format, `badakan-${input.badakanId}`)
 }

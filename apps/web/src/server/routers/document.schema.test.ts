@@ -45,4 +45,17 @@ describe('uploadDocumentSchema', () => {
     })
     expect(result.success).toBe(false)
   })
+
+  it('accepts CNI RIB diploma categories', () => {
+    for (const category of ['CNI', 'RIB', 'DIPLOME'] as const) {
+      expect(
+        uploadDocumentSchema.safeParse({
+          ...base,
+          category,
+          filename: `${category.toLowerCase()}.pdf`,
+          mimeType: 'application/pdf',
+        }).success,
+      ).toBe(true)
+    }
+  })
 })

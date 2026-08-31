@@ -23,6 +23,7 @@ export type SyncValidatedDeps = {
   markAppValidated: (profileId: string, candidateId: string) => Promise<unknown>
   resolveJobTitleId: (activityLabel: string | null) => Promise<string | null>
   mapJobTitleId: (activityLabel: string) => Promise<string | null>
+  syncDossier: (candidateId: string, badakanId: string) => Promise<unknown>
 }
 
 export type SyncValidatedResult = {

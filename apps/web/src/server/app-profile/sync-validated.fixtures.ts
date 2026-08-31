@@ -33,6 +33,7 @@ export function stubValidatedDeps(
     markAppValidated: vi.fn(),
     resolveJobTitleId: async () => 'jt1',
     mapJobTitleId: async () => null,
+    syncDossier: vi.fn(),
     ...overrides,
   }
 }

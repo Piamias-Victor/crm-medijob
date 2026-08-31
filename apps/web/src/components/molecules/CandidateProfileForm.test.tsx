@@ -41,6 +41,8 @@ const baseProfile: CandidateProfilePayload = {
   referentId: 'u1',
   referentName: 'Recruteur',
   cvUrl: null,
+  nir: null,
+  iban: null,
   cvSummary: null,
   anonymizedProfile: null,
   softwareIds: [],

@@ -20,6 +20,8 @@ export function identityPatchFromBadakan(
   const address = present(row.address)
   const city = present(row.city)
   const postalCode = present(row.postalCode)
+  const nir = present(row.nir)
+  const iban = present(row.iban)
   return {
     ...(firstName ? { firstName } : {}),
     ...(lastName ? { lastName } : {}),
@@ -29,5 +31,7 @@ export function identityPatchFromBadakan(
     ...(city ? { city } : {}),
     ...(postalCode ? { postalCode } : {}),
     ...(jobTitleId ? { jobTitleId } : {}),
+    ...(nir ? { nir } : {}),
+    ...(iban ? { iban } : {}),
   }
 }

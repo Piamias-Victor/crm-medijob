@@ -10,6 +10,9 @@ export type AppIdentityPatch = {
   city?: string
   postalCode?: string
   jobTitleId?: string
+  cvUrl?: string
+  nir?: string
+  iban?: string
 }
 
 export type AppOriginCreateInput = {
@@ -62,5 +65,15 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
         data: patch,
         select: { id: true },
       }),
+    findDossierState: async (id: string) => {
+      const row = await db.candidate.findFirst({
+        where: { id, ...NOT_DELETED },
+        select: { cvUrl: true, documents: { select: { category: true } } },
+      })
+      return {
+        cvUrl: row?.cvUrl ?? null,
+        categories: row?.documents.map((d) => d.category) ?? [],
+      }
+    },
   }
 }

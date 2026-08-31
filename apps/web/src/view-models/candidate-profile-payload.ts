@@ -41,6 +41,8 @@ export function toCandidateProfilePayload(candidate: CandidateProfileRecord) {
     referentId: candidate.referentId,
     referentName: candidate.referent?.name ?? null,
     cvUrl: candidate.cvUrl,
+    nir: candidate.nir,
+    iban: candidate.iban,
     cvSummary: candidate.cvSummary,
     anonymizedProfile: candidate.anonymizedProfile,
     softwareIds: candidate.softwares.map((s) => s.softwareId),
