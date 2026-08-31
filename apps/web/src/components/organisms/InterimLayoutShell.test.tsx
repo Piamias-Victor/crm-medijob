@@ -12,6 +12,10 @@ describe('InterimLayoutShell', () => {
       'href',
       '/interim/missions',
     )
+    expect(screen.getByRole('link', { name: 'Disponibilités' })).toHaveAttribute(
+      'href',
+      '/interim/disponibilites',
+    )
     expect(screen.queryByRole('button', { name: /rafraîchir/i })).not.toBeInTheDocument()
     expect(screen.queryByText('/facturation/interim')).not.toBeInTheDocument()
   })
