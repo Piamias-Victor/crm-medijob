@@ -57,10 +57,14 @@ Vocabulaire : Badakan mission, SEARCH_APPLIED, Application. ADR 0027.
 
 ## Fichiers impactés
 
-- `apps/web/src/server/badakan/client.ts` — missions/search
-- `apps/web/src/server/db/repositories/` — persist lecture missions Badakan
-- `apps/web/src/lib/navigation.ts` — sous-nav missions Intérim
-- `apps/web/src/view-models/` — cartes liste/détail
+- `apps/web/src/server/badakan/client.ts` — `searchMissions` POST `missions/search`
+- `apps/web/src/server/badakan/map-mission.ts` — pharmacy, périodes, step, SEARCH_APPLIED
+- `apps/web/src/server/db/repositories/badakan-mission.repository.ts` — persist lecture
+- `apps/web/src/server/badakan-mission/sync.ts` — même cycle Profils app
+- `apps/web/src/lib/navigation.ts` — sous-nav Missions Badakan
+- `apps/web/src/view-models/badakan-mission-list.ts` — cartes liste
+- `apps/web/src/view-models/badakan-mission-detail.ts` — détail + tél
+- `apps/web/src/app/(dashboard)/interim/missions/` — liste / détail RSC
 
 ---
 

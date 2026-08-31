@@ -21,6 +21,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
     client: {
       searchNewEmployees: async () => [],
       searchEmployees: async () => (completed ? [completed] : []),
+      searchMissions: async () => [],
       getRecipient: async () => null,
     },
     findByBadakanIds: async () => [],
@@ -33,6 +34,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
       failed: 0,
     }),
     syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
+    syncMissions: async () => ({ fetched: 0, upserted: 0 }),
     ...overrides,
   }
 }
@@ -45,6 +47,7 @@ describe('runAppProfileCycle App-validated', () => {
       client: {
         searchNewEmployees: async () => [created],
         searchEmployees: async () => [],
+        searchMissions: async () => [],
         getRecipient: async () => null,
       },
       upsertPending,

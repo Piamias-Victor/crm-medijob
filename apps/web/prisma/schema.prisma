@@ -744,6 +744,40 @@ model InterviewTemplateWorkingCopy {
 
 // ─── Audit effacement RGPD (sans PII) ─────────────────────────
 
+// ─── Badakan missions (Intérim read cache — not CRM Mission) ──
+
+model BadakanMission {
+  id           String   @id @default(cuid())
+  badakanId    String   @unique
+  pharmacyName String
+  step         String
+  periods      Json
+  syncedAt     DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  searchApplied BadakanSearchApplied[]
+
+  @@index([step])
+  @@index([syncedAt])
+}
+
+model BadakanSearchApplied {
+  id               String   @id @default(cuid())
+  badakanMissionId String
+  recipientId      String
+  firstName        String
+  lastName         String
+  phone            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  mission BadakanMission @relation(fields: [badakanMissionId], references: [id], onDelete: Cascade)
+
+  @@unique([badakanMissionId, recipientId])
+  @@index([badakanMissionId])
+}
+
 model GdprEraseAudit {
   id             String             @id @default(cuid())
   entityType     DocumentEntityType

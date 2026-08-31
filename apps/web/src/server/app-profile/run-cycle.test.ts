@@ -12,6 +12,7 @@ const stubDeps: AppProfileCycleDeps = {
   client: {
     searchNewEmployees: async () => [],
     searchEmployees: async () => (employee ? [employee] : []),
+    searchMissions: async () => [],
     getRecipient: async () => null,
   },
   findByBadakanIds: async () => [],
@@ -24,6 +25,7 @@ const stubDeps: AppProfileCycleDeps = {
     failed: 0,
   }),
   syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
+  syncMissions: async () => ({ fetched: 0, upserted: 0 }),
 }
 
 describe('runAppProfileCycle', () => {

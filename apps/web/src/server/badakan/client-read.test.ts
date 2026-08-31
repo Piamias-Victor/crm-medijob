@@ -27,6 +27,7 @@ describe('createBadakanClient reads', () => {
     expect(Object.keys(client).sort()).toEqual([
       'getRecipient',
       'searchEmployees',
+      'searchMissions',
       'searchNewEmployees',
     ])
   })

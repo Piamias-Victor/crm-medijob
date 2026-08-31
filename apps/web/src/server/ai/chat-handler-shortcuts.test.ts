@@ -37,6 +37,7 @@ describe('runAssistantChat shortcuts data', () => {
       listCandidates: vi.fn().mockResolvedValue([]),
       listCompatibilities: vi.fn().mockResolvedValue([]),
       provider: fakeProvider('[]'),
+      lookupGeo: async () => ({ lat: 45.75, lon: 4.85 }),
     }
     const result = await runAssistantChat(
       { shortcutId: 'best-profiles', context: { entityType: 'mission', entityId: 'm1' } },

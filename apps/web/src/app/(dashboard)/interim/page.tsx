@@ -1,5 +1,5 @@
-import { InterimPage } from '@/components/organisms/InterimPage'
+import { redirect } from 'next/navigation'
 
 export default function Page() {
-  return <InterimPage />
+  redirect('/interim/missions')
 }
