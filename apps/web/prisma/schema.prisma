@@ -307,6 +307,7 @@ model Candidate {
   origin             CandidateOrigin @default(CRM)
   badakanId          String?         @unique
   status             CandidateStatus @default(NOUVEAU)
+  statusBeforeInactive CandidateStatus?
   salaryExpectations String?
   salaryMin          Int?
   salaryMax          Int?

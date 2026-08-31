@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { syncAppValidated } from './sync-validated'
-import { marieValidated, stubValidatedDeps } from './sync-validated.fixtures'
+import { marieValidated, stubValidatedDeps, existingLinked } from './sync-validated.fixtures'
 
 describe('syncAppValidated dossier', () => {
   it('copies Badakan dossier onto created Candidate', async () => {
@@ -14,7 +14,7 @@ describe('syncAppValidated dossier', () => {
     await syncAppValidated(
       [marieValidated],
       stubValidatedDeps({
-        findByBadakanId: async () => ({ id: 'c-existing' }),
+        findByBadakanId: async () => existingLinked,
         syncDossier,
       }),
     )

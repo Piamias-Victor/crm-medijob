@@ -1,23 +1,28 @@
 import { describe, expect, it, vi } from 'vitest'
+import { mapBadakanRecipient } from '@/server/badakan/map-recipient'
 import { runAppProfileCycle, type AppProfileCycleDeps } from './run-cycle'
-import type { BadakanMission } from '@/server/badakan/map-mission'
 
 const env = { NODE_ENV: 'test', BADAKAN_EMAIL: 'a@b.c', BADAKAN_PASSWORD: 'x' } as const
 
-const mission: BadakanMission = {
-  badakanId: 'm-hermes',
-  pharmacyName: 'Pharmacie Hermes',
-  step: 'CANCELLED',
-  periods: [{ start: '2026-08-01', end: '2026-08-03' }],
-  searchApplied: [],
-}
+const completed = mapBadakanRecipient({
+  id: 'e1',
+  firstName: 'Marie',
+  lastName: 'App',
+})!
+
+const suspended = mapBadakanRecipient({
+  id: 'bk-marie',
+  firstName: 'Marie',
+  lastName: 'App',
+  status: 'SUSPENDED',
+})!
 
 function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycleDeps {
   return {
     client: {
       searchNewEmployees: async () => [],
-      searchEmployees: async () => [],
-      searchMissions: async () => [mission],
+      searchEmployees: async () => (completed ? [completed] : []),
+      searchMissions: async () => [],
       getRecipient: async () => null,
       getComments: async () => [],
     },
@@ -37,11 +42,20 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
   }
 }
 
-describe('runAppProfileCycle Badakan missions', () => {
-  it('pulls missions/search on the same periodic cycle', async () => {
-    const syncMissions = vi.fn().mockResolvedValue({ fetched: 1, upserted: 1 })
-    const result = await runAppProfileCycle(env, cycleDeps({ syncMissions }))
-    expect(syncMissions).toHaveBeenCalledTimes(1)
-    expect(result).toMatchObject({ missions: { fetched: 1, upserted: 1 } })
+describe('runAppProfileCycle SUSPENDED', () => {
+  it('feeds probed SUSPENDED recipients into syncValidated', async () => {
+    const syncValidated = vi.fn().mockResolvedValue({
+      created: 0,
+      linked: 0,
+      skipped: 1,
+    })
+    await runAppProfileCycle(
+      env,
+      cycleDeps({
+        probeInactive: async () => [suspended!],
+        syncValidated,
+      }),
+    )
+    expect(syncValidated).toHaveBeenCalledWith([completed, suspended])
   })
 })

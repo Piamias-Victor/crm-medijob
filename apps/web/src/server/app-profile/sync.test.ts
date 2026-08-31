@@ -19,6 +19,7 @@ describe('syncAppProfiles', () => {
           hasResume: false,
           nir: null,
           iban: null,
+          status: null,
           snapshot: { id: 'new' },
         },
         {
@@ -34,6 +35,7 @@ describe('syncAppProfiles', () => {
           hasResume: false,
           nir: null,
           iban: null,
+          status: null,
           snapshot: { id: 'old' },
         },
       ],

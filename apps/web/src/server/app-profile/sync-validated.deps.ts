@@ -13,6 +13,7 @@ export function defaultSyncValidatedDeps(): SyncValidatedDeps {
     defaultAppProfileDeps.findJobTitleIdByName(label)
   return {
     findByBadakanId: candidateRepository.findByBadakanId,
+    applyLifecycle: candidateRepository.applyAppLifecycle,
     findMatch: (probe) =>
       findAppValidatedMatch(probe, {
         findIdentityByEmail: candidateRepository.findIdentityByEmail,

@@ -21,7 +21,8 @@ export async function runAppProfileCycle(
     findJobTitleIdByName: resolved.findJobTitleIdByName,
   })
   const employees = await resolved.client.searchEmployees()
-  const validated = await resolved.syncValidated(employees)
+  const inactive = await resolved.probeInactive(employees)
+  const validated = await resolved.syncValidated([...employees, ...inactive])
   const invite = await resolved.inviteDue()
   const missions = await resolved.syncMissions()
   return { sync, invite, employees: { fetched: employees.length, ...validated }, missions }

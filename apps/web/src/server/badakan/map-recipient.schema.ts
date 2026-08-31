@@ -17,6 +17,7 @@ const docFile = z
 export const badakanRecipientSchema = z
   .object({
     id: z.union([z.string(), z.number()]).transform(String),
+    status: z.string().optional().nullable(),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     email: z.string().optional().nullable(),

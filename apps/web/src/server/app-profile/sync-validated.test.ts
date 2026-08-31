@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { syncAppValidated } from './sync-validated'
-import { marieValidated, stubValidatedDeps } from './sync-validated.fixtures'
+import { marieValidated, stubValidatedDeps, existingLinked } from './sync-validated.fixtures'
 
 describe('syncAppValidated', () => {
   it('creates Candidate origin App status Nouveau', async () => {
@@ -54,7 +54,7 @@ describe('syncAppValidated', () => {
 
   it('skips recipient already linked by badakanId', async () => {
     const deps = stubValidatedDeps({
-      findByBadakanId: async () => ({ id: 'c-existing' }),
+      findByBadakanId: async () => existingLinked,
       findAppProfileByBadakanId: async () => ({ id: 'p1', status: 'EN_ATTENTE' }),
     })
     const result = await syncAppValidated([marieValidated], deps)
