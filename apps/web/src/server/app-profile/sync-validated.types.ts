@@ -3,11 +3,20 @@ import type {
   AppOriginCreateInput as AppCandidateCreate,
 } from '@/server/db/repositories/candidate-app-origin.repo'
 import type { DuplicateIdentity } from '@/server/candidate/detect-duplicate.types'
+import type { CandidateStatus } from '@/view-models/candidate-status'
+import type { AppLifecyclePatch } from '@/server/db/repositories/candidate-app-lifecycle.repo'
 
 export type { AppCandidateCreate, AppIdentityPatch }
 
+export type LinkedAppCandidate = {
+  id: string
+  status: CandidateStatus
+  statusBeforeInactive: CandidateStatus | null
+}
+
 export type SyncValidatedDeps = {
-  findByBadakanId: (badakanId: string) => Promise<{ id: string } | null>
+  findByBadakanId: (badakanId: string) => Promise<LinkedAppCandidate | null>
+  applyLifecycle: (candidateId: string, patch: AppLifecyclePatch) => Promise<unknown>
   findMatch: (probe: {
     email?: string | null
     phone?: string | null

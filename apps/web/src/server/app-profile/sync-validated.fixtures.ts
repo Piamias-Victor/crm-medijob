@@ -20,6 +20,12 @@ export const marieMoved = mapBadakanRecipient({
   activity: 'Pharmacien',
 })!
 
+export const existingLinked = {
+  id: 'c-existing',
+  status: 'NOUVEAU' as const,
+  statusBeforeInactive: null,
+}
+
 export function stubValidatedDeps(
   overrides: Partial<SyncValidatedDeps> = {},
 ): SyncValidatedDeps {
@@ -29,6 +35,7 @@ export function stubValidatedDeps(
     createAppCandidate: vi.fn().mockResolvedValue({ id: 'c-new' }),
     linkAppOrigin: vi.fn(),
     patchIdentity: vi.fn(),
+    applyLifecycle: vi.fn(),
     findAppProfileByBadakanId: async () => null,
     markAppValidated: vi.fn(),
     resolveJobTitleId: async () => 'jt1',

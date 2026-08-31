@@ -34,7 +34,7 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
     findByBadakanId: (badakanId: string) =>
       db.candidate.findFirst({
         where: { badakanId, ...NOT_DELETED },
-        select: { id: true },
+        select: { id: true, status: true, statusBeforeInactive: true },
       }),
     createAppCandidate: (data: AppOriginCreateInput) =>
       db.candidate.create({

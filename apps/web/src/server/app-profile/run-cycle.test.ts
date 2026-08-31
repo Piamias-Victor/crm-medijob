@@ -26,6 +26,7 @@ const stubDeps: AppProfileCycleDeps = {
     failed: 0,
   }),
   syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
+  probeInactive: async () => [],
   syncMissions: async () => ({ fetched: 0, upserted: 0 }),
 }
 

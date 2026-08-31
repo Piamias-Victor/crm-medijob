@@ -3,6 +3,10 @@ import {
   type ActivityItem,
   type BadakanRecipientRaw,
 } from './map-recipient.schema'
+import {
+  mapBadakanEmployeeStatus,
+  type BadakanEmployeeStatus,
+} from './map-recipient-status'
 
 export { badakanRecipientSchema, type BadakanRecipientRaw }
 
@@ -19,6 +23,7 @@ export type BadakanRecipient = {
   hasResume: boolean
   nir: string | null
   iban: string | null
+  status: BadakanEmployeeStatus | null
   snapshot: BadakanRecipientRaw
 }
 
@@ -58,6 +63,7 @@ export function mapBadakanRecipient(raw: unknown): BadakanRecipient | null {
     hasResume: Boolean(r.documents?.RESUME?.rectoUrl),
     nir: present(r.healthCareNumber),
     iban: present(r.bankAccount?.iban),
+    status: mapBadakanEmployeeStatus(r.status),
     snapshot: r,
   }
 }

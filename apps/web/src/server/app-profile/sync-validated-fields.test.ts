@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import { mapBadakanRecipient } from '@/server/badakan/map-recipient'
 import { syncAppValidated } from './sync-validated'
-import { marieMoved, stubValidatedDeps } from './sync-validated.fixtures'
+import { marieMoved, stubValidatedDeps, existingLinked } from './sync-validated.fixtures'
 
 describe('syncAppValidated field merge', () => {
   it('updates identity address contact job when Badakan is non-empty', async () => {
     const deps = stubValidatedDeps({
-      findByBadakanId: async () => ({ id: 'c-existing' }),
+      findByBadakanId: async () => existingLinked,
       mapJobTitleId: async () => 'jt-pharma',
     })
     await syncAppValidated([marieMoved], deps)
@@ -24,7 +24,7 @@ describe('syncAppValidated field merge', () => {
 
   it('leaves CRM phone unchanged when Badakan phone is empty', async () => {
     const deps = stubValidatedDeps({
-      findByBadakanId: async () => ({ id: 'c-existing' }),
+      findByBadakanId: async () => existingLinked,
     })
     const noPhone = mapBadakanRecipient({
       id: 'bk-marie',
@@ -43,7 +43,7 @@ describe('syncAppValidated field merge', () => {
 
   it('does not patch salary software mobility availableFrom or notes', async () => {
     const deps = stubValidatedDeps({
-      findByBadakanId: async () => ({ id: 'c-existing' }),
+      findByBadakanId: async () => existingLinked,
     })
     await syncAppValidated([marieMoved], deps)
     const patch = vi.mocked(deps.patchIdentity).mock.calls[0]?.[1]
@@ -64,7 +64,7 @@ describe('syncAppValidated field merge', () => {
 
   it('leaves CRM job when Badakan activity does not map', async () => {
     const deps = stubValidatedDeps({
-      findByBadakanId: async () => ({ id: 'c-existing' }),
+      findByBadakanId: async () => existingLinked,
       mapJobTitleId: async () => null,
     })
     await syncAppValidated([marieMoved], deps)

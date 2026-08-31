@@ -1,5 +1,6 @@
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 import { identityPatchFromBadakan } from './merge-badakan-identity'
+import { inactivateIfSuspended, restoreIfCompleted } from './sync-validated-lifecycle'
 import type { SyncValidatedDeps, SyncValidatedResult } from './sync-validated.types'
 
 async function leaveInboxIfPending(
@@ -31,8 +32,13 @@ export async function syncAppValidated(
 ): Promise<SyncValidatedResult> {
   const result: SyncValidatedResult = { created: 0, linked: 0, skipped: 0 }
   for (const row of rows) {
+    if (await inactivateIfSuspended(row, deps)) {
+      result.skipped += 1
+      continue
+    }
     const existing = await deps.findByBadakanId(row.badakanId)
     if (existing) {
+      await restoreIfCompleted(existing, deps)
       await patchIdentityFromRow(row, existing.id, deps)
       await leaveInboxIfPending(row.badakanId, existing.id, deps)
       await deps.syncDossier(existing.id, row.badakanId)

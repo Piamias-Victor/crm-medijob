@@ -8,6 +8,8 @@ import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/clien
 import { syncBadakanMissions } from '@/server/badakan-mission/sync'
 import type { SyncDeps } from '@/server/app-profile/sync'
 import type { SyncValidatedResult } from '@/server/app-profile/sync-validated.types'
+import { candidateRepository } from '@/server/db/repositories/candidate.repository'
+import { probeInactiveRecipients } from '@/server/app-profile/sync-validated-probe'
 import type { InviteDueResult } from '@/server/app-profile/invite-due.types'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 
@@ -18,6 +20,7 @@ export type AppProfileCycleDeps = {
   findJobTitleIdByName: SyncDeps['findJobTitleIdByName']
   inviteDue: () => Promise<InviteDueResult>
   syncValidated: (rows: BadakanRecipient[]) => Promise<SyncValidatedResult>
+  probeInactive: (completed: BadakanRecipient[]) => Promise<BadakanRecipient[]>
   syncMissions: () => Promise<{ fetched: number; upserted: number }>
 }
 
@@ -33,6 +36,11 @@ export function defaultAppProfileCycleDeps(
     findJobTitleIdByName: defaultAppProfileDeps.findJobTitleIdByName,
     inviteDue: () => inviteDueAppProfiles(defaultInviteDueDeps(env)),
     syncValidated: syncValidatedEmployees,
+    probeInactive: (completed) =>
+      probeInactiveRecipients(completed, {
+        listLinked: candidateRepository.listAppLinkedBadakanIds,
+        getRecipient: (id) => client.getRecipient(id),
+      }),
     syncMissions: () =>
       syncBadakanMissions({
         searchMissions: () => client.searchMissions(),

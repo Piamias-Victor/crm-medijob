@@ -20,6 +20,7 @@ const baseProfile = {
   origin: 'CRM',
   badakanId: null,
   status: 'NOUVEAU',
+  statusBeforeInactive: null,
   salaryExpectations: null,
   salaryMin: null,
   salaryMax: null,
