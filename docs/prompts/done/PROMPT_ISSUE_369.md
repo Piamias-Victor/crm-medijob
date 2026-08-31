@@ -54,8 +54,10 @@ Vocabulaire : Availability ≠ Weekly availability. ADR 0026.
 
 ## Fichiers impactés
 
-- `apps/web/src/server/app-profile/sync.ts` (ou module sync Intérim) — règles de merge
-- tests sync dédiés
+- `apps/web/src/server/app-profile/merge-badakan-identity.ts` — Badakan non vide → patch identité ; vide omis
+- `apps/web/src/server/app-profile/sync-validated.ts` — apply patch sur existing + link
+- `apps/web/src/server/db/repositories/candidate-app-origin.repo.ts` — `patchAppIdentity`
+- `apps/web/src/server/app-profile/sync-validated-fields.test.ts` — 3 cas injectés
 
 ---
 
