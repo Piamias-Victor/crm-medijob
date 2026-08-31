@@ -8,6 +8,10 @@ export function weeklyAvailabilityUrl(baseUrl: string, token: string): string {
   return `${baseUrl.replace(/\/$/, '')}${weeklyAvailabilityPath(token)}`
 }
 
+export function weeklyAvailabilityFilterPath(): string {
+  return '/interim/disponibilites'
+}
+
 export function weekHref(token: string, weekStart: string): string {
   return `${weeklyAvailabilityPath(token)}?week=${weekStart}`
 }

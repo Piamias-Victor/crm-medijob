@@ -57,9 +57,13 @@ Vocabulaire : Weekly availability, JobTitle, Mobility radius. ADR 0024.
 
 ## Fichiers impactés
 
-- router / repository filtre Intérim
-- UI module Intérim — filtre
-- `buildSmsUrl` si contact depuis la liste
+- `apps/web/src/server/routers/weekly-availability.ts` — `filter` déterministe
+- `apps/web/src/server/db/repositories/weekly-availability-filter.repo.ts` — Prisma slot + origin App + non Inactif
+- `apps/web/src/server/weekly-availability/filter-available.ts` — geo haversine, rayon défaut 30 km
+- `apps/web/src/view-models/weekly-availability-filter.schema.ts` — créneau + JobTitle + ville/rayon
+- `apps/web/src/view-models/weekly-availability-filter-row.ts` — tel + `buildSmsUrl`, pas MissionCandidate
+- `apps/web/src/app/(dashboard)/interim/disponibilites/page.tsx` — RSC filtre GET
+- `apps/web/src/lib/navigation.ts` — subnav Disponibilités
 
 ---
 

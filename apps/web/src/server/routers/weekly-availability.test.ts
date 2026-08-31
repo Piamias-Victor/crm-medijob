@@ -14,6 +14,8 @@ function deps(): WeeklyAvailabilityDeps {
     store: memoryAvailabilityStore([
       { token: TOKEN, candidateId: 'c1', origin: 'APP' },
     ]),
+    filterStore: { listBySlot: async () => [] },
+    lookupGeo: async () => null,
     createToken: () => 'unguessable-token-32bytes-base64url',
     getBaseUrl: () => 'http://localhost:3000',
   }
