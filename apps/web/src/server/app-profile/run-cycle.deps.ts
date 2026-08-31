@@ -10,7 +10,10 @@ import type { SyncDeps } from '@/server/app-profile/sync'
 import type { SyncValidatedResult } from '@/server/app-profile/sync-validated.types'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { probeInactiveRecipients } from '@/server/app-profile/sync-validated-probe'
+import { sendDueAvailabilitySms } from '@/server/weekly-availability/sms-due'
+import { defaultSmsDueDeps } from '@/server/weekly-availability/sms-due.deps'
 import type { InviteDueResult } from '@/server/app-profile/invite-due.types'
+import type { SmsDueResult } from '@/server/weekly-availability/sms-due.types'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 
 export type AppProfileCycleDeps = {
@@ -19,6 +22,7 @@ export type AppProfileCycleDeps = {
   upsertPending: SyncDeps['upsertPending']
   findJobTitleIdByName: SyncDeps['findJobTitleIdByName']
   inviteDue: () => Promise<InviteDueResult>
+  smsDue: () => Promise<SmsDueResult>
   syncValidated: (rows: BadakanRecipient[]) => Promise<SyncValidatedResult>
   probeInactive: (completed: BadakanRecipient[]) => Promise<BadakanRecipient[]>
   syncMissions: () => Promise<{ fetched: number; upserted: number }>
@@ -35,6 +39,7 @@ export function defaultAppProfileCycleDeps(
     upsertPending: appProfileRepository.upsertPending,
     findJobTitleIdByName: defaultAppProfileDeps.findJobTitleIdByName,
     inviteDue: () => inviteDueAppProfiles(defaultInviteDueDeps(env)),
+    smsDue: () => sendDueAvailabilitySms(defaultSmsDueDeps(env)),
     syncValidated: syncValidatedEmployees,
     probeInactive: (completed) =>
       probeInactiveRecipients(completed, {

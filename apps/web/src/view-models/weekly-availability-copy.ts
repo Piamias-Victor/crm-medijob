@@ -11,6 +11,10 @@ export const WEEKLY_AVAILABILITY_COPY = {
   copied: 'Lien copié',
   copyError: 'Impossible de copier le lien',
   saveError: 'Enregistrement impossible',
+  resendSms: 'Renvoyer le lien SMS',
+  resent: 'SMS renvoyé',
+  resendError: 'Impossible d’envoyer le SMS',
+  resendNoPhone: 'Pas de téléphone sur la fiche',
 } as const
 
 export const WEEKDAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'] as const

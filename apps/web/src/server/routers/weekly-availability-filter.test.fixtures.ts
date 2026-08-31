@@ -30,6 +30,7 @@ export function filterDeps(
     lookupGeo,
     createToken: () => 'token',
     getBaseUrl: () => 'http://localhost:3000',
+    resendSms: async () => 'sent' as const,
   }
 }
 
