@@ -18,6 +18,7 @@ function deps(): WeeklyAvailabilityDeps {
     lookupGeo: async () => null,
     createToken: () => 'unguessable-token-32bytes-base64url',
     getBaseUrl: () => 'http://localhost:3000',
+    resendSms: async () => 'sent' as const,
   }
 }
 
@@ -41,5 +42,10 @@ describe('weeklyAvailabilityRouter', () => {
   it('copies a public URL for an App-origin Candidate', async () => {
     const link = await caller().copyLink({ id: 'c1' })
     expect(link?.url).toBe('http://localhost:3000/dispo/valid-secret-token-xxxxxxxxxx')
+  })
+
+  it('resends the same weekly availability URL by SMS', async () => {
+    const result = await caller().resendSms({ id: 'c1' })
+    expect(result).toEqual({ sent: true })
   })
 })

@@ -11,6 +11,7 @@ describe('Weekly availability schema', () => {
     expect(schema).toContain('model WeeklyAvailabilityWeek')
     expect(schema).toContain('model WeeklyAvailabilitySlot')
     expect(schema).toMatch(/token\s+String\s+@unique/)
+    expect(schema).toMatch(/smsSentAt\s+DateTime\?/)
     expect(schema).toContain('@@unique([candidateId, weekStart])')
   })
 })

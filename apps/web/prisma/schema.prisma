@@ -368,11 +368,12 @@ model CandidateSoftware {
 }
 
 model WeeklyAvailabilityToken {
-  id          String   @id @default(cuid())
-  token       String   @unique
-  candidateId String   @unique
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String    @id @default(cuid())
+  token       String    @unique
+  candidateId String    @unique
+  smsSentAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 }

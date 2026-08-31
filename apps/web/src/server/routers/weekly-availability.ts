@@ -50,6 +50,13 @@ export function makeWeeklyAvailabilityRouter(deps: WeeklyAvailabilityDeps) {
       if (!result.ok) return null
       return { url: weeklyAvailabilityUrl(deps.getBaseUrl(), result.token) }
     }),
+    resendSms: protectedProcedure.input(candidateIdSchema).mutation(async ({ input }) => {
+      const result = await deps.resendSms(input.id)
+      if (result === 'not_found') throw new TRPCError({ code: 'NOT_FOUND' })
+      if (result === 'not_app') return null
+      if (result === 'skippedNoPhone') return { sent: false as const }
+      return { sent: true as const }
+    }),
   })
 }
 
