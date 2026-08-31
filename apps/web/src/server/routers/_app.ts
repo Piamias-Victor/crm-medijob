@@ -20,6 +20,7 @@ import { interviewRouter } from '@/server/routers/interview'
 import { devisRouter } from '@/server/routers/devis.adapter'
 import { facturationRouter } from '@/server/routers/facturation.adapter'
 import { badakanMissionRouter } from '@/server/routers/badakan-mission'
+import { weeklyAvailabilityRouter } from '@/server/routers/weekly-availability'
 
 export const appRouter = router({
   health: healthRouter,
@@ -43,6 +44,7 @@ export const appRouter = router({
   devis: devisRouter,
   facturation: facturationRouter,
   badakanMission: badakanMissionRouter,
+  weeklyAvailability: weeklyAvailabilityRouter,
 })
 
 export type AppRouter = typeof appRouter

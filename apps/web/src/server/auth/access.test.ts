@@ -85,4 +85,14 @@ describe('evaluateAccess', () => {
   it('allows anonymous access to the login page', () => {
     expect(evaluateAccess({ loggedIn: false, role: null, pathname: '/login' })).toBe('allow')
   })
+
+  it('allows anonymous access to the weekly availability page', () => {
+    expect(
+      evaluateAccess({
+        loggedIn: false,
+        role: null,
+        pathname: '/dispo/unguessable-token-32bytes-base64url',
+      }),
+    ).toBe('allow')
+  })
 })
