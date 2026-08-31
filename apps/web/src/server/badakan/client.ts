@@ -1,5 +1,6 @@
 import { mapBadakanRecipient, type BadakanRecipient } from './map-recipient'
-import { badakanLogin } from './auth'
+import { badakanGetRecipient, badakanLogin } from './auth'
+import { searchRecipientPages } from './paged-search'
 
 export type BadakanClientConfig = {
   baseUrl: string
@@ -10,41 +11,46 @@ export type BadakanClientConfig = {
 
 export type BadakanClient = {
   searchNewEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
+  searchEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
+  getRecipient: (badakanId: string) => Promise<BadakanRecipient | null>
 }
-
-type PageListing = { content?: unknown[]; totalPages?: number }
 
 export function createBadakanClient(config: BadakanClientConfig): BadakanClient {
   const fetchFn = config.fetchFn ?? fetch
+  const login = () =>
+    badakanLogin(config.baseUrl, config.email, config.password, fetchFn)
+  const search = (path: string, pageSize: number, failLabel: string) =>
+    login().then((token) =>
+      searchRecipientPages(
+        fetchFn,
+        `${config.baseUrl}${path}`,
+        token,
+        pageSize,
+        failLabel,
+      ),
+    )
   return {
-    async searchNewEmployees(pageSize = 100) {
-      const token = await badakanLogin(config.baseUrl, config.email, config.password, fetchFn)
-      const rows: BadakanRecipient[] = []
-      for (let pageNumber = 0; pageNumber < 50; pageNumber++) {
-        const res = await fetchFn(
-          `${config.baseUrl}/services/v3/recipients/searchNewEmployees`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              security_token: token,
-            },
-            body: JSON.stringify({
-              order: { descending: true, parameter: 'CREATION_DATE' },
-              page: { pageNumber, pageSize },
-            }),
-          },
-        )
-        if (!res.ok) throw new Error(`Badakan searchNewEmployees failed (${res.status})`)
-        const body = (await res.json()) as PageListing
-        const chunk = body.content ?? []
-        for (const raw of chunk) {
-          const mapped = mapBadakanRecipient(raw)
-          if (mapped) rows.push(mapped)
-        }
-        if (pageNumber + 1 >= (body.totalPages ?? 1) || chunk.length === 0) break
-      }
-      return rows
+    searchNewEmployees: (pageSize = 100) =>
+      search(
+        '/services/v3/recipients/searchNewEmployees',
+        pageSize,
+        'Badakan searchNewEmployees',
+      ),
+    searchEmployees: (pageSize = 100) =>
+      search(
+        '/services/v3/recipients/searchEmployees',
+        pageSize,
+        'Badakan searchEmployees',
+      ),
+    async getRecipient(badakanId) {
+      const token = await login()
+      const raw = await badakanGetRecipient(
+        config.baseUrl,
+        token,
+        badakanId,
+        fetchFn,
+      )
+      return mapBadakanRecipient(raw)
     },
   }
 }
@@ -53,15 +59,7 @@ export function badakanClientFromEnv(
   env: NodeJS.ProcessEnv = process.env,
   fetchFn?: typeof fetch,
 ): BadakanClient {
-  const email = env.BADAKAN_EMAIL
-  const password = env.BADAKAN_PASSWORD
-  if (!email || !password) throw new Error('BADAKAN_EMAIL / BADAKAN_PASSWORD manquants')
-  return createBadakanClient({
-    baseUrl: env.BADAKAN_API_URL ?? env.BADAKAN_BASE_URL ?? 'https://api.badakan.com/brother-web',
-    email,
-    password,
-    fetchFn,
-  })
+  return createBadakanClient({ ...badakanEnvConfig(env), fetchFn })
 }
 
 export function badakanEnvConfig(env: NodeJS.ProcessEnv = process.env) {

@@ -5,11 +5,11 @@ Medijob est une agence de recrutement spécialisée en pharmacie d'officine. Ce 
 ## Language
 
 **Candidate**:
-A person qualified and actively tracked in the CVthèque — created directly (CV upload + human review), converted from an accepted Application, or created at Interview start.
+A person actively tracked in the CVthèque — created directly (CV upload + human review), converted from an accepted Application, created at Interview start, or created by Badakan sync when App-validated (origin App). Origin App is not Candidate status Qualifié.
 _Avoid_: Applicant, postulant, profil (when meaning an inbound application), candidature
 
 **Candidate status**:
-Lifecycle of a Candidate in the CVthèque: Nouveau / À qualifier / Qualifié / En mission / Inactif / Blacklisté. Distinct from PipelineStage on a Mission. « En mission » is derived when the Candidate has a non-terminal MissionCandidate positioning (manual Inactif/Blacklisté still allowed).
+Lifecycle of a Candidate in the CVthèque: Nouveau / À qualifier / Qualifié / En mission / Inactif / Blacklisté. Distinct from PipelineStage on a Mission. « En mission » is derived when the Candidate has a non-terminal MissionCandidate positioning (manual Inactif/Blacklisté still allowed). A Candidate created from App-validated starts at **Nouveau**. Origin App is not Qualifié. If Badakan later reports SUSPENDED or BANNED, the Candidate becomes **Inactif** (out of weekly-availability filter and the availability SMS) — that is not Blacklisté. If Badakan restores `COMPLETED`, status returns to what it was before Inactif (Qualifié stays Qualifié) and they re-enter the filter; no second automatic SMS.
 _Avoid_: statut (without qualifier), pipeline stage, phase
 
 **Profile completeness**:
@@ -30,11 +30,15 @@ _Avoid_: Rayon (without qualifier), distance, zone de chalandise
 
 **Availability**:
 The date from which a Candidate can start a Mission. When unset, the Candidate is assumed immediately available for matching.
-_Avoid_: Disponibilité (as free text), date de début, planning
+_Avoid_: Disponibilité (as free text), date de début, planning, Weekly availability (that's the interim slot calendar)
+
+**Weekly availability**:
+The declared AM/PM slots of an App-origin Candidate who is App-validated, on real calendar dates. The personal page shows **one week at a time**; she can switch to the following weeks to fill them. All past weeks she filled stay in history and remain visible. A week never submitted is **unknown** (excluded from the “available” filter). A week submitted with no slots is **declared unavailable**. Week-grid UI (Skello / Google Calendar style — tap AM/PM cells). Used as the Intérim V1 filter together with JobTitle and city / mobility radius (not software, salary, or contract-type matching). Only App-origin App-validated Candidates who are not Inactif. Copyable secret URL stays valid; the page is **public** (no Candidate login) — whoever has the unguessable link can view and edit those slots. One SMS at App-validated (V1, last); if the phone is missing, wait for the next sync then send once. Recruiter may resend by hand. Distinct from Availability (a single `availableFrom` date) and from Badakan mission periods (already-staffed shifts).
+_Avoid_: Disponibilité (unqualified), planning (unqualified), Availability, planning Badakan, semaine type, heures précises, Calendly (as booking), 4 semaines à l’écran
 
 **Application**:
-An inbound candidacy received via the public job board, tied to a specific JobOffer. Each Application is one board submission, identified by that board’s submission id — ingest never creates a second Application for the same submission, and never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters.
-_Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead
+An inbound candidacy received via the public job board, tied to a specific JobOffer. Each Application is one board submission, identified by that board’s submission id — ingest never creates a second Application for the same submission, and never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters. Distinct from a recipient applying to a Badakan mission (`SEARCH_APPLIED`).
+_Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead, SEARCH_APPLIED
 
 **Interview**:
 A first-class qualification conversation on a Candidate (status DRAFT or CLOSED, mode INTERIM or CDD_CDI, answers/scores, eligibility decision, Referent). Distinct from the PipelineStage named « Entretien » (mission progression) and from Application (website inbound). The métier and mode at Interview start pin a **published** InterviewTemplate version; the DRAFT stays on that version. New Interviews use the latest published version.
@@ -45,8 +49,16 @@ A versioned question bank (trame) for one JobTitle `profileKey` × InterviewMode
 _Avoid_: questionnaire, eval config, brouillon (that word means Interview status DRAFT, not an unpublished template)
 
 **AppProfile**:
-A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it and creates or merges a Candidate. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync. A Hireflix invitation does not change this status and does not remove the profile from the inbox.
+A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it, or until Badakan reports App-validated. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync. Becoming App-validated also removes it from this inbox (that is not Ignore) and creates or links a Candidate with origin App. Recruiter ACCEPTE from this inbox is rare. A Hireflix invitation does not change this status and does not remove the profile from the inbox.
 _Avoid_: Application, candidature app, recipient (as UI label), Badakan candidate, envoyé (as AppProfile status)
+
+**App-validated**:
+A Badakan recipient whose app dossier is validated (`valid` / `validationStep COMPLETED`). On sync the CRM creates or links a Candidate with origin App — no recruiter ACCEPTE required. Link is by email, then phone. Distinct from AppProfile status ACCEPTE, from Candidate status Qualifié, and from the PDF « profil validé » (MediJob accept after interview — out of Intérim V1).
+_Avoid_: profil validé (unqualified), validé MediJob, COMPLETED (as UI label), valider (unqualified)
+
+**Candidate origin**:
+How the Candidate entered the CVthèque. Origin App means created or linked from an App-validated Badakan recipient. Distinct from Candidate status and from AppProfile ACCEPTE.
+_Avoid_: vient de l'app (as a status), source (unqualified), InterimProfile (not a person entity)
 
 **Hireflix invitation**:
 A one-shot outbound video-interview invite on an AppProfile, always the same Hireflix Position. It is owed once an email exists (wait if missing; includes profiles already in the inbox), only while the AppProfile is EN_ATTENTE, and complete only when the Hireflix URL and the Brevo mail both succeed. Accept or ignore before completion cancels it (no mail). It is not a qualification and does not track whether the person recorded the video. Completeness is visible on the Profils app inbox. Medijob mail is the only notification; Hireflix does not email. Distinct from Interview.
@@ -61,8 +73,16 @@ An admin-defined rule that a Candidate with a given JobTitle can match a Mission
 _Avoid_: Correspondance métier, matching métier (as entity name)
 
 **Mission**:
-A staffing need at a Pharmacy — any contract type (CDI, CDD, intérim, vacation), with a structured JobTitle. Tracked operationally from identification through placement or cancellation.
-_Avoid_: Poste, besoin, vacation (as entity name), annonce
+A staffing need at a Pharmacy — any contract type (CDI, CDD, intérim, vacation), with a structured JobTitle. Tracked operationally from identification through placement or cancellation. Created by a recruiter in the CRM — not imported from Badakan.
+_Avoid_: Poste, besoin, vacation (as entity name), annonce, Badakan mission
+
+**Badakan mission**:
+An interim shift that lives in Badakan (pharmacy, periods, applicants at `SEARCH_APPLIED`). Shown in the Intérim module. Not a Mission: it does not enter the CRM kanban or PipelineStage.
+_Avoid_: Mission, besoin CRM, vacation (as entity name)
+
+**Badakan contract**:
+An INTERIM (or extra/permanent) contract that lives in Badakan (PDF, DPAE, status CREATED/VALIDATED/CANCELLED). Read into the Intérim module. Not a Ligne de suivi, not a Devis, not a CRM Document of category contract unless a file is attached on the fiche.
+_Avoid_: Ligne de suivi Intérim, contrat CRM, Devis
 
 **JobOffer**:
 The optional public-facing job posting derived from a Mission, published on the Medijob public job board. Every JobOffer belongs to exactly one Mission; a Mission may exist without a JobOffer. The board assigns its own listing identity; the CRM stores that identity on the JobOffer and never stamps the CRM id onto the public listing. Filling or cancelling the Mission unpublishes the JobOffer.
@@ -82,7 +102,7 @@ _Avoid_: quote (as UI label), facture, ActivityLog DEVIS (as the quote itself), 
 
 **Ligne de suivi**:
 A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one CDD or CDI hire) or Intérim (one line = the whole mission). A Placement line has an explicit CDD or CDI type (prefilled from the Mission when linked). One Referent (User) is chosen on the line. Direction / RH-Admin may cancel the line (reversible status: the line stays visible, excluded from active KPIs, counts as NoGo if Placement). Cancel is not a soft delete. A Placement may book 0 CA (NoGo). Independent **Facturé** and **Encaissé** marks on the line do not change CA or Marge. Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated and sent from the line even without a Mission — that Devis is a draft document, not a second CA booking.
-_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice), recruteur (as free text)
+_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice), recruteur (as free text), Badakan contract
 
 **Encaissé**:
 A mark on a Ligne de suivi that the Pharmacy has paid. Independent of Facturé. Does not book CA. Distinct from Commercial status.
@@ -117,7 +137,7 @@ The positioning of a Candidate on a Mission at a given PipelineStage. A Candidat
 _Avoid_: Matching, affectation, liaison, Placement (that's the financial line)
 
 **Pharmacy**:
-The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person.
+The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person. A Badakan enterprise becomes a Pharmacy only after recruiter verification of the imported card; the same SIRET never creates a second Pharmacy (verification shows the existing file).
 _Avoid_: Client (ambiguous with Contact), établissement (too generic), officine (too narrow — use when type is INDEPENDANTE)
 
 **Pharmacy status**:
@@ -125,7 +145,7 @@ Commercial lifecycle of a Pharmacy: Client / Prospect / Inactif (CSV V1). Filter
 _Avoid_: Actif (legacy label for Client), ACTIF (as user-facing label)
 
 **Contact**:
-A person at a Pharmacy — the human interlocutor for staffing needs and commercial follow-up. Always belongs to exactly one Pharmacy.
+A person at a Pharmacy — the human interlocutor for staffing needs and commercial follow-up. Always belongs to exactly one Pharmacy. On Badakan pharmacy verification, the enterprise principal user is offered as a Contact (link by email then phone; no duplicate).
 _Avoid_: Client, interlocuteur (as entity name), personne, utilisateur
 
 **Primary contact**:
@@ -157,11 +177,15 @@ An administrable pharmacy management software (LGO) — e.g. Winpharma, Pharmage
 _Avoid_: Logiciel (without LGO qualifier), outil, application, programme
 
 **ActivityLog**:
-A timestamped record on a domain entity (Candidate, Pharmacy, Contact, or Mission). Includes recruiter interactions (call, email, note…) and automatic system entries on create/update. Polymorphic — each entry belongs to exactly one entity.
-_Avoid_: Historique (as entity name), timeline, journal, note (as entity name), audit log (as separate entity)
+A timestamped record on a domain entity (Candidate, Pharmacy, Contact, or Mission). Includes recruiter interactions (call, email, note…) and automatic system entries on create/update. Polymorphic — each entry belongs to exactly one entity. New Intérim call notes are ActivityLog. Distinct from a Badakan comment (read from the app, not written back).
+_Avoid_: Historique (as entity name), timeline, journal, note (as entity name), audit log (as separate entity), commentaire Badakan
+
+**Badakan comment**:
+A note on a Badakan recipient (also possible on a mission or enterprise) — typically a call summary written in the app admin. The CRM reads it onto the AppProfile or Candidate fiche. New recruiter notes are ActivityLog; the CRM does not POST comments to Badakan.
+_Avoid_: ActivityLog, commentaire (unqualified), historique destinataire
 
 **Document**:
-A file attached to a domain entity (Pharmacy, Contact, Mission, or Candidate) — contracts, quotes, invoices, conventions. Distinct from a Candidate's source CV (`cvUrl`), which is identity data, not a Document. A sent Devis PDF is a Document on that Mission (category DEVIS); the Pharmacy documents tab also lists those files from the Pharmacy's Missions — one file, not a second copy.
+A file attached to a domain entity (Pharmacy, Contact, Mission, or Candidate) — contracts, quotes, invoices, conventions, and Badakan identity files on a Candidate (CNI, RIB, diploma — not the CV). Distinct from a Candidate's source CV (`cvUrl`), which is identity data, not a Document. A sent Devis PDF is a Document on that Mission (category DEVIS); the Pharmacy documents tab also lists those files from the Pharmacy's Missions — one file, not a second copy.
 _Avoid_: Fichier, pièce jointe, CV (as Document — use `cvUrl` on Candidate)
 
 **Anonymized dossier**:
@@ -173,17 +197,18 @@ _Avoid_: Profil anonymisé (as product name), anonymizedProfile (as UI label), d
 Single-app monolith — contexts are logical boundaries, not separate deployables.
 
 **Candidates** — CVthèque and candidate lifecycle.
-Owns: Candidate, JobTitle reference, `cvUrl`, `cvSummary`, `anonymizedProfile`, CandidateSoftware skills, preferred contract types.
-Inbound: Application conversion (from Applications), CV extraction (from AI).
+Owns: Candidate, Candidate origin, JobTitle reference, `cvUrl`, `cvSummary`, `anonymizedProfile`, CandidateSoftware skills, preferred contract types.
+Inbound: Application conversion (from Applications), CV extraction (from AI), App-validated Badakan sync (origin App).
 Outbound: referenced by Pipeline (MissionCandidate), Missions (matching).
 
 **Pharmacies** — client organization portfolio.
 Owns: Pharmacy, commercial status, SIRET identity, LGO (`softwareId`), network affiliation (`groupementId`).
+Inbound: recruiter-verified import from a Badakan enterprise (same SIRET merges, never a second file).
 Outbound: Contacts (children), Missions (staffing needs), ActivityLog, Document.
 
 **Contacts** — human interlocutors at pharmacies.
 Owns: Contact, ContactRole, `isPrimary` designation.
-Inbound: always belongs to one Pharmacy.
+Inbound: always belongs to one Pharmacy; optional create/link from Badakan principal user at pharmacy verification.
 Outbound: optional Mission interlocutor, ActivityLog, Document.
 
 **Missions** — staffing needs and mission lifecycle.
@@ -207,8 +232,13 @@ Outbound: Candidate creation on acceptance (into Candidates).
 
 **AppProfiles** — Badakan app registration inbox ("Profils app").
 Owns: AppProfile, Hireflix invitation (send-once), periodic sync from Badakan `searchNewEmployees`, accept/ignore workflow.
-Inbound: Badakan API (read-only).
-Outbound: Candidate creation or merge on acceptance (into Candidates). Never auto-writes the CVthèque.
+Inbound: Badakan API (read-only), including Badakan comments on CREATED recipients.
+Outbound: Candidate creation or merge on recruiter ACCEPTE (rare). When the recipient becomes App-validated, they leave this inbox; Candidate write is owned by the Intérim context. Never the Intérim positioning filter.
+
+**Intérim (operational)** — App-validated Candidates, weekly availability, Badakan read model.
+Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts.
+Inbound: Badakan API, same periodic cycle as AppProfiles (no manual refresh control required).
+Outbound: Candidate create or link (origin App). Recruiter-verified Pharmacy import (SIRET unique). **V1 never writes to Badakan** (no staff, validate, PUT, POST comments, or contract writes). Never turns a Badakan mission into a Mission. Distinct from Finance « Intérim » (Lignes de suivi) and from AppProfiles inbox.
 
 **Interviews** — structured qualification conversations replacing medijob-eval.
 Owns: Interview, InterviewTemplate (versioned trames).

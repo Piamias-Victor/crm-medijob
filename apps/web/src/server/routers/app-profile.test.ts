@@ -18,6 +18,8 @@ function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
     findJobTitleIdByName: vi.fn().mockResolvedValue(null),
     getBadakanClient: () => ({
       searchNewEmployees: vi.fn().mockResolvedValue([]),
+      searchEmployees: vi.fn().mockResolvedValue([]),
+      getRecipient: vi.fn().mockResolvedValue(null),
     }),
     importCvUrl: vi.fn().mockResolvedValue(null),
     ...overrides,

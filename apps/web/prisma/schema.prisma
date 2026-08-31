@@ -34,6 +34,11 @@ enum CandidateStatus {
   BLACKLISTE
 }
 
+enum CandidateOrigin {
+  CRM
+  APP
+}
+
 enum ContractType {
   CDI
   CDD
@@ -290,6 +295,8 @@ model Candidate {
   latitude           Float?
   longitude          Float?
   jobTitleId         String
+  origin             CandidateOrigin @default(CRM)
+  badakanId          String?         @unique
   status             CandidateStatus @default(NOUVEAU)
   salaryExpectations String?
   salaryMin          Int?
@@ -324,6 +331,7 @@ model Candidate {
   @@index([jobTitleId])
   @@index([referentId])
   @@index([status])
+  @@index([origin])
 }
 
 model CandidateContractPreference {
