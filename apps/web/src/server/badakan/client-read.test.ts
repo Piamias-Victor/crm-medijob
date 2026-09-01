@@ -26,6 +26,7 @@ describe('createBadakanClient reads', () => {
     const client = testBadakanClient(vi.fn())
     expect(Object.keys(client).sort()).toEqual([
       'getComments',
+      'getEnterprise',
       'getRecipient',
       'searchEmployees',
       'searchMissions',

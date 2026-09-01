@@ -9,6 +9,7 @@ function persistFields(data: BadakanMission) {
   return {
     badakanId: data.badakanId,
     pharmacyName: data.pharmacyName,
+    enterpriseId: data.enterpriseId,
     step: data.step,
     periods: data.periods as Prisma.InputJsonValue,
     syncedAt: new Date(),
@@ -25,6 +26,14 @@ export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
       }),
     findById: (id: string) =>
       db.badakanMission.findUnique({ where: { id }, include: includeApplied }),
+    listEnterpriseIds: async () => {
+      const rows = await db.badakanMission.findMany({
+        where: { enterpriseId: { not: null } },
+        select: { enterpriseId: true },
+        distinct: ['enterpriseId'],
+      })
+      return rows.flatMap((row) => (row.enterpriseId ? [row.enterpriseId] : []))
+    },
     upsertFromRead: (data: BadakanMission) =>
       db.badakanMission.upsert({
         where: { badakanId: data.badakanId },

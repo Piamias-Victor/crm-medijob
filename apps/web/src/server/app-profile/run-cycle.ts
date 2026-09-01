@@ -26,5 +26,13 @@ export async function runAppProfileCycle(
   const sms = await resolved.smsDue()
   const invite = await resolved.inviteDue()
   const missions = await resolved.syncMissions()
-  return { sync, invite, employees: { fetched: employees.length, ...validated }, missions, sms }
+  const enterprises = await resolved.syncEnterprises()
+  return {
+    sync,
+    invite,
+    employees: { fetched: employees.length, ...validated },
+    missions,
+    enterprises,
+    sms,
+  }
 }

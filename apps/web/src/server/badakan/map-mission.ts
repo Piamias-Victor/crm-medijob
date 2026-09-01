@@ -28,6 +28,7 @@ export const badakanMissionSchema = z
     expectedEndDate: z.string().optional().nullable(),
     enterprise: z
       .object({
+        id: z.union([z.string(), z.number()]).transform(String).optional(),
         enterpriseName: z.string().optional().nullable(),
         name: z.string().optional().nullable(),
       })
@@ -51,6 +52,7 @@ export type BadakanMissionPeriod = { start: string | null; end: string | null }
 export type BadakanMission = {
   badakanId: string
   pharmacyName: string
+  enterpriseId: string | null
   step: string
   periods: BadakanMissionPeriod[]
   searchApplied: BadakanSearchApplied[]
@@ -76,6 +78,7 @@ export function mapBadakanMission(raw: unknown): BadakanMission | null {
   return {
     badakanId: r.id,
     pharmacyName: (r.enterprise?.enterpriseName ?? r.enterprise?.name ?? '').trim() || '—',
+    enterpriseId: r.enterprise?.id ?? null,
     step: (r.currentStep ?? '').trim() || '—',
     periods: mapPeriods(r),
     searchApplied: (r.recipients ?? [])

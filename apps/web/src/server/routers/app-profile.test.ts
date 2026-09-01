@@ -22,6 +22,7 @@ function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
       searchMissions: vi.fn().mockResolvedValue([]),
       getRecipient: vi.fn().mockResolvedValue(null),
       getComments: vi.fn().mockResolvedValue([]),
+      getEnterprise: vi.fn().mockResolvedValue(null),
     }),
     importCvUrl: vi.fn().mockResolvedValue(null),
     ...overrides,
@@ -61,6 +62,7 @@ describe('appProfileRouter', () => {
           searchMissions: vi.fn(),
           getRecipient: vi.fn(),
           getComments,
+          getEnterprise: vi.fn(),
         }),
       }),
     ).listComments({ id: 'p1' })
@@ -80,6 +82,7 @@ describe('appProfileRouter', () => {
           searchMissions: vi.fn(),
           getRecipient: vi.fn(),
           getComments: vi.fn().mockRejectedValue(new Error('missing env')),
+          getEnterprise: vi.fn(),
         }),
       }),
     ).listComments({ id: 'p1' })

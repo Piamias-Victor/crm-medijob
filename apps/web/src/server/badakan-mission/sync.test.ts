@@ -5,6 +5,7 @@ import type { BadakanMission } from '@/server/badakan/map-mission'
 const mapped: BadakanMission = {
   badakanId: 'm-hermes',
   pharmacyName: 'Pharmacie Hermes',
+  enterpriseId: 'ent-hermes',
   step: 'CANCELLED',
   periods: [{ start: '2026-08-01', end: '2026-08-03' }],
   searchApplied: [

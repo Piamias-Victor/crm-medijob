@@ -59,6 +59,7 @@ export const facturationSubNav: { label: string; href: string }[] = [
 
 export const interimSubNav: { label: string; href: string }[] = [
   { label: 'Missions Badakan', href: '/interim/missions' },
+  { label: 'Vérif officines', href: '/interim/officines' },
   { label: 'Disponibilités', href: '/interim/disponibilites' },
 ]
 

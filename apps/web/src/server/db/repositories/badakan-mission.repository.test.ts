@@ -4,6 +4,7 @@ import { makeBadakanMissionRepository } from './badakan-mission.repository'
 const mapped = {
   badakanId: 'm-hermes',
   pharmacyName: 'Pharmacie Hermes',
+  enterpriseId: 'ent-hermes',
   step: 'CANCELLED',
   periods: [{ start: '2026-08-01', end: '2026-08-03' }],
   searchApplied: [
@@ -51,6 +52,7 @@ describe('badakanMissionRepository', () => {
         where: { badakanId: 'm-hermes' },
         create: expect.objectContaining({
           pharmacyName: 'Pharmacie Hermes',
+          enterpriseId: 'ent-hermes',
           searchApplied: { create: mapped.searchApplied },
         }),
       }),
