@@ -10,7 +10,7 @@ export function InterimLayoutShell({ children }: { children: ReactNode }) {
     <DashboardPage
       icon={<CalendarClock className="size-5" />}
       title="Intérim"
-      description="Missions Badakan, distinctes du kanban Missions et de Facturation Intérim."
+      description="Missions et contrats Badakan, distincts du kanban Missions et de Facturation Intérim."
       nav={<InterimNav />}
       maxWidth="max-w-6xl"
     >

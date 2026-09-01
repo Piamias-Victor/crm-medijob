@@ -13,6 +13,7 @@ const stubDeps: AppProfileCycleDeps = {
     searchNewEmployees: async () => [],
     searchEmployees: async () => (employee ? [employee] : []),
     searchMissions: async () => [],
+    searchContracts: async () => [],
     getRecipient: async () => null,
     getComments: async () => [],
     getEnterprise: async () => null,
@@ -30,6 +31,7 @@ const stubDeps: AppProfileCycleDeps = {
   probeInactive: async () => [],
   syncMissions: async () => ({ fetched: 0, upserted: 0 }),
   syncEnterprises: async () => ({ fetched: 0, upserted: 0 }),
+  syncContracts: async () => ({ fetched: 0, upserted: 0 }),
   smsDue: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
 }
 

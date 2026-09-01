@@ -28,6 +28,7 @@ describe('createBadakanClient reads', () => {
       'getComments',
       'getEnterprise',
       'getRecipient',
+      'searchContracts',
       'searchEmployees',
       'searchMissions',
       'searchNewEmployees',
