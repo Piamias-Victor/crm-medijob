@@ -3,9 +3,11 @@ import { syncValidatedEmployees } from '@/server/app-profile/sync-validated.deps
 import { defaultInviteDueDeps } from '@/server/app-profile/invite-due.deps'
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { badakanMissionRepository } from '@/server/db/repositories/badakan-mission.repository'
+import { badakanEnterpriseRepository } from '@/server/db/repositories/badakan-enterprise.repository'
 import { defaultAppProfileDeps } from '@/server/routers/app-profile.deps'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
 import { syncBadakanMissions } from '@/server/badakan-mission/sync'
+import { syncBadakanEnterprises } from '@/server/badakan-enterprise/sync'
 import type { SyncDeps } from '@/server/app-profile/sync'
 import type { SyncValidatedResult } from '@/server/app-profile/sync-validated.types'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
@@ -26,6 +28,7 @@ export type AppProfileCycleDeps = {
   syncValidated: (rows: BadakanRecipient[]) => Promise<SyncValidatedResult>
   probeInactive: (completed: BadakanRecipient[]) => Promise<BadakanRecipient[]>
   syncMissions: () => Promise<{ fetched: number; upserted: number }>
+  syncEnterprises: () => Promise<{ fetched: number; upserted: number }>
 }
 
 export function defaultAppProfileCycleDeps(
@@ -50,6 +53,12 @@ export function defaultAppProfileCycleDeps(
       syncBadakanMissions({
         searchMissions: () => client.searchMissions(),
         upsertFromRead: badakanMissionRepository.upsertFromRead,
+      }),
+    syncEnterprises: () =>
+      syncBadakanEnterprises({
+        listEnterpriseIds: badakanMissionRepository.listEnterpriseIds,
+        getEnterprise: (id) => client.getEnterprise(id),
+        upsertFromRead: badakanEnterpriseRepository.upsertFromRead,
       }),
   }
 }

@@ -7,6 +7,7 @@ const env = { NODE_ENV: 'test', BADAKAN_EMAIL: 'a@b.c', BADAKAN_PASSWORD: 'x' } 
 const mission: BadakanMission = {
   badakanId: 'm-hermes',
   pharmacyName: 'Pharmacie Hermes',
+  enterpriseId: 'ent-hermes',
   step: 'CANCELLED',
   periods: [{ start: '2026-08-01', end: '2026-08-03' }],
   searchApplied: [],
@@ -20,6 +21,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
       searchMissions: async () => [mission],
       getRecipient: async () => null,
       getComments: async () => [],
+      getEnterprise: async () => null,
     },
     findByBadakanIds: async () => [],
     upsertPending: async () => ({}),
@@ -33,6 +35,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
     syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
     probeInactive: async () => [],
     syncMissions: async () => ({ fetched: 0, upserted: 0 }),
+    syncEnterprises: async () => ({ fetched: 0, upserted: 0 }),
     smsDue: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
     ...overrides,
   }

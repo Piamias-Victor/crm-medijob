@@ -56,10 +56,12 @@ Vocabulaire : Pharmacy, Contact. ADR 0028.
 
 ## Fichiers impactés
 
-- `apps/web/src/server/pharmacy/duplicate-identity-match.ts`
-- `apps/web/src/server/routers/pharmacy.ts` / contact
-- UI file de vérif Intérim
-- client GET enterprises/{id}
+- `apps/web/src/server/badakan/client.ts` — GET enterprises/{id}
+- `apps/web/src/server/badakan/map-enterprise.ts` — nom, SIRET, adresse, contact principal
+- `apps/web/src/server/pharmacy/duplicate-identity-match.ts` — `siretMatches`
+- `apps/web/src/server/badakan-enterprise/confirm-verify.ts` — create/link Pharmacy + Contact
+- `apps/web/src/server/routers/badakan-enterprise.ts` — file de vérif + confirm
+- `apps/web/src/app/(dashboard)/interim/officines/` — UI vérif Intérim
 
 ---
 

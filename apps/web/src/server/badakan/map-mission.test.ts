@@ -6,7 +6,7 @@ const hermesRaw = {
   currentStep: 'CANCELLED',
   expectedStartDate: '2026-08-01',
   expectedEndDate: '2026-08-03',
-  enterprise: { enterpriseName: 'Pharmacie Hermes' },
+  enterprise: { id: 'ent-hermes', enterpriseName: 'Pharmacie Hermes' },
   recipients: [
     {
       id: 'r-lucie',
@@ -30,6 +30,7 @@ describe('mapBadakanMission', () => {
     expect(mapped).toMatchObject({
       badakanId: 'm-hermes',
       pharmacyName: 'Pharmacie Hermes',
+      enterpriseId: 'ent-hermes',
       step: 'CANCELLED',
       periods: [{ start: '2026-08-01', end: '2026-08-03' }],
       searchApplied: [
