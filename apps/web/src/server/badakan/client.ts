@@ -1,5 +1,6 @@
 import { mapBadakanRecipient, type BadakanRecipient } from './map-recipient'
 import { mapBadakanMission, type BadakanMission } from './map-mission'
+import { mapBadakanContract, type BadakanContract } from './map-contract'
 import { type BadakanComment } from './map-comment'
 import { type BadakanEnterprise } from './map-enterprise'
 import { badakanLogin } from './auth'
@@ -17,6 +18,7 @@ export type BadakanClient = {
   searchNewEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
   searchEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
   searchMissions: (pageSize?: number) => Promise<BadakanMission[]>
+  searchContracts: (pageSize?: number) => Promise<BadakanContract[]>
   getRecipient: (badakanId: string) => Promise<BadakanRecipient | null>
   getComments: (targetId: string) => Promise<BadakanComment[]>
   getEnterprise: (enterpriseId: string) => Promise<BadakanEnterprise | null>
@@ -56,6 +58,13 @@ export function createBadakanClient(config: BadakanClientConfig): BadakanClient 
         pageSize,
         'Badakan searchMissions',
         mapBadakanMission,
+      ),
+    searchContracts: (pageSize = 100) =>
+      search(
+        '/services/v3/contracts/search',
+        pageSize,
+        'Badakan searchContracts',
+        mapBadakanContract,
       ),
     ...badakanClientGets(login, config.baseUrl, fetchFn),
   }

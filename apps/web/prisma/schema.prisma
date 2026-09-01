@@ -830,6 +830,24 @@ model BadakanSearchApplied {
   @@index([badakanMissionId])
 }
 
+// ─── Badakan contracts (Intérim read cache — not Ligne de suivi) ──
+
+model BadakanContract {
+  id            String   @id @default(cuid())
+  badakanId     String   @unique
+  status        String
+  pdfUrl        String?
+  dpaeUrl       String?
+  recipientName String
+  pharmacyName  String
+  syncedAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([syncedAt])
+}
+
 model BadakanEnterprise {
   id                 String    @id @default(cuid())
   badakanId          String    @unique

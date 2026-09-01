@@ -55,9 +55,14 @@ Vocabulaire : Badakan contract, Ligne de suivi. ADR 0030.
 
 ## Fichiers impactés
 
-- `apps/web/src/server/badakan/client.ts` — contracts/search
-- UI liste Intérim contrats
-- repositories lecture
+- `apps/web/src/server/badakan/client.ts` — `searchContracts` POST `/services/v3/contracts/search`
+- `apps/web/src/server/badakan/map-contract.ts` — statut, PDF, DPAE
+- `apps/web/src/server/badakan-contract/sync.ts` — persist lecture, jamais FinanceLine
+- `apps/web/src/server/db/repositories/badakan-contract.repository.ts`
+- `apps/web/src/server/routers/badakan-contract.ts` — `list`
+- `apps/web/src/app/(dashboard)/interim/contrats/page.tsx`
+- `apps/web/src/components/organisms/BadakanContractList.tsx`
+- `apps/web/prisma/schema.prisma` — `BadakanContract`
 
 ---
 

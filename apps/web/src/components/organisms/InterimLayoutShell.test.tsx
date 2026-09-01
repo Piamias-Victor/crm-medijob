@@ -12,6 +12,10 @@ describe('InterimLayoutShell', () => {
       'href',
       '/interim/missions',
     )
+    expect(screen.getByRole('link', { name: 'Contrats Badakan' })).toHaveAttribute(
+      'href',
+      '/interim/contrats',
+    )
     expect(screen.getByRole('link', { name: 'Vérif officines' })).toHaveAttribute(
       'href',
       '/interim/officines',

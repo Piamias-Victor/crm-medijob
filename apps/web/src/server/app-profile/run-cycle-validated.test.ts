@@ -22,6 +22,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
       searchNewEmployees: async () => [],
       searchEmployees: async () => (completed ? [completed] : []),
       searchMissions: async () => [],
+      searchContracts: async () => [],
       getRecipient: async () => null,
       getComments: async () => [],
       getEnterprise: async () => null,
@@ -39,6 +40,7 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
     probeInactive: async () => [],
     syncMissions: async () => ({ fetched: 0, upserted: 0 }),
     syncEnterprises: async () => ({ fetched: 0, upserted: 0 }),
+    syncContracts: async () => ({ fetched: 0, upserted: 0 }),
     smsDue: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
     ...overrides,
   }
@@ -53,6 +55,7 @@ describe('runAppProfileCycle App-validated', () => {
         searchNewEmployees: async () => [created],
         searchEmployees: async () => [],
         searchMissions: async () => [],
+        searchContracts: async () => [],
         getRecipient: async () => null,
         getComments: async () => [],
         getEnterprise: async () => null,

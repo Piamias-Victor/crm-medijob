@@ -33,19 +33,11 @@ function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycl
   }
 }
 
-describe('runAppProfileCycle weekly availability SMS', () => {
-  it('sends due SMS after App-validated sync, not as a weekly cron', async () => {
-    const order: string[] = []
-    const syncValidated = vi.fn(async () => {
-      order.push('validated')
-      return { created: 1, linked: 0, skipped: 0 }
-    })
-    const smsDue = vi.fn(async () => {
-      order.push('sms')
-      return { sent: 1, skippedNoPhone: 0, failed: 0 }
-    })
-    const result = await runAppProfileCycle(env, cycleDeps({ syncValidated, smsDue }))
-    expect(order).toEqual(['validated', 'sms'])
-    expect(result).toMatchObject({ sms: { sent: 1 } })
+describe('runAppProfileCycle Badakan contracts', () => {
+  it('pulls contracts/search on the same periodic cycle', async () => {
+    const syncContracts = vi.fn().mockResolvedValue({ fetched: 1, upserted: 1 })
+    const result = await runAppProfileCycle(env, cycleDeps({ syncContracts }))
+    expect(syncContracts).toHaveBeenCalledTimes(1)
+    expect(result).toMatchObject({ contracts: { fetched: 1, upserted: 1 } })
   })
 })

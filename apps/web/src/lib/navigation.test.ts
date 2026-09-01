@@ -32,6 +32,7 @@ describe('interimSubNav', () => {
   it('lists Badakan missions apart from the CRM Mission kanban', () => {
     expect(interimSubNav.map((item) => [item.label, item.href])).toEqual([
       ['Missions Badakan', '/interim/missions'],
+      ['Contrats Badakan', '/interim/contrats'],
       ['Vérif officines', '/interim/officines'],
       ['Disponibilités', '/interim/disponibilites'],
     ])
