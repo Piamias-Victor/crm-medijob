@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { mapBadakanRecipient } from '@/server/badakan/map-recipient'
-import { runAppProfileCycle, type AppProfileCycleDeps } from './run-cycle'
+import { runAppProfileCycle } from './run-cycle'
+import { stubCycleDeps } from './run-cycle.test-deps'
 
 const env = { NODE_ENV: 'test', BADAKAN_EMAIL: 'a@b.c', BADAKAN_PASSWORD: 'x' } as const
 
@@ -17,36 +18,6 @@ const suspended = mapBadakanRecipient({
   status: 'SUSPENDED',
 })!
 
-function cycleDeps(overrides: Partial<AppProfileCycleDeps> = {}): AppProfileCycleDeps {
-  return {
-    client: {
-      searchNewEmployees: async () => [],
-      searchEmployees: async () => (completed ? [completed] : []),
-      searchMissions: async () => [],
-      searchContracts: async () => [],
-      getRecipient: async () => null,
-      getComments: async () => [],
-      getEnterprise: async () => null,
-    },
-    findByBadakanIds: async () => [],
-    upsertPending: async () => ({}),
-    findJobTitleIdByName: async () => null,
-    inviteDue: async () => ({
-      sent: 0,
-      skippedNoEmail: 0,
-      cancelled: 0,
-      failed: 0,
-    }),
-    syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
-    probeInactive: async () => [],
-    syncMissions: async () => ({ fetched: 0, upserted: 0 }),
-    syncEnterprises: async () => ({ fetched: 0, upserted: 0 }),
-    syncContracts: async () => ({ fetched: 0, upserted: 0 }),
-    smsDue: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
-    ...overrides,
-  }
-}
-
 describe('runAppProfileCycle SUSPENDED', () => {
   it('feeds probed SUSPENDED recipients into syncValidated', async () => {
     const syncValidated = vi.fn().mockResolvedValue({
@@ -56,7 +27,8 @@ describe('runAppProfileCycle SUSPENDED', () => {
     })
     await runAppProfileCycle(
       env,
-      cycleDeps({
+      stubCycleDeps({
+        client: { searchEmployees: async () => (completed ? [completed] : []) },
         probeInactive: async () => [suspended!],
         syncValidated,
       }),

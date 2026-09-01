@@ -1,6 +1,6 @@
-import { prisma } from '@/server/db/repositories/client'
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
+import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
 import { importBadakanCvToBlob } from '@/server/app-profile/import-cv'
 import { vercelBlobClient } from '@/server/services/blob'
@@ -26,13 +26,7 @@ export const defaultAppProfileDeps: AppProfileDeps = {
   upsertPending: (data) => appProfileRepository.upsertPending(data),
   markStatus: (id, status, candidateId) => appProfileRepository.markStatus(id, status, candidateId),
   createProfile: (input) => candidateRepository.createProfile(input),
-  findJobTitleIdByName: async (name) => {
-    const row = await prisma.jobTitle.findFirst({
-      where: { name: { equals: name, mode: 'insensitive' } },
-      select: { id: true },
-    })
-    return row?.id ?? null
-  },
+  findJobTitleIdByName: (name) => jobTitleRepository.findIdByNameInsensitive(name),
   getBadakanClient: () => badakanClientFromEnv(),
   importCvUrl: (badakanId) => importBadakanCvToBlob(badakanId, vercelBlobClient),
 }
