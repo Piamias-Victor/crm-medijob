@@ -1,39 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { mapBadakanRecipient } from '@/server/badakan/map-recipient'
-import { runAppProfileCycle, type AppProfileCycleDeps } from './run-cycle'
+import { runAppProfileCycle } from './run-cycle'
+import { stubCycleDeps } from './run-cycle.test-deps'
 
 const employee = mapBadakanRecipient({
   id: 'e1',
   firstName: 'Marie',
   lastName: 'App',
 })
-
-const stubDeps: AppProfileCycleDeps = {
-  client: {
-    searchNewEmployees: async () => [],
-    searchEmployees: async () => (employee ? [employee] : []),
-    searchMissions: async () => [],
-    searchContracts: async () => [],
-    getRecipient: async () => null,
-    getComments: async () => [],
-    getEnterprise: async () => null,
-  },
-  findByBadakanIds: async () => [],
-  upsertPending: async () => ({}),
-  findJobTitleIdByName: async () => null,
-  inviteDue: async () => ({
-    sent: 0,
-    skippedNoEmail: 0,
-    cancelled: 0,
-    failed: 0,
-  }),
-  syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
-  probeInactive: async () => [],
-  syncMissions: async () => ({ fetched: 0, upserted: 0 }),
-  syncEnterprises: async () => ({ fetched: 0, upserted: 0 }),
-  syncContracts: async () => ({ fetched: 0, upserted: 0 }),
-  smsDue: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
-}
 
 describe('runAppProfileCycle', () => {
   it('skips when Badakan env is missing', async () => {
@@ -45,7 +19,9 @@ describe('runAppProfileCycle', () => {
   it('pulls searchEmployees on the same periodic cycle', async () => {
     const result = await runAppProfileCycle(
       { NODE_ENV: 'test', BADAKAN_EMAIL: 'a@b.c', BADAKAN_PASSWORD: 'x' },
-      stubDeps,
+      stubCycleDeps({
+        client: { searchEmployees: async () => (employee ? [employee] : []) },
+      }),
     )
     expect(result).toMatchObject({
       employees: { fetched: 1 },

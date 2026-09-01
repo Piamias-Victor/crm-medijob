@@ -1,14 +1,11 @@
 import type { BadakanContract } from '@/server/badakan/map-contract'
+import { syncPagedRead } from '@/server/badakan/sync-paged-read'
 
 export type SyncBadakanContractDeps = {
   searchContracts: () => Promise<BadakanContract[]>
   upsertFromRead: (row: BadakanContract) => Promise<unknown>
 }
 
-export async function syncBadakanContracts(deps: SyncBadakanContractDeps) {
-  const rows = await deps.searchContracts()
-  for (const row of rows) {
-    await deps.upsertFromRead(row)
-  }
-  return { fetched: rows.length, upserted: rows.length }
+export function syncBadakanContracts(deps: SyncBadakanContractDeps) {
+  return syncPagedRead({ search: deps.searchContracts, upsertFromRead: deps.upsertFromRead })
 }

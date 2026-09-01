@@ -1,7 +1,17 @@
 import { describe, expect, it, vi } from 'vitest'
 import { acceptAppProfile, ignoreAppProfile, AppProfileError } from './accept'
+import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
 
 const pending = { id: 'p1', status: 'EN_ATTENTE', badakanId: 'bk1' }
+
+const acceptData: CandidateProfileUpdate = {
+  firstName: 'Ada',
+  lastName: 'Lovelace',
+  jobTitleId: 'jt1',
+  mobilityRadiusKm: 30,
+  softwareIds: [],
+  contractTypes: [],
+}
 
 describe('ignoreAppProfile', () => {
   it('marks pending profile IGNORE', async () => {
@@ -30,12 +40,12 @@ describe('acceptAppProfile', () => {
     const importCvUrl = vi.fn().mockResolvedValue('https://blob.example/cv.jpg')
     const result = await acceptAppProfile(
       'p1',
-      { data: { firstName: 'Ada' } },
+      { data: acceptData },
       { findById: async () => pending, createCandidate, markStatus, importCvUrl },
     )
     expect(importCvUrl).toHaveBeenCalledWith('bk1')
     expect(createCandidate).toHaveBeenCalledWith({
-      firstName: 'Ada',
+      ...acceptData,
       cvUrl: 'https://blob.example/cv.jpg',
     })
     expect(result.candidateId).toBe('c1')
