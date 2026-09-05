@@ -23,6 +23,7 @@ import { badakanMissionRouter } from '@/server/routers/badakan-mission'
 import { badakanEnterpriseRouter } from '@/server/routers/badakan-enterprise'
 import { weeklyAvailabilityRouter } from '@/server/routers/weekly-availability'
 import { badakanContractRouter } from '@/server/routers/badakan-contract'
+import { badakanProposalRouter } from '@/server/routers/badakan-proposal'
 
 export const appRouter = router({
   health: healthRouter,
@@ -48,6 +49,7 @@ export const appRouter = router({
   badakanMission: badakanMissionRouter,
   badakanEnterprise: badakanEnterpriseRouter,
   badakanContract: badakanContractRouter,
+  badakanProposal: badakanProposalRouter,
   weeklyAvailability: weeklyAvailabilityRouter,
 })
 

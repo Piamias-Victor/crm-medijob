@@ -1,10 +1,10 @@
-import { mapBadakanRecipient, type BadakanRecipient } from './map-recipient'
-import { mapBadakanMission, type BadakanMission } from './map-mission'
-import { mapBadakanContract, type BadakanContract } from './map-contract'
+import { type BadakanRecipient } from './map-recipient'
+import { type BadakanMission } from './map-mission'
+import { type BadakanContract } from './map-contract'
 import { type BadakanComment } from './map-comment'
 import { type BadakanEnterprise } from './map-enterprise'
 import { badakanLogin } from './auth'
-import { searchPages } from './paged-search'
+import { badakanClientSearches } from './client-searches'
 import { badakanClientGets } from './client-gets'
 
 export type BadakanClientConfig = {
@@ -26,46 +26,9 @@ export type BadakanClient = {
 
 export function createBadakanClient(config: BadakanClientConfig): BadakanClient {
   const fetchFn = config.fetchFn ?? fetch
-  const login = () =>
-    badakanLogin(config.baseUrl, config.email, config.password, fetchFn)
-  const search = <T>(
-    path: string,
-    pageSize: number,
-    failLabel: string,
-    mapItem: (raw: unknown) => T | null,
-  ) =>
-    login().then((token) =>
-      searchPages(fetchFn, `${config.baseUrl}${path}`, token, pageSize, failLabel, mapItem),
-    )
+  const login = () => badakanLogin(config.baseUrl, config.email, config.password, fetchFn)
   return {
-    searchNewEmployees: (pageSize = 100) =>
-      search(
-        '/services/v3/recipients/searchNewEmployees',
-        pageSize,
-        'Badakan searchNewEmployees',
-        mapBadakanRecipient,
-      ),
-    searchEmployees: (pageSize = 100) =>
-      search(
-        '/services/v3/recipients/searchEmployees',
-        pageSize,
-        'Badakan searchEmployees',
-        mapBadakanRecipient,
-      ),
-    searchMissions: (pageSize = 100) =>
-      search(
-        '/services/v3/missions/search',
-        pageSize,
-        'Badakan searchMissions',
-        mapBadakanMission,
-      ),
-    searchContracts: (pageSize = 100) =>
-      search(
-        '/services/v3/contracts/search',
-        pageSize,
-        'Badakan searchContracts',
-        mapBadakanContract,
-      ),
+    ...badakanClientSearches(login, config.baseUrl, fetchFn),
     ...badakanClientGets(login, config.baseUrl, fetchFn),
   }
 }

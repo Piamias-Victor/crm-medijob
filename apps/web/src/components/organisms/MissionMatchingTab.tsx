@@ -80,6 +80,8 @@ export function MissionMatchingTab({
               onPositioned={handlePositioned}
               scored={result.scored}
               excluded={result.excluded}
+              eligibleCount={result.eligibleCount}
+              excludedCount={result.excludedCount}
             />
           </motion.div>
         ) : null}

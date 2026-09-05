@@ -38,9 +38,11 @@ export function stubValidatedDeps(
     applyLifecycle: vi.fn(),
     findAppProfileByBadakanId: async () => null,
     markAppValidated: vi.fn(),
+    linkAppProfileCandidate: vi.fn(),
     resolveJobTitleId: async () => 'jt1',
     mapJobTitleId: async () => null,
     syncDossier: vi.fn(),
+    enrichFromComments: async () => ({}),
     ...overrides,
   }
 }

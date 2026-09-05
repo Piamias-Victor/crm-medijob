@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MediJob — Checklist Intérim V1</title>
+<style>
+  :root {
+    --teal: #0d736b; --teal-dark: #085950; --mint: #e6f4f2;
+    --bg: #f4f6f5; --card: #fff; --text: #1a1a1a; --muted: #5c6570;
+    --border: #e2e6ea; --ok: #1b7f4a; --ok-bg: #e8f7ee;
+    --ko: #b42318; --ko-bg: #fdecea; --na: #667085; --na-bg: #f2f4f7;
+    --def: #b54708; --def-bg: #fff4e5; --warn: #93370d; --warn-bg: #fffaeb;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 4px 12px rgba(16,24,40,.04);
+    --radius: 12px; --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.45; }
+  header.app {
+    position: sticky; top: 0; z-index: 40;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: #fff; padding: 14px 20px; box-shadow: var(--shadow);
+  }
+  header.app .row {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    justify-content: space-between; max-width: 1100px; margin: 0 auto;
+  }
+  header h1 { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  header p { margin: 2px 0 0; opacity: .9; font-size: .85rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .file-btn {
+    border: 0; border-radius: 8px; padding: 8px 12px; font: inherit;
+    font-size: .85rem; font-weight: 600; cursor: pointer;
+    background: #fff; color: var(--teal-dark);
+  }
+  button.secondary { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.35); }
+  button.danger { color: var(--ko); }
+  .file-btn { display: inline-flex; align-items: center; }
+  .file-btn input { display: none; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 80px; }
+  .banner {
+    background: var(--warn-bg); border: 1px solid #f79009; border-radius: var(--radius);
+    padding: 14px 16px; margin-bottom: 16px;
+  }
+  .banner h2 { margin: 0 0 8px; font-size: 1rem; color: var(--warn); }
+  .banner a { color: var(--teal-dark); font-weight: 700; word-break: break-all; }
+  .banner ul { margin: 8px 0 0; padding-left: 18px; }
+  .banner li { margin: 4px 0; font-size: .9rem; }
+  .panel {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .panel h2 { margin: 0 0 12px; font-size: 1.05rem; color: var(--teal-dark); }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+  label.field { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; color: var(--muted); font-weight: 600; }
+  input[type=text], input[type=url], select, textarea {
+    font: inherit; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: 8px; background: #fff; color: var(--text);
+  }
+  textarea { width: 100%; min-height: 56px; resize: vertical; }
+  .accounts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+  .account { background: var(--mint); border-radius: 10px; padding: 10px 12px; font-size: .85rem; }
+  .account strong { display: block; color: var(--teal-dark); margin-bottom: 4px; }
+  .account code { font-size: .8rem; }
+  .known { display: grid; gap: 8px; }
+  .known .k { background: #fff; border-left: 4px solid #f79009; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); border-left-width: 4px; }
+  .known .k strong { display: block; margin-bottom: 4px; font-size: .9rem; }
+  .known .k span { font-size: .85rem; color: var(--muted); }
+  .progress-bar { height: 10px; background: #e8ecef; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+  .progress-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #12b76a, var(--teal)); width: 0%; transition: width .2s; }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; font-size: .8rem; font-weight: 600; }
+  .pill { padding: 4px 10px; border-radius: 999px; background: var(--na-bg); color: var(--na); }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); }
+  .pill.ko { background: var(--ko-bg); color: var(--ko); }
+  .pill.todo { background: #eef2ff; color: #3538cd; }
+  .pill.def { background: var(--def-bg); color: var(--def); }
+  .toc { display: flex; flex-wrap: wrap; gap: 6px; }
+  .toc a {
+    text-decoration: none; font-size: .75rem; font-weight: 600;
+    padding: 6px 10px; border-radius: 999px; background: var(--mint); color: var(--teal-dark);
+  }
+  .toc a.done { background: var(--ok-bg); color: var(--ok); }
+  .toc a.has-ko { background: var(--ko-bg); color: var(--ko); }
+  section.block {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 14px; overflow: hidden; box-shadow: var(--shadow);
+  }
+  details > summary {
+    list-style: none; cursor: pointer; display: flex; gap: 12px; align-items: center;
+    justify-content: space-between; padding: 14px 16px; background: #fafbfa; border-bottom: 1px solid var(--border);
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  .block-title { font-weight: 700; font-size: .98rem; }
+  .block-meta { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+  .item {
+    display: grid; grid-template-columns: 28px 1fr 130px; gap: 10px; align-items: start;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .item:last-child { border-bottom: 0; }
+  .item.done { background: #f7fbf8; }
+  .item.failed { background: var(--ko-bg); }
+  .item.skipped { background: var(--na-bg); }
+  .item.retest-row {
+    background: #fff7ed;
+    box-shadow: inset 4px 0 0 #f97316;
+  }
+  .badge-retest {
+    display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 6px;
+    border-radius: 6px; background: #ffedd5; color: #c2410c; margin-left: 6px;
+  }
+  .item label.check { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .92rem; }
+  .item input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--teal); flex-shrink: 0; }
+  .hint { margin: 6px 0 0; font-size: .8rem; color: var(--muted); background: #f8faf9; padding: 6px 8px; border-radius: 6px; }
+  .badge-def { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 6px; border-radius: 6px; background: var(--def-bg); color: var(--def); margin-left: 6px; }
+  .status { width: 100%; }
+  .comment-wrap { grid-column: 2 / -1; }
+  .comment-wrap textarea { min-height: 42px; font-size: .85rem; background: #fcfcfd; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .filters label { font-size: .8rem; font-weight: 600; color: var(--muted); }
+  .bugs-panel .bug { border: 1px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 8px; background: #fff; }
+  .bugs-panel .bug.ko { border-color: #f3b4ae; background: #fff8f7; }
+  footer.sticky-note {
+    position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border);
+    padding: 8px 16px; font-size: .8rem; color: var(--muted);
+    display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+  }
+  @media (max-width: 720px) {
+    .item { grid-template-columns: 28px 1fr; }
+    .status { grid-column: 2; }
+  }
+</style>
+</head>
+<body>
+<header class="app">
+  <div class="row">
+    <div>
+      <h1>CRM MediJob — Checklist Intérim V1</h1>
+      <p>172 tests · graphe #366–#377 sur DEV · localStorage séparé de la checklist CRM</p>
+    </div>
+    <div class="actions">
+      <button type="button" class="secondary" id="btn-expand">Tout ouvrir</button>
+      <button type="button" class="secondary" id="btn-collapse">Tout fermer</button>
+      <button type="button" id="btn-export-json">Export JSON</button>
+      <button type="button" id="btn-export-csv">Export CSV</button>
+      <button type="button" id="btn-export-bugs">Rapport bugs (MD)</button>
+      <label class="file-btn secondary">Import JSON<input type="file" id="import-json" accept="application/json,.json" /></label>
+      <button type="button" class="secondary" id="btn-restore">Réinit session</button>
+      <button type="button" class="danger" id="btn-reset">Vider (tout à faire)</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="banner">
+    <h2>Intérim V1 — tout le module (pas le CRM staffing CDI)</h2>
+    <p style="margin:0;font-size:.92rem">
+      URL : <a href="https://crm-medijob-web-git-dev-victor-piamias-projects.vercel.app">preview git-dev</a>
+      · PRD <code>docs/PRD_INTERIM_V1.md</code>
+      · Glossaire <code>CONTEXT.md</code>
+    </p>
+    <ul>
+      <li><strong>Ordre conseillé</strong> : env → nav/empty → (si Badakan live) Profils app → fiche origine App → page /dispo → filtre → missions/officines/contrats → Facturation frontière</li>
+      <li><strong>Listes vides</strong> avant cron = OK. Sans creds Badakan = N/A sur les items « après sync », pas KO UI</li>
+      <li><strong>Ne pas</strong> tester les lignes « Hors V1 » comme des bugs (statut Différé)</li>
+      <li>Sauvegarde locale clé <code>medijob-testing-interim-v1</code> (n’écrase pas la checklist V1.5)</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>Session</h2>
+    <div class="grid-2" id="session-fields">
+      <label class="field">Date<input type="text" data-session="date" /></label>
+      <label class="field">Testeur<input type="text" data-session="tester" placeholder="Victor" /></label>
+      <label class="field">URL testée (doit être git-dev)<input type="url" data-session="url" placeholder="https://crm-medijob-web-git-dev-….vercel.app" /></label>
+      <label class="field">Seed users rejoué ?
+        <select data-session="seed">
+          <option value="">—</option>
+          <option>Oui</option>
+          <option>Non</option>
+          <option>Je ne sais pas</option>
+        </select>
+      </label>
+      <label class="field">Badakan live (EMAIL/PASSWORD) ?
+        <select data-session="badakan">
+          <option value="">—</option>
+          <option>Oui</option>
+          <option>Non</option>
+          <option>Je ne sais pas</option>
+        </select>
+      </label>
+      <label class="field">Cron Profils app a déjà tourné ?
+        <select data-session="cron">
+          <option value="">—</option>
+          <option>Oui</option>
+          <option>Non (listes vides attendues)</option>
+          <option>Je ne sais pas</option>
+        </select>
+      </label>
+      <label class="field">SMS Brevo
+        <select data-session="sms">
+          <option value="">—</option>
+          <option>Réel</option>
+          <option>Non configuré (N/A)</option>
+          <option>Je ne sais pas</option>
+        </select>
+      </label>
+      <label class="field">Verdict
+        <select data-session="verdict"><option value="">—</option><option>GO</option><option>NO-GO</option></select>
+      </label>
+    </div>
+    <label class="field" style="margin-top:10px">Notes globales
+      <textarea data-session="notes" placeholder="Bloqueurs, captures, personae Badakan utilisées…"></textarea>
+    </label>
+    <div class="progress-bar"><span id="progress-fill"></span></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Comptes (après reseed)</h2>
+    <div class="accounts" id="accounts"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Pièges (lire)</h2>
+    <div class="known" id="known"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Filtres</h2>
+    <div class="filters">
+      <label><input type="checkbox" id="filter-todo" /> À faire / KO seulement</label>
+      <label><input type="checkbox" id="filter-comments" /> Avec commentaire</label>
+      <input type="search" id="search" placeholder="Rechercher…" style="flex:1;min-width:180px" />
+    </div>
+    <div class="toc" id="toc"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="panel bugs-panel">
+    <h2>Vue bugs & commentaires</h2>
+    <div id="bugs-list"></div>
+  </div>
+</main>
+
+<footer class="sticky-note">
+  <span id="save-state">Sauvegarde locale prête</span>
+  <span>Intérim V1 · 172 tests · #366–#377</span>
+</footer>
+
+<script id="data" type="application/json">{"sections": [{"id": "env", "title": "0. Environnement (lire avant tout)", "role": "Obligatoire", "items": [{"id": "env-0", "text": "J’utilise l’URL DEV (branche dev), PAS la prod crm-medijob-web.vercel.app", "hint": "https://crm-medijob-web-git-dev-victor-piamias-projects.vercel.app — Intérim V1 est sur dev (#366–#377 + #390).", "deferred": false}, {"id": "env-1", "text": "Je peux ouvrir /login sur cette URL (SSO Vercel OK si demandé)", "hint": "", "deferred": false}, {"id": "env-2", "text": "Après login Recruteur, je vois le CRM (pas seulement la page login)", "hint": "", "deferred": false}, {"id": "env-3", "text": "Je note si Badakan est branché (données live) ou non", "hint": "Sans creds Badakan : listes Intérim vides + Profils app vides = N/A infra, pas un bug UI. Les parcours UI (nav, empty states, 404 token) restent testables.", "deferred": false}, {"id": "env-4", "text": "Je note si un cron a déjà tourné depuis le dernier deploy", "hint": "Vercel cron ~2 min. Listes vides au 1er load = attendu. Ne pas inventer un bouton Rafraîchir.", "deferred": false}]}, {"id": "vocab", "title": "0b. Vocabulaire (ne pas confondre)", "role": "Lecture · avant de cliquer", "items": [{"id": "vocab-0", "text": "Badakan mission ≠ Mission CRM", "hint": "Shift app (officine, périodes, postulés SEARCH_APPLIED) dans Intérim. Pas le kanban /missions, pas de PipelineStage.", "deferred": false}, {"id": "vocab-1", "text": "SEARCH_APPLIED ≠ Application (candidature site)", "hint": "Postulé à un shift Badakan. L’inbox « Candidatures reçues » est le job board — autre chose.", "deferred": false}, {"id": "vocab-2", "text": "AppProfile (Profils app) ≠ Candidate CVthèque", "hint": "CREATED = inbox. App-validated sort de l’inbox et crée/lie un Candidate origine App. ACCEPTE recruteur (« Convertir en profil ») reste possible mais rare.", "deferred": false}, {"id": "vocab-3", "text": "App-validated ≠ Qualifié ≠ « profil validé » PDF", "hint": "App-validated = dossier Badakan COMPLETED. Qualifié = Entretien CRM. Le PDF « profil validé MediJob » est hors V1.", "deferred": false}, {"id": "vocab-4", "text": "Weekly availability ≠ Availability (availableFrom)", "hint": "Grille AM/PM datée page publique /dispo/[token]. Availability = une date de dispo CDI sur la fiche.", "deferred": false}, {"id": "vocab-5", "text": "Inactif Badakan ≠ Blacklisté", "hint": "SUSPENDED/BANNED → Inactif (hors filtre + SMS). Blacklisté = décision MediJob, le sync ne le touche pas.", "deferred": false}, {"id": "vocab-6", "text": "Badakan contract ≠ Ligne de suivi ≠ Devis", "hint": "Contrats dans /interim/contrats (PDF/DPAE). Facturation → Intérim = CA humain. Aucune ligne auto depuis un contrat.", "deferred": false}, {"id": "vocab-7", "text": "Enterprise Badakan ≠ Pharmacy tant que non validée", "hint": "File « Vérif officines ». Valider Pharmacy crée ou lie une fiche CRM (PROSPECT si nouvelle).", "deferred": false}]}, {"id": "login", "title": "1. Connexion", "role": "Tous les comptes", "items": [{"id": "login-0", "text": "Login Recruteur OK — recruteur@medijob.fr / recruteur-medijob-2026", "hint": "Si KO Identifiants invalides → DB pas reseedée.", "deferred": false}, {"id": "login-1", "text": "Login Direction OK — direction@medijob.fr / direction-medijob-2026", "hint": "", "deferred": false}, {"id": "login-2", "text": "Login Communication OK — communication@medijob.fr / communication-medijob-2026", "hint": "", "deferred": false}, {"id": "login-3", "text": "Login RH-Admin OK — admin@medijob.fr / admin-medijob-2026", "hint": "", "deferred": false}, {"id": "login-4", "text": "Login testeur perso OK — victorpiamiaspro@gmail.com / tester-medijob-2026", "hint": "Rôle RH_ADMIN. Override SEED_TESTER_PASSWORD.", "deferred": false}]}, {"id": "nav", "title": "2. Nav Intérim vs le reste", "role": "Recruteur · sidebar", "items": [{"id": "nav-0", "text": "Sidebar Recruteur : entrée Intérim pointe vers /interim (pas /facturation/interim)", "hint": "Icône horloge. Description module : « Missions et contrats Badakan, distincts du kanban Missions et de Facturation Intérim. »", "deferred": false}, {"id": "nav-1", "text": "Clic Intérim → redirect /interim/missions (pas une page vide)", "hint": "", "deferred": false}, {"id": "nav-2", "text": "Sous-nav 4 pills : Missions Badakan · Contrats Badakan · Vérif officines · Disponibilités", "hint": "Pas de 5ᵉ pill « Rafraîchir ». Pas de lien vers /missions ni Facturation.", "deferred": false}, {"id": "nav-3", "text": "Recruteur : PAS d’entrée Facturation dans la sidebar", "hint": "", "deferred": false}, {"id": "nav-4", "text": "Recruteur : entrée Missions CRM (/missions) toujours là, à part d’Intérim", "hint": "", "deferred": false}, {"id": "nav-5", "text": "Direction : Facturation visible, sous-nav Facturation a aussi un pill « Intérim » ≠ le module opérationnel", "hint": "", "deferred": false}, {"id": "nav-6", "text": "Communication : voit Intérim opérationnel ; PAS Facturation", "hint": "", "deferred": false}, {"id": "nav-7", "text": "Aucune page /interim/* n’affiche un bouton Rafraîchir / Sync maintenant", "hint": "", "deferred": false}]}, {"id": "empty", "title": "3. Empty states (sans données / avant cron)", "role": "Recruteur · listes", "items": [{"id": "empty-0", "text": "/interim/missions vide → « Aucune mission Badakan » + texte sync", "hint": "« Les shifts Badakan synchronisés apparaîtront ici. »", "deferred": false}, {"id": "empty-1", "text": "/interim/contrats vide → « Aucun contrat Badakan »", "hint": "", "deferred": false}, {"id": "empty-2", "text": "/interim/officines vide → « Aucune officine à vérifier »", "hint": "", "deferred": false}, {"id": "empty-3", "text": "/interim/disponibilites sans filtre → « Filtrer les dispos »", "hint": "« Renseigner créneau AM/PM, métier et ville. » Pas de résultats magiques avant submit.", "deferred": false}, {"id": "empty-4", "text": "Candidats → onglet Profils app vide → « Aucun profil app en attente »", "hint": "CREATED seulement. App-validated ne doit PAS rester ici.", "deferred": false}]}, {"id": "profils-app", "title": "4. Profils app (CREATED / inbox)", "role": "Recruteur · /candidats onglet Profils app", "items": [{"id": "profils-app-0", "text": "Onglet « Profils app » distinct de CVthèque et de Candidatures reçues", "hint": "", "deferred": false}, {"id": "profils-app-1", "text": "Un CREATED Badakan apparaît ici (après cron) ; un App-validated n’y est plus", "hint": "Sortie = APP_VALIDATED, pas Ignorer. Si tout le monde est déjà validé côté app → inbox vide = OK.", "deferred": false}, {"id": "profils-app-2", "text": "Ouvrir un profil : fiche « Profil application », pas une fiche Candidate", "hint": "", "deferred": false}, {"id": "profils-app-3", "text": "Si comment Badakan : section « Commentaires Badakan » (auteur + date + texte)", "hint": "Endpoint comments à l’ouverture fiche, pas le cron. Vide → « Aucun commentaire Badakan. »", "deferred": false}, {"id": "profils-app-4", "text": "Pending : boutons Convertir en profil · Commencer un entretien · Ignorer", "hint": "", "deferred": false}, {"id": "profils-app-5", "text": "Ignorer → disparu de l’inbox ; ne doit PAS revenir au cron suivant", "hint": "Distinct de la sortie App-validated.", "deferred": false}, {"id": "profils-app-6", "text": "Convertir en profil (rare) → Candidate CVthèque ; plus dans Profils app", "hint": "Chemin existant Hireflix / accept. V1 n’oblige pas ce clic pour le vivier (App-validated suffit).", "deferred": false}, {"id": "profils-app-7", "text": "Invitation Hireflix ne change PAS le statut inbox et ne retire PAS le profil", "hint": "Completeness visible. Cancel si le profil quitte EN_ATTENTE (accept / ignore / App-validated).", "deferred": false}]}, {"id": "app-validated", "title": "5. App-validated → Candidate origine App", "role": "Recruteur · CVthèque · #367", "items": [{"id": "app-validated-0", "text": "Après sync COMPLETED : une personne App-validated est dans la CVthèque", "hint": "Create : statut Nouveau (pas Qualifié). Preuve UI : fiche + boutons « Copier le lien dispos » / « Renvoyer le lien SMS » (origin App only).", "deferred": false}, {"id": "app-validated-1", "text": "Cette personne a quitté Profils app (plus EN_ATTENTE)", "hint": "", "deferred": false}, {"id": "app-validated-2", "text": "Un CREATED non validé reste dans Profils app (pas de Candidate auto)", "hint": "", "deferred": false}, {"id": "app-validated-3", "text": "Même email qu’un Candidate déjà Qualifié → UN seul fichier, toujours Qualifié", "hint": "Link email puis tél. App-validated ne rétrograde jamais.", "deferred": false}, {"id": "app-validated-4", "text": "Même téléphone (sans email) → link, pas de clone", "hint": "", "deferred": false}, {"id": "app-validated-5", "text": "Historique Candidate : une trace d’intake app (ActivityLog) si créée/liée", "hint": "", "deferred": false}, {"id": "app-validated-6", "text": "Candidate CRM (création manuelle) : PAS les boutons lien dispos / renvoyer SMS", "hint": "", "deferred": false}]}, {"id": "sync-champs", "title": "6. Sync champs Badakan vs CRM", "role": "Recruteur · fiche · #369", "items": [{"id": "sync-champs-0", "text": "Identité / adresse / tél / email / métier : valeur Badakan non vide gagne au sync suivant", "hint": "Changer côté app puis attendre le cron. Créer n’écrase pas un Qualifié status.", "deferred": false}, {"id": "sync-champs-1", "text": "Salaire, logiciels, mobilité, availableFrom, notes CRM : inchangés après sync", "hint": "", "deferred": false}, {"id": "sync-champs-2", "text": "Champ Badakan vide / « — » → ne vide PAS le champ CRM déjà rempli", "hint": "", "deferred": false}, {"id": "sync-champs-3", "text": "Métier inconnu côté Badakan : ne force PAS le premier JobTitle du référentiel sur un existant", "hint": "", "deferred": false}]}, {"id": "docs-id", "title": "7. CV, Documents, NIR, IBAN", "role": "Recruteur · fiche · #370", "items": [{"id": "docs-id-0", "text": "Fiche origine App : CV ouvrable (cvUrl), pas un Document catégorie CV", "hint": "", "deferred": false}, {"id": "docs-id-1", "text": "Onglet Documents : CNI / RIB / DIPLOME si le dossier Badakan les a", "hint": "Skip si déjà présents (pas de re-download toutes les 2 min). Upload manuel reste possible.", "deferred": false}, {"id": "docs-id-2", "text": "Onglet Profil : NIR et IBAN en lecture seule s’ils existent (labels NIR / IBAN)", "hint": "", "deferred": false}, {"id": "docs-id-3", "text": "NIR / IBAN absents de la fiche si Badakan ne les envoie pas (pas de champs vides bloquants)", "hint": "", "deferred": false}, {"id": "docs-id-4", "text": "Filtres CVthèque / matching : AUCUN champ NIR ou IBAN", "hint": "", "deferred": false}, {"id": "docs-id-5", "text": "Filtre Disponibilités Intérim : pas de NIR/IBAN non plus", "hint": "", "deferred": false}]}, {"id": "comments", "title": "8. Commentaires Badakan + notes CRM", "role": "Recruteur · #371", "items": [{"id": "comments-0", "text": "Profils app CREATED : commentaires Badakan visibles (ex. « Répondeur : Entretien téléphonique. »)", "hint": "", "deferred": false}, {"id": "comments-1", "text": "Fiche Candidate origine App → onglet Historique : même bloc « Commentaires Badakan » au-dessus du timeline", "hint": "", "deferred": false}, {"id": "comments-2", "text": "Candidate sans badakanId : « Aucun commentaire Badakan. » (0 appel API)", "hint": "", "deferred": false}, {"id": "comments-3", "text": "Ajouter une note CRM (ActivityLog) → apparaît dans l’historique, PAS dans le bloc Badakan", "hint": "V1 n’écrit jamais POST /comments vers Badakan.", "deferred": false}, {"id": "comments-4", "text": "Fiche tient si Badakan comments KO / env manquant (liste vide, pas d’écran cassé)", "hint": "", "deferred": false}]}, {"id": "inactif", "title": "9. SUSPENDED / BANNED → Inactif et restore", "role": "Recruteur · #373", "items": [{"id": "inactif-0", "text": "Fixture / destinataire SUSPENDED ou BANNED → Candidate statut Inactif (pas Blacklisté)", "hint": "Souvent via probe GET (searchEmployees = COMPLETED seulement).", "deferred": false}, {"id": "inactif-1", "text": "Ce Candidate disparaît du filtre Disponibilités", "hint": "", "deferred": false}, {"id": "inactif-2", "text": "Blacklisté posé à la main : le sync ne le passe PAS Inactif et ne le restore PAS", "hint": "", "deferred": false}, {"id": "inactif-3", "text": "Restore COMPLETED → statut d’avant Inactif (ex. Qualifié reste Qualifié)", "hint": "Inactif manuel sans mémoire statusBeforeInactive = pas de restore auto.", "deferred": false}, {"id": "inactif-4", "text": "Après restore : redevient éligible au filtre ; PAS de 2ᵉ SMS auto (tester aussi §11)", "hint": "", "deferred": false}]}, {"id": "dispo-public", "title": "10. Page publique Weekly availability", "role": "Anonyme · /dispo/[token] · #372", "items": [{"id": "dispo-public-0", "text": "Fiche origine App : bouton « Copier le lien dispos » → toast « Lien copié »", "hint": "Colle l’URL : /dispo/… (hors dashboard). Token long (pas un id séquentiel).", "deferred": false}, {"id": "dispo-public-1", "text": "Ouvrir le lien en navigation privée : page « Mes disponibilités » SANS login CRM", "hint": "", "deferred": false}, {"id": "dispo-public-2", "text": "Grille 1 semaine : Lun→Dim × Matin / Après-midi (pas 4 semaines d’un coup)", "hint": "", "deferred": false}, {"id": "dispo-public-3", "text": "Boutons « Semaine précédente » / « Semaine suivante » changent la semaine", "hint": "", "deferred": false}, {"id": "dispo-public-4", "text": "Hint : « Aucune case cochée = indisponible cette semaine »", "hint": "", "deferred": false}, {"id": "dispo-public-5", "text": "Cocher mercredi Matin → Enregistrer → toast « Disponibilités enregistrées »", "hint": "", "deferred": false}, {"id": "dispo-public-6", "text": "Changer de semaine puis revenir : mercredi AM toujours coché (historique)", "hint": "", "deferred": false}, {"id": "dispo-public-7", "text": "Jours passés de la semaine en cours : non cliquables (pas de réécriture d’historique)", "hint": "", "deferred": false}, {"id": "dispo-public-8", "text": "Enregistrer une semaine sans aucune case = indispo déclarée (exclue du filtre « dispo »)", "hint": "Différent d’une semaine jamais ouverte (unknown).", "deferred": false}, {"id": "dispo-public-9", "text": "URL token bidon / trop court → 404, pas de grille", "hint": "", "deferred": false}, {"id": "dispo-public-10", "text": "Même URL reste valable plus tard (pas de magic link à usage unique)", "hint": "", "deferred": false}, {"id": "dispo-public-11", "text": "Pas de compte candidat / mot de passe sur cette page", "hint": "", "deferred": false}]}, {"id": "sms", "title": "11. SMS unique App-validated", "role": "Recruteur + infra · #375", "items": [{"id": "sms-0", "text": "App-validated AVEC tél : un SMS contenant le lien /dispo/… (une fois)", "hint": "Texte type : « MediJob : indique tes dispos ici {url} ». Burst 1er cron possible. Si Brevo SMS non config → N/A + commente.", "deferred": false}, {"id": "sms-1", "text": "Sans tél au 1er sync : pas d’envoi ; tél apparaît plus tard → UN envoi (pas deux)", "hint": "", "deferred": false}, {"id": "sms-2", "text": "Restore Inactif→COMPLETED : PAS de nouvel envoi auto", "hint": "", "deferred": false}, {"id": "sms-3", "text": "Fiche origine App : « Renvoyer le lien SMS » → toast « SMS renvoyé » (même URL)", "hint": "Sans tél : « Pas de téléphone sur la fiche ».", "deferred": false}, {"id": "sms-4", "text": "Pas de cron SMS hebdomadaire (pas de relance « actualise ta semaine »)", "hint": "", "deferred": false}, {"id": "sms-5", "text": "Candidate origin CRM : pas de bouton renvoyer SMS", "hint": "", "deferred": false}]}, {"id": "filter", "title": "12. Filtre Disponibilités", "role": "Recruteur · /interim/disponibilites · #374", "items": [{"id": "filter-0", "text": "Formulaire : Date · Créneau AM/PM · Métier · Ville · Rayon (km) · bouton Filtrer", "hint": "", "deferred": false}, {"id": "filter-1", "text": "Pas de champs logiciel, salaire, type de contrat, NIR", "hint": "", "deferred": false}, {"id": "filter-2", "text": "Submit GET : l’URL contient date, period, jobTitleId, city, radiusKm", "hint": "", "deferred": false}, {"id": "filter-3", "text": "Filtrer un mercredi AM + métier d’un Candidate qui a coché ce créneau → il apparaît", "hint": "Population : origin App, pas Inactif. JobTitle exact (pas matrice compat).", "deferred": false}, {"id": "filter-4", "text": "Semaine jamais remplie (unknown) : le candidat N’apparaît PAS", "hint": "", "deferred": false}, {"id": "filter-5", "text": "Semaine enregistrée vide (indispo déclarée) : N’apparaît PAS", "hint": "", "deferred": false}, {"id": "filter-6", "text": "Inactif : N’apparaît PAS même s’il a des slots", "hint": "", "deferred": false}, {"id": "filter-7", "text": "Candidate CRM / Qualifié hors app : N’apparaît PAS", "hint": "", "deferred": false}, {"id": "filter-8", "text": "Rayon vide côté UI envoie 30 km (défaut). Trop loin → absent", "hint": "", "deferred": false}, {"id": "filter-9", "text": "Carte résultat : nom, métier, ville, tél cliquable (tel:), lien SMS (sms:)", "hint": "", "deferred": false}, {"id": "filter-10", "text": "Aucun bouton « ajouter au pipeline » / pas de MissionCandidate créé", "hint": "", "deferred": false}, {"id": "filter-11", "text": "Filtre 0 résultat → « Aucun candidat dispo » + « Aucun origin App avec ce créneau… »", "hint": "", "deferred": false}]}, {"id": "missions-bk", "title": "13. Missions Badakan (liste)", "role": "Recruteur · /interim/missions · #368", "items": [{"id": "missions-bk-0", "text": "Liste cards : nom d’officine + step (Créée / Staffée / Terminée / Annulée / Brouillon) + période", "hint": "", "deferred": false}, {"id": "missions-bk-1", "text": "Clic card → /interim/missions/[id] (détail), PAS /missions/[id] CRM", "hint": "", "deferred": false}, {"id": "missions-bk-2", "text": "Description détail : « Mission Badakan — hors kanban Missions CRM. »", "hint": "", "deferred": false}, {"id": "missions-bk-3", "text": "Champs : pharmacie, dates/périodes, step visibles", "hint": "", "deferred": false}, {"id": "missions-bk-4", "text": "Pas de bouton créer / staffer / modifier périodes vers Badakan", "hint": "", "deferred": false}, {"id": "missions-bk-5", "text": "Kanban /missions inchangé (aucune de ces lignes n’y apparaît comme Mission)", "hint": "", "deferred": false}]}, {"id": "applied", "title": "14. Postulés SEARCH_APPLIED", "role": "Recruteur · détail mission · #368", "items": [{"id": "applied-0", "text": "Section « Postulés SEARCH_APPLIED » sur le détail", "hint": "", "deferred": false}, {"id": "applied-1", "text": "0 postulé → « Aucun postulé SEARCH_APPLIED. » (fréquent si tout est CANCELLED côté app)", "hint": "", "deferred": false}, {"id": "applied-2", "text": "Avec postulé : nom + tél cliquable (tel:) si présent, sinon tiret vide", "hint": "", "deferred": false}, {"id": "applied-3", "text": "Ce n’est PAS l’inbox Candidatures reçues du site", "hint": "", "deferred": false}, {"id": "applied-4", "text": "Appeler le postulé ne crée PAS de MissionCandidate CRM", "hint": "", "deferred": false}]}, {"id": "officines", "title": "15. Vérif officines (Pharmacy + Contact)", "role": "Recruteur · /interim/officines · #376 · crm.write", "items": [{"id": "officines-0", "text": "Liste pending : nom, SIRET, ville ; clic → /interim/officines/[id]", "hint": "", "deferred": false}, {"id": "officines-1", "text": "Back « Vérif officines » sur la fiche de vérif", "hint": "", "deferred": false}, {"id": "officines-2", "text": "Champs preview : Nom, SIRET, Adresse, Ville, CP, Contact principal, Email, Tél", "hint": "", "deferred": false}, {"id": "officines-3", "text": "SIRET déjà en CRM → chip « Pharmacy existante » + lien vers la fiche Pharmacie", "hint": "Valider = même Pharmacy, pas un second fichier.", "deferred": false}, {"id": "officines-4", "text": "Nouveau SIRET → chip « Nouvelle Pharmacy »", "hint": "", "deferred": false}, {"id": "officines-5", "text": "Contact : « Fusionner par email » ou « Fusionner par téléphone » ou « Créer le Contact principal »", "hint": "Fusion sur la Pharmacy cible. Rôle Titulaire en seed requis (sinon PRECONDITION_FAILED).", "deferred": false}, {"id": "officines-6", "text": "Bouton « Valider Pharmacy » → toast « Pharmacy validée » → retour liste ; la ligne a quitté le pending", "hint": "", "deferred": false}, {"id": "officines-7", "text": "Nouvelle : fiche Pharmacie créée en PROSPECT (pas Client auto)", "hint": "", "deferred": false}, {"id": "officines-8", "text": "Contact principal créé ou setPrimary ; pas de doublon email/tél sur cette officine", "hint": "", "deferred": false}, {"id": "officines-9", "text": "Pas d’écriture Badakan (pas de PUT enterprise)", "hint": "", "deferred": false}, {"id": "officines-10", "text": "Mission sans enterprise.id : pas de ligne vérif pour ce shift", "hint": "", "deferred": false}]}, {"id": "contrats", "title": "16. Contrats Badakan", "role": "Recruteur · /interim/contrats · #377", "items": [{"id": "contrats-0", "text": "Liste : destinataire + statut (Brouillon / Créé / Validé / Annulé…) + nom officine", "hint": "", "deferred": false}, {"id": "contrats-1", "text": "Si l’API envoie les URLs : chips PDF et/ou DPAE (nouvel onglet). Sinon chip absent = OK (« si dispo »)", "hint": "", "deferred": false}, {"id": "contrats-2", "text": "Pas de bouton « créer contrat » / pas de mutation", "hint": "", "deferred": false}, {"id": "contrats-3", "text": "Ouvrir Facturation → Intérim (Direction) : AUCUNE ligne auto créée depuis ces contrats", "hint": "", "deferred": false}, {"id": "contrats-4", "text": "Pas de Devis généré depuis un Badakan contract", "hint": "", "deferred": false}, {"id": "contrats-5", "text": "Cards non cliquables vers une fiche write (liste lecture)", "hint": "", "deferred": false}]}, {"id": "factu", "title": "17. Frontière Facturation Intérim", "role": "Direction / RH-Admin · /facturation/interim", "items": [{"id": "factu-0", "text": "Direction : Facturation → pill Intérim = Lignes de suivi (bouton « Nouvelle mission » = ligne CA)", "hint": "", "deferred": false}, {"id": "factu-1", "text": "Recruteur : URL /facturation/interim refuse / redirige (pas finance.view)", "hint": "", "deferred": false}, {"id": "factu-2", "text": "Communication : pas Facturation", "hint": "", "deferred": false}, {"id": "factu-3", "text": "Créer une Ligne de suivi à la main marche toujours (process finance inchangé)", "hint": "", "deferred": false}, {"id": "factu-4", "text": "Cette page n’affiche PAS la liste Badakan contracts / missions", "hint": "", "deferred": false}, {"id": "factu-5", "text": "Module /interim n’a aucun bouton « facturer » / « créer ligne »", "hint": "", "deferred": false}]}, {"id": "crm-missions", "title": "18. Frontière Missions CRM", "role": "Recruteur · /missions", "items": [{"id": "crm-missions-0", "text": "Kanban / liste Missions CRM : uniquement les besoins créés recruteur", "hint": "", "deferred": false}, {"id": "crm-missions-1", "text": "Aucune Badakan mission n’apparaît comme Mission (pas de PipelineStage auto)", "hint": "", "deferred": false}, {"id": "crm-missions-2", "text": "Filtre dispos Intérim n’ajoute personne au pipeline", "hint": "", "deferred": false}, {"id": "crm-missions-3", "text": "Créer une Mission CRM depuis une Badakan mission = hors V1 (pas de CTA)", "hint": "", "deferred": false}, {"id": "crm-missions-4", "text": "Matching CDI (logiciels, salaire) inchangé sur /missions", "hint": "", "deferred": false}]}, {"id": "roles", "title": "19. Rôles", "role": "Les 4 rôles + testeur", "items": [{"id": "roles-0", "text": "Recruteur : lit Intérim (4 sous-pages) + Profils app + CVthèque", "hint": "", "deferred": false}, {"id": "roles-1", "text": "Recruteur : peut Valider Pharmacy (crm.write) et notes ActivityLog", "hint": "", "deferred": false}, {"id": "roles-2", "text": "Communication : lit Intérim ; peut aussi confirm vérif (crm.write = tous les rôles métier)", "hint": "", "deferred": false}, {"id": "roles-3", "text": "Communication : pas Admin, pas Facturation", "hint": "", "deferred": false}, {"id": "roles-4", "text": "Direction / RH-Admin / Testeur : Intérim + Facturation Intérim", "hint": "", "deferred": false}, {"id": "roles-5", "text": "Page /dispo/[token] : aucune session requise (rôle N/A)", "hint": "", "deferred": false}, {"id": "roles-6", "text": "RGPD erase Candidate : Direction/RH-Admin only (bouton existant, pas spécifique Intérim)", "hint": "", "deferred": false}]}, {"id": "nowrite", "title": "20. Interdits V1 (régressions graves)", "role": "Tous · lecture seule Badakan", "items": [{"id": "nowrite-0", "text": "Nulle part un bouton Staff / Valider dossier / Rejeter vers Badakan", "hint": "", "deferred": false}, {"id": "nowrite-1", "text": "Nulle part POST commentaire vers l’app (notes = ActivityLog CRM)", "hint": "", "deferred": false}, {"id": "nowrite-2", "text": "Nulle part création/édition contrat Badakan", "hint": "", "deferred": false}, {"id": "nowrite-3", "text": "Nulle part PUT périodes de mission Badakan", "hint": "", "deferred": false}, {"id": "nowrite-4", "text": "Pas de relance auto J+2 / J+5 / J+10", "hint": "", "deferred": false}, {"id": "nowrite-5", "text": "Pas d’email « profil validé MediJob » comme porte d’entrée du vivier", "hint": "", "deferred": false}]}, {"id": "e2e", "title": "21. E2E — journée recruteur Intérim", "role": "Recruteur · parcours complet (Badakan live)", "items": [{"id": "e2e-0", "text": "Login Recruteur → sidebar Intérim → Missions Badakan (liste ou empty OK)", "hint": "", "deferred": false}, {"id": "e2e-1", "text": "Ouvrir un shift → lire officine / dates / SEARCH_APPLIED ; appeler si tél", "hint": "", "deferred": false}, {"id": "e2e-2", "text": "Vérif officines : valider une Pharmacy (existante ou nouvelle) + Contact", "hint": "", "deferred": false}, {"id": "e2e-3", "text": "Contrats Badakan : statut visible ; PDF si lien", "hint": "", "deferred": false}, {"id": "e2e-4", "text": "CVthèque : ouvrir un origine App (boutons dispos) ; copier le lien", "hint": "", "deferred": false}, {"id": "e2e-5", "text": "Page publique : cocher un créneau futur, enregistrer", "hint": "", "deferred": false}, {"id": "e2e-6", "text": "Intérim → Disponibilités : filtrer ce créneau + métier + ville → le candidat sort", "hint": "", "deferred": false}, {"id": "e2e-7", "text": "Tél / SMS depuis la carte filtre ; vérifier /missions inchangé", "hint": "", "deferred": false}, {"id": "e2e-8", "text": "Historique Candidate : comments Badakan + une note CRM ajoutée", "hint": "", "deferred": false}, {"id": "e2e-9", "text": "Facturation Intérim (compte Direction) : pas de nouvelle ligne surprise", "hint": "", "deferred": false}]}, {"id": "edges", "title": "22. Cas limites", "role": "Recruteur / anonyme", "items": [{"id": "edges-0", "text": "/interim/missions/id-inconnu → 404", "hint": "", "deferred": false}, {"id": "edges-1", "text": "/interim/officines/id-inconnu → 404", "hint": "", "deferred": false}, {"id": "edges-2", "text": "/dispo/abc → 404 (token Zod min 20)", "hint": "", "deferred": false}, {"id": "edges-3", "text": "Ouvrir /dispo/token pendant que je suis loggé CRM : page publique, pas le dashboard", "hint": "", "deferred": false}, {"id": "edges-4", "text": "Double-clic Valider Pharmacy : pas deux Pharmacies (idempotent / déjà verified sort du pending)", "hint": "", "deferred": false}, {"id": "edges-5", "text": "Filtre dispos métier A alors que le candidat est métier B → absent", "hint": "", "deferred": false}]}, {"id": "deferred", "title": "23. Hors V1 (ne pas tester comme livré)", "role": "Différé", "items": [{"id": "deferred-0", "text": "SMS chaque semaine + relance si semaine pas à jour", "hint": "", "deferred": true}, {"id": "deferred-1", "text": "Relances J+2 / J+5 / J+10 + alerte recruteur", "hint": "", "deferred": true}, {"id": "deferred-2", "text": "Email « profil validé » après acceptation MediJob / entretien comme porte", "hint": "", "deferred": true}, {"id": "deferred-3", "text": "Matching logiciels + élargir rayon + « non affecté à une autre mission »", "hint": "", "deferred": true}, {"id": "deferred-4", "text": "Staffer / valider / commenter / écrire un contrat dans Badakan depuis le CRM", "hint": "", "deferred": true}, {"id": "deferred-5", "text": "Créer une Mission CRM depuis une Badakan mission", "hint": "", "deferred": true}, {"id": "deferred-6", "text": "Compte candidat / magic link / Calendly / heures précises", "hint": "", "deferred": true}, {"id": "deferred-7", "text": "Ligne de suivi / Devis / CA auto depuis un Badakan contract", "hint": "", "deferred": true}]}], "accounts": [["⭐ Recruteur", "recruteur@medijob.fr", "recruteur-medijob-2026"], ["Direction", "direction@medijob.fr", "direction-medijob-2026"], ["Communication", "communication@medijob.fr", "communication-medijob-2026"], ["RH-Admin", "admin@medijob.fr", "admin-medijob-2026"], ["👤 Toi (testeur)", "victorpiamiaspro@gmail.com", "tester-medijob-2026"]], "known": [["Listes vides = normal tant que le cron n’a pas tourné", "Pas de bouton Rafraîchir. Sync = même cron que Profils app (GET /api/cron/app-profiles). Sans BADAKAN_EMAIL/PASSWORD → skipped, 0 lignes. Mets N/A + commente."], ["Intérim opérationnel ≠ Facturation Intérim ≠ Missions CRM", "/interim = Badakan (missions, contrats, vérif officines, dispos). /facturation/interim = Lignes de suivi (Direction/RH-Admin). /missions = kanban recruteur. Jamais mélanger."], ["V1 lecture seule vers Badakan", "Aucun staff / validate / PUT mission / POST commentaire / écriture contrat. SEARCH_APPLIED ≠ candidature site. Badakan contract ≠ Ligne de suivi."], ["SMS = un envoi auto à App-validated, pas un SMS chaque semaine", "Bouton « Renvoyer le lien SMS » = manuel. Restore Inactif → COMPLETED ≠ 2ᵉ SMS auto. BREVO_SMS_SENDER obligatoire sinon N/A infra."]], "prefill": {"session": {"date": "", "tester": "Victor", "url": "https://crm-medijob-web-git-dev-victor-piamias-projects.vercel.app", "seed": "", "ai": "", "verdict": "", "notes": "", "badakan": "", "cron": "", "sms": ""}, "items": {}, "retestIds": []}}</script>
+<script>
+const STORAGE_KEY = "medijob-testing-interim-v1";
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const RETEST = new Set((DATA.prefill && DATA.prefill.retestIds) || []);
+
+function clonePrefill() {
+  const p = DATA.prefill || { session: {}, items: {} };
+  return {
+    session: JSON.parse(JSON.stringify(p.session || {})),
+    items: JSON.parse(JSON.stringify(p.items || {})),
+    updatedAt: null,
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return clonePrefill();
+}
+const state = loadState();
+
+function defaultItemState(deferred) {
+  return { checked: false, status: deferred ? "deferred" : "todo", comment: "" };
+}
+function saveState() {
+  state.updatedAt = new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  document.getElementById("save-state").textContent = "Sauvé · " + new Date().toLocaleTimeString("fr-FR");
+  updateStats(); renderBugs(); updateToc();
+}
+function getItem(id, deferred) {
+  if (!state.items[id]) state.items[id] = defaultItemState(deferred);
+  return state.items[id];
+}
+function escapeHtml(s) {
+  return String(s || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+function renderAccounts() {
+  document.getElementById("accounts").innerHTML = DATA.accounts.map(([role, email, pwd]) => `
+    <div class="account"><strong>${role}</strong>
+      <div><code>${email}</code></div><div><code>${pwd}</code></div></div>`).join("");
+}
+function renderKnown() {
+  document.getElementById("known").innerHTML = DATA.known.map(([t, d]) => `
+    <div class="k"><strong>${escapeHtml(t)}</strong><span>${escapeHtml(d)}</span></div>`).join("");
+}
+function bindSession() {
+  document.querySelectorAll("[data-session]").forEach((el) => {
+    const key = el.getAttribute("data-session");
+    el.value = state.session[key] || "";
+    el.addEventListener("input", () => { state.session[key] = el.value; saveState(); });
+  });
+  if (!state.session.date) {
+    const today = new Date().toISOString().slice(0, 10);
+    const el = document.querySelector('[data-session="date"]');
+    el.value = today; state.session.date = today;
+  }
+}
+function statusOptions(current) {
+  return [["todo","À faire"],["ok","OK"],["ko","KO"],["na","N/A"],["deferred","Différé"]]
+    .map(([v,l]) => `<option value="${v}" ${current===v?"selected":""}>${l}</option>`).join("");
+}
+function applyRowClass(row, status) {
+  row.classList.remove("done","failed","skipped","deferred-row","retest-row");
+  if (RETEST.has(row.dataset.id) && status === "todo") row.classList.add("retest-row");
+  if (status === "ok") row.classList.add("done");
+  if (status === "ko") row.classList.add("failed");
+  if (status === "na") row.classList.add("skipped");
+  if (status === "deferred") row.classList.add("deferred-row");
+}
+function sectionNeedsWork(sec) {
+  return sec.items.some((it) => {
+    const s = getItem(it.id, it.deferred).status;
+    return s === "todo" || s === "ko";
+  });
+}
+function renderSections() {
+  const root = document.getElementById("sections");
+  const toc = document.getElementById("toc");
+  root.innerHTML = ""; toc.innerHTML = "";
+  DATA.sections.forEach((sec) => {
+    const details = document.createElement("details");
+    details.className = "block"; details.id = "sec-" + sec.id;
+    details.open = sectionNeedsWork(sec);
+    const done = sec.items.filter((it) => ["ok","na","deferred"].includes(getItem(it.id, it.deferred).status)).length;
+    details.innerHTML = `<summary><div><div class="block-title">${sec.title}</div>
+      <div class="block-meta">${sec.role} · <span data-sec-progress="${sec.id}">${done}/${sec.items.length}</span></div></div>
+      <span class="pill todo" data-sec-pill="${sec.id}">${done}/${sec.items.length}</span></summary>
+      <div class="items"></div>`;
+    const itemsRoot = details.querySelector(".items");
+    sec.items.forEach((it) => {
+      const st = getItem(it.id, it.deferred);
+      const row = document.createElement("div");
+      row.className = "item"; row.dataset.id = it.id; row.dataset.status = st.status;
+      applyRowClass(row, st.status);
+      row.innerHTML = `
+        <div></div>
+        <div class="text-col">
+          <label class="check">
+            <input type="checkbox" ${st.checked || st.status==="ok" ? "checked" : ""} />
+            <span>${escapeHtml(it.text)}${it.deferred ? '<span class="badge-def">DIFFÉRÉ</span>' : ""}${RETEST.has(it.id) ? '<span class="badge-retest">À RETESTER</span>' : ""}</span>
+          </label>
+          ${it.hint ? `<div class="hint">💡 ${escapeHtml(it.hint)}</div>` : ""}
+        </div>
+        <select class="status">${statusOptions(st.status)}</select>
+        <div class="comment-wrap"><textarea placeholder="Commentaire / bug / URL…">${escapeHtml(st.comment)}</textarea></div>`;
+      const cb = row.querySelector('input[type=checkbox]');
+      const sel = row.querySelector("select");
+      const ta = row.querySelector("textarea");
+      cb.addEventListener("change", () => {
+        const cur = getItem(it.id, it.deferred);
+        cur.checked = cb.checked;
+        if (cb.checked && (cur.status === "todo" || cur.status === "deferred")) { cur.status = "ok"; sel.value = "ok"; }
+        if (!cb.checked && cur.status === "ok") { cur.status = it.deferred ? "deferred" : "todo"; sel.value = cur.status; }
+        applyRowClass(row, cur.status); row.dataset.status = cur.status; saveState();
+      });
+      sel.addEventListener("change", () => {
+        const cur = getItem(it.id, it.deferred);
+        cur.status = sel.value; cur.checked = sel.value === "ok"; cb.checked = cur.checked;
+        applyRowClass(row, cur.status); row.dataset.status = cur.status; saveState();
+      });
+      ta.addEventListener("input", () => { getItem(it.id, it.deferred).comment = ta.value; saveState(); });
+      itemsRoot.appendChild(row);
+    });
+    root.appendChild(details);
+    const a = document.createElement("a");
+    a.href = "#sec-" + sec.id;
+    a.textContent = sec.title.replace(/^\d+[a-zA-Z]?\.\s*/, "").slice(0, 32);
+    a.dataset.toc = sec.id; toc.appendChild(a);
+  });
+}
+function allItemsFlat() {
+  const out = [];
+  DATA.sections.forEach((sec) => sec.items.forEach((it) => out.push({ section: sec.title, sectionId: sec.id, ...it, state: getItem(it.id, it.deferred) })));
+  return out;
+}
+function updateStats() {
+  const items = allItemsFlat();
+  const total = items.length;
+  const ok = items.filter((i) => i.state.status === "ok").length;
+  const ko = items.filter((i) => i.state.status === "ko").length;
+  const na = items.filter((i) => i.state.status === "na").length;
+  const def = items.filter((i) => i.state.status === "deferred").length;
+  const todo = items.filter((i) => i.state.status === "todo").length;
+  const withComment = items.filter((i) => (i.state.comment || "").trim()).length;
+  const pct = total ? Math.round(((ok + na + def) / total) * 100) : 0;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("stats").innerHTML = `
+    <span class="pill todo">${pct}% traité</span>
+    <span class="pill ok">OK ${ok}</span>
+    <span class="pill ko">KO ${ko}</span>
+    <span class="pill">N/A ${na}</span>
+    <span class="pill def">Différé ${def}</span>
+    <span class="pill">À faire ${todo}</span>
+    <span class="pill">Commentaires ${withComment}</span>`;
+  DATA.sections.forEach((sec) => {
+    const done = sec.items.filter((it) => ["ok","na","deferred"].includes(getItem(it.id, it.deferred).status)).length;
+    const el = document.querySelector(`[data-sec-progress="${sec.id}"]`);
+    const pill = document.querySelector(`[data-sec-pill="${sec.id}"]`);
+    if (el) el.textContent = `${done}/${sec.items.length}`;
+    if (pill) {
+      const hasKo = sec.items.some((it) => getItem(it.id, it.deferred).status === "ko");
+      pill.textContent = `${done}/${sec.items.length}`;
+      pill.className = "pill " + (hasKo ? "ko" : done === sec.items.length ? "ok" : "todo");
+    }
+  });
+}
+function updateToc() {
+  DATA.sections.forEach((sec) => {
+    const a = document.querySelector(`[data-toc="${sec.id}"]`);
+    if (!a) return;
+    const hasKo = sec.items.some((it) => getItem(it.id, it.deferred).status === "ko");
+    const done = sec.items.every((it) => ["ok","na","deferred"].includes(getItem(it.id, it.deferred).status));
+    a.classList.toggle("has-ko", hasKo);
+    a.classList.toggle("done", done && !hasKo);
+  });
+}
+function renderBugs() {
+  const root = document.getElementById("bugs-list");
+  const items = allItemsFlat().filter((i) => i.state.status === "ko" || (i.state.comment || "").trim());
+  if (!items.length) {
+    root.innerHTML = '<p style="color:var(--muted);font-size:.9rem">Aucun KO / commentaire pour l’instant.</p>';
+    return;
+  }
+  root.innerHTML = items.map((i) => `
+    <div class="bug ${i.state.status === "ko" ? "ko" : ""}">
+      <div style="font-size:.75rem;color:var(--muted);font-weight:700;margin-bottom:4px">${escapeHtml(i.section)} · ${i.state.status.toUpperCase()}</div>
+      <div style="font-weight:600;margin-bottom:4px">${escapeHtml(i.text)}</div>
+      <div style="font-size:.9rem;white-space:pre-wrap">${i.state.comment ? escapeHtml(i.state.comment) : '<span style="color:var(--muted)">Pas de commentaire</span>'}</div>
+    </div>`).join("");
+}
+function applyFilters() {
+  const onlyTodo = document.getElementById("filter-todo").checked;
+  const onlyComments = document.getElementById("filter-comments").checked;
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  document.querySelectorAll(".item").forEach((row) => {
+    const status = row.dataset.status;
+    const text = row.textContent.toLowerCase();
+    const comment = row.querySelector("textarea").value.trim();
+    let show = true;
+    if (onlyTodo && !(status === "todo" || status === "ko")) show = false;
+    if (onlyComments && !comment) show = false;
+    if (q && !text.includes(q)) show = false;
+    row.style.display = show ? "" : "none";
+  });
+}
+function download(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function exportJson() {
+  const payload = {
+    meta: { exportedAt: new Date().toISOString(), tool: "medijob-testing-interim-v1" },
+    session: state.session,
+    items: allItemsFlat().map((i) => ({
+      id: i.id, section: i.section, text: i.text, deferred: i.deferred,
+      status: i.state.status, checked: i.state.checked, comment: i.state.comment,
+    })),
+  };
+  download("medijob-interim-tests-" + (state.session.date || "export") + ".json", JSON.stringify(payload, null, 2), "application/json");
+}
+function exportCsv() {
+  const rows = [["section","id","text","status","comment","deferred"]];
+  allItemsFlat().forEach((i) => {
+    rows.push([i.section, i.id, i.text, i.state.status, i.state.comment || "", i.deferred ? "yes" : "no"]
+      .map((c) => '"' + String(c).replaceAll('"','""') + '"'));
+  });
+  download("medijob-interim-tests-" + (state.session.date || "export") + ".csv", rows.map((r) => r.join(",")).join("\n"), "text/csv");
+}
+function exportBugsMd() {
+  const s = state.session;
+  const kos = allItemsFlat().filter((i) => i.state.status === "ko");
+  const comments = allItemsFlat().filter((i) => (i.state.comment || "").trim() && i.state.status !== "ko");
+  let md = `# Rapport tests MediJob Intérim V1\n\n- Date: ${s.date||""}\n- Testeur: ${s.tester||""}\n- URL: ${s.url||""}\n- Seed: ${s.seed||""}\n- Verdict: ${s.verdict||""}\n\n`;
+  if (s.notes) md += `## Notes\n\n${s.notes}\n\n`;
+  md += `## Bugs (KO) — ${kos.length}\n\n`;
+  kos.forEach((i, idx) => { md += `### B${idx+1} — ${i.text}\n\n- Section: ${i.section}\n- ${i.state.comment || "_vide_"}\n\n`; });
+  md += `## Autres commentaires — ${comments.length}\n\n`;
+  comments.forEach((i) => { md += `- **[${i.state.status}]** ${i.section} — ${i.text}\n  - ${i.state.comment}\n`; });
+  download("medijob-interim-bugs-" + (s.date || "export") + ".md", md, "text/markdown");
+}
+document.getElementById("btn-export-json").onclick = exportJson;
+document.getElementById("btn-export-csv").onclick = exportCsv;
+document.getElementById("btn-export-bugs").onclick = exportBugsMd;
+document.getElementById("btn-expand").onclick = () => document.querySelectorAll("details.block").forEach((d) => d.open = true);
+document.getElementById("btn-collapse").onclick = () => document.querySelectorAll("details.block").forEach((d) => d.open = false);
+document.getElementById("btn-restore").onclick = () => {
+  if (confirm("Réinitialiser le préremplissage Intérim (session vide) ?")) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(clonePrefill()));
+    location.reload();
+  }
+};
+document.getElementById("btn-reset").onclick = () => {
+  if (confirm("Tout remettre à À faire (perd la progression) ?")) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ session: {}, items: {}, updatedAt: null }));
+    location.reload();
+  }
+};
+document.getElementById("import-json").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if (!file) return;
+  const payload = JSON.parse(await file.text());
+  state.session = payload.session || {};
+  state.items = {};
+  (payload.items || []).forEach((it) => {
+    state.items[it.id] = { checked: !!it.checked, status: it.status || "todo", comment: it.comment || "" };
+  });
+  saveState(); location.reload();
+});
+["filter-todo","filter-comments","search"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", applyFilters);
+  document.getElementById(id).addEventListener("change", applyFilters);
+});
+renderAccounts(); renderKnown(); bindSession(); renderSections(); updateStats(); renderBugs(); updateToc(); applyFilters(); saveState();
+</script>
+</body>
+</html>

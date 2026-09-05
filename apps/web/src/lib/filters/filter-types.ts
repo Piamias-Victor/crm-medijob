@@ -24,6 +24,7 @@ export type MultiSelectFilterConfig<TId extends string = string> = FilterConfigB
 export type TextFilterConfig<TId extends string = string> = FilterConfigBase<TId> & {
   type: 'text'
   placeholder?: string
+  wide?: boolean
 }
 
 export type DateRangeFilterConfig<TId extends string = string> = FilterConfigBase<TId> & {

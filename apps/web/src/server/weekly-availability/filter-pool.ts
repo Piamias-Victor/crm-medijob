@@ -30,3 +30,21 @@ export type WeeklyAvailabilityFilterStore = {
     jobTitleId: string
   }) => Promise<AvailabilityFilterPoolRow[]>
 }
+
+export type DeclaredAvailabilityPoolRow = AvailabilityFilterPoolRow & {
+  jobTitleId: string
+  slots: AvailabilityFilterSlot[]
+}
+
+export type DeclaredAvailabilityQuery = {
+  from: string
+  dateTo?: string
+  period?: AmPm
+  jobTitleIds?: string[]
+  /** Default: only candidates with at least one slot (`yes`). */
+  hasDispo?: 'all' | 'yes' | 'no'
+}
+
+export type WeeklyAvailabilityDeclaredStore = {
+  listDeclared: (query: DeclaredAvailabilityQuery) => Promise<DeclaredAvailabilityPoolRow[]>
+}

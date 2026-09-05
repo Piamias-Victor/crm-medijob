@@ -29,4 +29,6 @@ export type MissionMatchingExcludedRow = {
 export type MissionMatchingPayload = {
   scored: MissionMatchingScoredRow[]
   excluded: MissionMatchingExcludedRow[]
+  eligibleCount: number
+  excludedCount: number
 }

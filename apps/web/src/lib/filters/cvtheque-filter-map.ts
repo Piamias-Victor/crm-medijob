@@ -3,6 +3,7 @@ import { buildDefaultFilterValues } from '@/lib/filters/filter-types'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import { CANDIDATE_STATUSES, type CandidateStatus } from '@/view-models/candidate-status'
+import { CANDIDATE_ORIGINS, type CandidateOriginValue } from '@/lib/candidate-origin-options'
 
 export type CvthequeFilterValues = FilterValues<CvthequeFilterConfig>
 
@@ -19,6 +20,13 @@ function parseMaxMobilityKm(raw: string): number | undefined {
   return value
 }
 
+function toOrigins(values: string[]): CandidateOriginValue[] | undefined {
+  const origins = values.filter((value): value is CandidateOriginValue =>
+    (CANDIDATE_ORIGINS as readonly string[]).includes(value),
+  )
+  return origins.length ? origins : undefined
+}
+
 function toStatuses(values: string[]): CandidateStatus[] | undefined {
   const statuses = values.filter((value): value is CandidateStatus =>
     (CANDIDATE_STATUSES as readonly string[]).includes(value),
@@ -33,9 +41,11 @@ export function toCandidateListFilters(values: CvthequeFilterValues): CandidateL
       value === 'CDI' || value === 'CDD' || value === 'INTERIM',
   )
   const city = normalized.ville.trim()
+  const q = normalized.q.trim()
   const maxMobilityKm = parseMaxMobilityKm(normalized.mobilite)
 
   return {
+    q: q || undefined,
     jobTitleIds: normalized.metier.length ? normalized.metier : undefined,
     available: normalized.disponible ?? undefined,
     departments: normalized.departement.length ? normalized.departement : undefined,
@@ -45,8 +55,10 @@ export function toCandidateListFilters(values: CvthequeFilterValues): CandidateL
     profileIncomplete: normalized.incomplet ?? undefined,
     activeMission: normalized.missionActive ?? undefined,
     statuses: toStatuses(normalized.statut),
+    origins: toOrigins(normalized.origine),
     city: city || undefined,
     maxMobilityKm,
+    declaredAvailability: normalized.disposDeclarees ?? undefined,
   }
 }
 

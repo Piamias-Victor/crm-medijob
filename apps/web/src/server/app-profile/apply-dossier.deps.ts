@@ -2,7 +2,8 @@ import { candidateRepository } from '@/server/db/repositories/candidate.reposito
 import { documentRepository } from '@/server/db/repositories/document.repository'
 import { fetchBadakanDossier } from '@/server/badakan/fetch-dossier'
 import { badakanEnvConfig } from '@/server/badakan/client'
-import { uploadBlob, vercelBlobClient } from '@/server/services/blob'
+import { uploadBlob } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import { applyBadakanDossier, identityCategoriesOf, type ApplyDossierDeps } from './apply-dossier'
 
 export function defaultApplyDossierDeps(fetchFn?: typeof fetch): ApplyDossierDeps {
@@ -13,7 +14,7 @@ export function defaultApplyDossierDeps(fetchFn?: typeof fetch): ApplyDossierDep
       const row = await candidateRepository.findDossierState(id)
       return { cvUrl: row.cvUrl, categories: identityCategoriesOf(row.categories) }
     },
-    uploadBlob: (input) => uploadBlob(vercelBlobClient, input),
+    uploadBlob: (input) => uploadBlob(resolveBlobClient(), input),
     patchIdentity: candidateRepository.patchAppIdentity,
     createDocument: (data) => documentRepository.create(data),
   }

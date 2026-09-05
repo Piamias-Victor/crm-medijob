@@ -6,7 +6,8 @@ export async function sendOneAvailabilitySms(
   row: SmsDueRow,
   deps: SmsDueDeps,
 ): Promise<'sent' | 'skippedNoPhone'> {
-  const to = row.phone ? toSmsRecipient(row.phone) : null
+  const raw = deps.testTo?.trim() || row.phone
+  const to = raw ? toSmsRecipient(raw) : null
   if (!to) return 'skippedNoPhone'
   const url = await deps.ensureUrl(row.candidateId)
   if (!url) return 'skippedNoPhone'

@@ -59,6 +59,18 @@ describe('buildCandidateListWhere filters', () => {
     })
   })
 
+  it('filtre recherche nom email téléphone ville', () => {
+    expect(buildCandidateListWhere({ q: 'Marie' })).toEqual({
+      OR: [
+        { firstName: { contains: 'Marie', mode: 'insensitive' } },
+        { lastName: { contains: 'Marie', mode: 'insensitive' } },
+        { email: { contains: 'Marie', mode: 'insensitive' } },
+        { phone: { contains: 'Marie', mode: 'insensitive' } },
+        { city: { contains: 'Marie', mode: 'insensitive' } },
+      ],
+    })
+  })
+
   it('filtre mobilité max km', () => {
     expect(buildCandidateListWhere({ maxMobilityKm: 30 })).toEqual({
       mobilityRadiusKm: { lte: 30 },
@@ -67,6 +79,28 @@ describe('buildCandidateListWhere filters', () => {
 
   it('filtre statut Blacklisté stocké', () => {
     expect(buildCandidateListWhere({ statuses: ['BLACKLISTE'] })).toEqual({ status: 'BLACKLISTE' })
+  })
+
+  it('filtre origine App', () => {
+    expect(buildCandidateListWhere({ origins: ['APP'] })).toEqual({ origin: { in: ['APP'] } })
+  })
+
+  it('filtre dispos déclarées oui — au moins un créneau à venir', () => {
+    expect(buildCandidateListWhere({ declaredAvailability: true }, now)).toEqual({
+      weeklyAvailabilityWeeks: {
+        some: { slots: { some: { date: { gte: new Date('2026-06-24T00:00:00.000Z') } } } },
+      },
+    })
+  })
+
+  it('filtre dispos déclarées non — aucun créneau à venir', () => {
+    expect(buildCandidateListWhere({ declaredAvailability: false }, now)).toEqual({
+      NOT: {
+        weeklyAvailabilityWeeks: {
+          some: { slots: { some: { date: { gte: new Date('2026-06-24T00:00:00.000Z') } } } },
+        },
+      },
+    })
   })
 })
 

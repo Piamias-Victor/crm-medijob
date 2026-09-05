@@ -7,7 +7,8 @@ import { jobTitleRepository } from '@/server/db/repositories/job-title.repositor
 import { softwareRepository } from '@/server/db/repositories/software.repository'
 import { userRepository } from '@/server/db/repositories/user.repository'
 import { loadCandidateReferentials } from '@/server/read-models/candidate-referentials'
-import { uploadBlob, deleteBlob, vercelBlobClient } from '@/server/services/blob'
+import { uploadBlob, deleteBlob } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import { createCvExtractionProvider } from '@/server/ai/cv-extraction-provider'
 import { runCvExtraction } from '@/server/ai/cv-extraction'
 import { createAssistantProvider } from '@/server/ai/provider'
@@ -69,8 +70,8 @@ export const candidateRouter = makeCandidateRouter({
       listRecruiters: () => userRepository.listRecruiters(),
       listPipelineStages: () => pipelineStageRepository.list(),
     }),
-  uploadCvBlob: (input) => uploadBlob(vercelBlobClient, input),
-  deleteCvBlob: (url) => deleteBlob(vercelBlobClient, url),
+  uploadCvBlob: (input) => uploadBlob(resolveBlobClient(), input),
+  deleteCvBlob: (url) => deleteBlob(resolveBlobClient(), url),
   runCvExtraction: (file) => runCvExtraction(cvProvider, file),
   listJobTitles: () => jobTitleRepository.list(),
   confirmCvExtraction: (id, data) => candidateRepository.updateProfile(id, data),

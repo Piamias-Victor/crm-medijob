@@ -48,6 +48,8 @@ function makeDeps(overrides: Partial<MatchingRouterDeps> = {}): MatchingRouterDe
     ]),
     provider: mockProvider,
     lookupGeo: createFixedGeoLookup({ lat: 45.75, lon: 4.85 }),
+    findBadakanMission: vi.fn().mockResolvedValue(null),
+    listDeclaredCandidates: vi.fn().mockResolvedValue([]),
     ...overrides,
   }
 }

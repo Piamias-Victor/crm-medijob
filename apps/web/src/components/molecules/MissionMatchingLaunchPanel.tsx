@@ -30,7 +30,7 @@ export function MissionMatchingLaunchPanel({
             </p>
             <p className="flex items-center gap-1.5 text-xs text-fg-muted">
               <Zap className="size-3.5 text-accent" aria-hidden />
-              Pré-filtre instantané, puis scoring Gemini (max 20)
+              Pré-filtre instantané, puis scoring IA (max 20)
             </p>
           </div>
         </div>

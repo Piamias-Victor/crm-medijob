@@ -1,0 +1,33 @@
+# Amplify Hosting — pnpm monorepo (apps/web)
+# Keep apps/web/node_modules minimal (next+react only) to stay under Amplify 220MB SSR limit.
+version: 1
+applications:
+  - appRoot: apps/web
+    frontend:
+      buildPath: /
+      phases:
+        preBuild:
+          commands:
+            - corepack enable
+            - corepack prepare pnpm@11.1.2 --activate
+            - echo node-linker=hoisted > .npmrc
+            - echo shamefully-hoist=true >> .npmrc
+            - pnpm install --no-frozen-lockfile
+        build:
+          commands:
+            - |
+              cd apps/web
+              pnpm run build
+              rm -rf node_modules
+              mkdir -p node_modules
+              npm install next@15.5.19 react@19.2.7 react-dom@19.2.7 --omit=dev --no-save --no-package-lock --no-audit --no-fund
+              test -f node_modules/next/dist/server/next.js
+              echo NEXT_RUNTIME_OK
+              du -sh node_modules node_modules/next .next
+      artifacts:
+        baseDirectory: apps/web/.next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - apps/web/.next/cache/**/*

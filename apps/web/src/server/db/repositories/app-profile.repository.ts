@@ -1,5 +1,4 @@
 import type { AppProfileStatus, Prisma, PrismaClient } from '@prisma/client'
-import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 
 export type AppProfileUpsertInput = {
@@ -19,11 +18,11 @@ export type AppProfileUpsertInput = {
 
 export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
   return {
-    listPending: (limit = DEFAULT_LIST_LIMIT) =>
+    listPending: (limit?: number) =>
       db.appProfile.findMany({
         where: { status: 'EN_ATTENTE' },
         orderBy: { syncedAt: 'desc' },
-        take: limit,
+        ...(limit != null ? { take: limit } : {}),
         include: { jobTitle: { select: { id: true, name: true } } },
       }),
     countPending: () => db.appProfile.count({ where: { status: 'EN_ATTENTE' } }),
@@ -40,8 +39,10 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
     findByBadakanId: (badakanId: string) =>
       db.appProfile.findUnique({
         where: { badakanId },
-        select: { id: true, status: true },
+        select: { id: true, status: true, candidateId: true },
       }),
+    linkCandidate: (id: string, candidateId: string) =>
+      db.appProfile.update({ where: { id }, data: { candidateId } }),
     upsertPending: (data: AppProfileUpsertInput) =>
       db.appProfile.upsert({
         where: { badakanId: data.badakanId },

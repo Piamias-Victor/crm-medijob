@@ -15,6 +15,7 @@ function deps(): WeeklyAvailabilityDeps {
       { token: TOKEN, candidateId: 'c1', origin: 'APP' },
     ]),
     filterStore: { listBySlot: async () => [] },
+    declaredStore: { listDeclared: async () => [] },
     lookupGeo: async () => null,
     createToken: () => 'unguessable-token-32bytes-base64url',
     getBaseUrl: () => 'http://localhost:3000',
@@ -47,5 +48,40 @@ describe('weeklyAvailabilityRouter', () => {
   it('resends the same weekly availability URL by SMS', async () => {
     const result = await caller().resendSms({ id: 'c1' })
     expect(result).toEqual({ sent: true })
+  })
+
+  it('saves a whole month from the public link', async () => {
+    const api = caller()
+    const saved = await api.saveMonth({
+      token: TOKEN,
+      month: '2099-09',
+      slots: [{ date: '2099-09-15', period: 'AM' }],
+    })
+    expect(saved.slots).toEqual([{ date: '2099-09-15', period: 'AM' }])
+    expect(await api.getMonth({ token: TOKEN, month: '2099-09' })).toEqual(saved)
+  })
+
+  it('exposes the month planning of a Candidate to the CRM', async () => {
+    const shared = deps()
+    await caller(shared).saveMonth({
+      token: TOKEN,
+      month: '2099-09',
+      slots: [{ date: '2099-09-15', period: 'PM' }],
+    })
+    const planning = await caller(shared).candidateMonth({ candidateId: 'c1', month: '2099-09' })
+    expect(planning).toEqual({ month: '2099-09', slots: [{ date: '2099-09-15', period: 'PM' }] })
+  })
+
+  it('lets staff save dispos by candidate id', async () => {
+    const shared = deps()
+    const saved = await caller(shared).saveCandidateMonth({
+      candidateId: 'c1',
+      month: '2099-09',
+      slots: [{ date: '2099-09-16', period: 'AM' }],
+    })
+    expect(saved).toEqual({ month: '2099-09', slots: [{ date: '2099-09-16', period: 'AM' }] })
+    expect(await caller(shared).candidateMonth({ candidateId: 'c1', month: '2099-09' })).toEqual(
+      saved,
+    )
   })
 })

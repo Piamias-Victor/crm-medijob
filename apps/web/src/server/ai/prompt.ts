@@ -10,6 +10,8 @@ const FORMAT_HINTS: Record<ResponseKind, string> = {
   anonymized:
     '{"accroche","metierExperience","competencesLogiciels","mobilite","disponibiliteContrat","pointsForts": strings sans PII}',
   cv: '{"firstName": string, "lastName": string, ... champs CV optionnels}',
+  commentIntake:
+    '{"softwares"?: string[], "availableFrom"?: string, "mobilityRadiusKm"?: number, "mobilityNotes"?: string}',
 }
 
 export type PromptParts = {

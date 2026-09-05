@@ -8,6 +8,7 @@ import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTa
 import { CandidateDocumentsTab } from '@/components/organisms/CandidateDocumentsTab'
 import { CandidateProfilTab } from '@/components/organisms/CandidateProfilTab'
 import { CandidateInterviewsTab } from '@/components/organisms/CandidateInterviewsTab'
+import { CandidateAvailabilityTab } from '@/components/organisms/CandidateAvailabilityTab'
 import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
 import type { ActivityLogRow } from '@/view-models/activity-log'
 import type { DocumentListRow } from '@/view-models/document-list'
@@ -63,6 +64,7 @@ export function CandidateDetailTabPanel({
           onPresentRadius={onPresentRadius}
         />
       ) : null}
+      {tab === 'dispos' ? <CandidateAvailabilityTab candidateId={profile.id} /> : null}
       {tab === 'historique' ? (
         <CandidateHistoryTab
           scope={{ entityType: 'CANDIDATE', entityId: profile.id }}

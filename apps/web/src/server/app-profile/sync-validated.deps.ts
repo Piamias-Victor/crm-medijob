@@ -5,6 +5,7 @@ import { defaultAppProfileDeps } from '@/server/routers/app-profile.deps'
 import { syncAppValidated } from '@/server/app-profile/sync-validated'
 import { findAppValidatedMatch } from '@/server/app-profile/find-app-validated-match'
 import { syncCandidateDossier } from '@/server/app-profile/apply-dossier.deps'
+import { enrichAppCandidateFromComments } from '@/server/app-profile/enrich-from-comments.deps'
 import type { SyncValidatedDeps } from '@/server/app-profile/sync-validated.types'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 
@@ -25,6 +26,7 @@ export function defaultSyncValidatedDeps(): SyncValidatedDeps {
     findAppProfileByBadakanId: appProfileRepository.findByBadakanId,
     markAppValidated: (id, candidateId) =>
       appProfileRepository.markStatus(id, 'APP_VALIDATED', candidateId),
+    linkAppProfileCandidate: appProfileRepository.linkCandidate,
     resolveJobTitleId: async (label) => {
       if (label) {
         const mapped = await mapJobTitleId(label)
@@ -35,6 +37,7 @@ export function defaultSyncValidatedDeps(): SyncValidatedDeps {
     },
     mapJobTitleId,
     syncDossier: syncCandidateDossier,
+    enrichFromComments: enrichAppCandidateFromComments,
   }
 }
 

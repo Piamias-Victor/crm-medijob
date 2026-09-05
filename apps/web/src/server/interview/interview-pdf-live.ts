@@ -5,7 +5,8 @@ import { userRepository } from '@/server/db/repositories/user.repository'
 import { loadInterviewPdfSnapshot } from '@/server/interview/load-interview-pdf'
 import { loadLiveInterviewTemplate } from '@/server/interview/load-live-interview-template'
 import { renderInterviewPdf } from '@/server/pdf/render-interview-pdf'
-import { uploadBlob, vercelBlobClient } from '@/server/services/blob'
+import { uploadBlob } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import { toInterviewPdfIdentity } from '@/view-models/interview-pdf-identity'
 import type { StoreInterviewPdfDeps } from '@/server/interview/store-interview-pdf'
 
@@ -37,7 +38,7 @@ export function interviewPdfLiveDeps(): StoreInterviewPdfDeps {
       return found ? { id: found.id } : null
     },
     renderPdf: renderInterviewPdf,
-    uploadBlob: (input) => uploadBlob(vercelBlobClient, input),
+    uploadBlob: (input) => uploadBlob(resolveBlobClient(), input),
     createDocument: (data) => documentRepository.create(data),
   }
 }

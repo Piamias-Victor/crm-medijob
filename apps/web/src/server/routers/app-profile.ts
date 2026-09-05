@@ -34,6 +34,11 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       return readCommentsOrEmpty(() => deps.getBadakanClient().getComments(row.badakanId))
     }),
     countPending: protectedProcedure.query(() => deps.countPending()),
+    testProcess: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
+      const row = await deps.findById(input.id)
+      if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
+      return deps.runTestProcess(row.badakanId)
+    }),
     ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
       try {
         return await ignoreAppProfile(input.id, {

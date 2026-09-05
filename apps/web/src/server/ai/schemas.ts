@@ -1,8 +1,18 @@
 import { z } from 'zod'
 import { cvExtractionAiSchema } from './cv-extraction.schema'
+import { commentIntakeSchema } from './comment-intake.schema'
 import { anonymizedDossierSchema } from '@/view-models/anonymized-dossier.schema'
 
-export const RESPONSE_KINDS = ['chat', 'summary', 'email', 'offer', 'report', 'cv', 'anonymized'] as const
+export const RESPONSE_KINDS = [
+  'chat',
+  'summary',
+  'email',
+  'offer',
+  'report',
+  'cv',
+  'anonymized',
+  'commentIntake',
+] as const
 
 export type ResponseKind = (typeof RESPONSE_KINDS)[number]
 
@@ -29,6 +39,7 @@ export const responseSchemas = {
   report: reportResponseSchema,
   cv: cvExtractionAiSchema,
   anonymized: anonymizedProfileResponseSchema,
+  commentIntake: commentIntakeSchema,
 } satisfies Record<ResponseKind, z.ZodType>
 
 export type ChatResponse = z.infer<typeof chatResponseSchema>

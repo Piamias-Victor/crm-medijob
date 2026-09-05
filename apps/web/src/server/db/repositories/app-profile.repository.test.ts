@@ -24,6 +24,15 @@ describe('appProfileRepository', () => {
     )
   })
 
+  it('lists pending without a take cap', async () => {
+    const db = mockDb()
+    db.appProfile.findMany.mockResolvedValue([])
+    const repo = makeAppProfileRepository(db as never)
+    await repo.listPending()
+    const arg = db.appProfile.findMany.mock.calls[0]?.[0] as { take?: number }
+    expect(arg.take).toBeUndefined()
+  })
+
   it('marks profile ignored without candidate', async () => {
     const db = mockDb()
     db.appProfile.update.mockResolvedValue({ id: 'p1', status: 'IGNORE' })

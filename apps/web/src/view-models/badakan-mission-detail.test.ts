@@ -8,6 +8,13 @@ describe('toBadakanMissionDetail', () => {
       pharmacyName: 'Pharmacie Hermes',
       step: 'CANCELLED',
       periods: [{ start: '2026-08-01', end: '2026-08-03' }],
+      city: 'Lyon',
+      activityLabel: 'Préparateur Expert',
+      jobTitleId: 'jt-prep',
+      jobTitleName: 'Préparateur',
+      softwareName: 'LGPI',
+      expectedRecipients: 1,
+      staffedRecipients: 0,
       searchApplied: [
         {
           recipientId: 'r-lucie',
@@ -37,6 +44,6 @@ describe('toBadakanMissionDetail', () => {
         telHref: null,
       },
     ])
-    expect(detail.sectionTitle).toBe('Postulés SEARCH_APPLIED')
+    expect(detail.sectionTitle).toBe('Candidats ayant postulé')
   })
 })

@@ -1,16 +1,11 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
-import { EmptyState } from '@/components/atoms/EmptyState'
 import { MissionMatchingContactPanel } from '@/components/molecules/MissionMatchingContactPanel'
 import { MissionMatchingExcludedSection } from '@/components/molecules/MissionMatchingExcludedSection'
-import { MissionMatchingScoredCard } from '@/components/molecules/MissionMatchingScoredCard'
+import { MissionMatchingScoredList } from '@/components/molecules/MissionMatchingScoredList'
 import { MissionMatchingStats } from '@/components/molecules/MissionMatchingStats'
-import { listContainer } from '@/lib/motion/variants'
 import { matchingContactSubject } from '@/view-models/matching-contact-subject'
-import { toggleSelectedId } from '@/view-models/toggle-selected-id'
 import type {
   MissionMatchingExcludedRow,
   MissionMatchingScoredRow,
@@ -21,10 +16,14 @@ type Props = {
   missionTitle: string
   pharmacyName: string
   positionedIds: string[]
+  proposedIds?: string[]
   pipelineLocked?: boolean
   onPositioned: (candidateId: string) => void
+  onProposed?: (candidateId: string) => void
   scored: MissionMatchingScoredRow[]
   excluded: MissionMatchingExcludedRow[]
+  eligibleCount: number
+  excludedCount: number
 }
 
 export function MissionMatchingResults({
@@ -32,67 +31,45 @@ export function MissionMatchingResults({
   missionTitle,
   pharmacyName,
   positionedIds,
+  proposedIds,
   pipelineLocked,
   onPositioned,
+  onProposed,
   scored,
   excluded,
+  eligibleCount,
+  excludedCount,
 }: Props) {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const selected = useMemo(
     () => scored.filter((row) => selectedIds.includes(row.candidateId)),
     [scored, selectedIds],
   )
-  const subject = matchingContactSubject(missionTitle, pharmacyName)
 
   return (
     <div className="flex flex-col gap-6">
-      <MissionMatchingStats scoredCount={scored.length} excludedCount={excluded.length} />
+      <MissionMatchingStats
+        scoredCount={scored.length}
+        eligibleCount={eligibleCount}
+        excludedCount={excludedCount}
+      />
       <MissionMatchingContactPanel
         missionId={missionId}
-        subject={subject}
+        subject={matchingContactSubject(missionTitle, pharmacyName)}
         selected={selected}
         onClear={() => setSelectedIds([])}
       />
-
-      <section className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Sparkles className="size-4 text-success" aria-hidden />
-          <h3 className="text-sm font-semibold text-fg">Classement IA</h3>
-        </div>
-        {scored.length === 0 ? (
-          <EmptyState
-            variant="compact"
-            icon={Sparkles}
-            title="Aucun candidat éligible"
-            description="Tous les profils ont été filtrés (métier, géo, distance, contrat ou dispo)."
-          />
-        ) : (
-          <motion.ul
-            variants={listContainer}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col gap-3"
-          >
-            {scored.map((row, index) => (
-              <MissionMatchingScoredCard
-                key={row.candidateId}
-                row={row}
-                rank={index + 1}
-                index={index}
-                missionId={missionId}
-                selected={selectedIds.includes(row.candidateId)}
-                onToggleSelect={() =>
-                  setSelectedIds((ids) => toggleSelectedId(ids, row.candidateId))
-                }
-                positioned={positionedIds.includes(row.candidateId)}
-                pipelineLocked={pipelineLocked}
-                onPositioned={onPositioned}
-              />
-            ))}
-          </motion.ul>
-        )}
-      </section>
-
+      <MissionMatchingScoredList
+        missionId={missionId}
+        scored={scored}
+        selectedIds={selectedIds}
+        setSelectedIds={setSelectedIds}
+        positionedIds={positionedIds}
+        proposedIds={proposedIds}
+        pipelineLocked={pipelineLocked}
+        onPositioned={onPositioned}
+        onProposed={onProposed}
+      />
       <MissionMatchingExcludedSection excluded={excluded} />
     </div>
   )

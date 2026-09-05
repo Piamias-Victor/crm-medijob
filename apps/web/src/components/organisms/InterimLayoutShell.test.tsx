@@ -2,29 +2,26 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { InterimLayoutShell } from '@/components/organisms/InterimLayoutShell'
 
-vi.mock('next/navigation', () => ({ usePathname: () => '/interim/missions' }))
+vi.mock('next/navigation', () => ({ usePathname: () => '/interim/besoins' }))
 
 describe('InterimLayoutShell', () => {
-  it('shows operational Intérim without a refresh control', () => {
-    render(<InterimLayoutShell>liste</InterimLayoutShell>)
+  it('shows Accueil Besoins Suivi Candidats Dispos without refresh', () => {
+    render(
+      <InterimLayoutShell counts={{ besoins: 2, dispos: 1, suivi: 3 }}>
+        liste
+      </InterimLayoutShell>,
+    )
     expect(screen.getByRole('heading', { name: 'Intérim' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Missions Badakan' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Accueil/ })).toHaveAttribute('href', '/interim')
+    expect(screen.getByRole('link', { name: /Besoins/ })).toHaveAttribute(
       'href',
-      '/interim/missions',
+      '/interim/besoins',
     )
-    expect(screen.getByRole('link', { name: 'Contrats Badakan' })).toHaveAttribute(
-      'href',
-      '/interim/contrats',
-    )
-    expect(screen.getByRole('link', { name: 'Vérif officines' })).toHaveAttribute(
-      'href',
-      '/interim/officines',
-    )
-    expect(screen.getByRole('link', { name: 'Disponibilités' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Suivi/ })).toHaveAttribute('href', '/interim/suivi')
+    expect(screen.getByRole('link', { name: /Dispos/ })).toHaveAttribute(
       'href',
       '/interim/disponibilites',
     )
     expect(screen.queryByRole('button', { name: /rafraîchir/i })).not.toBeInTheDocument()
-    expect(screen.queryByText('/facturation/interim')).not.toBeInTheDocument()
   })
 })

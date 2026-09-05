@@ -8,6 +8,7 @@ import { badakanContractRepository } from '@/server/db/repositories/badakan-cont
 import { defaultAppProfileDeps } from '@/server/routers/app-profile.deps'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
 import { syncBadakanMissions } from '@/server/badakan-mission/sync'
+import { defaultMissionReferentialResolver } from '@/server/badakan-mission/resolve-referentials.deps'
 import { syncBadakanEnterprises } from '@/server/badakan-enterprise/sync'
 import { syncBadakanContracts } from '@/server/badakan-contract/sync'
 import type { SyncDeps } from '@/server/app-profile/sync'
@@ -56,6 +57,7 @@ export function defaultAppProfileCycleDeps(
       syncBadakanMissions({
         searchMissions: () => client.searchMissions(),
         upsertFromRead: badakanMissionRepository.upsertFromRead,
+        resolveReferentials: defaultMissionReferentialResolver(),
       }),
     syncEnterprises: () =>
       syncBadakanEnterprises({

@@ -42,6 +42,19 @@ export function buildProfileIncompleteWhere(incomplete: boolean): Prisma.Candida
   }
 }
 
+function upcomingDeclaredSlots(now: Date): Prisma.CandidateWhereInput {
+  const today = new Date(`${now.toISOString().slice(0, 10)}T00:00:00.000Z`)
+  return { weeklyAvailabilityWeeks: { some: { slots: { some: { date: { gte: today } } } } } }
+}
+
+export function buildDeclaredAvailabilityWhere(
+  declared: boolean,
+  now: Date,
+): Prisma.CandidateWhereInput {
+  const upcoming = upcomingDeclaredSlots(now)
+  return declared ? upcoming : { NOT: upcoming }
+}
+
 export function buildActiveMissionWhere(active: boolean): Prisma.CandidateWhereInput {
   return active
     ? { missions: { some: activeMissionClause } }

@@ -22,4 +22,16 @@ describe('buildInboxAcceptDefaults', () => {
       consentGiven: true,
     })
   })
+
+  it('prefills Notes internes when provided', () => {
+    const values = buildInboxAcceptDefaults({
+      firstName: 'Léa',
+      lastName: 'Martin',
+      jobTitleId: 'jt1',
+      referentId: 'u1',
+      fallbackJobTitleId: 'jt1',
+      notes: 'Répondeur : Entretien téléphonique.',
+    })
+    expect(values.notes).toBe('Répondeur : Entretien téléphonique.')
+  })
 })

@@ -1,7 +1,8 @@
 import { auth } from '@/server/auth'
 import { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { loadCandidateCvStream } from '@/server/candidates/cv-download'
-import { fetchBlobStream, vercelBlobClient } from '@/server/services/blob'
+import { fetchBlobStream } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -15,7 +16,7 @@ export async function GET(_request: Request, { params }: Params) {
       const candidate = await candidateRepository.findById(candidateId)
       return candidate ? { cvUrl: candidate.cvUrl } : null
     },
-    fetchBlob: (url) => fetchBlobStream(vercelBlobClient, url),
+    fetchBlob: (url) => fetchBlobStream(resolveBlobClient(), url),
   })
 
   if (result.status !== 200) return new Response('Not found', { status: 404 })

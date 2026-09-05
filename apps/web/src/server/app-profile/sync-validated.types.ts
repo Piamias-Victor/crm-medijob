@@ -5,6 +5,7 @@ import type {
 import type { DuplicateIdentity } from '@/server/candidate/detect-duplicate.types'
 import type { CandidateStatus } from '@/view-models/candidate-status'
 import type { AppLifecyclePatch } from '@/server/db/repositories/candidate-app-lifecycle.repo'
+import type { CommentIntakePatch } from '@/server/app-profile/enrich-from-comments'
 
 export type { AppCandidateCreate, AppIdentityPatch }
 
@@ -28,11 +29,13 @@ export type SyncValidatedDeps = {
   patchIdentity: (candidateId: string, patch: AppIdentityPatch) => Promise<unknown>
   findAppProfileByBadakanId: (
     badakanId: string,
-  ) => Promise<{ id: string; status: string } | null>
+  ) => Promise<{ id: string; status: string; candidateId: string | null } | null>
   markAppValidated: (profileId: string, candidateId: string) => Promise<unknown>
+  linkAppProfileCandidate: (profileId: string, candidateId: string) => Promise<unknown>
   resolveJobTitleId: (activityLabel: string | null) => Promise<string | null>
   mapJobTitleId: (activityLabel: string) => Promise<string | null>
   syncDossier: (candidateId: string, badakanId: string) => Promise<unknown>
+  enrichFromComments: (badakanId: string) => Promise<CommentIntakePatch>
 }
 
 export type SyncValidatedResult = {
