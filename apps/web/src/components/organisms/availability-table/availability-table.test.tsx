@@ -24,6 +24,7 @@ const values = {
   creneau: '',
   ville: '',
   rayon: '',
+  dispos: '',
 }
 
 const row: DeclaredAvailabilityRow = {
