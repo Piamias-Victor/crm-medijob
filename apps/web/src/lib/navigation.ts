@@ -8,6 +8,7 @@ import {
   Sparkles,
   Settings,
   Receipt,
+  CalendarClock,
   type LucideIcon,
 } from 'lucide-react'
 import type { AccessRole } from '@/server/auth/access'
@@ -26,6 +27,7 @@ export const navItems: NavItem[] = [
   { label: 'Pharmacies', href: '/pharmacies', icon: Building2 },
   { label: 'Contacts', href: '/contacts', icon: User },
   { label: 'Missions', href: '/missions', icon: Briefcase },
+  { label: 'Intérim', href: '/interim', icon: CalendarClock },
   { label: 'Facturation', href: '/facturation', icon: Receipt, permission: 'finance.view' },
   { label: 'Offres', href: '/offres', icon: Megaphone },
   { label: 'Assistant IA', href: '/assistant', icon: Sparkles },
@@ -54,3 +56,11 @@ export const facturationSubNav: { label: string; href: string }[] = [
   { label: 'Placements', href: '/facturation/placements' },
   { label: 'Intérim', href: '/facturation/interim' },
 ]
+
+export const interimSubNav: { label: string; href: string }[] = [
+  { label: 'Missions Badakan', href: '/interim/missions' },
+  { label: 'Contrats Badakan', href: '/interim/contrats' },
+  { label: 'Vérif officines', href: '/interim/officines' },
+  { label: 'Disponibilités', href: '/interim/disponibilites' },
+]
+

@@ -35,6 +35,7 @@ describe('CandidateHistoryTab', () => {
             date: new Date('2026-02-01'),
           },
         ]}
+        comments={[]}
       />,
     )
 
@@ -56,10 +57,33 @@ describe('CandidateHistoryTab', () => {
             date: new Date('2026-02-01'),
           },
         ]}
+        comments={[]}
       />,
     )
 
     fireEvent.click(screen.getByRole('button', { name: /mission annulée/i }))
     expect(push).toHaveBeenCalledWith('/missions/m9')
+  })
+
+  it('shows Badakan comments above the ActivityLog form', () => {
+    render(
+      <CandidateHistoryTab
+        scope={{ entityType: 'CANDIDATE', entityId: 'c1' }}
+        initialLogs={[]}
+        positionings={[]}
+        comments={[
+          {
+            id: 'c1',
+            content: 'Répondeur : Entretien téléphonique.',
+            authorName: 'Jensie Deslances',
+            date: new Date('2026-03-12T14:32:00.000Z'),
+          },
+        ]}
+      />,
+    )
+    expect(screen.getByText('Commentaires Badakan')).toBeInTheDocument()
+    expect(screen.getByText('Répondeur : Entretien téléphonique.')).toBeInTheDocument()
+    expect(screen.getByText(/Jensie Deslances/)).toBeInTheDocument()
+    expect(screen.getByTestId('activity-log-form')).toBeInTheDocument()
   })
 })

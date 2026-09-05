@@ -12,9 +12,10 @@ export default async function Page({ params }: Props) {
 
   const { id } = await params
   const caller = await createServerCaller()
-  const [profile, referentials] = await Promise.all([
+  const [profile, referentials, comments] = await Promise.all([
     caller.appProfile.getById({ id }),
     caller.candidate.referentials(),
+    caller.appProfile.listComments({ id }),
   ])
 
   const fallbackJobTitleId = referentials.jobTitles[0]?.id
@@ -23,6 +24,7 @@ export default async function Page({ params }: Props) {
   return (
     <AppProfileDetailPage
       profile={profile}
+      comments={comments}
       defaults={buildInboxAcceptDefaults({
         firstName: profile.firstName,
         lastName: profile.lastName,

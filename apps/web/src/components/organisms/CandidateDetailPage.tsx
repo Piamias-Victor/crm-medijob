@@ -15,6 +15,7 @@ import type { DocumentListRow } from '@/view-models/document-list'
 import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
+import type { BadakanCommentRow } from '@/view-models/badakan-comment'
 
 type Props = {
   profile: CandidateProfilePayload
@@ -22,6 +23,7 @@ type Props = {
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   interviews: InterviewListRow[]
+  comments: BadakanCommentRow[]
   backHref?: string
 }
 
@@ -31,6 +33,7 @@ export function CandidateDetailPage({
   activities,
   documents,
   interviews,
+  comments,
   backHref = '/candidats',
 }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
@@ -52,7 +55,7 @@ export function CandidateDetailPage({
           chips={candidateBlacklistHeaderChips(profile.effectiveStatus)}
         />
       }
-      meta={<CandidateDetailHeaderActions candidateId={profile.id} candidateName={name} />}
+      meta={<CandidateDetailHeaderActions candidateId={profile.id} candidateName={name} origin={profile.origin} />}
       tabs={
         <CandidateDetailTabs
           active={tab}
@@ -70,6 +73,7 @@ export function CandidateDetailPage({
         activities={activities}
         documents={documents}
         interviews={interviews}
+        comments={comments}
         onPresentPharmacy={() => setPresentOpen(true)}
         onPresentRadius={() => setPresentRadiusOpen(true)}
       />

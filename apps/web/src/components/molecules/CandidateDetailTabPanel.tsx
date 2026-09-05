@@ -14,6 +14,7 @@ import type { DocumentListRow } from '@/view-models/document-list'
 import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
+import type { BadakanCommentRow } from '@/view-models/badakan-comment'
 
 type Props = {
   tab: CandidateDetailTab
@@ -22,6 +23,7 @@ type Props = {
   activities: ActivityLogRow[]
   documents: DocumentListRow[]
   interviews: InterviewListRow[]
+  comments: BadakanCommentRow[]
   onPresentPharmacy?: () => void
   onPresentRadius?: () => void
 }
@@ -33,6 +35,7 @@ export function CandidateDetailTabPanel({
   activities,
   documents,
   interviews,
+  comments,
   onPresentPharmacy,
   onPresentRadius,
 }: Props) {
@@ -65,6 +68,7 @@ export function CandidateDetailTabPanel({
           scope={{ entityType: 'CANDIDATE', entityId: profile.id }}
           initialLogs={activities}
           positionings={profile.historyPositionings}
+          comments={comments}
         />
       ) : null}
       {tab === 'missions' ? (

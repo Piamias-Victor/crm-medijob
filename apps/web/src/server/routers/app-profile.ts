@@ -4,8 +4,8 @@ import { acceptAppProfile, ignoreAppProfile, AppProfileError } from '@/server/ap
 import { toAppProfileListItem } from '@/view-models/app-profile-list'
 import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-profile-accept.schema'
 import { toCandidateCreateData } from '@/view-models/candidate-profile-map'
-import type { CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
+import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
 
 function mapError(error: unknown): never {
   if (error instanceof AppProfileError) {
@@ -28,6 +28,11 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
       return toAppProfileListItem(row)
     }),
+    listComments: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
+      const row = await deps.findById(input.id)
+      if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
+      return readCommentsOrEmpty(() => deps.getBadakanClient().getComments(row.badakanId))
+    }),
     countPending: protectedProcedure.query(() => deps.countPending()),
     ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
       try {
@@ -44,17 +49,12 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
         return await acceptAppProfile(
           input.id,
           {
-            data: input.data
-              ? (toCandidateCreateData(input.data as CandidateCreateInput, 'MANUAL') as Record<
-                  string,
-                  unknown
-                >)
-              : undefined,
+            data: input.data ? toCandidateCreateData(input.data, 'MANUAL') : undefined,
             mergeCandidateId: input.mergeCandidateId,
           },
           {
             findById: deps.findById,
-            createCandidate: (data) => deps.createProfile(data as never),
+            createCandidate: deps.createProfile,
             markStatus: deps.markStatus,
             importCvUrl: deps.importCvUrl,
           },

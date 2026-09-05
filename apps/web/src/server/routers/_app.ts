@@ -19,6 +19,10 @@ import { searchRouter } from '@/server/routers/search'
 import { interviewRouter } from '@/server/routers/interview'
 import { devisRouter } from '@/server/routers/devis.adapter'
 import { facturationRouter } from '@/server/routers/facturation.adapter'
+import { badakanMissionRouter } from '@/server/routers/badakan-mission'
+import { badakanEnterpriseRouter } from '@/server/routers/badakan-enterprise'
+import { weeklyAvailabilityRouter } from '@/server/routers/weekly-availability'
+import { badakanContractRouter } from '@/server/routers/badakan-contract'
 
 export const appRouter = router({
   health: healthRouter,
@@ -41,6 +45,10 @@ export const appRouter = router({
   interview: interviewRouter,
   devis: devisRouter,
   facturation: facturationRouter,
+  badakanMission: badakanMissionRouter,
+  badakanEnterprise: badakanEnterpriseRouter,
+  badakanContract: badakanContractRouter,
+  weeklyAvailability: weeklyAvailabilityRouter,
 })
 
 export type AppRouter = typeof appRouter

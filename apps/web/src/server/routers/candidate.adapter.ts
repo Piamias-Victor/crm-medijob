@@ -17,6 +17,7 @@ import { makeEraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate.deps'
 import { makeCandidateRouter } from '@/server/routers/candidate'
 import { listCandidateMapPins } from '@/server/db/repositories/map-pins.repo'
 import { prisma } from '@/server/db/repositories/client'
+import { badakanClientFromEnv } from '@/server/badakan/client'
 
 const cvProvider = createCvExtractionProvider()
 const documentsProvider = createAssistantProvider()
@@ -82,4 +83,5 @@ export const candidateRouter = makeCandidateRouter({
     candidateRepository.mergeCandidates(keptId, absorbedId, data),
   logLifecycle: defaultLogLifecycle,
   gdprErase: makeEraseCandidateGdprDeps(),
+  getComments: (targetId) => badakanClientFromEnv().getComments(targetId),
 })

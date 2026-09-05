@@ -1,9 +1,10 @@
 import { z } from 'zod'
 import { documentUploadError } from '@/lib/document-upload'
 import { base64SizeError } from '@/lib/upload-base64'
+import { DOCUMENT_CATEGORIES } from '@/view-models/document.types'
 
 const entityTypes = ['PHARMACY', 'CONTACT', 'MISSION', 'CANDIDATE'] as const
-const categories = ['CONTRAT', 'DEVIS', 'FACTURE', 'CONVENTION', 'AUTRE'] as const
+const categories = DOCUMENT_CATEGORIES
 
 export const listDocumentsSchema = z.object({
   entityType: z.enum(entityTypes),

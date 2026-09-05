@@ -76,3 +76,10 @@ describe('AppSidebar facturation gating', () => {
     expect(screen.queryByRole('link', { name: 'Facturation' })).not.toBeInTheDocument()
   })
 })
+
+describe('AppSidebar Intérim', () => {
+  it('shows operational Intérim to a recruteur', () => {
+    render(<AppSidebar role="RECRUTEUR" />)
+    expect(screen.getByRole('link', { name: 'Intérim' })).toHaveAttribute('href', '/interim')
+  })
+})

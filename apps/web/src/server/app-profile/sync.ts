@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { AppProfileStatus, Prisma } from '@prisma/client'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 import type { AppProfileUpsertInput } from '@/server/db/repositories/app-profile.repository'
 
@@ -6,7 +6,7 @@ export type SyncDeps = {
   searchNewEmployees: () => Promise<BadakanRecipient[]>
   findByBadakanIds: (
     ids: string[],
-  ) => Promise<Array<{ badakanId: string; status: 'EN_ATTENTE' | 'ACCEPTE' | 'IGNORE' }>>
+  ) => Promise<Array<{ badakanId: string; status: AppProfileStatus }>>
   upsertPending: (data: AppProfileUpsertInput) => Promise<unknown>
   findJobTitleIdByName: (name: string) => Promise<string | null>
 }

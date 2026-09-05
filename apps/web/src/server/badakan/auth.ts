@@ -34,3 +34,29 @@ export async function badakanGetRecipient(
   if (!res.ok) throw new Error(`Badakan recipient failed (${res.status})`)
   return res.json()
 }
+
+export async function badakanGetComments(
+  baseUrl: string,
+  token: string,
+  targetId: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<unknown> {
+  const res = await fetchFn(`${baseUrl}/services/v3/comments/target/${targetId}`, {
+    headers: { security_token: token },
+  })
+  if (!res.ok) throw new Error(`Badakan comments failed (${res.status})`)
+  return res.json()
+}
+
+export async function badakanGetEnterprise(
+  baseUrl: string,
+  token: string,
+  enterpriseId: string,
+  fetchFn: typeof fetch = fetch,
+): Promise<unknown> {
+  const res = await fetchFn(`${baseUrl}/services/v3/enterprises/${enterpriseId}`, {
+    headers: { security_token: token },
+  })
+  if (!res.ok) throw new Error(`Badakan enterprise failed (${res.status})`)
+  return res.json()
+}

@@ -5,6 +5,13 @@ export function makeJobTitleRepository(db: PrismaClient = defaultDb) {
   return {
     create: (data: Prisma.JobTitleCreateInput) => db.jobTitle.create({ data }),
     findById: (id: string) => db.jobTitle.findUnique({ where: { id } }),
+    findIdByNameInsensitive: async (name: string) => {
+      const row = await db.jobTitle.findFirst({
+        where: { name: { equals: name, mode: 'insensitive' } },
+        select: { id: true },
+      })
+      return row?.id ?? null
+    },
     list: () => db.jobTitle.findMany({ orderBy: { name: 'asc' } }),
     update: (id: string, data: Prisma.JobTitleUpdateInput) =>
       db.jobTitle.update({ where: { id }, data }),

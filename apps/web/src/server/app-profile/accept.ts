@@ -1,3 +1,5 @@
+import type { CandidateProfileUpdate } from '@/view-models/candidate-profile-update'
+
 export class AppProfileError extends Error {
   constructor(readonly code: 'NOT_FOUND' | 'NOT_PENDING') {
     super(code)
@@ -9,7 +11,7 @@ export type AcceptDeps = {
   findById: (
     id: string,
   ) => Promise<{ id: string; status: string; badakanId: string } | null>
-  createCandidate: (data: unknown) => Promise<{ id: string }>
+  createCandidate: (data: CandidateProfileUpdate) => Promise<{ id: string }>
   markStatus: (id: string, status: 'ACCEPTE' | 'IGNORE', candidateId?: string | null) => Promise<unknown>
   importCvUrl?: (badakanId: string) => Promise<string | null>
 }
@@ -24,7 +26,7 @@ export async function ignoreAppProfile(id: string, deps: Pick<AcceptDeps, 'findB
 
 export async function acceptAppProfile(
   id: string,
-  input: { data?: Record<string, unknown>; mergeCandidateId?: string },
+  input: { data?: CandidateProfileUpdate; mergeCandidateId?: string },
   deps: AcceptDeps,
 ) {
   const row = await deps.findById(id)

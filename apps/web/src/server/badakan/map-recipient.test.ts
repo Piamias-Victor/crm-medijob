@@ -30,4 +30,37 @@ describe('mapBadakanRecipient', () => {
   it('returns null when name missing', () => {
     expect(mapBadakanRecipient({ id: '1', email: 'x@y.z' })).toBeNull()
   })
+
+  it('maps SUSPENDED and BANNED employee status', () => {
+    expect(
+      mapBadakanRecipient({
+        id: 'bk-marie',
+        firstName: 'Marie',
+        lastName: 'App',
+        status: 'SUSPENDED',
+      })?.status,
+    ).toBe('SUSPENDED')
+    expect(
+      mapBadakanRecipient({
+        id: 'bk-marie',
+        firstName: 'Marie',
+        lastName: 'App',
+        status: 'BANNED',
+      })?.status,
+    ).toBe('BANNED')
+  })
+
+  it('maps NIR and IBAN from GET recipient', () => {
+    const mapped = mapBadakanRecipient({
+      id: '6a72',
+      firstName: 'pierre',
+      lastName: 'cylla',
+      healthCareNumber: '1850178123456',
+      bankAccount: { iban: 'FR7612345678901234567890185', bic: 'AGRIFRPP' },
+    })
+    expect(mapped).toMatchObject({
+      nir: '1850178123456',
+      iban: 'FR7612345678901234567890185',
+    })
+  })
 })

@@ -17,7 +17,10 @@ const baseProfile = {
   latitude: null,
   longitude: null,
   jobTitleId: 'jt1',
+  origin: 'CRM',
+  badakanId: null,
   status: 'NOUVEAU',
+  statusBeforeInactive: null,
   salaryExpectations: null,
   salaryMin: null,
   salaryMax: null,
@@ -27,6 +30,8 @@ const baseProfile = {
   notes: null,
   referentId: 'u1',
   cvUrl: null,
+  nir: null,
+  iban: null,
   cvSummary: null,
   anonymizedProfile: null,
   consentGivenAt: null,
@@ -43,5 +48,23 @@ describe('toCandidateProfilePayload', () => {
     const payload = toCandidateProfilePayload(baseProfile)
     expect(payload.missingMatchingFields).toEqual(['city'])
     expect(payload.isProfileIncompleteForMatching).toBe(true)
+    expect(payload.missingMatchingFields).not.toContain('nir')
+    expect(payload.missingMatchingFields).not.toContain('iban')
+  })
+
+  it('exposes origin App so the fiche can copy the weekly availability link', () => {
+    const payload = toCandidateProfilePayload({ ...baseProfile, origin: 'APP' })
+    expect(payload.origin).toBe('APP')
+  })
+
+  it('exposes NIR and IBAN on the fiche payload', () => {
+    const payload = toCandidateProfilePayload({
+      ...baseProfile,
+      nir: '1850178123456',
+      iban: 'FR76IBAN',
+    })
+    expect(payload.nir).toBe('1850178123456')
+    expect(payload.iban).toBe('FR76IBAN')
+    expect(payload.missingMatchingFields).not.toContain('nir')
   })
 })
