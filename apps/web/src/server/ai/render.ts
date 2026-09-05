@@ -28,6 +28,7 @@ export function renderResponse(kind: ResponseKind, data: unknown): string {
     case 'anonymized':
       return formatAnonymizedDossierExport(data as AnonymizedProfileResponse)
     case 'cv':
+    case 'commentIntake':
       return JSON.stringify(data)
   }
 }

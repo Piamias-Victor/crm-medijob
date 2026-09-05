@@ -1,5 +1,5 @@
 import type { CandidateStatus } from '@/view-models/candidate-status'
-import { MANUAL_CANDIDATE_STATUSES } from '@/view-models/candidate-status'
+import { CANDIDATE_STATUSES, MANUAL_CANDIDATE_STATUSES } from '@/view-models/candidate-status'
 
 export const CANDIDATE_STATUS_LABELS: Record<CandidateStatus, string> = {
   NOUVEAU: 'Nouveau',
@@ -23,6 +23,11 @@ export const CANDIDATE_STATUS_BADGE: Record<
 }
 
 export const MANUAL_CANDIDATE_STATUS_OPTIONS = MANUAL_CANDIDATE_STATUSES.map((status) => ({
+  value: status,
+  label: CANDIDATE_STATUS_LABELS[status],
+}))
+
+export const CANDIDATE_STATUS_OPTIONS = CANDIDATE_STATUSES.map((status) => ({
   value: status,
   label: CANDIDATE_STATUS_LABELS[status],
 }))

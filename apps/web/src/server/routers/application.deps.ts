@@ -4,7 +4,7 @@ import { jobOfferRepository } from '@/server/db/repositories/job-offer.repositor
 import { detectApplicationDuplicate } from '@/server/application/intake.adapter'
 import { refuseApplication } from '@/server/application/intake'
 import { copyRemoteCvToBlob } from '@/server/application/copy-cv'
-import { vercelBlobClient } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import type { InboxItem } from '@/view-models/application-inbox'
 
 export type ApplicationDeps = {
@@ -37,7 +37,7 @@ export const defaultApplicationDeps: ApplicationDeps = {
   markAccepted: (id, candidateId) => applicationRepository.markAccepted(id, candidateId),
   findById: (id) => applicationRepository.findById(id),
   copyCvUrl: (sourceUrl, applicationId) =>
-    copyRemoteCvToBlob(sourceUrl, applicationId, vercelBlobClient),
+    copyRemoteCvToBlob(sourceUrl, applicationId, resolveBlobClient()),
   listOwnedListingIds: () => jobOfferRepository.listBoardListingIds(),
   findByBoardSubmissionIds: (ids) => applicationRepository.findByBoardSubmissionIds(ids),
   createFromIngest: (data) => applicationRepository.createFromIngest(data),

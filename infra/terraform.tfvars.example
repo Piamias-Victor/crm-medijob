@@ -1,0 +1,10 @@
+# Copier vers terraform.tfvars (ne jamais committer terraform.tfvars)
+aws_region   = "eu-west-3"
+project_name = "medijob"
+environment  = "prod"
+
+# Ton IP publique en /32 (curl -4 ifconfig.me)
+# Sans ça, migrate depuis ton laptop sera bloqué par le security group.
+allowed_cidr_blocks = ["0.0.0.0/0"] # ← remplace par "X.X.X.X/32" dès que possible
+
+db_instance_class = "db.t4g.micro"

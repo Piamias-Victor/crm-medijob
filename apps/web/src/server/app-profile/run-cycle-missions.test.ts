@@ -2,10 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { runAppProfileCycle } from './run-cycle'
 import { stubCycleDeps } from './run-cycle.test-deps'
 import type { BadakanMission } from '@/server/badakan/map-mission'
+import { EMPTY_BADAKAN_MISSION_DETAILS } from '@/server/badakan/map-mission-details'
 
 const env = { NODE_ENV: 'test', BADAKAN_EMAIL: 'a@b.c', BADAKAN_PASSWORD: 'x' } as const
 
 const mission: BadakanMission = {
+  ...EMPTY_BADAKAN_MISSION_DETAILS,
   badakanId: 'm-hermes',
   pharmacyName: 'Pharmacie Hermes',
   enterpriseId: 'ent-hermes',

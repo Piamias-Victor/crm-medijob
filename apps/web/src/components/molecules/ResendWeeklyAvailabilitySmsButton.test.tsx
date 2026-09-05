@@ -23,7 +23,7 @@ describe('ResendWeeklyAvailabilitySmsButton', () => {
     useToastStore.setState({ toasts: [] })
   })
 
-  it('resends the same weekly availability URL by SMS', async () => {
+  it('resends the same weekly availability URL by email', async () => {
     render(<ResendWeeklyAvailabilitySmsButton candidateId="c1" />)
     fireEvent.click(screen.getByRole('button', { name: WEEKLY_AVAILABILITY_COPY.resendSms }))
     await waitFor(() => expect(mutateAsync).toHaveBeenCalledWith({ id: 'c1' }))

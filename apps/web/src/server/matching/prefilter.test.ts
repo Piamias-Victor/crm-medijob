@@ -21,6 +21,16 @@ describe('prefilterCandidates', () => {
     expect(result.excluded[0]).toMatchObject({ candidateId: 'ko', reasons: ['job_title'] })
   })
 
+  it('keeps same job title eligible even without a matrix row', async () => {
+    const result = await prefilterCandidates(
+      mission,
+      [baseCandidate({ id: 'same' })],
+      new Map(),
+      nearLookup,
+    )
+    expect(result.eligible.map((c) => c.id)).toEqual(['same'])
+  })
+
   it('excludes candidates missing geo fields with a geo reason', async () => {
     const result = await prefilterCandidates(
       mission,

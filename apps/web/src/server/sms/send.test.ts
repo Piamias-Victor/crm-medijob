@@ -11,16 +11,13 @@ describe('sendAvailabilitySms', () => {
       { fetchFn, env },
     )
     const [url, init] = fetchFn.mock.calls[0] as [string, RequestInit]
-    expect(url).toBe('https://api.brevo.com/v3/transactionalSMS/sms')
-    const body = JSON.parse(String(init.body)) as {
-      sender: string
-      recipient: string
-      content: string
-    }
-    expect(body).toEqual({
+    expect(url).toBe('https://api.brevo.com/v3/transactionalSMS/send')
+    expect((init.headers as Record<string, string>)['api-key']).toBe('xkeysib-test')
+    expect(JSON.parse(String(init.body))).toEqual({
       sender: 'MediJob',
       recipient: '33612345678',
       content: 'MediJob : https://x/dispo/tok',
+      type: 'transactional',
     })
   })
 

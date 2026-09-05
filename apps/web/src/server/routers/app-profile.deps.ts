@@ -3,7 +3,9 @@ import { candidateRepository } from '@/server/db/repositories/candidate.reposito
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
 import { importBadakanCvToBlob } from '@/server/app-profile/import-cv'
-import { vercelBlobClient } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
+import { runAppValidatedTest, type TestOneReport } from '@/server/app-profile/test-one'
+import { defaultTestOneDeps } from '@/server/app-profile/test-one.deps'
 
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
@@ -16,6 +18,7 @@ export type AppProfileDeps = {
   findJobTitleIdByName: (name: string) => Promise<string | null>
   getBadakanClient: () => BadakanClient
   importCvUrl: (badakanId: string) => Promise<string | null>
+  runTestProcess: (badakanId: string) => Promise<TestOneReport>
 }
 
 export const defaultAppProfileDeps: AppProfileDeps = {
@@ -28,5 +31,6 @@ export const defaultAppProfileDeps: AppProfileDeps = {
   createProfile: (input) => candidateRepository.createProfile(input),
   findJobTitleIdByName: (name) => jobTitleRepository.findIdByNameInsensitive(name),
   getBadakanClient: () => badakanClientFromEnv(),
-  importCvUrl: (badakanId) => importBadakanCvToBlob(badakanId, vercelBlobClient),
+  importCvUrl: (badakanId) => importBadakanCvToBlob(badakanId, resolveBlobClient()),
+  runTestProcess: (badakanId) => runAppValidatedTest(badakanId, defaultTestOneDeps()),
 }

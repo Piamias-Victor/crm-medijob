@@ -2,6 +2,7 @@ import type { AppIdentityPatch } from '@/server/db/repositories/candidate-app-or
 import type { BadakanDossier, IdentityFile } from '@/server/badakan/fetch-dossier'
 import type { IdentityDocCategory } from '@/server/badakan/identity-file-refs'
 import type { ResumeFile } from '@/server/badakan/fetch-resume'
+import type { BlobUploadInput } from '@/server/services/blob'
 
 export type DossierFileState = {
   cvUrl: string | null
@@ -19,7 +20,7 @@ export type IdentityDocumentInput = {
 }
 
 export type SyncIdentityDeps = {
-  uploadBlob: (input: { pathname: string; body: Buffer; contentType: string }) => Promise<{ url: string }>
+  uploadBlob: (input: BlobUploadInput) => Promise<{ url: string }>
   patchIdentity: (id: string, patch: AppIdentityPatch) => Promise<unknown>
   createDocument: (data: IdentityDocumentInput) => Promise<unknown>
 }
@@ -33,6 +34,7 @@ async function uploadNamed(
     pathname: `candidate/badakan/${badakanId}/${file.filename}`,
     body: file.body,
     contentType: file.contentType,
+    allowOverwrite: true,
   })
 }
 

@@ -3,6 +3,7 @@ import { auth } from '@/server/auth'
 import { createServerCaller } from '@/lib/trpc/server'
 import { AppProfileConvertPage } from '@/components/organisms/app-profile-convert-page/AppProfileConvertPage'
 import { buildInboxAcceptDefaults } from '@/view-models/inbox-accept-defaults'
+import { toBadakanInternalNotes } from '@/view-models/badakan-comment'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -12,9 +13,10 @@ export default async function Page({ params }: Props) {
 
   const { id } = await params
   const caller = await createServerCaller()
-  const [profile, referentials] = await Promise.all([
+  const [profile, referentials, comments] = await Promise.all([
     caller.appProfile.getById({ id }),
     caller.candidate.referentials(),
+    caller.appProfile.listComments({ id }),
   ])
   if (profile.status !== 'EN_ATTENTE') redirect(`/candidats/profils-app/${id}`)
 
@@ -36,6 +38,7 @@ export default async function Page({ params }: Props) {
         jobTitleId: profile.jobTitleId,
         referentId: session.user.id,
         fallbackJobTitleId,
+        notes: toBadakanInternalNotes(comments) || undefined,
       })}
     />
   )

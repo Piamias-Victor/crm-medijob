@@ -32,6 +32,36 @@ describe('candidate app origin repository', () => {
     )
   })
 
+  it('creates software links and notes from comment intake', async () => {
+    const create = vi.fn().mockResolvedValue({ id: 'c1' })
+    const repo = makeCandidateAppOriginRepository({
+      candidate: { create },
+    } as unknown as PrismaClient)
+    await repo.createAppCandidate({
+      firstName: 'Marie',
+      lastName: 'App',
+      email: 'marie@app.fr',
+      phone: '0600000001',
+      address: null,
+      city: null,
+      postalCode: null,
+      jobTitleId: 'jt1',
+      origin: 'APP',
+      status: 'NOUVEAU',
+      badakanId: 'bk-marie',
+      notes: 'Logiciel LGPI.',
+      softwareIds: ['sw-lgpi'],
+    })
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          notes: 'Logiciel LGPI.',
+          softwares: { create: [{ softwareId: 'sw-lgpi' }] },
+        }),
+      }),
+    )
+  })
+
   it('links origin App without changing status', async () => {
     const update = vi.fn().mockResolvedValue({ id: 'c1', status: 'QUALIFIE' })
     const repo = makeCandidateAppOriginRepository({

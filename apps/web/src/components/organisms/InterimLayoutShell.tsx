@@ -3,16 +3,20 @@
 import { type ReactNode } from 'react'
 import { CalendarClock } from 'lucide-react'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
-import { InterimNav } from '@/components/molecules/InterimNav'
+import { InterimNav, type InterimNavCounts } from '@/components/molecules/InterimNav'
 
-export function InterimLayoutShell({ children }: { children: ReactNode }) {
+type Props = {
+  children: ReactNode
+  counts: InterimNavCounts
+}
+
+export function InterimLayoutShell({ children, counts }: Props) {
   return (
     <DashboardPage
       icon={<CalendarClock className="size-5" />}
       title="Intérim"
-      description="Missions et contrats Badakan, distincts du kanban Missions et de Facturation Intérim."
-      nav={<InterimNav />}
-      maxWidth="max-w-6xl"
+      nav={<InterimNav counts={counts} />}
+      maxWidth="max-w-[88rem]"
     >
       {children}
     </DashboardPage>

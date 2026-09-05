@@ -1,5 +1,6 @@
 import { memoryAvailabilityStore } from '@/server/weekly-availability/test-store'
 import { memoryFilterStore } from '@/server/weekly-availability/memory-filter-store'
+import { memoryDeclaredStore } from '@/server/weekly-availability/memory-declared-store'
 import type { WeeklyAvailabilityDeps } from '@/server/routers/weekly-availability.deps'
 import type { AvailabilityFilterSeed } from '@/server/weekly-availability/filter-pool'
 
@@ -27,6 +28,7 @@ export function filterDeps(
   return {
     store: memoryAvailabilityStore([{ candidateId: 'marie', origin: 'APP' }]),
     filterStore: memoryFilterStore(seeds),
+    declaredStore: memoryDeclaredStore(seeds),
     lookupGeo,
     createToken: () => 'token',
     getBaseUrl: () => 'http://localhost:3000',

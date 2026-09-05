@@ -19,15 +19,24 @@ const dossier: BadakanDossier = {
 
 function stubDeps() {
   return {
-    uploadBlob: vi.fn(async ({ pathname }: { pathname: string }) => ({
-      url: `https://blob.example/${pathname}`,
-    })),
+    uploadBlob: vi.fn(
+      async ({ pathname }: { pathname: string; allowOverwrite?: boolean }) => ({
+        url: `https://blob.example/${pathname}`,
+      }),
+    ),
     patchIdentity: vi.fn(),
     createDocument: vi.fn(),
   }
 }
 
 describe('syncIdentityDossier', () => {
+  it('reuploads a Badakan file whose blob path already exists', async () => {
+    const deps = stubDeps()
+    await syncIdentityDossier('c1', 'bk-1', dossier, { cvUrl: null, categories: [] }, deps)
+    await syncIdentityDossier('c1', 'bk-1', dossier, { cvUrl: null, categories: [] }, deps)
+    expect(deps.uploadBlob.mock.calls.every(([input]) => input.allowOverwrite)).toBe(true)
+  })
+
   it('stores CV on cvUrl and CNI RIB diploma as Documents', async () => {
     const deps = stubDeps()
     await syncIdentityDossier('c1', 'bk-1', dossier, { cvUrl: null, categories: [] }, deps)
@@ -38,6 +47,9 @@ describe('syncIdentityDossier', () => {
         nir: '1850178123456',
         iban: 'FR76IBAN',
       }),
+    )
+    expect(deps.uploadBlob).toHaveBeenCalledWith(
+      expect.objectContaining({ allowOverwrite: true }),
     )
     const categories = deps.createDocument.mock.calls.map((c) => c[0].category).sort()
     expect(categories).toEqual(['CNI', 'DIPLOME', 'RIB'])

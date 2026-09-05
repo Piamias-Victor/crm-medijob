@@ -3,14 +3,16 @@ import { identityPatchFromBadakan } from './merge-badakan-identity'
 import { inactivateIfSuspended, restoreIfCompleted } from './sync-validated-lifecycle'
 import type { SyncValidatedDeps, SyncValidatedResult } from './sync-validated.types'
 
-async function leaveInboxIfPending(
-  badakanId: string,
-  candidateId: string,
-  deps: SyncValidatedDeps,
-) {
+// A profile that already left the inbox keeps its status, but it must still point at the
+// Candidate: an erased then resynced fiche would otherwise leave the link dangling.
+async function attachAppProfile(badakanId: string, candidateId: string, deps: SyncValidatedDeps) {
   const profile = await deps.findAppProfileByBadakanId(badakanId)
-  if (profile?.status !== 'EN_ATTENTE') return
-  await deps.markAppValidated(profile.id, candidateId)
+  if (!profile) return
+  if (profile.status === 'EN_ATTENTE') {
+    await deps.markAppValidated(profile.id, candidateId)
+    return
+  }
+  if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
 }
 
 async function patchIdentityFromRow(
@@ -24,6 +26,16 @@ async function patchIdentityFromRow(
   const patch = identityPatchFromBadakan(row, jobTitleId)
   if (Object.keys(patch).length === 0) return
   await deps.patchIdentity(candidateId, patch)
+}
+
+async function resolveCreateJobTitleId(
+  row: BadakanRecipient,
+  fromComments: string | undefined,
+  deps: SyncValidatedDeps,
+) {
+  const mapped = row.activityLabel ? await deps.mapJobTitleId(row.activityLabel) : null
+  if (mapped) return mapped
+  return fromComments ?? (await deps.resolveJobTitleId(row.activityLabel))
 }
 
 export async function syncAppValidated(
@@ -40,7 +52,7 @@ export async function syncAppValidated(
     if (existing) {
       await restoreIfCompleted(existing, deps)
       await patchIdentityFromRow(row, existing.id, deps)
-      await leaveInboxIfPending(row.badakanId, existing.id, deps)
+      await attachAppProfile(row.badakanId, existing.id, deps)
       await deps.syncDossier(existing.id, row.badakanId)
       result.skipped += 1
       continue
@@ -54,17 +66,19 @@ export async function syncAppValidated(
     if (match) {
       await deps.linkAppOrigin(match.id, row.badakanId)
       await patchIdentityFromRow(row, match.id, deps)
-      await leaveInboxIfPending(row.badakanId, match.id, deps)
+      await attachAppProfile(row.badakanId, match.id, deps)
       await deps.syncDossier(match.id, row.badakanId)
       result.linked += 1
       continue
     }
-    const jobTitleId = await deps.resolveJobTitleId(row.activityLabel)
+    const intake = await deps.enrichFromComments(row.badakanId)
+    const jobTitleId = await resolveCreateJobTitleId(row, intake.jobTitleId, deps)
     if (!jobTitleId) {
       result.skipped += 1
       continue
     }
     const created = await deps.createAppCandidate({
+      ...intake,
       firstName: row.firstName,
       lastName: row.lastName,
       email: row.email,
@@ -77,7 +91,7 @@ export async function syncAppValidated(
       status: 'NOUVEAU',
       badakanId: row.badakanId,
     })
-    await leaveInboxIfPending(row.badakanId, created.id, deps)
+    await attachAppProfile(row.badakanId, created.id, deps)
     await deps.syncDossier(created.id, row.badakanId)
     result.created += 1
   }

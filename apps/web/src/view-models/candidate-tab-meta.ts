@@ -8,6 +8,10 @@ export const CANDIDATE_TAB_META: Record<
     title: 'Profil candidat',
     description: 'Coordonnées, mobilité et préférences pour le matching.',
   },
+  dispos: {
+    title: 'Disponibilités',
+    description: 'Planning mensuel déclaré par le candidat depuis son lien dispos.',
+  },
   historique: {
     title: 'Historique',
     description: 'Timeline des interactions et notes liées au candidat.',

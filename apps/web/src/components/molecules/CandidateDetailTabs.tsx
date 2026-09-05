@@ -1,12 +1,19 @@
 'use client'
 
-import { Briefcase, ClipboardList, FileText, History, User } from 'lucide-react'
+import { Briefcase, CalendarDays, ClipboardList, FileText, History, User } from 'lucide-react'
 import { EntityDetailTabs } from '@/components/molecules/EntityDetailTabs'
 
-export type CandidateDetailTab = 'profil' | 'historique' | 'missions' | 'entretiens' | 'documents'
+export type CandidateDetailTab =
+  | 'profil'
+  | 'dispos'
+  | 'historique'
+  | 'missions'
+  | 'entretiens'
+  | 'documents'
 
 const tabs = [
   { id: 'profil' as const, label: 'Profil', icon: User },
+  { id: 'dispos' as const, label: 'Dispos', icon: CalendarDays },
   { id: 'historique' as const, label: 'Historique', icon: History },
   { id: 'missions' as const, label: 'Missions', icon: Briefcase },
   { id: 'entretiens' as const, label: 'Entretiens', icon: ClipboardList },
