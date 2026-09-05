@@ -44,7 +44,8 @@ function applyRelationSelect(select: Prisma.CandidateSelect, columnId: CvthequeE
 }
 
 export function buildCandidateExportSelect(columnIds: CvthequeExportColumnId[]): Prisma.CandidateSelect {
-  const select: Prisma.CandidateSelect = {}
+  // Mutable bag first — assigning keys on Prisma.CandidateSelect blows TS union depth.
+  const select: Record<string, unknown> = {}
 
   for (const columnId of [...REQUIRED_FIELDS, ...columnIds]) {
     const scalarField = SCALAR_COLUMN_FIELDS[columnId]
@@ -52,8 +53,8 @@ export function buildCandidateExportSelect(columnIds: CvthequeExportColumnId[]):
       select[scalarField] = true
       continue
     }
-    applyRelationSelect(select, columnId)
+    applyRelationSelect(select as Prisma.CandidateSelect, columnId)
   }
 
-  return select
+  return select as Prisma.CandidateSelect
 }
