@@ -26,7 +26,7 @@ export async function sendAvailabilitySms(
     BREVO_SMS_SENDER: deps.env?.BREVO_SMS_SENDER ?? process.env.BREVO_SMS_SENDER,
   })
   const fetchFn = deps.fetchFn ?? fetch
-  const res = await fetchFn('https://api.brevo.com/v3/transactionalSMS/sms', {
+  const res = await fetchFn('https://api.brevo.com/v3/transactionalSMS/send', {
     method: 'POST',
     cache: 'no-store',
     headers: {
@@ -38,6 +38,7 @@ export async function sendAvailabilitySms(
       sender,
       recipient: input.to,
       content: input.content,
+      type: 'transactional',
     }),
   })
   if (!res.ok) {

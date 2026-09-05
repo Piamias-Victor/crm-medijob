@@ -31,10 +31,11 @@ describe('navItems', () => {
 describe('interimSubNav', () => {
   it('lists Badakan missions apart from the CRM Mission kanban', () => {
     expect(interimSubNav.map((item) => [item.label, item.href])).toEqual([
-      ['Missions Badakan', '/interim/missions'],
-      ['Contrats Badakan', '/interim/contrats'],
-      ['Vérif officines', '/interim/officines'],
-      ['Disponibilités', '/interim/disponibilites'],
+      ['Accueil', '/interim'],
+      ['Besoins', '/interim/besoins'],
+      ['Suivi', '/interim/suivi'],
+      ['Candidats', '/interim/candidats'],
+      ['Dispos', '/interim/disponibilites'],
     ])
     expect(interimSubNav.some((item) => item.href === '/missions')).toBe(false)
   })

@@ -152,6 +152,12 @@ enum FinanceLineKind {
   INTERIM
 }
 
+enum BadakanProposalStatus {
+  PROPOSE
+  VALIDE
+  REFUSE
+}
+
 // ─── Auth (NextAuth v5) ───────────────────────────────────────
 
 model Account {
@@ -221,8 +227,9 @@ model Software {
   name      String   @unique
   createdAt DateTime @default(now())
 
-  candidates CandidateSoftware[]
-  pharmacies Pharmacy[]
+  candidates      CandidateSoftware[]
+  pharmacies      Pharmacy[]
+  badakanMissions BadakanMission[]
 }
 
 model Groupement {
@@ -257,6 +264,7 @@ model JobTitle {
   appProfiles               AppProfile[]
   missionCompatibilities    JobTitleCompatibility[] @relation("MissionJobTitle")
   acceptedInCompatibilities JobTitleCompatibility[] @relation("AcceptedCandidateJobTitle")
+  badakanMissions           BadakanMission[]
 }
 
 model ContactRole {
@@ -340,6 +348,7 @@ model Candidate {
   interviews              Interview[]
   weeklyAvailabilityToken WeeklyAvailabilityToken?
   weeklyAvailabilityWeeks WeeklyAvailabilityWeek[]
+  badakanProposals        BadakanMissionProposal[]
 
   @@index([deletedAt])
   @@index([jobTitleId])
@@ -799,6 +808,7 @@ model InterviewTemplateWorkingCopy {
 model BadakanMission {
   id           String   @id @default(cuid())
   badakanId    String   @unique
+  identifier   String?
   pharmacyName String
   enterpriseId String?
   step         String
@@ -807,11 +817,36 @@ model BadakanMission {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  activityId    String?
+  activityLabel String?
+  jobTitleId    String?
+  softwareId    String?
+
+  address    String?
+  city       String?
+  postalCode String?
+  latitude   Float?
+  longitude  Float?
+
+  softwareLabel String?
+  contactName   String?
+  contactPhone  String?
+  hourlyRate    Float?
+  reasonLabel   String?
+
+  expectedRecipients Int @default(0)
+  staffedRecipients  Int @default(0)
+
   searchApplied BadakanSearchApplied[]
+  proposals     BadakanMissionProposal[]
+  jobTitle      JobTitle?              @relation(fields: [jobTitleId], references: [id], onDelete: SetNull)
+  software      Software?              @relation(fields: [softwareId], references: [id], onDelete: SetNull)
 
   @@index([step])
   @@index([syncedAt])
   @@index([enterpriseId])
+  @@index([activityId])
+  @@index([jobTitleId])
 }
 
 model BadakanSearchApplied {
@@ -828,6 +863,36 @@ model BadakanSearchApplied {
 
   @@unique([badakanMissionId, recipientId])
   @@index([badakanMissionId])
+}
+
+model BadakanMissionProposal {
+  id               String                @id @default(cuid())
+  badakanMissionId String
+  candidateId      String
+  status           BadakanProposalStatus @default(PROPOSE)
+  score            Int?
+  justification    String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  mission   BadakanMission @relation(fields: [badakanMissionId], references: [id], onDelete: Cascade)
+  candidate Candidate      @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([badakanMissionId, candidateId])
+  @@index([badakanMissionId])
+  @@index([candidateId])
+  @@index([status])
+}
+
+model BadakanProposalHeldSlot {
+  id               String                   @id @default(cuid())
+  badakanMissionId String
+  candidateId      String
+  date             DateTime                 @db.Date
+  period           WeeklyAvailabilityPeriod
+
+  @@unique([badakanMissionId, candidateId, date, period])
+  @@index([badakanMissionId, candidateId])
 }
 
 // ─── Badakan contracts (Intérim read cache — not Ligne de suivi) ──

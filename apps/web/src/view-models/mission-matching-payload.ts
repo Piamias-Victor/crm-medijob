@@ -81,5 +81,10 @@ export function toMissionMatchingPayload(
     })
   }
 
-  return { scored, excluded }
+  return {
+    scored,
+    excluded,
+    eligibleCount: prefiltered.eligible.length,
+    excludedCount: prefiltered.excluded.length,
+  }
 }

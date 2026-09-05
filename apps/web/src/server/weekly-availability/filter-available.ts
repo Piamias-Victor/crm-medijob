@@ -12,7 +12,7 @@ type Params = {
   input: WeeklyAvailabilityFilterInput
 }
 
-async function withinRadius(
+export async function withinRadius(
   row: AvailabilityFilterPoolRow,
   city: string,
   radiusKm: number,

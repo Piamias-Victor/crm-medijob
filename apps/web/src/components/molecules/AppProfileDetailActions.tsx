@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/atoms/Button'
+import { AppProfileTestProcessButton } from '@/components/molecules/AppProfileTestProcessButton'
 import { appProfileConvertPath } from '@/view-models/inbox-detail-href'
 import { candidatsPageHref } from '@/view-models/candidats-tab'
 import { useRouter } from 'next/navigation'
@@ -57,6 +58,7 @@ export function AppProfileDetailActions({
           Retour aux profils app
         </Button>
       )}
+      <AppProfileTestProcessButton profileId={profileId} />
     </div>
   )
 }

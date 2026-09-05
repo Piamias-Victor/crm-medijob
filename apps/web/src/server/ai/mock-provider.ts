@@ -46,6 +46,14 @@ const builders: Record<ResponseKind, (prompt: string) => object> = {
     rawText:
       'Camille Durand · camille.durand@example.com · 06 12 34 56 78 · 69001 Lyon · Pharmacien',
   }),
+  commentIntake: (prompt) => ({
+    softwares: ['Winpharma', 'LGPI', 'Crystal', 'Pharmagest'].filter((name) =>
+      prompt.toLowerCase().includes(name.toLowerCase()),
+    ),
+    jobTitle: ['Préparatrice', 'Préparateur', 'Pharmacien'].find((name) =>
+      prompt.toLowerCase().includes(name.toLowerCase()),
+    ),
+  }),
 }
 
 export const mockProvider: AssistantProvider = {

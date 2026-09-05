@@ -18,8 +18,14 @@ function hasGeo(city: string | null, postalCode: string | null) {
   return Boolean(city?.trim() && postalCode?.trim())
 }
 
-function jobTitleScore(scores: Map<string, number>, candidateJobTitleId: string) {
-  return scores.get(candidateJobTitleId) ?? 0
+function jobTitleScore(
+  scores: Map<string, number>,
+  candidateJobTitleId: string,
+  missionJobTitleId: string,
+) {
+  const scored = scores.get(candidateJobTitleId)
+  if (scored !== undefined) return scored
+  return candidateJobTitleId === missionJobTitleId ? 100 : 0
 }
 
 export async function prefilterCandidates(
@@ -39,7 +45,9 @@ export async function prefilterCandidates(
   for (const candidate of candidates) {
     const reasons: ExclusionReasonCode[] = []
 
-    if (jobTitleScore(compatScores, candidate.jobTitleId) <= 0) reasons.push('job_title')
+    if (jobTitleScore(compatScores, candidate.jobTitleId, mission.jobTitleId) <= 0) {
+      reasons.push('job_title')
+    }
 
     if (!hasGeo(candidate.city, candidate.postalCode) || !pharmacyGeoOk) {
       reasons.push('geo')

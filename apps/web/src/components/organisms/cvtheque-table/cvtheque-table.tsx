@@ -14,6 +14,7 @@ import { CandidateQuickView } from '@/components/organisms/CandidateQuickView'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import type { CvthequeFilterValues } from '@/lib/filters/cvtheque-filter-map'
 import { buildCvthequeReturnPath } from '@/lib/cvtheque-candidate-href'
+import type { ColumnDef } from '@/components/organisms/entity-table/entity-table-types'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { CandidateTableRow } from '@/view-models/candidate-list-vm'
 
@@ -26,6 +27,7 @@ type Props = {
   exportFilters: CandidateListFilters
   sort: EntityTableSortState | null
   onSortChange: (sort: EntityTableSortState | null) => void
+  columns?: ColumnDef<CandidateTableRow>[]
 }
 
 export function CvthequeTable({
@@ -37,6 +39,7 @@ export function CvthequeTable({
   exportFilters,
   sort,
   onSortChange,
+  columns = cvthequeTableColumns,
 }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -59,7 +62,7 @@ export function CvthequeTable({
       />
       <EntityTable
         rows={rows}
-        columns={cvthequeTableColumns}
+        columns={columns}
         getRowId={(row) => row.id}
         onRowClick={(row) => setQuickViewId(row.id)}
         emptyIcon={Table2}

@@ -30,14 +30,15 @@ function StatCard({ label, value, icon: Icon, tone }: StatProps) {
 
 type Props = {
   scoredCount: number
+  eligibleCount: number
   excludedCount: number
 }
 
-export function MissionMatchingStats({ scoredCount, excludedCount }: Props) {
+export function MissionMatchingStats({ scoredCount, eligibleCount, excludedCount }: Props) {
   return (
     <div className="grid gap-3 sm:grid-cols-3">
       <StatCard label="Candidats scorés" value={scoredCount} icon={Sparkles} tone="success" />
-      <StatCard label="Éligibles (pré-filtre)" value={scoredCount} icon={Users} tone="accent" />
+      <StatCard label="Éligibles (pré-filtre)" value={eligibleCount} icon={Users} tone="accent" />
       <StatCard label="Exclus" value={excludedCount} icon={Ban} tone="muted" />
     </div>
   )

@@ -26,6 +26,7 @@ function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
       getEnterprise: vi.fn().mockResolvedValue(null),
     }),
     importCvUrl: vi.fn().mockResolvedValue(null),
+    runTestProcess: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
     ...overrides,
   }
 }
@@ -35,6 +36,13 @@ function caller(deps: AppProfileDeps) {
 }
 
 describe('appProfileRouter', () => {
+  it('runs the test process against the Badakan id of the profile', async () => {
+    const runTestProcess = vi.fn().mockResolvedValue({ ok: false, reason: 'recipient_missing' })
+    const result = await caller(makeDeps({ runTestProcess })).testProcess({ id: 'p1' })
+    expect(runTestProcess).toHaveBeenCalledWith('bk1')
+    expect(result).toEqual({ ok: false, reason: 'recipient_missing' })
+  })
+
   it('ignores a pending profile', async () => {
     const markStatus = vi.fn()
     await caller(makeDeps({ markStatus })).ignore({ id: 'p1' })

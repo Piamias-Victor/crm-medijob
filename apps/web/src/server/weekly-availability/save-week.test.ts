@@ -30,7 +30,12 @@ describe('saveWeek', () => {
   it('keeps saved slots when switching weeks then returning', async () => {
     const store = memoryAvailabilityStore(seed)
     const wedAm = { date: '2026-09-02', period: 'AM' as const }
-    await saveWeek(store, { token: TOKEN, weekStart: MONDAY, slots: [wedAm] })
+    await saveWeek(store, {
+      token: TOKEN,
+      weekStart: MONDAY,
+      slots: [wedAm],
+      now: new Date('2026-08-31T08:00:00.000Z'),
+    })
     const nextWeek = await getWeek(store, { token: TOKEN, weekStart: '2026-09-07' })
     const back = await getWeek(store, { token: TOKEN, weekStart: MONDAY })
     expect(nextWeek).toEqual({

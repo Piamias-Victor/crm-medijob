@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { syncBadakanMissions } from './sync'
 import type { BadakanMission } from '@/server/badakan/map-mission'
+import { EMPTY_BADAKAN_MISSION_DETAILS } from '@/server/badakan/map-mission-details'
 
 const mapped: BadakanMission = {
+  ...EMPTY_BADAKAN_MISSION_DETAILS,
   badakanId: 'm-hermes',
   pharmacyName: 'Pharmacie Hermes',
   enterpriseId: 'ent-hermes',
@@ -26,8 +28,26 @@ describe('syncBadakanMissions', () => {
       searchMissions: async () => [mapped],
       upsertFromRead,
     })
-    expect(upsertFromRead).toHaveBeenCalledWith(mapped)
+    expect(upsertFromRead).toHaveBeenCalledWith({
+      ...mapped,
+      jobTitleId: null,
+      softwareId: null,
+    })
     expect(createMission).not.toHaveBeenCalled()
     expect(result).toEqual({ fetched: 1, upserted: 1 })
+  })
+
+  it('attaches the resolved job title and LGO before persisting', async () => {
+    const upsertFromRead = vi.fn()
+    await syncBadakanMissions({
+      searchMissions: async () => [mapped],
+      upsertFromRead,
+      resolveReferentials: async () => ({ jobTitleId: 'jt-prep', softwareId: 'sw-lgpi' }),
+    })
+    expect(upsertFromRead).toHaveBeenCalledWith({
+      ...mapped,
+      jobTitleId: 'jt-prep',
+      softwareId: 'sw-lgpi',
+    })
   })
 })

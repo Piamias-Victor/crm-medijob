@@ -75,5 +75,7 @@ describe('toMissionMatchingPayload', () => {
     expect(payload.excluded).toHaveLength(1)
     expect(payload.excluded[0]).toMatchObject({ candidateId: 'c2' })
     expect(payload.excluded[0]?.reasons[0]?.code).toBe('not_scored')
+    expect(payload.eligibleCount).toBe(2)
+    expect(payload.excludedCount).toBe(0)
   })
 })

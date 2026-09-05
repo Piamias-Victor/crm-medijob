@@ -1,7 +1,8 @@
 import { auth } from '@/server/auth'
 import { documentRepository } from '@/server/db/repositories/document.repository'
 import { documentFileResponse } from '@/server/documents/document-file-response'
-import { fetchBlobStream, vercelBlobClient } from '@/server/services/blob'
+import { fetchBlobStream } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -14,7 +15,7 @@ export async function GET(_request: Request, { params }: Params) {
     session,
     deps: {
       findById: (docId) => documentRepository.findById(docId),
-      fetchBlob: (url) => fetchBlobStream(vercelBlobClient, url),
+      fetchBlob: (url) => fetchBlobStream(resolveBlobClient(), url),
     },
   })
 }

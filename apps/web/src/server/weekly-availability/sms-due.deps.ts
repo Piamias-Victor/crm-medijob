@@ -6,6 +6,7 @@ import { makeWeeklyAvailabilitySmsRepository } from '@/server/db/repositories/we
 import { sendAvailabilitySms } from '@/server/sms/send'
 import { ensureLink } from '@/server/weekly-availability/ensure-link'
 import { weeklyAvailabilityUrl } from '@/view-models/weekly-availability-path'
+import { resolveAvailabilityLinkTestPhone } from '@/server/weekly-availability/availability-link-test-phone'
 import type { ResendSmsDeps } from '@/server/weekly-availability/sms-resend'
 import type { SmsDueDeps } from '@/server/weekly-availability/sms-due.types'
 
@@ -27,6 +28,7 @@ export function defaultSmsDueDeps(env: NodeJS.ProcessEnv = process.env): SmsDueD
         },
       }),
     markSent: sms.markSent,
+    testTo: resolveAvailabilityLinkTestPhone(env),
   }
 }
 

@@ -17,6 +17,7 @@ export function smsDueDeps(overrides: Partial<SmsDueDeps> = {}): SmsDueDeps {
     ensureUrl: vi.fn().mockResolvedValue('http://localhost:3000/dispo/secret-token'),
     sendSms: vi.fn(),
     markSent: vi.fn(),
+    testTo: '06 99 99 99 99',
     ...overrides,
   }
 }

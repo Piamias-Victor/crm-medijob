@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@prisma/client'
 import { NOT_DELETED } from './soft-delete'
+import { toAppOriginCreateData } from './candidate-app-origin-create'
 
 export type AppIdentityPatch = {
   firstName?: string
@@ -27,6 +28,11 @@ export type AppOriginCreateInput = {
   origin: 'APP'
   status: 'NOUVEAU'
   badakanId: string
+  notes?: string
+  availableFrom?: Date
+  mobilityRadiusKm?: number
+  mobilityNotes?: string
+  softwareIds?: string[]
 }
 
 export function makeCandidateAppOriginRepository(db: PrismaClient) {
@@ -38,19 +44,7 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
       }),
     createAppCandidate: (data: AppOriginCreateInput) =>
       db.candidate.create({
-        data: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          address: data.address,
-          city: data.city,
-          postalCode: data.postalCode,
-          jobTitleId: data.jobTitleId,
-          origin: 'APP',
-          status: 'NOUVEAU',
-          badakanId: data.badakanId,
-        },
+        data: toAppOriginCreateData(data),
         select: { id: true },
       }),
     linkAppOrigin: (id: string, badakanId: string) =>

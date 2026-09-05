@@ -8,11 +8,16 @@ import { resendAvailabilitySms } from '@/server/weekly-availability/sms-resend'
 import { defaultResendSmsDeps } from '@/server/weekly-availability/sms-due.deps'
 import type { GeoLookup } from '@/server/matching/distance'
 import type { WeeklyAvailabilityStore } from '@/server/weekly-availability/types'
-import type { WeeklyAvailabilityFilterStore } from '@/server/weekly-availability/filter-pool'
+import { makeWeeklyAvailabilityDeclaredRepository } from '@/server/db/repositories/weekly-availability-declared.repo'
+import type {
+  WeeklyAvailabilityDeclaredStore,
+  WeeklyAvailabilityFilterStore,
+} from '@/server/weekly-availability/filter-pool'
 
 export type WeeklyAvailabilityDeps = {
   store: WeeklyAvailabilityStore
   filterStore: WeeklyAvailabilityFilterStore
+  declaredStore: WeeklyAvailabilityDeclaredStore
   lookupGeo: GeoLookup
   createToken: () => string
   getBaseUrl: () => string
@@ -25,6 +30,7 @@ export function defaultWeeklyAvailabilityDeps(): WeeklyAvailabilityDeps {
   return {
     store: makeWeeklyAvailabilityRepository(prisma),
     filterStore: makeWeeklyAvailabilityFilterRepository(prisma),
+    declaredStore: makeWeeklyAvailabilityDeclaredRepository(prisma),
     lookupGeo: createAvailabilityFilterGeoLookup(),
     createToken: createRawToken,
     getBaseUrl: getAppBaseUrl,

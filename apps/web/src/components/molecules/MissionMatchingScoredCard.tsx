@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { MissionMatchingContactLine } from '@/components/molecules/MissionMatchingContactLine'
 import { MissionMatchingScoredCardActions } from '@/components/molecules/MissionMatchingScoredCardActions'
 import { MissionMatchingScoredCardBody } from '@/components/molecules/MissionMatchingScoredCardBody'
 import { MissionMatchingScoredCardHeader } from '@/components/molecules/MissionMatchingScoredCardHeader'
@@ -16,8 +17,10 @@ type Props = {
   selected: boolean
   onToggleSelect: () => void
   positioned: boolean
+  proposed?: boolean
   pipelineLocked?: boolean
   onPositioned: (candidateId: string) => void
+  onProposed?: (candidateId: string) => void
 }
 
 export function MissionMatchingScoredCard({
@@ -28,8 +31,10 @@ export function MissionMatchingScoredCard({
   selected,
   onToggleSelect,
   positioned,
+  proposed,
   pipelineLocked,
   onPositioned,
+  onProposed,
 }: Props) {
   return (
     <motion.li variants={listItem} custom={index} className="list-none">
@@ -60,6 +65,7 @@ export function MissionMatchingScoredCard({
                 salaryLabel={row.salaryLabel}
                 score={row.score}
               />
+              <MissionMatchingContactLine email={row.email} phone={row.phone} />
               <MissionMatchingScoredCardBody
                 score={row.score}
                 justification={row.justification}
@@ -71,9 +77,12 @@ export function MissionMatchingScoredCard({
             missionId={missionId}
             candidateId={row.candidateId}
             score={row.score}
+            justification={row.justification}
             positioned={positioned}
+            proposed={proposed}
             pipelineLocked={pipelineLocked}
             onPositioned={() => onPositioned(row.candidateId)}
+            onProposed={() => onProposed?.(row.candidateId)}
           />
         </div>
       </article>

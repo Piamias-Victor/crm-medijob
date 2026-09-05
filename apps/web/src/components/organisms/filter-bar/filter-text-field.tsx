@@ -10,7 +10,7 @@ type Props = {
 
 export function FilterTextField({ config, value, onChange }: Props) {
   return (
-    <FilterFieldLabel label={config.label} className="w-32">
+    <FilterFieldLabel label={config.label} className={config.wide ? 'w-72' : 'w-32'}>
       <Input
         type="search"
         value={value}

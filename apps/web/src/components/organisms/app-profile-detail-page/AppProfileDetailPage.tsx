@@ -43,31 +43,33 @@ export function AppProfileDetailPage({ profile, defaults, comments }: Props) {
       }
       tabKey="infos"
     >
-      <SectionCard
-        variant="glass"
-        title="Profil application"
-        description="Vérifiez les infos avant conversion ou entretien."
-        bodyClassName="space-y-5 p-5 sm:p-6"
-      >
-        <DetailFieldList fields={appProfileDetailFields(profile)} />
-        <AppProfileDetailActions
-          profileId={profile.id}
-          pending={pending}
-          hasResume={profile.hasResume}
-          ignoring={actions.ignoring}
-          accepting={actions.accepting}
-          onIgnore={actions.ignore}
-          onInterview={actions.startInterview}
-        />
-      </SectionCard>
-      <SectionCard
-        variant="glass"
-        title={BADAKAN_COMMENTS_TITLE}
-        description="Résumés d’appel lus depuis l’app. Les nouvelles notes vont dans l’historique CRM."
-        bodyClassName="p-5 sm:p-6"
-      >
-        <BadakanCommentList comments={comments} />
-      </SectionCard>
+      <div className="flex flex-col gap-6">
+        <SectionCard
+          variant="glass"
+          title="Profil application"
+          description="Vérifiez les infos avant conversion ou entretien."
+          bodyClassName="space-y-5 p-5 sm:p-6"
+        >
+          <DetailFieldList fields={appProfileDetailFields(profile)} />
+          <AppProfileDetailActions
+            profileId={profile.id}
+            pending={pending}
+            hasResume={profile.hasResume}
+            ignoring={actions.ignoring}
+            accepting={actions.accepting}
+            onIgnore={actions.ignore}
+            onInterview={actions.startInterview}
+          />
+        </SectionCard>
+        <SectionCard
+          variant="glass"
+          title={BADAKAN_COMMENTS_TITLE}
+          description="Résumés d’appel lus depuis l’app. Les nouvelles notes vont dans l’historique CRM."
+          bodyClassName="p-5 sm:p-6"
+        >
+          <BadakanCommentList comments={comments} />
+        </SectionCard>
+      </div>
       <CandidateDuplicateAlertModal
         open={actions.matches.length > 0}
         matches={actions.matches}

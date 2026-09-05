@@ -12,6 +12,7 @@ export function buildInboxAcceptDefaults(input: {
   jobTitleId: string | null
   referentId: string
   fallbackJobTitleId: string
+  notes?: string
 }): CandidateCreateInput {
   return {
     ...buildCandidateCreateDefaults(input.referentId, input.jobTitleId || input.fallbackJobTitleId),
@@ -22,6 +23,7 @@ export function buildInboxAcceptDefaults(input: {
     city: input.city ?? undefined,
     postalCode: input.postalCode ?? undefined,
     address: input.address ?? undefined,
+    notes: input.notes,
     consentGiven: true,
   }
 }

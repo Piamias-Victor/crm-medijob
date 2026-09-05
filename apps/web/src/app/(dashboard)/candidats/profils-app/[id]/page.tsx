@@ -3,6 +3,7 @@ import { auth } from '@/server/auth'
 import { createServerCaller } from '@/lib/trpc/server'
 import { AppProfileDetailPage } from '@/components/organisms/app-profile-detail-page/AppProfileDetailPage'
 import { buildInboxAcceptDefaults } from '@/view-models/inbox-accept-defaults'
+import { toBadakanInternalNotes } from '@/view-models/badakan-comment'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -36,6 +37,7 @@ export default async function Page({ params }: Props) {
         jobTitleId: profile.jobTitleId,
         referentId: session.user.id,
         fallbackJobTitleId,
+        notes: toBadakanInternalNotes(comments) || undefined,
       })}
     />
   )

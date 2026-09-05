@@ -6,9 +6,9 @@ import { buildAppProfileColumns } from '@/components/molecules/app-profile-colum
 import { appProfileDetailPath } from '@/view-models/inbox-detail-href'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
-type Props = { items: AppProfileListItem[] }
+type Props = { items: AppProfileListItem[]; filtered?: boolean }
 
-export function AppProfilesTable({ items }: Props) {
+export function AppProfilesTable({ items, filtered = false }: Props) {
   return (
     <EntityTable
       rows={items}
@@ -16,8 +16,12 @@ export function AppProfilesTable({ items }: Props) {
       getRowId={(row) => row.id}
       getRowHref={(row) => appProfileDetailPath(row.id)}
       emptyIcon={Smartphone}
-      emptyTitle="Aucun profil app en attente"
-      emptyDescription="Les nouveaux inscrits Badakan apparaissent ici automatiquement."
+      emptyTitle={filtered ? 'Aucun profil app' : 'Aucun profil app en attente'}
+      emptyDescription={
+        filtered
+          ? 'Aucun inscrit ne correspond à cette recherche.'
+          : 'Les nouveaux inscrits Badakan apparaissent ici automatiquement.'
+      }
     />
   )
 }

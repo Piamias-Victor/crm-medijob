@@ -3,7 +3,8 @@ import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '@/server/trpc'
 import { documentBlobErrorMessage, sanitizeDocumentFilename } from '@/lib/document-upload'
 import { documentRepository } from '@/server/db/repositories/document.repository'
-import { deleteBlob, uploadBlob, vercelBlobClient, type BlobClient } from '@/server/services/blob'
+import { deleteBlob, uploadBlob, type BlobClient } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import { toDocumentListRow, type DocumentRecord } from '@/view-models/document-list'
 import {
   deleteDocumentSchema,
@@ -86,5 +87,5 @@ export const documentRouter = makeDocumentRouter({
   findById: (id) => documentRepository.findById(id),
   create: (data) => documentRepository.create(data),
   deleteById: (id) => documentRepository.deleteById(id),
-  ...makeBlobDeps(vercelBlobClient),
+  ...makeBlobDeps(resolveBlobClient()),
 })

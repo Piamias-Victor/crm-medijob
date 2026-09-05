@@ -4,7 +4,8 @@ import { missionRepository } from '@/server/db/repositories/mission.repository'
 import { contactRepository } from '@/server/db/repositories/contact.repository'
 import { activityLogRepository } from '@/server/db/repositories/activity-log.repository'
 import { makeDevisRouter, type DevisDeps } from '@/server/routers/devis'
-import { uploadBlob, vercelBlobClient } from '@/server/services/blob'
+import { uploadBlob } from '@/server/services/blob'
+import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import { renderDevisPdf } from '@/server/pdf/render-devis-pdf'
 import type { DevisMissionRef } from '@/view-models/devis-mission-ref'
 
@@ -34,7 +35,7 @@ export const devisLiveDeps: DevisDeps = {
   listByMission: devisRepository.listByMission,
   softDeleteDraft: devisRepository.softDeleteDraft,
   renderPdf: (model) => renderDevisPdf(model),
-  uploadBlob: (input) => uploadBlob(vercelBlobClient, input),
+  uploadBlob: (input) => uploadBlob(resolveBlobClient(), input),
   createDocument: (data) => documentRepository.create(data),
   findPrimaryContact: (pharmacyId) => contactRepository.findPrimaryForDevis(pharmacyId),
   logActivity: (input) => activityLogRepository.create(input),

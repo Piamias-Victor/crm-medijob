@@ -31,4 +31,12 @@ describe('toCandidateListFilters', () => {
       toCandidateListFilters({ ...defaults, disponible: true, metier: ['jt1'] }),
     ).toEqual({ jobTitleIds: ['jt1'], available: true })
   })
+
+  it('mappe la searchbar q', () => {
+    expect(toCandidateListFilters({ ...defaults, q: '  Marie  ' })).toEqual({ q: 'Marie' })
+  })
+
+  it('mappe origine App', () => {
+    expect(toCandidateListFilters({ ...defaults, origine: ['APP'] })).toEqual({ origins: ['APP'] })
+  })
 })
