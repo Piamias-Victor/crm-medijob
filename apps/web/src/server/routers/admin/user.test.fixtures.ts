@@ -1,8 +1,13 @@
 import { vi } from 'vitest'
-import type { UserDeps } from '@/server/routers/admin/user'
+import { createCallerFactory } from '@/server/trpc'
+import { makeUserRouter, type UserDeps } from '@/server/routers/admin/user'
 
 export const adminSession = { user: { id: 'u1', role: 'RH_ADMIN' as const }, expires: '2999-01-01' }
 export const recruteurSession = { user: { id: 'u2', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
+
+export function adminCaller(deps: UserDeps) {
+  return createCallerFactory(makeUserRouter(deps))({ session: adminSession })
+}
 
 export const sampleUser = {
   id: 'u3',

@@ -15,7 +15,9 @@ export const liveUserDeps: UserDeps = {
   findByEmail: (email) => userRepository.findByEmailAny(email),
   hashPassword,
   createInvitePlaceholder: createRawToken,
-  sendInvite: (email) => sendAccessInvite(email, makeDefaultInviteAccessDeps()),
+  sendInvite: async (email) => {
+    await sendAccessInvite(email, makeDefaultInviteAccessDeps())
+  },
 }
 
 export const userRouter = makeUserRouter(liveUserDeps)
