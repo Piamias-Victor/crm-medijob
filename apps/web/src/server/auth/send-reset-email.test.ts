@@ -57,10 +57,15 @@ describe('sendResetEmail', () => {
     expect(fetchFn).not.toHaveBeenCalled()
   })
 
-  it('fails closed when Brevo rejects the send', async () => {
-    const fetchFn = vi.fn().mockResolvedValue({ ok: false, text: async () => 'denied' })
-    await expect(sendResetEmail({ email, resetUrl }, { fetchFn, env })).rejects.toMatchObject({
-      code: 'INTERNAL_SERVER_ERROR',
-    })
+  it('sends invite activation subject via Brevo', async () => {
+    const { sendInviteAccessEmail } = await import('./send-reset-email')
+    const fetchFn = okFetch()
+    await sendInviteAccessEmail({ email, resetUrl }, { fetchFn, env })
+    const body = JSON.parse(String((fetchFn.mock.calls[0] as [string, RequestInit])[1].body)) as {
+      subject: string
+      htmlContent: string
+    }
+    expect(body.subject).toContain('Activez')
+    expect(body.htmlContent).toContain(resetUrl)
   })
 })

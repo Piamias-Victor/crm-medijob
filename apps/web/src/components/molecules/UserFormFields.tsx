@@ -13,6 +13,7 @@ type Props = {
   register: UseFormRegister<FieldValues>
   errors: FieldErrors
   showEmail?: boolean
+  showPassword?: boolean
   passwordRequired: boolean
   role: string
   onRoleChange: (value: string) => void
@@ -22,6 +23,7 @@ export function UserFormFields({
   register,
   errors,
   showEmail = false,
+  showPassword = true,
   passwordRequired,
   role,
   onRoleChange,
@@ -42,18 +44,20 @@ export function UserFormFields({
       </FormSection>
       <FormSection title="Accès">
         <div className="flex flex-col gap-4">
-          <FormField
-            label={passwordRequired ? 'Mot de passe' : 'Nouveau mot de passe (optionnel)'}
-            error={errors.password?.message as string | undefined}
-          >
-            <PasswordInput
-              id="password"
-              autoComplete={passwordRequired ? 'new-password' : 'off'}
-              placeholder={passwordRequired ? undefined : 'Laisser vide pour conserver'}
-              className={fieldClass}
-              {...register('password')}
-            />
-          </FormField>
+          {showPassword ? (
+            <FormField
+              label={passwordRequired ? 'Mot de passe' : 'Nouveau mot de passe (optionnel)'}
+              error={errors.password?.message as string | undefined}
+            >
+              <PasswordInput
+                id="password"
+                autoComplete={passwordRequired ? 'new-password' : 'off'}
+                placeholder={passwordRequired ? undefined : 'Laisser vide pour conserver'}
+                className={fieldClass}
+                {...register('password')}
+              />
+            </FormField>
+          ) : null}
           <FormField label="Rôle" error={errors.role?.message as string | undefined}>
             <UserRoleSelect value={role} onChange={onRoleChange} />
           </FormField>
