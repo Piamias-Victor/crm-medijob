@@ -7,6 +7,7 @@ export type BadakanProposalSource = {
   status: BadakanProposalStatus
   score: number | null
   justification: string | null
+  amountHt?: number | null
   candidate: {
     id: string
     firstName: string
@@ -31,6 +32,7 @@ export type BadakanProposalListItem = {
   statusLabel: string
   score: number | null
   justification: string | null
+  amountHt: number | null
 }
 
 const STATUS_LABELS: Record<BadakanProposalStatus, string> = {
@@ -57,5 +59,6 @@ export function toBadakanProposalListItem(row: BadakanProposalSource): BadakanPr
     statusLabel: badakanProposalStatusLabel(row.status),
     score: row.score,
     justification: row.justification,
+    amountHt: row.amountHt ?? null,
   }
 }

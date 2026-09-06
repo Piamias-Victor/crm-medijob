@@ -33,4 +33,25 @@ describe('toSuiviBuckets', () => {
     expect(buckets.counts).toEqual({ open: 1, proposed: 1, staffed: 1 })
     expect(buckets.open[0]?.id).toBe('open')
   })
+
+  it('marks staffed as crm when VALIDE but Badakan step not STAFFED', () => {
+    const buckets = toSuiviBuckets([
+      {
+        ...base,
+        id: 'crm',
+        step: 'CREATED',
+        proposals: [{ status: 'VALIDE' }],
+      },
+      {
+        ...base,
+        id: 'bk',
+        step: 'STAFFED',
+        proposals: [{ status: 'VALIDE', amountHt: 450 }],
+      },
+    ])
+    expect(buckets.staffed.map((row) => [row.id, row.staffingOrigin, row.hasAmount])).toEqual([
+      ['crm', 'crm', false],
+      ['bk', 'badakan', true],
+    ])
+  })
 })
