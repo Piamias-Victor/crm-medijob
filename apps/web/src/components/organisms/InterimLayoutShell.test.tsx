@@ -5,13 +5,14 @@ import { InterimLayoutShell } from '@/components/organisms/InterimLayoutShell'
 vi.mock('next/navigation', () => ({ usePathname: () => '/interim/besoins' }))
 
 describe('InterimLayoutShell', () => {
-  it('shows Suivi Besoins Candidats Dispos Officines without Accueil pill', () => {
+  it('shows Accueil then Suivi Besoins Candidats Dispos Officines', () => {
     render(
       <InterimLayoutShell counts={{ besoins: 2, dispos: 1, suivi: 3 }}>
         liste
       </InterimLayoutShell>,
     )
     expect(screen.getByRole('heading', { name: 'Intérim' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Accueil/ })).toHaveAttribute('href', '/interim')
     expect(screen.getByRole('link', { name: /Suivi/ })).toHaveAttribute('href', '/interim/suivi')
     expect(screen.getByRole('link', { name: /Besoins/ })).toHaveAttribute(
       'href',
@@ -21,7 +22,6 @@ describe('InterimLayoutShell', () => {
       'href',
       '/interim/officines',
     )
-    expect(screen.queryByRole('link', { name: /Accueil/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /rafraîchir/i })).not.toBeInTheDocument()
   })
 })

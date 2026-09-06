@@ -29,8 +29,9 @@ describe('navItems', () => {
 })
 
 describe('interimSubNav', () => {
-  it('lists Suivi first then Besoins Candidats Dispos Officines', () => {
+  it('lists Accueil first then Suivi Besoins Candidats Dispos Officines', () => {
     expect(interimSubNav.map((item) => [item.label, item.href])).toEqual([
+      ['Accueil', '/interim'],
       ['Suivi', '/interim/suivi'],
       ['Besoins', '/interim/besoins'],
       ['Candidats', '/interim/candidats'],

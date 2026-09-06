@@ -7,7 +7,7 @@ describe('interimNavItems', () => {
   it('adds an icon for every primary interim entry', () => {
     const items = interimNavItems()
     expect(items).toHaveLength(interimSubNav.length)
-    expect(items[0]?.href).toBe('/interim/suivi')
+    expect(items[0]?.href).toBe('/interim')
     expect(items.every((item) => Boolean(item.icon))).toBe(true)
   })
 })
