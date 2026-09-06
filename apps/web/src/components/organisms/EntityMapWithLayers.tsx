@@ -1,11 +1,12 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { EntityMap } from '@/components/molecules/EntityMap'
 import { EntityMapLayerToggles } from '@/components/molecules/entity-map-layer-toggles'
-import { EntityMapQuickViews } from '@/components/organisms/entity-map-quick-views'
 import { useExtraMapPins } from '@/components/organisms/use-extra-map-pins'
 import type { MapEntityType } from '@/lib/map/map-entity-type'
+import { mapPinDetailHref } from '@/lib/map/map-pin-href'
 import {
   defaultLayerState,
   toggleMapLayer,
@@ -24,11 +25,8 @@ export function EntityMapWithLayers({
   primaryPins,
   returnPath,
 }: Props) {
+  const router = useRouter()
   const [layers, setLayers] = useState(() => defaultLayerState(primaryType))
-  const [selected, setSelected] = useState<{
-    entityType: MapEntityType
-    entityId: string
-  } | null>(null)
   const extras = useExtraMapPins(layers, primaryType)
   const pins = useMemo(
     () =>
@@ -45,13 +43,8 @@ export function EntityMapWithLayers({
       <EntityMap
         pins={pins}
         onPinClick={(pin) =>
-          setSelected({ entityType: pin.entityType, entityId: pin.entityId })
+          router.push(mapPinDetailHref(pin.entityType, pin.entityId, returnPath))
         }
-      />
-      <EntityMapQuickViews
-        selected={selected}
-        returnPath={returnPath}
-        onClose={() => setSelected(null)}
       />
     </div>
   )
