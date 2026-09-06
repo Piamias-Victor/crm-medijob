@@ -9,6 +9,7 @@ import {
 } from '@/lib/filters/cvtheque-filter-map'
 import { deserializeFilters } from '@/lib/filters/serialize'
 import { toUrlSearchParams } from '@/lib/url-search-params'
+import { parseCreatedWithinHours } from '@/view-models/parse-created-within-hours'
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> }
 
@@ -17,9 +18,13 @@ export default async function Page({ searchParams }: Props) {
   const caller = await createServerCaller()
   const referentials = await caller.candidate.referentials()
   const filterConfig = buildCvthequeFilterConfig(referentials)
-  const serverFilters = toCandidateListFilters(
-    normalizeCvthequeFilterValues(deserializeFilters(filterConfig, toUrlSearchParams(params))),
-  )
+  const url = toUrlSearchParams(params)
+  const serverFilters = {
+    ...toCandidateListFilters(
+      normalizeCvthequeFilterValues(deserializeFilters(filterConfig, url)),
+    ),
+    createdWithinHours: parseCreatedWithinHours(url.get('createdWithinHours')),
+  }
   const [list, declared] = await Promise.all([
     caller.candidate.list(serverFilters),
     caller.weeklyAvailability.search(),

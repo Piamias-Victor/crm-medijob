@@ -32,6 +32,9 @@ export type BadakanNeedListItem = {
   softwareLabel: string
   gapLabel: string
   periodLabel: string
+  periods: PeriodLike[]
+  expectedRecipients: number
+  staffedRecipients: number
   step: string
   stepLabel: string
   href: string
@@ -47,6 +50,9 @@ export function toBadakanNeedListItem(row: BadakanNeedListSource): BadakanNeedLi
     softwareLabel: row.softwareName ?? TABLE_EMPTY_CELL,
     gapLabel: staffingGapLabel(row),
     periodLabel: badakanMissionPeriodLabel(row.periods),
+    periods: row.periods,
+    expectedRecipients: row.expectedRecipients,
+    staffedRecipients: row.staffedRecipients,
     step: row.step,
     stepLabel: badakanMissionStepLabel(row.step),
     href: `/interim/missions/${row.id}`,

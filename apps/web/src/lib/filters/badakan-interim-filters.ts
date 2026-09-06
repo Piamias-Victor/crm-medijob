@@ -3,16 +3,11 @@ import { matchesSelection, matchesText } from '@/lib/filters/badakan-filter-matc
 import { badakanMissionStepOptions } from '@/view-models/badakan-mission-step'
 import { badakanContractStatusOptions } from '@/view-models/badakan-contract-status'
 import type { FilterConfig, FilterValues } from '@/lib/filters/filter-types'
-import type { BadakanNeedListItem } from '@/view-models/badakan-need-list'
 import type { BadakanMissionListItem } from '@/view-models/badakan-mission-list'
 import type { BadakanContractListItem } from '@/view-models/badakan-contract-list'
 import type { BadakanEnterpriseListItem } from '@/view-models/badakan-enterprise-list'
 
-function matchesDepartment(postalCode: string | null, departments: string[]): boolean {
-  if (departments.length === 0) return true
-  if (!postalCode?.trim()) return false
-  return departments.some((code) => postalCode.trim().startsWith(code))
-}
+export { matchesNeed } from '@/lib/filters/badakan-need-match'
 
 export const missionFilterConfig = [
   { id: 'q', type: 'text', label: 'Recherche', placeholder: 'Officine…', wide: true },
@@ -22,6 +17,15 @@ export const missionFilterConfig = [
 export const needFilterConfig = [
   { id: 'q', type: 'text', label: 'Recherche', placeholder: 'Officine, LGO…', wide: true },
   { id: 'steps', type: 'multi-select', label: 'Étape', options: badakanMissionStepOptions },
+  {
+    id: 'week',
+    type: 'select',
+    label: 'Semaine',
+    options: [
+      { value: '', label: 'Toutes' },
+      { value: 'current', label: 'Cette semaine' },
+    ],
+  },
   { id: 'ville', type: 'text', label: 'Ville', placeholder: 'Ville…' },
   {
     id: 'departement',
@@ -49,19 +53,6 @@ export function matchesMission(
   return (
     matchesText([row.pharmacyName, row.stepLabel, row.periodLabel], values.q) &&
     matchesSelection(row.step, values.steps)
-  )
-}
-
-export function matchesNeed(
-  row: BadakanNeedListItem,
-  values: FilterValues<typeof needFilterConfig>,
-): boolean {
-  return (
-    matchesText([row.pharmacyName, row.softwareLabel], values.q) &&
-    matchesSelection(row.step, values.steps) &&
-    matchesText([row.cityLabel], values.ville) &&
-    matchesDepartment(row.postalCode, values.departement) &&
-    matchesText([row.jobTitleLabel], values.metier)
   )
 }
 

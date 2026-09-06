@@ -5,23 +5,23 @@ import { InterimLayoutShell } from '@/components/organisms/InterimLayoutShell'
 vi.mock('next/navigation', () => ({ usePathname: () => '/interim/besoins' }))
 
 describe('InterimLayoutShell', () => {
-  it('shows Accueil Besoins Suivi Candidats Dispos without refresh', () => {
+  it('shows Suivi Besoins Candidats Dispos Officines without Accueil pill', () => {
     render(
       <InterimLayoutShell counts={{ besoins: 2, dispos: 1, suivi: 3 }}>
         liste
       </InterimLayoutShell>,
     )
     expect(screen.getByRole('heading', { name: 'Intérim' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Accueil/ })).toHaveAttribute('href', '/interim')
+    expect(screen.getByRole('link', { name: /Suivi/ })).toHaveAttribute('href', '/interim/suivi')
     expect(screen.getByRole('link', { name: /Besoins/ })).toHaveAttribute(
       'href',
       '/interim/besoins',
     )
-    expect(screen.getByRole('link', { name: /Suivi/ })).toHaveAttribute('href', '/interim/suivi')
-    expect(screen.getByRole('link', { name: /Dispos/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Officines/ })).toHaveAttribute(
       'href',
-      '/interim/disponibilites',
+      '/interim/officines',
     )
+    expect(screen.queryByRole('link', { name: /Accueil/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /rafraîchir/i })).not.toBeInTheDocument()
   })
 })

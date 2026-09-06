@@ -24,6 +24,10 @@ export function makeBadakanMissionRouter(deps: BadakanMissionDeps) {
       const rows = await deps.listOpenNeeds()
       return toBadakanNeedListItems(toBadakanNeedListSources(rows))
     }),
+    listAllNeeds: protectedProcedure.query(async () => {
+      const rows = await deps.listForSuivi()
+      return toBadakanNeedListItems(toBadakanNeedListSources(rows))
+    }),
     suivi: protectedProcedure.query(async () => {
       const rows = await deps.listForSuivi()
       return toSuiviBuckets(rows)

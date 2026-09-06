@@ -42,6 +42,11 @@ export function buildCandidateListWhere(
   if (filters.declaredAvailability != null) {
     clauses.push(buildDeclaredAvailabilityWhere(filters.declaredAvailability, now))
   }
+  if (filters.createdWithinHours != null) {
+    clauses.push({
+      createdAt: { gte: new Date(now.getTime() - filters.createdWithinHours * 3_600_000) },
+    })
+  }
 
   if (clauses.length === 0) return {}
   if (clauses.length === 1) return clauses[0]!
