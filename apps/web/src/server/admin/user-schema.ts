@@ -4,7 +4,6 @@ import { USER_ROLES } from '@/view-models/user-admin'
 export const createUserSchema = z.object({
   name: z.string().trim().min(1, 'Nom requis'),
   email: z.string().trim().email('Email invalide'),
-  password: z.string().min(8, 'Au moins 8 caractères'),
   role: z.enum(USER_ROLES),
 })
 

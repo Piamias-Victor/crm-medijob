@@ -22,6 +22,8 @@ export function makeUserDeps(overrides: Partial<UserDeps> = {}): UserDeps {
     findById: vi.fn().mockResolvedValue(sampleUser),
     findByEmail: vi.fn().mockResolvedValue(null),
     hashPassword: vi.fn().mockResolvedValue('$argon2id$hash'),
+    createInvitePlaceholder: vi.fn().mockReturnValue('invite-placeholder'),
+    sendInvite: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }
 }

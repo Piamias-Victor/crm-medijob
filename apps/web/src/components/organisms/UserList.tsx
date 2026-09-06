@@ -9,15 +9,17 @@ type Props = {
   users: UserListItem[]
   onEdit: (user: UserListItem) => void
   onDelete: (user: UserListItem) => void
+  onResendInvite: (user: UserListItem) => void
+  resendingId?: string | null
 }
 
-export function UserList({ users, onEdit, onDelete }: Props) {
+export function UserList({ users, onEdit, onDelete, onResendInvite, resendingId }: Props) {
   if (users.length === 0) {
     return (
       <EmptyState
         icon={Users}
         title="Aucun utilisateur pour l’instant"
-        description="Créez le premier compte recruteur ou administrateur."
+        description="Invitez le premier compte recruteur ou administrateur."
       />
     )
   }
@@ -25,7 +27,14 @@ export function UserList({ users, onEdit, onDelete }: Props) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {users.map((user) => (
-        <UserListCard key={user.id} user={user} onEdit={onEdit} onDelete={onDelete} />
+        <UserListCard
+          key={user.id}
+          user={user}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onResendInvite={onResendInvite}
+          resending={resendingId === user.id}
+        />
       ))}
     </div>
   )

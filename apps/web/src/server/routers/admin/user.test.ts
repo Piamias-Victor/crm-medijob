@@ -20,21 +20,28 @@ describe('userRouter', () => {
     expect(list[0]).not.toHaveProperty('password')
   })
 
-  it('creates a user with a hashed password', async () => {
+  it('creates a user and sends an invite email without admin password', async () => {
     const deps = makeUserDeps()
     await adminCaller(deps).create({
       name: 'Jane Doe',
       email: 'jane@medijob.fr',
-      password: 'secret-pw',
       role: 'RECRUTEUR',
     })
-    expect(deps.hashPassword).toHaveBeenCalledWith('secret-pw')
+    expect(deps.createInvitePlaceholder).toHaveBeenCalled()
+    expect(deps.hashPassword).toHaveBeenCalledWith('invite-placeholder')
     expect(deps.create).toHaveBeenCalledWith({
       name: 'Jane Doe',
       email: 'jane@medijob.fr',
       password: '$argon2id$hash',
       role: 'RECRUTEUR',
     })
+    expect(deps.sendInvite).toHaveBeenCalledWith('jane@medijob.fr')
+  })
+
+  it('resends the invite email for an existing user', async () => {
+    const deps = makeUserDeps()
+    await adminCaller(deps).resendInvite({ id: 'u3' })
+    expect(deps.sendInvite).toHaveBeenCalledWith('jane@medijob.fr')
   })
 
   it('updates name and role without password when omitted', async () => {
@@ -67,7 +74,7 @@ describe('userRouter', () => {
 
   it('refuse de rétrograder le dernier administrateur', async () => {
     const deps = makeUserDeps({
-      findById: vi.fn().mockResolvedValue({ id: 'a1', role: 'DIRECTION' }),
+      findById: vi.fn().mockResolvedValue({ id: 'a1', role: 'DIRECTION', email: 'a@m.fr' }),
       countAdmins: vi.fn().mockResolvedValue(1),
     })
     await expect(
@@ -84,7 +91,6 @@ describe('userRouter', () => {
       adminCaller(deps).create({
         name: 'Jane',
         email: 'jane@medijob.fr',
-        password: 'secret-pw',
         role: 'RECRUTEUR',
       }),
     ).rejects.toMatchObject({ code: 'CONFLICT' })
