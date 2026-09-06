@@ -57,6 +57,7 @@ export const facturationSubNav: { label: string; href: string }[] = [
 ]
 
 export const interimSubNav: { label: string; href: string }[] = [
+  { label: 'Accueil', href: '/interim' },
   { label: 'Suivi', href: '/interim/suivi' },
   { label: 'Besoins', href: '/interim/besoins' },
   { label: 'Candidats', href: '/interim/candidats' },
