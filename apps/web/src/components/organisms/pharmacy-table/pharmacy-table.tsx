@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Building2 } from 'lucide-react'
 import { PharmacyFilterBar } from '@/components/organisms/pharmacy-table/pharmacy-filter-bar'
@@ -10,8 +10,7 @@ import {
 } from '@/components/organisms/pharmacy-table/pharmacy-table-columns'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
-import { PharmacyQuickView } from '@/components/organisms/PharmacyQuickView'
-import { buildPharmacyReturnPath } from '@/lib/pharmacy-href'
+import { buildPharmacyReturnPath, pharmacyDetailHref } from '@/lib/pharmacy-href'
 import type { PharmacyFilterConfig } from '@/lib/filters/pharmacy-filter-config'
 import type { PharmacyFilterValues } from '@/lib/filters/pharmacy-filter-map'
 import type { PharmacyListRow } from '@/view-models/pharmacy-list'
@@ -37,7 +36,6 @@ export function PharmacyTable({
 }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [quickViewId, setQuickViewId] = useState<string | null>(null)
   const returnPath = useMemo(
     () => buildPharmacyReturnPath(pathname, searchParams.toString()),
     [pathname, searchParams],
@@ -55,24 +53,13 @@ export function PharmacyTable({
         rows={rows}
         columns={pharmacyTableColumns}
         getRowId={(row) => row.id}
-        onRowClick={(row) => setQuickViewId(row.id)}
+        getRowHref={(row) => pharmacyDetailHref(row.id, returnPath)}
         emptyIcon={Building2}
         emptyTitle="Aucune pharmacie"
         emptyDescription="Ajustez les filtres pour afficher des résultats."
-        renderActions={(row) => (
-          <PharmacyTableActions
-            row={row}
-            returnPath={returnPath}
-            onQuickView={setQuickViewId}
-          />
-        )}
+        renderActions={(row) => <PharmacyTableActions row={row} returnPath={returnPath} />}
         sort={sort}
         onSortChange={onSortChange}
-      />
-      <PharmacyQuickView
-        pharmacyId={quickViewId}
-        returnPath={returnPath}
-        onClose={() => setQuickViewId(null)}
       />
     </div>
   )
