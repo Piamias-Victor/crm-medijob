@@ -9,7 +9,7 @@ async function main() {
   const base = defaultAppProfileCycleDeps(process.env)
   const result = await runAppProfileCycle(process.env, {
     ...base,
-    smsDue: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
+    smsDue: async () => ({ sent: 0, skippedNoPhone: 0, skippedOutOfZone: 0, failed: 0 }),
     inviteDue: async () => ({
       sent: 0,
       skippedNoEmail: 0,
