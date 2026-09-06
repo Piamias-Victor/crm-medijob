@@ -36,7 +36,12 @@ export function listUnfilledThisWeek(
 ): HomeAlertMissionItem[] {
   const { start, end } = currentWeekRange(now)
   return rows
-    .filter((row) => isOpenNeed(row) && periodOverlapsWeek(row.periods, start, end))
+    .filter(
+      (row) =>
+        row.step !== 'CANCELLED' &&
+        isOpenNeed(row) &&
+        periodOverlapsWeek(row.periods, start, end),
+    )
     .map((row) => ({
       id: row.id,
       pharmacyName: row.pharmacyName,

@@ -24,7 +24,7 @@ function matchesDepartment(postalCode: string | null, departments: string[]): bo
 
 function matchesNeedStep(row: BadakanNeedListItem, steps: string[]): boolean {
   if (steps.length > 0) return matchesSelection(row.step, steps)
-  return isOpenNeed(row)
+  return row.step !== 'CANCELLED' && isOpenNeed(row)
 }
 
 function matchesNeedWeek(row: BadakanNeedListItem, week: string, now: Date): boolean {
