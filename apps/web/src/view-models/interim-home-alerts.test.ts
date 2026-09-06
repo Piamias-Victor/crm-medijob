@@ -58,6 +58,17 @@ describe('interim home alerts', () => {
     ])
   })
 
+  it('excludes cancelled missions from unfilled this week', () => {
+    const now = new Date('2026-09-09T12:00:00Z')
+    const cancelled: BadakanNeedListItem = {
+      ...base,
+      id: 'n-cancel',
+      step: 'CANCELLED',
+      stepLabel: 'Annulée',
+    }
+    expect(listUnfilledThisWeek([base, cancelled], now).map((row) => row.id)).toEqual(['n1'])
+  })
+
   it('maps recent candidates to home alert rows', () => {
     expect(
       toHomeAlertCandidates([

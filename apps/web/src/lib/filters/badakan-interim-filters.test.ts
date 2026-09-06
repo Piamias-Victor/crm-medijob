@@ -74,15 +74,20 @@ describe('matchesNeed', () => {
       true,
     )
     expect(matchesNeed(need, { ...empty, steps: ['STAFFED'] })).toBe(false)
-    expect(matchesNeed(need, { ...empty, departement: ['67'] })).toBe(true)
-    expect(matchesNeed(need, { ...empty, departement: ['75'] })).toBe(false)
-    expect(matchesNeed(need, { ...empty, ville: 'lyon' })).toBe(false)
+    const open = { ...need, step: 'CREATED', stepLabel: 'Créée' }
+    expect(matchesNeed(open, { ...empty, departement: ['67'] })).toBe(true)
+    expect(matchesNeed(open, { ...empty, departement: ['75'] })).toBe(false)
+    expect(matchesNeed(open, { ...empty, ville: 'lyon' })).toBe(false)
   })
 
   it('defaults to open needs when no step filter is set', () => {
-    expect(matchesNeed(need, empty)).toBe(true)
+    expect(matchesNeed(need, empty)).toBe(false)
+    expect(matchesNeed({ ...need, step: 'CREATED', stepLabel: 'Créée' }, empty)).toBe(true)
     expect(
-      matchesNeed({ ...need, expectedRecipients: 1, staffedRecipients: 1 }, empty),
+      matchesNeed(
+        { ...need, step: 'CREATED', stepLabel: 'Créée', expectedRecipients: 1, staffedRecipients: 1 },
+        empty,
+      ),
     ).toBe(false)
   })
 
