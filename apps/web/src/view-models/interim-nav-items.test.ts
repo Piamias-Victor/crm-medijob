@@ -7,13 +7,13 @@ describe('interimNavItems', () => {
   it('adds an icon for every primary interim entry', () => {
     const items = interimNavItems()
     expect(items).toHaveLength(interimSubNav.length)
-    expect(items[0]?.href).toBe('/interim')
+    expect(items[0]?.href).toBe('/interim/suivi')
     expect(items.every((item) => Boolean(item.icon))).toBe(true)
   })
 })
 
 describe('interimExtraLinks', () => {
-  it('keeps missions contrats officines as secondary links', () => {
+  it('keeps missions and contrats as secondary links', () => {
     expect(interimExtraLinks().map((item) => item.href)).toEqual(
       interimSecondaryLinks.map((item) => item.href),
     )

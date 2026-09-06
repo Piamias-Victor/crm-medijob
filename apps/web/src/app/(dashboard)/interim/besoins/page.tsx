@@ -7,11 +7,11 @@ import { interimCountLabel } from '@/view-models/interim-count-label'
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const rows = await caller.badakanMission.listNeeds()
+  const rows = await caller.badakanMission.listAllNeeds()
   return (
     <SectionCard
-      title="Besoins ouverts"
-      description={`${interimCountLabel(rows.length, 'besoin')} — missions Badakan pas encore staffées.`}
+      title="Besoins"
+      description={`${interimCountLabel(rows.length, 'mission')} Badakan — filtrez par étape ou semaine.`}
     >
       <Suspense fallback={<EntityTableSkeleton />}>
         <BadakanNeedList rows={rows} />

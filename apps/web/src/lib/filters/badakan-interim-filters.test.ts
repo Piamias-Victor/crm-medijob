@@ -25,6 +25,9 @@ const need = {
   softwareLabel: 'LGPI',
   gapLabel: '0/1 pourvus',
   periodLabel: '10/09/2026',
+  periods: [{ start: '2026-09-10', end: '2026-09-12' }],
+  expectedRecipients: 1,
+  staffedRecipients: 0,
   step: 'CANCELLED',
   stepLabel: 'Annulée',
   href: '/interim/missions/n1',
@@ -57,7 +60,14 @@ describe('matchesMission', () => {
 })
 
 describe('matchesNeed', () => {
-  const empty = { q: '', steps: [] as string[], ville: '', departement: [] as string[], metier: '' }
+  const empty = {
+    q: '',
+    steps: [] as string[],
+    week: '',
+    ville: '',
+    departement: [] as string[],
+    metier: '',
+  }
 
   it('filters by étape, ville, département and métier', () => {
     expect(matchesNeed(need, { ...empty, steps: ['CANCELLED'], ville: 'stras', metier: 'pharma' })).toBe(
@@ -67,6 +77,25 @@ describe('matchesNeed', () => {
     expect(matchesNeed(need, { ...empty, departement: ['67'] })).toBe(true)
     expect(matchesNeed(need, { ...empty, departement: ['75'] })).toBe(false)
     expect(matchesNeed(need, { ...empty, ville: 'lyon' })).toBe(false)
+  })
+
+  it('defaults to open needs when no step filter is set', () => {
+    expect(matchesNeed(need, empty)).toBe(true)
+    expect(
+      matchesNeed({ ...need, expectedRecipients: 1, staffedRecipients: 1 }, empty),
+    ).toBe(false)
+  })
+
+  it('filters by current week when week=current', () => {
+    const now = new Date('2026-09-09T12:00:00Z')
+    expect(matchesNeed(need, { ...empty, steps: ['CANCELLED'], week: 'current' }, now)).toBe(true)
+    expect(
+      matchesNeed(
+        { ...need, periods: [{ start: '2026-08-01', end: '2026-08-02' }] },
+        { ...empty, steps: ['CANCELLED'], week: 'current' },
+        now,
+      ),
+    ).toBe(false)
   })
 })
 

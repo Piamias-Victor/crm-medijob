@@ -57,16 +57,15 @@ export const facturationSubNav: { label: string; href: string }[] = [
 ]
 
 export const interimSubNav: { label: string; href: string }[] = [
-  { label: 'Accueil', href: '/interim' },
-  { label: 'Besoins', href: '/interim/besoins' },
   { label: 'Suivi', href: '/interim/suivi' },
+  { label: 'Besoins', href: '/interim/besoins' },
   { label: 'Candidats', href: '/interim/candidats' },
   { label: 'Dispos', href: '/interim/disponibilites' },
+  { label: 'Officines', href: '/interim/officines' },
 ]
 
 export const interimSecondaryLinks: { label: string; href: string }[] = [
   { label: 'Missions', href: '/interim/missions' },
   { label: 'Contrats', href: '/interim/contrats' },
-  { label: 'Officines', href: '/interim/officines' },
 ]
 

@@ -16,6 +16,7 @@ export const candidateListFiltersSchema = z.object({
   city: z.string().trim().min(1).optional(),
   maxMobilityKm: z.number().int().min(1).max(500).optional(),
   declaredAvailability: z.boolean().nullable().optional(),
+  createdWithinHours: z.number().int().min(1).max(168).optional(),
 })
 
 export type CandidateListFilters = z.infer<typeof candidateListFiltersSchema>

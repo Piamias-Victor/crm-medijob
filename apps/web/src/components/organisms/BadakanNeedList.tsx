@@ -21,8 +21,8 @@ export function BadakanNeedList({
       matches={matchesNeed}
       getRowHref={(row) => row.href}
       emptyIcon={UserRoundSearch}
-      emptyTitle="Aucun besoin ouvert"
-      emptyDescription="Toutes les missions Badakan sont staffées."
+      emptyTitle="Aucun besoin"
+      emptyDescription="Aucune mission Badakan pour ces filtres."
       syncUrl={syncUrl}
     />
   )
