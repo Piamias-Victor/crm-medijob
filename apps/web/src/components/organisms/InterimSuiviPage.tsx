@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { Badge } from '@/components/atoms/Badge'
-import { badakanMissionStepVariant } from '@/view-models/badakan-mission-step'
+import { SuiviMissionRow } from '@/components/molecules/SuiviMissionRow'
 import { suiviFamilyHref, type SuiviFamily } from '@/view-models/suivi-family-href'
 import type { SuiviBuckets, SuiviMissionItem } from '@/view-models/badakan-suivi'
 
@@ -27,22 +26,7 @@ function MissionList({
       ) : (
         <ul className="divide-y divide-border/50">
           {rows.map((row) => (
-            <li key={row.id}>
-              <Link
-                href={row.href}
-                className="flex items-center justify-between gap-3 py-2.5 hover:bg-accent-muted/20"
-              >
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-medium text-fg">
-                    {row.pharmacyName}
-                  </span>
-                  <span className="block truncate text-xs text-fg-muted">
-                    {row.jobTitleLabel} · {row.cityLabel} · {row.periodLabel}
-                  </span>
-                </span>
-                <Badge variant={badakanMissionStepVariant(row.step)}>{row.stepLabel}</Badge>
-              </Link>
-            </li>
+            <SuiviMissionRow key={row.id} row={row} />
           ))}
         </ul>
       )}

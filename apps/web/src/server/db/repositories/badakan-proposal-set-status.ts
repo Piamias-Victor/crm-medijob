@@ -2,10 +2,14 @@ import type { BadakanProposalStatus, PrismaClient } from '@prisma/client'
 import { restoreCandidateSlotsOnMission } from './proposal-held-slots'
 import { proposalCandidateInclude } from './badakan-proposal-include'
 
-export async function setProposalStatus(
-  db: PrismaClient,
-  input: { missionId: string; candidateId: string; status: BadakanProposalStatus },
-) {
+export type SetProposalStatusInput = {
+  missionId: string
+  candidateId: string
+  status: BadakanProposalStatus
+  amountHt?: number | null
+}
+
+export async function setProposalStatus(db: PrismaClient, input: SetProposalStatusInput) {
   const row = await db.badakanMissionProposal.update({
     where: {
       badakanMissionId_candidateId: {
@@ -13,7 +17,12 @@ export async function setProposalStatus(
         candidateId: input.candidateId,
       },
     },
-    data: { status: input.status },
+    data: {
+      status: input.status,
+      ...(input.status === 'VALIDE' && input.amountHt !== undefined
+        ? { amountHt: input.amountHt }
+        : {}),
+    },
     include: proposalCandidateInclude,
   })
   if (input.status === 'VALIDE') {
@@ -36,7 +45,6 @@ export async function setProposalStatus(
       await db.badakanMission.update({
         where: { id: input.missionId },
         data: {
-          step: 'STAFFED',
           staffedRecipients: Math.max(mission.expectedRecipients, 1),
         },
       })

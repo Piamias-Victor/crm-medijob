@@ -17,8 +17,10 @@ export type SuiviMissionSource = {
   jobTitle: { name: string } | null
   software: { name: string } | null
   activityLabel: string | null
-  proposals: Array<{ status: BadakanProposalStatus }>
+  proposals: Array<{ status: BadakanProposalStatus; amountHt?: number | null }>
 }
+
+export type StaffingOrigin = 'crm' | 'badakan'
 
 export type SuiviMissionItem = {
   id: string
@@ -29,6 +31,8 @@ export type SuiviMissionItem = {
   step: string
   stepLabel: string
   href: string
+  staffingOrigin: StaffingOrigin
+  hasAmount: boolean
 }
 
 export type SuiviBuckets = {
@@ -38,7 +42,20 @@ export type SuiviBuckets = {
   counts: { open: number; proposed: number; staffed: number }
 }
 
+export function staffingOriginFrom(step: string, statuses: BadakanProposalStatus[]): StaffingOrigin {
+  if (step === 'STAFFED') return 'badakan'
+  if (statuses.includes('VALIDE')) return 'crm'
+  return 'crm'
+}
+
+export function hasValidatedAmount(
+  proposals: Array<{ status: BadakanProposalStatus; amountHt?: number | null }>,
+): boolean {
+  return proposals.some((p) => p.status === 'VALIDE' && p.amountHt != null && p.amountHt > 0)
+}
+
 function toItem(row: SuiviMissionSource, step: string): SuiviMissionItem {
+  const statuses = row.proposals.map((proposal) => proposal.status)
   return {
     id: row.id,
     pharmacyName: row.pharmacyName,
@@ -48,6 +65,8 @@ function toItem(row: SuiviMissionSource, step: string): SuiviMissionItem {
     step,
     stepLabel: badakanMissionStepLabel(step),
     href: `/interim/missions/${row.id}`,
+    staffingOrigin: staffingOriginFrom(row.step, statuses),
+    hasAmount: hasValidatedAmount(row.proposals),
   }
 }
 

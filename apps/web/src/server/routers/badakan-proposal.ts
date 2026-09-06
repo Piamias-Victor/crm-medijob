@@ -25,6 +25,7 @@ const keyInput = z.object({
 
 const statusInput = keyInput.extend({
   status: z.nativeEnum(BadakanProposalStatus),
+  amountHt: z.number().nonnegative().nullable().optional(),
 })
 
 export type BadakanProposalDeps = {

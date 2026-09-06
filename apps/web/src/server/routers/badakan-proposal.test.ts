@@ -68,17 +68,23 @@ describe('badakanProposalRouter', () => {
     expect(listed[0]).toMatchObject({ fullName: 'Emma Six', statusLabel: 'Proposé' })
   })
 
-  it('marks the Badakan mission as staffed when a proposal is validated', async () => {
-    const setStatus = vi.fn().mockResolvedValue({ ...proposalRow, status: 'VALIDE' })
+  it('validates a proposal and forwards optional amountHt', async () => {
+    const setStatus = vi.fn().mockResolvedValue({
+      ...proposalRow,
+      status: 'VALIDE',
+      amountHt: 420,
+    })
     await caller(deps({ setStatus })).setStatus({
       missionId: 'm1',
       candidateId: 'c1',
       status: 'VALIDE',
+      amountHt: 420,
     })
     expect(setStatus).toHaveBeenCalledWith({
       missionId: 'm1',
       candidateId: 'c1',
       status: 'VALIDE',
+      amountHt: 420,
     })
   })
 

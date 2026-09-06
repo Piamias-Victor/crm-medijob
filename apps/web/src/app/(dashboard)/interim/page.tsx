@@ -4,7 +4,8 @@ import { InterimSecondaryLinks } from '@/components/molecules/InterimSecondaryLi
 import {
   besoinsWeekHref,
   candidatsCreatedWithinHref,
-  countUnfilledThisWeek,
+  listUnfilledThisWeek,
+  toHomeAlertCandidates,
 } from '@/view-models/interim-home-alerts'
 
 export default async function Page() {
@@ -13,16 +14,20 @@ export default async function Page() {
     caller.badakanMission.listAllNeeds(),
     caller.candidate.list({ createdWithinHours: 24 }),
   ])
+  const missionRows = listUnfilledThisWeek(needs)
+  const candidateRows = toHomeAlertCandidates(recent.rows)
   return (
     <div className="flex flex-col gap-6">
       <InterimHomeAlerts
         unfilledThisWeek={{
-          count: countUnfilledThisWeek(needs),
+          count: missionRows.length,
           href: besoinsWeekHref(),
+          rows: missionRows,
         }}
         newCandidates={{
-          count: recent.rows.length,
+          count: candidateRows.length,
           href: candidatsCreatedWithinHref(24),
+          rows: candidateRows,
         }}
       />
       <InterimSecondaryLinks />
