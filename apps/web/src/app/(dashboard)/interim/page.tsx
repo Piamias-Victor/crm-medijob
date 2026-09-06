@@ -1,23 +1,31 @@
 import { createServerCaller } from '@/lib/trpc/server'
-import { InterimHomeDashboard } from '@/components/organisms/InterimHomeDashboard'
-import { buildAvailabilityFilterConfig } from '@/lib/filters/availability-filter-config'
-import { parisYmd } from '@/lib/paris-week'
+import { InterimHomeAlerts } from '@/components/organisms/InterimHomeAlerts'
+import { InterimSecondaryLinks } from '@/components/molecules/InterimSecondaryLinks'
+import {
+  besoinsWeekHref,
+  candidatsCreatedWithinHref,
+  countUnfilledThisWeek,
+} from '@/view-models/interim-home-alerts'
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const today = parisYmd(new Date())
-  const [{ jobTitles }, needs, availabilityRows, suivi] = await Promise.all([
-    caller.candidate.referentials(),
-    caller.badakanMission.listNeeds(),
-    caller.weeklyAvailability.search({ dateFrom: today, hasDispo: 'all' }),
-    caller.badakanMission.suivi(),
+  const [needs, recent] = await Promise.all([
+    caller.badakanMission.listAllNeeds(),
+    caller.candidate.list({ createdWithinHours: 24 }),
   ])
   return (
-    <InterimHomeDashboard
-      needs={needs}
-      availabilityRows={availabilityRows}
-      availabilityFilters={{ dateFrom: today, hasDispo: 'all' }}      availabilityFilterConfig={buildAvailabilityFilterConfig(jobTitles)}
-      suivi={suivi}
-    />
+    <div className="flex flex-col gap-6">
+      <InterimHomeAlerts
+        unfilledThisWeek={{
+          count: countUnfilledThisWeek(needs),
+          href: besoinsWeekHref(),
+        }}
+        newCandidates={{
+          count: recent.rows.length,
+          href: candidatsCreatedWithinHref(24),
+        }}
+      />
+      <InterimSecondaryLinks />
+    </div>
   )
 }

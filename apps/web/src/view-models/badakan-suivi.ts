@@ -9,11 +9,13 @@ export type SuiviMissionSource = {
   id: string
   pharmacyName: string
   city: string | null
+  postalCode: string | null
   step: string
   periods: unknown
   expectedRecipients: number
   staffedRecipients: number
   jobTitle: { name: string } | null
+  software: { name: string } | null
   activityLabel: string | null
   proposals: Array<{ status: BadakanProposalStatus }>
 }

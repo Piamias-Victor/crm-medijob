@@ -6,10 +6,12 @@ const base = {
   id: 'm1',
   pharmacyName: 'Cygne',
   city: 'Strasbourg',
+  postalCode: '67000',
   periods: [{ start: '2026-09-10', end: '2026-09-12' }],
   expectedRecipients: 1,
   staffedRecipients: 0,
   jobTitle: { name: 'Pharmacien' },
+  software: { name: 'LGPI' },
   activityLabel: null,
 }
 
