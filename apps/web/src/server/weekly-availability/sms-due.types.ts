@@ -2,6 +2,7 @@ export type SmsDueRow = {
   candidateId: string
   firstName: string
   phone: string | null
+  postalCode?: string | null
 }
 
 export type AvailabilitySmsContact = {
@@ -21,6 +22,7 @@ export type SmsDueDeps = {
 export type SmsDueResult = {
   sent: number
   skippedNoPhone: number
+  skippedOutOfZone: number
   failed: number
   lastError?: string
 }

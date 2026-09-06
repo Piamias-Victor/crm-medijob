@@ -27,7 +27,7 @@ describe('sendDueAvailabilitySms', () => {
     const row = smsDueRow({ phone: null })
     const deps = smsDueDeps({ listDue: async () => [row], testTo: undefined })
     const result = await sendDueAvailabilitySms(deps)
-    expect(result).toEqual({ sent: 0, skippedNoPhone: 1, failed: 0 })
+    expect(result).toEqual({ sent: 0, skippedNoPhone: 1, skippedOutOfZone: 0, failed: 0 })
     expect(deps.sendSms).not.toHaveBeenCalled()
     expect(deps.markSent).not.toHaveBeenCalled()
   })
@@ -48,5 +48,17 @@ describe('sendDueAvailabilitySms', () => {
     expect((await sendDueAvailabilitySms(deps)).sent).toBe(1)
     expect((await sendDueAvailabilitySms(deps)).sent).toBe(0)
     expect(deps.sendSms).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not text a Candidate outside the live SMS departments', async () => {
+    const deps = smsDueDeps({
+      testTo: undefined,
+      listDue: async () => [smsDueRow({ postalCode: '69001' })],
+    })
+    const result = await sendDueAvailabilitySms(deps)
+    expect(result.sent).toBe(0)
+    expect(result.skippedOutOfZone).toBe(1)
+    expect(deps.sendSms).not.toHaveBeenCalled()
+    expect(deps.markSent).not.toHaveBeenCalled()
   })
 })

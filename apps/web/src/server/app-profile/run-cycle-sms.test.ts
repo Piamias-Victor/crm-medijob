@@ -13,7 +13,7 @@ describe('runAppProfileCycle weekly availability SMS', () => {
     })
     const smsDue = vi.fn(async () => {
       order.push('sms')
-      return { sent: 1, skippedNoPhone: 0, failed: 0 }
+      return { sent: 1, skippedNoPhone: 0, skippedOutOfZone: 0, failed: 0 }
     })
     const result = await runAppProfileCycle(env, stubCycleDeps({ syncValidated, smsDue }))
     expect(order).toEqual(['validated', 'sms'])

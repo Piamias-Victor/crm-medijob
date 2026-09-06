@@ -17,12 +17,13 @@ export function makeWeeklyAvailabilitySmsRepository(db: PrismaClient) {
             { weeklyAvailabilityToken: { smsSentAt: null } },
           ],
         },
-        select: { id: true, firstName: true, phone: true },
+        select: { id: true, firstName: true, phone: true, postalCode: true },
       })
       return rows.map((row) => ({
         candidateId: row.id,
         firstName: row.firstName,
         phone: row.phone,
+        postalCode: row.postalCode,
       }))
     },
     markSent: async (candidateId: string) => {
