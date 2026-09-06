@@ -1,5 +1,10 @@
 import { TRPCError } from '@trpc/server'
-import { RESET_EMAIL_SUBJECT, resetEmailHtml } from './reset-email-copy'
+import {
+  RESET_EMAIL_SUBJECT,
+  resetEmailHtml,
+  INVITE_EMAIL_SUBJECT,
+  inviteEmailHtml,
+} from './reset-email-copy'
 
 export type SendResetEmailInput = {
   email: string
@@ -30,10 +35,9 @@ function mailerConfig(env: ResetMailerEnv) {
   return { apiKey, sender }
 }
 
-/** Sends the reset link via Brevo transactional email. Never logs the raw token or URL. */
-export async function sendResetEmail(
-  input: SendResetEmailInput,
-  deps: SendResetEmailDeps = {},
+async function sendBrevoHtml(
+  input: SendResetEmailInput & { subject: string; html: string },
+  deps: SendResetEmailDeps,
 ): Promise<void> {
   const { apiKey, sender } = mailerConfig({
     BREVO_API_KEY: deps.env?.BREVO_API_KEY ?? process.env.BREVO_API_KEY,
@@ -51,8 +55,8 @@ export async function sendResetEmail(
     body: JSON.stringify({
       sender: { email: sender, name: 'MediJob' },
       to: [{ email: input.email }],
-      subject: RESET_EMAIL_SUBJECT,
-      htmlContent: resetEmailHtml(input.resetUrl),
+      subject: input.subject,
+      htmlContent: input.html,
     }),
   })
   if (!res.ok) {
@@ -61,4 +65,26 @@ export async function sendResetEmail(
       message: 'Envoi email indisponible',
     })
   }
+}
+
+/** Password reset link. Never logs the raw token or URL. */
+export async function sendResetEmail(
+  input: SendResetEmailInput,
+  deps: SendResetEmailDeps = {},
+): Promise<void> {
+  await sendBrevoHtml(
+    { ...input, subject: RESET_EMAIL_SUBJECT, html: resetEmailHtml(input.resetUrl) },
+    deps,
+  )
+}
+
+/** Account activation / first password. Never logs the raw token or URL. */
+export async function sendInviteAccessEmail(
+  input: SendResetEmailInput,
+  deps: SendResetEmailDeps = {},
+): Promise<void> {
+  await sendBrevoHtml(
+    { ...input, subject: INVITE_EMAIL_SUBJECT, html: inviteEmailHtml(input.resetUrl) },
+    deps,
+  )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Pencil, Trash2 } from 'lucide-react'
+import { Mail, Pencil, Trash2 } from 'lucide-react'
 import { Avatar } from '@/components/atoms/Avatar'
 import { Badge } from '@/components/atoms/Badge'
 import { Button } from '@/components/atoms/Button'
@@ -20,9 +20,11 @@ type Props = {
   user: UserListItem
   onEdit: (user: UserListItem) => void
   onDelete: (user: UserListItem) => void
+  onResendInvite: (user: UserListItem) => void
+  resending?: boolean
 }
 
-export function UserListCard({ user, onEdit, onDelete }: Props) {
+export function UserListCard({ user, onEdit, onDelete, onResendInvite, resending }: Props) {
   return (
     <ListCardShell>
       <ListCardHeader
@@ -39,6 +41,15 @@ export function UserListCard({ user, onEdit, onDelete }: Props) {
         <ListCardChip>{formatUserCreatedAt(user.createdAt)}</ListCardChip>
       </ListCardMeta>
       <div className="flex justify-end gap-1 border-t border-border/40 pt-2">
+        <Button
+          variant="ghost"
+          className="px-2"
+          aria-label={`Renvoyer l’invitation à ${user.name}`}
+          disabled={resending}
+          onClick={() => onResendInvite(user)}
+        >
+          <Mail className="size-4" />
+        </Button>
         <Button variant="ghost" className="px-2" aria-label={`Modifier ${user.name}`} onClick={() => onEdit(user)}>
           <Pencil className="size-4" />
         </Button>

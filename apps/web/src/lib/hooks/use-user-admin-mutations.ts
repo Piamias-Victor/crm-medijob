@@ -24,6 +24,9 @@ export function useUserAdminMutations(onClose: () => void, clearDelete: () => vo
         mutation.onSuccess()
       },
     }),
+    resendInvite: trpc.admin.user.resendInvite.useMutation({
+      onSuccess: refresh,
+    }),
     remove: trpc.admin.user.remove.useMutation({
       onSuccess: () => {
         clearDelete()

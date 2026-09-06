@@ -1,6 +1,21 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { normalizeUpdatePassword, updateUserSchema } from '@/server/admin/user-schema'
+import {
+  createUserSchema,
+  normalizeUpdatePassword,
+  updateUserSchema,
+} from '@/server/admin/user-schema'
+
+describe('createUserSchema', () => {
+  it('accepts invite payload without password', () => {
+    const parsed = createUserSchema.parse({
+      name: 'Jane',
+      email: 'jane@medijob.fr',
+      role: 'RECRUTEUR',
+    })
+    expect(parsed).not.toHaveProperty('password')
+  })
+})
 
 describe('normalizeUpdatePassword', () => {
   it('returns undefined for blank password', () => {

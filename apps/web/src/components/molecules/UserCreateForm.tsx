@@ -15,7 +15,7 @@ type Props = {
 export function UserCreateForm({ submitting, onSubmit, onCancel }: Props) {
   const form = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
-    defaultValues: { role: 'RECRUTEUR', name: '', email: '', password: '' },
+    defaultValues: { role: 'RECRUTEUR', name: '', email: '' },
   })
   const register = form.register as unknown as UseFormRegister<FieldValues>
 
@@ -25,16 +25,20 @@ export function UserCreateForm({ submitting, onSubmit, onCancel }: Props) {
         register={register}
         errors={form.formState.errors}
         showEmail
-        passwordRequired
+        showPassword={false}
+        passwordRequired={false}
         role={form.watch('role')}
         onRoleChange={(value) => form.setValue('role', value as CreateUserInput['role'])}
       />
+      <p className="text-sm text-muted-foreground">
+        Un email d’activation sera envoyé pour choisir le mot de passe.
+      </p>
       <div className="flex justify-end gap-2 border-t border-border/50 pt-4">
         <Button type="button" variant="ghost" onClick={onCancel}>
           Annuler
         </Button>
         <Button type="submit" variant="accent" disabled={submitting} className="shadow-md shadow-accent/20">
-          {submitting ? 'Enregistrement…' : 'Enregistrer'}
+          {submitting ? 'Envoi…' : 'Inviter'}
         </Button>
       </div>
     </form>

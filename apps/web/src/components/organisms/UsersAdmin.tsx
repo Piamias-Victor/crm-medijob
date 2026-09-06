@@ -22,7 +22,7 @@ export function UsersAdmin({ users }: { users: UserListItem[] }) {
   const [modal, setModal] = useState<ModalState>({ kind: 'closed' })
   const [pendingDelete, setPendingDelete] = useState<UserListItem | null>(null)
   const close = () => setModal({ kind: 'closed' })
-  const { create, update, remove } = useUserAdminMutations(close, () => setPendingDelete(null))
+  const { create, update, remove, resendInvite } = useUserAdminMutations(close, () => setPendingDelete(null))
 
   return (
     <>
@@ -34,7 +34,7 @@ export function UsersAdmin({ users }: { users: UserListItem[] }) {
         actions={
           <Button variant="accent" className="shadow-md shadow-accent/20" onClick={() => setModal({ kind: 'create' })}>
             <Plus className="size-4" />
-            Nouvel utilisateur
+            Inviter
           </Button>
         }
       >
@@ -42,9 +42,16 @@ export function UsersAdmin({ users }: { users: UserListItem[] }) {
           users={users}
           onEdit={(user) => setModal({ kind: 'edit', user })}
           onDelete={setPendingDelete}
+          onResendInvite={(user) => resendInvite.mutate({ id: user.id })}
+          resendingId={resendInvite.isPending ? resendInvite.variables?.id : null}
         />
       </SectionCard>
-      <GlassModal open={modal.kind === 'create'} onClose={close} title="Nouvel utilisateur" description="Créez un compte recruteur ou administrateur.">
+      <GlassModal
+        open={modal.kind === 'create'}
+        onClose={close}
+        title="Inviter un utilisateur"
+        description="Un email d’activation sera envoyé pour choisir le mot de passe."
+      >
         <UserCreateForm submitting={create.isPending} onCancel={close} onSubmit={(data: CreateUserInput) => create.mutate(data)} />
       </GlassModal>
       <GlassModal open={modal.kind === 'edit'} onClose={close} title="Modifier l’utilisateur" description="Mettez à jour le profil et les droits d’accès.">
