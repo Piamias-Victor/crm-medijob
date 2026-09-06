@@ -1,5 +1,6 @@
 'use client'
 
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { visibleNavItems, adminNavItem } from '@/lib/navigation'
@@ -20,7 +21,8 @@ export function AppSidebar({ role }: { role: AccessRole }) {
   const open = useSidebarStore((state) => state.open)
   const setOpen = useSidebarStore((state) => state.setOpen)
   const [hovered, setHovered] = useState(false)
-  const expanded = hovered || open
+  const [pinned, setPinned] = useState<boolean | null>(null)
+  const expanded = open || pinned === true || (pinned !== false && hovered)
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
 
@@ -35,8 +37,13 @@ export function AppSidebar({ role }: { role: AccessRole }) {
         />
       ) : null}
       <aside
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseEnter={() => {
+          if (pinned !== false) setHovered(true)
+        }}
+        onMouseLeave={() => {
+          setHovered(false)
+          if (pinned === false) setPinned(null)
+        }}
         className={cn(
           'fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-border bg-white p-2 transition-[width,box-shadow] duration-300 ease-out',
           expanded ? 'shadow-lg' : 'shadow-sm',
@@ -54,6 +61,23 @@ export function AppSidebar({ role }: { role: AccessRole }) {
           ))}
         </nav>
         <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
+          <button
+            type="button"
+            className="flex h-9 w-full items-center gap-3 rounded-md px-2.5 text-fg-muted hover:bg-surface hover:text-fg"
+            aria-expanded={expanded}
+            aria-label={expanded ? 'Replier le menu' : 'Déplier le menu'}
+            onClick={() => {
+              setPinned(!expanded)
+              setHovered(false)
+            }}
+          >
+            {expanded ? (
+              <PanelLeftClose className="size-5 shrink-0" aria-hidden />
+            ) : (
+              <PanelLeftOpen className="size-5 shrink-0" aria-hidden />
+            )}
+            {expanded ? <span className="truncate text-sm">Replier</span> : null}
+          </button>
           {role && can(role, 'admin') ? (
             <NavLink item={adminNavItem} active={isActive(adminNavItem.href)} expanded={expanded} />
           ) : null}

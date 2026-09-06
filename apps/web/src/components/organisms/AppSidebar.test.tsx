@@ -41,6 +41,23 @@ describe('AppSidebar hover expand', () => {
 
     expect(screen.queryByText('Candidats')).not.toBeInTheDocument()
   })
+
+  it('pins expanded from the toggle without hover', () => {
+    render(<AppSidebar role="RECRUTEUR" />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Déplier le menu' }))
+
+    expect(screen.getByText('Candidats')).toBeInTheDocument()
+  })
+
+  it('pins collapsed from the toggle', () => {
+    render(<AppSidebar role="RECRUTEUR" />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Déplier le menu' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Replier le menu' }))
+
+    expect(screen.queryByText('Candidats')).not.toBeInTheDocument()
+  })
 })
 
 describe('AppSidebar admin gating', () => {
