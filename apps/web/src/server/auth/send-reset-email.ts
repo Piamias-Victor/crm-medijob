@@ -7,8 +7,8 @@ export type SendResetEmailInput = {
 }
 
 export type ResetMailerEnv = {
-  RESEND_API_KEY?: string
-  RESEND_FROM?: string
+  BREVO_API_KEY?: string
+  BREVO_SENDER?: string
 }
 
 export type SendResetEmailDeps = {
@@ -16,41 +16,43 @@ export type SendResetEmailDeps = {
   env?: ResetMailerEnv
 }
 
-const RESEND_EMAILS_URL = 'https://api.resend.com/emails'
+const BREVO_SMTP_URL = 'https://api.brevo.com/v3/smtp/email'
 
 function mailerConfig(env: ResetMailerEnv) {
-  const apiKey = env.RESEND_API_KEY?.trim()
-  const from = env.RESEND_FROM?.trim()
-  if (!apiKey || !from) {
+  const apiKey = env.BREVO_API_KEY?.trim()
+  const sender = env.BREVO_SENDER?.trim()
+  if (!apiKey || !sender) {
     throw new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
       message: 'Envoi email indisponible',
     })
   }
-  return { apiKey, from }
+  return { apiKey, sender }
 }
 
-/** Sends the reset link via Resend. Never logs the raw token or URL. */
+/** Sends the reset link via Brevo transactional email. Never logs the raw token or URL. */
 export async function sendResetEmail(
   input: SendResetEmailInput,
   deps: SendResetEmailDeps = {},
 ): Promise<void> {
-  const { apiKey, from } = mailerConfig({
-    RESEND_API_KEY: deps.env?.RESEND_API_KEY ?? process.env.RESEND_API_KEY,
-    RESEND_FROM: deps.env?.RESEND_FROM ?? process.env.RESEND_FROM,
+  const { apiKey, sender } = mailerConfig({
+    BREVO_API_KEY: deps.env?.BREVO_API_KEY ?? process.env.BREVO_API_KEY,
+    BREVO_SENDER: deps.env?.BREVO_SENDER ?? process.env.BREVO_SENDER,
   })
   const fetchFn = deps.fetchFn ?? fetch
-  const res = await fetchFn(RESEND_EMAILS_URL, {
+  const res = await fetchFn(BREVO_SMTP_URL, {
     method: 'POST',
+    cache: 'no-store',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'api-key': apiKey,
     },
     body: JSON.stringify({
-      from,
-      to: [input.email],
+      sender: { email: sender, name: 'MediJob' },
+      to: [{ email: input.email }],
       subject: RESET_EMAIL_SUBJECT,
-      html: resetEmailHtml(input.resetUrl),
+      htmlContent: resetEmailHtml(input.resetUrl),
     }),
   })
   if (!res.ok) {

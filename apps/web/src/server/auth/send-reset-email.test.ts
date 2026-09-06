@@ -4,7 +4,10 @@ import { sendResetEmail } from './send-reset-email'
 
 const resetUrl = 'http://localhost:3000/reset-password?token=secret-raw-token'
 const email = 'user@medijob.fr'
-const env = { RESEND_API_KEY: 're_test', RESEND_FROM: 'MediJob <noreply@medijob.fr>' }
+const env = {
+  BREVO_API_KEY: 'xkeysib-test',
+  BREVO_SENDER: 'recrutement@medijob.fr',
+}
 
 function okFetch() {
   return vi.fn().mockResolvedValue({ ok: true, text: async () => '' })
@@ -13,16 +16,23 @@ function okFetch() {
 describe('sendResetEmail', () => {
   afterEach(() => vi.restoreAllMocks())
 
-  it('sends the reset link to the user mailbox', async () => {
+  it('sends the reset link to the user mailbox via Brevo', async () => {
     const fetchFn = okFetch()
     await sendResetEmail({ email, resetUrl }, { fetchFn, env })
 
     expect(fetchFn).toHaveBeenCalledOnce()
     const [url, init] = fetchFn.mock.calls[0] as [string, RequestInit]
-    expect(url).toBe('https://api.resend.com/emails')
-    const body = JSON.parse(String(init.body)) as { to: string[]; html: string }
-    expect(body.to).toEqual([email])
-    expect(body.html).toContain(resetUrl)
+    expect(url).toBe('https://api.brevo.com/v3/smtp/email')
+    const headers = init.headers as Record<string, string>
+    expect(headers['api-key']).toBe(env.BREVO_API_KEY)
+    const body = JSON.parse(String(init.body)) as {
+      to: { email: string }[]
+      htmlContent: string
+      subject: string
+    }
+    expect(body.to).toEqual([{ email }])
+    expect(body.htmlContent).toContain(resetUrl)
+    expect(body.subject).toContain('mot de passe')
   })
 
   it('does not write the reset URL to logs', async () => {
@@ -47,7 +57,7 @@ describe('sendResetEmail', () => {
     expect(fetchFn).not.toHaveBeenCalled()
   })
 
-  it('fails closed when Resend rejects the send', async () => {
+  it('fails closed when Brevo rejects the send', async () => {
     const fetchFn = vi.fn().mockResolvedValue({ ok: false, text: async () => 'denied' })
     await expect(sendResetEmail({ email, resetUrl }, { fetchFn, env })).rejects.toMatchObject({
       code: 'INTERNAL_SERVER_ERROR',
