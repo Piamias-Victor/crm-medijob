@@ -47,8 +47,13 @@ export function BadakanMissionProposalsSection({ missionId }: Props) {
           key={row.id}
           row={row}
           pending={pending}
-          onStatus={(status) =>
-            setStatus.mutate({ missionId, candidateId: row.candidateId, status })
+          onStatus={(status, amountHt) =>
+            setStatus.mutate({
+              missionId,
+              candidateId: row.candidateId,
+              status,
+              ...(status === 'VALIDE' ? { amountHt: amountHt ?? null } : {}),
+            })
           }
           onRemove={() => remove.mutate({ missionId, candidateId: row.candidateId })}
         />

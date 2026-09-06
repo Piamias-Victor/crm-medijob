@@ -62,7 +62,7 @@ export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
         take: limit,
         include: {
           ...includeReferentials,
-          proposals: { select: { status: true } },
+          proposals: { select: { status: true, amountHt: true } },
         },
       }),
     findById: (id: string) =>

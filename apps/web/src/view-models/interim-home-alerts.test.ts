@@ -4,6 +4,8 @@ import {
   besoinsWeekHref,
   candidatsCreatedWithinHref,
   countUnfilledThisWeek,
+  listUnfilledThisWeek,
+  toHomeAlertCandidates,
 } from '@/view-models/interim-home-alerts'
 import type { BadakanNeedListItem } from '@/view-models/badakan-need-list'
 
@@ -36,5 +38,38 @@ describe('interim home alerts', () => {
     expect(
       countUnfilledThisWeek([{ ...base, staffedRecipients: 1 }], now),
     ).toBe(0)
+  })
+
+  it('lists unfilled needs this week with pharmacy job period href', () => {
+    const now = new Date('2026-09-09T12:00:00Z')
+    const other: BadakanNeedListItem = {
+      ...base,
+      id: 'n2',
+      periods: [{ start: '2026-10-01', end: '2026-10-02' }],
+    }
+    expect(listUnfilledThisWeek([base, other], now)).toEqual([
+      {
+        id: 'n1',
+        pharmacyName: 'Pharma',
+        jobTitleLabel: 'Pharmacien',
+        periodLabel: 'x',
+        href: '/interim/missions/n1',
+      },
+    ])
+  })
+
+  it('maps recent candidates to home alert rows', () => {
+    expect(
+      toHomeAlertCandidates([
+        { id: 'c1', firstName: 'Ada', lastName: 'Lovelace', jobTitle: { name: 'Pharmacien' } },
+      ]),
+    ).toEqual([
+      {
+        id: 'c1',
+        name: 'Ada Lovelace',
+        jobTitle: 'Pharmacien',
+        href: '/candidats/c1',
+      },
+    ])
   })
 })
