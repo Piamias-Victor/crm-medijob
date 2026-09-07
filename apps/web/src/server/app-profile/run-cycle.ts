@@ -1,4 +1,5 @@
 import { syncAppProfiles } from '@/server/app-profile/sync'
+import { mergeBadakanRecipients } from '@/server/app-profile/merge-badakan-recipients'
 import {
   defaultAppProfileCycleDeps,
   type AppProfileCycleDeps,
@@ -14,15 +15,18 @@ export async function runAppProfileCycle(
     return { skipped: true as const }
   }
   const resolved = deps ?? defaultAppProfileCycleDeps(env)
+  const newcomers = await resolved.client.searchNewEmployees()
+  const employees = await resolved.client.searchEmployees()
+  const inactive = await resolved.probeInactive(employees)
+  const validated = await resolved.syncValidated(
+    mergeBadakanRecipients(newcomers, employees, inactive),
+  )
   const sync = await syncAppProfiles({
-    searchNewEmployees: () => resolved.client.searchNewEmployees(),
+    searchNewEmployees: async () => newcomers,
     findByBadakanIds: resolved.findByBadakanIds,
     upsertPending: resolved.upsertPending,
     findJobTitleIdByName: resolved.findJobTitleIdByName,
   })
-  const employees = await resolved.client.searchEmployees()
-  const inactive = await resolved.probeInactive(employees)
-  const validated = await resolved.syncValidated([...employees, ...inactive])
   const invite = await resolved.inviteDue()
   const missions = await resolved.syncMissions()
   const enterprises = await resolved.syncEnterprises()

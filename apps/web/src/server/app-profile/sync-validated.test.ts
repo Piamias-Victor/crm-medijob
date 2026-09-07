@@ -112,7 +112,10 @@ describe('syncAppValidated', () => {
 
   it('fills software and notes from Badakan comments on create', async () => {
     const deps = stubValidatedDeps({
+      mapJobTitleId: async () => null,
+      resolveJobTitleId: async () => null,
       enrichFromComments: async () => ({
+        jobTitleId: 'jt1',
         notes: 'Logiciel LGPI.',
         softwareIds: ['sw-lgpi'],
         availableFrom: new Date('2026-09-15T00:00:00.000Z'),
@@ -129,8 +132,18 @@ describe('syncAppValidated', () => {
     )
   })
 
+  it('does not fetch comments when a métier already resolves', async () => {
+    const enrichFromComments = vi.fn()
+    const deps = stubValidatedDeps({ enrichFromComments })
+    await syncAppValidated([marieValidated], deps)
+    expect(enrichFromComments).not.toHaveBeenCalled()
+    expect(deps.createAppCandidate).toHaveBeenCalled()
+  })
+
   it('uses the job title read from comments when Badakan has no activity', async () => {
     const deps = stubValidatedDeps({
+      mapJobTitleId: async () => null,
+      resolveJobTitleId: async () => null,
       enrichFromComments: async () => ({ jobTitleId: 'jt-prepa' }),
     })
     await syncAppValidated([marieValidated], deps)

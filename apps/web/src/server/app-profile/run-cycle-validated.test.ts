@@ -18,9 +18,9 @@ const completed = mapBadakanRecipient({
 })!
 
 describe('runAppProfileCycle App-validated', () => {
-  it('keeps CREATED in Profils app without creating Candidate', async () => {
+  it('sends Profils app newcomers into CVthèque sync', async () => {
     const upsertPending = vi.fn()
-    const syncValidated = vi.fn().mockResolvedValue({ created: 0, linked: 0, skipped: 0 })
+    const syncValidated = vi.fn().mockResolvedValue({ created: 1, linked: 0, skipped: 0 })
     await runAppProfileCycle(
       env,
       stubCycleDeps({
@@ -32,8 +32,8 @@ describe('runAppProfileCycle App-validated', () => {
         syncValidated,
       }),
     )
+    expect(syncValidated).toHaveBeenCalledWith([created])
     expect(upsertPending).toHaveBeenCalledTimes(1)
-    expect(syncValidated).toHaveBeenCalledWith([])
   })
 
   it('syncs App-validated before Hireflix inviteDue', async () => {
