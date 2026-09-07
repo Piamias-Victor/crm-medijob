@@ -9,7 +9,7 @@ describe('syncAppValidated dossier', () => {
     expect(syncDossier).toHaveBeenCalledWith('c-new', 'bk-marie')
   })
 
-  it('copies dossier onto existing and linked Candidates', async () => {
+  it('does not refetch dossier for a Candidate already linked by badakanId', async () => {
     const syncDossier = vi.fn()
     await syncAppValidated(
       [marieValidated],
@@ -18,9 +18,11 @@ describe('syncAppValidated dossier', () => {
         syncDossier,
       }),
     )
-    expect(syncDossier).toHaveBeenCalledWith('c-existing', 'bk-marie')
+    expect(syncDossier).not.toHaveBeenCalled()
+  })
 
-    syncDossier.mockClear()
+  it('copies dossier onto first email-link Candidate', async () => {
+    const syncDossier = vi.fn()
     await syncAppValidated(
       [marieValidated],
       stubValidatedDeps({
