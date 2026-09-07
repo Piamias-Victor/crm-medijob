@@ -2,7 +2,7 @@ import type { InviteDueDeps, InviteDueProfile } from './invite-due.types'
 
 async function stillPending(id: string, deps: InviteDueDeps) {
   const live = await deps.findById(id)
-  return live?.status === 'EN_ATTENTE'
+  return live != null && live.status !== 'IGNORE'
 }
 
 export async function inviteOneAppProfile(

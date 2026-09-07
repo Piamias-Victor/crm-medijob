@@ -12,6 +12,7 @@ export function makeWeeklyAvailabilitySmsRepository(db: PrismaClient) {
           ...NOT_DELETED,
           origin: 'APP',
           status: { not: 'INACTIF' },
+          badakanValidatedAt: { not: null },
           OR: [
             { weeklyAvailabilityToken: null },
             { weeklyAvailabilityToken: { smsSentAt: null } },

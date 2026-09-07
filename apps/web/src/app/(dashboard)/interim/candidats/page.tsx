@@ -24,6 +24,7 @@ export default async function Page({ searchParams }: Props) {
       normalizeCvthequeFilterValues(deserializeFilters(filterConfig, url)),
     ),
     createdWithinHours: parseCreatedWithinHours(url.get('createdWithinHours')),
+    validatedWithinHours: parseCreatedWithinHours(url.get('validatedWithinHours')),
   }
   const [list, declared] = await Promise.all([
     caller.candidate.list(serverFilters),

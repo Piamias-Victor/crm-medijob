@@ -59,6 +59,7 @@ export function toCandidateListFilters(values: CvthequeFilterValues): CandidateL
     city: city || undefined,
     maxMobilityKm,
     declaredAvailability: normalized.disposDeclarees ?? undefined,
+    badakanValidated: normalized.valideBadakan ?? undefined,
   }
 }
 
