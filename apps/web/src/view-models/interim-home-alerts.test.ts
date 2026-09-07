@@ -27,9 +27,9 @@ const base: BadakanNeedListItem = {
 }
 
 describe('interim home alerts', () => {
-  it('builds besoins week and candidats createdWithin hrefs', () => {
+  it('builds besoins week and candidats validatedWithin hrefs', () => {
     expect(besoinsWeekHref()).toBe('/interim/besoins?week=current')
-    expect(candidatsCreatedWithinHref(24)).toBe('/interim/candidats?createdWithinHours=24')
+    expect(candidatsCreatedWithinHref(24)).toBe('/interim/candidats?validatedWithinHours=24')
   })
 
   it('counts open needs overlapping the current week', () => {

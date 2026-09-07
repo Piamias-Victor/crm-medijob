@@ -27,7 +27,7 @@ export function besoinsWeekHref(): string {
 }
 
 export function candidatsCreatedWithinHref(hours: number): string {
-  return `/interim/candidats?createdWithinHours=${hours}`
+  return `/interim/candidats?validatedWithinHours=${hours}`
 }
 
 export function listUnfilledThisWeek(

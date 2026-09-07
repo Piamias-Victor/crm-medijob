@@ -36,6 +36,7 @@ const baseProfile = {
   anonymizedProfile: null,
   consentGivenAt: null,
   consentSource: null,
+  badakanValidatedAt: null,
   jobTitle: { id: 'jt1', name: 'Pharmacien' },
   referent: { id: 'u1', name: 'Bob Réf' },
   softwares: [],

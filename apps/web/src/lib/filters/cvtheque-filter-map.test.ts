@@ -39,4 +39,10 @@ describe('toCandidateListFilters', () => {
   it('mappe origine App', () => {
     expect(toCandidateListFilters({ ...defaults, origine: ['APP'] })).toEqual({ origins: ['APP'] })
   })
+
+  it('mappe validé Badakan', () => {
+    expect(toCandidateListFilters({ ...defaults, valideBadakan: true })).toEqual({
+      badakanValidated: true,
+    })
+  })
 })

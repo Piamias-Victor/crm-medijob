@@ -34,6 +34,7 @@ export function defaultSyncValidatedDeps(): SyncValidatedDeps {
     mapJobTitleId: async (label) => jobTitleIdFromActivity(label, await listTitles()),
     syncDossier: syncCandidateDossier,
     enrichFromComments: enrichAppCandidateFromComments,
+    markBadakanValidated: candidateRepository.markBadakanValidated,
     returnToInbox: (row, existing) =>
       returnNotValidatedToInbox(row, existing, {
         findAppProfileByBadakanId: appProfileRepository.findByBadakanId,

@@ -36,7 +36,7 @@ export function InterimHomeAlerts({ unfilledThisWeek, newCandidates }: Props) {
           title="Nouveaux candidats (< 24 h)"
           count={newCandidates.count}
           href={newCandidates.href}
-          hint="Ouvre Candidats créés depuis moins de 24 heures"
+          hint="Ouvre Candidats validés Badakan depuis moins de 24 heures"
           rows={newCandidates.rows.map((row) => ({
             id: row.id,
             title: row.name,
