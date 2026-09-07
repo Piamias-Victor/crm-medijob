@@ -37,7 +37,6 @@ export function stubCycleDeps(overrides: CycleOverrides = {}): AppProfileCycleDe
     syncMissions: async () => emptySyncCount,
     syncEnterprises: async () => emptySyncCount,
     syncContracts: async () => emptySyncCount,
-    smsDue: async () => ({ sent: 0, skippedNoPhone: 0, skippedOutOfZone: 0, failed: 0 }),
     ...rest,
   }
 }

@@ -23,7 +23,6 @@ export async function runAppProfileCycle(
   const employees = await resolved.client.searchEmployees()
   const inactive = await resolved.probeInactive(employees)
   const validated = await resolved.syncValidated([...employees, ...inactive])
-  const sms = await resolved.smsDue()
   const invite = await resolved.inviteDue()
   const missions = await resolved.syncMissions()
   const enterprises = await resolved.syncEnterprises()
@@ -35,6 +34,5 @@ export async function runAppProfileCycle(
     missions,
     enterprises,
     contracts,
-    sms,
   }
 }

@@ -63,4 +63,30 @@ describe('mapBadakanRecipient', () => {
       iban: 'FR7612345678901234567890185',
     })
   })
+
+  it('maps listing isValid and GET valid onto isValid', () => {
+    expect(
+      mapBadakanRecipient({
+        id: 'bk-marie',
+        firstName: 'Marie',
+        lastName: 'App',
+        isValid: true,
+      })?.isValid,
+    ).toBe(true)
+    expect(
+      mapBadakanRecipient({
+        id: 'bk-marie',
+        firstName: 'Marie',
+        lastName: 'App',
+        valid: true,
+      })?.isValid,
+    ).toBe(true)
+    expect(
+      mapBadakanRecipient({
+        id: 'bk-marie',
+        firstName: 'Marie',
+        lastName: 'App',
+      })?.isValid,
+    ).toBe(false)
+  })
 })

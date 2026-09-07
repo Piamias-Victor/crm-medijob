@@ -3,16 +3,11 @@ import { identityPatchFromBadakan } from './merge-badakan-identity'
 import { inactivateIfSuspended, restoreIfCompleted } from './sync-validated-lifecycle'
 import type { SyncValidatedDeps, SyncValidatedResult } from './sync-validated.types'
 
-// A profile that already left the inbox keeps its status, but it must still point at the
-// Candidate: an erased then resynced fiche would otherwise leave the link dangling.
 async function attachAppProfile(badakanId: string, candidateId: string, deps: SyncValidatedDeps) {
   const profile = await deps.findAppProfileByBadakanId(badakanId)
   if (!profile) return
-  if (profile.status === 'EN_ATTENTE') {
-    await deps.markAppValidated(profile.id, candidateId)
-    return
-  }
-  if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
+  if (profile.status === 'EN_ATTENTE') await deps.markAppValidated(profile.id, candidateId)
+  else if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
 }
 
 async function patchIdentityFromRow(
@@ -45,6 +40,11 @@ export async function syncAppValidated(
   const result: SyncValidatedResult = { created: 0, linked: 0, skipped: 0 }
   for (const row of rows) {
     if (await inactivateIfSuspended(row, deps)) {
+      result.skipped += 1
+      continue
+    }
+    if (!row.isValid) {
+      await deps.returnToInbox(row, await deps.findByBadakanId(row.badakanId))
       result.skipped += 1
       continue
     }

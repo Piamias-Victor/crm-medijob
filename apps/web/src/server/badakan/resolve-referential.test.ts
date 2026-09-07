@@ -22,10 +22,15 @@ describe('resolveJobTitleId', () => {
   it.each([
     ['Préparateur Débutant', 'jt-preparateur'],
     ['Préparateur Expert', 'jt-preparateur'],
+    ['Préparateur Confirmé', 'jt-preparateur'],
     ['Pharmacien Confirmé', 'jt-pharmacien'],
+    ['Pharmacien Expert', 'jt-pharmacien'],
+    ['Pharmacien Débutant', 'jt-pharmacien'],
     ['Rayonniste / réceptionnaire', 'jt-rayonniste'],
     ['Conseiller en parapharmacie', 'jt-conseiller'],
     ['Etudiant en pharmacie 4A', 'jt-etudiant'],
+    ['Etudiant en pharmacie confirmé', 'jt-etudiant'],
+    ['Etudiant en pharmacie Débutant', 'jt-etudiant'],
   ])('maps the Badakan activity %s', (label, expected) => {
     expect(resolveJobTitleId(label, jobTitles)).toBe(expected)
   })
