@@ -15,6 +15,7 @@ export const CVTHEQUE_ADVANCED_FILTER_IDS = [
   'missionActive',
   'mobilite',
   'disposDeclarees',
+  'valideBadakan',
 ] as const
 
 export function buildCvthequeFilterConfig(refs: {
@@ -84,6 +85,7 @@ export function buildCvthequeFilterConfig(refs: {
       placeholder: 'Ex. 30',
     },
     { id: 'disposDeclarees', label: 'Dispos déclarées', type: 'boolean' },
+    { id: 'valideBadakan', label: 'Validé Badakan', type: 'boolean' },
   ] as const satisfies readonly FilterConfig[]
 }
 

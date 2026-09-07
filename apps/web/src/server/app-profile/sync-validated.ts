@@ -1,5 +1,8 @@
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
-import { identityPatchFromBadakan } from './merge-badakan-identity'
+import {
+  identityPatchFromBadakan,
+  type ExistingBadakanIdentity,
+} from './merge-badakan-identity'
 import { inactivateIfSuspended, restoreIfCompleted } from './sync-validated-lifecycle'
 import type { SyncValidatedDeps, SyncValidatedResult } from './sync-validated.types'
 
@@ -14,11 +17,12 @@ async function patchIdentityFromRow(
   row: BadakanRecipient,
   candidateId: string,
   deps: SyncValidatedDeps,
+  existing?: ExistingBadakanIdentity | null,
 ) {
   const jobTitleId = row.activityLabel
     ? await deps.mapJobTitleId(row.activityLabel)
     : null
-  const patch = identityPatchFromBadakan(row, jobTitleId)
+  const patch = identityPatchFromBadakan(row, jobTitleId, existing)
   if (Object.keys(patch).length === 0) return
   await deps.patchIdentity(candidateId, patch)
 }
@@ -43,15 +47,13 @@ export async function syncAppValidated(
       result.skipped += 1
       continue
     }
-    if (!row.isValid) {
-      await deps.returnToInbox(row, await deps.findByBadakanId(row.badakanId))
-      result.skipped += 1
-      continue
-    }
     const existing = await deps.findByBadakanId(row.badakanId)
     if (existing) {
       await restoreIfCompleted(existing, deps)
-      await patchIdentityFromRow(row, existing.id, deps)
+      if (row.isValid && !existing.badakanValidatedAt) {
+        await deps.markBadakanValidated(existing.id)
+      }
+      await patchIdentityFromRow(row, existing.id, deps, existing)
       await attachAppProfile(row.badakanId, existing.id, deps)
       await deps.syncDossier(existing.id, row.badakanId)
       result.skipped += 1
@@ -65,7 +67,8 @@ export async function syncAppValidated(
     })
     if (match) {
       await deps.linkAppOrigin(match.id, row.badakanId)
-      await patchIdentityFromRow(row, match.id, deps)
+      if (row.isValid) await deps.markBadakanValidated(match.id)
+      await patchIdentityFromRow(row, match.id, deps, match)
       await attachAppProfile(row.badakanId, match.id, deps)
       await deps.syncDossier(match.id, row.badakanId)
       result.linked += 1
@@ -92,6 +95,7 @@ export async function syncAppValidated(
       badakanId: row.badakanId,
     })
     await attachAppProfile(row.badakanId, created.id, deps)
+    if (row.isValid) await deps.markBadakanValidated(created.id)
     await deps.syncDossier(created.id, row.badakanId)
     result.created += 1
   }

@@ -3,7 +3,7 @@ import { inviteDueAppProfiles } from './invite-due'
 import { inviteDeps, inviteProfile } from './invite-due.fixtures'
 
 describe('inviteDueAppProfiles cancel', () => {
-  it('does not mail if the AppProfile left EN_ATTENTE', async () => {
+  it('does not mail if the AppProfile is IGNORE', async () => {
     const pending = inviteProfile()
     const ignored = inviteProfile({ status: 'IGNORE' })
     const d = inviteDeps({
@@ -16,7 +16,7 @@ describe('inviteDueAppProfiles cancel', () => {
     expect(d.saveSent).not.toHaveBeenCalled()
   })
 
-  it('cancels Hireflix when AppProfile is App-validated', async () => {
+  it('still mails Hireflix when AppProfile is App-validated', async () => {
     const pending = inviteProfile()
     const validated = inviteProfile({ status: 'APP_VALIDATED' })
     const d = inviteDeps({
@@ -24,7 +24,8 @@ describe('inviteDueAppProfiles cancel', () => {
       findById: async () => validated,
     })
     const result = await inviteDueAppProfiles(d)
-    expect(result.cancelled).toBe(1)
-    expect(d.sendInviteEmail).not.toHaveBeenCalled()
+    expect(result.sent).toBe(1)
+    expect(d.sendInviteEmail).toHaveBeenCalled()
+    expect(d.saveSent).toHaveBeenCalledWith('p1')
   })
 })

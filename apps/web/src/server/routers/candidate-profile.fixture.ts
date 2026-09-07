@@ -28,6 +28,7 @@ export const profileFixture = {
   anonymizedProfile: null,
   consentGivenAt: null,
   consentSource: null,
+  badakanValidatedAt: null,
   createdAt: new Date('2026-01-15'),
   updatedAt: new Date('2026-01-15'),
   deletedAt: null,

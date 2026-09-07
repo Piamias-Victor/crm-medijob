@@ -46,6 +46,7 @@ export function stubValidatedDeps(
     mapJobTitleId: async () => null,
     syncDossier: vi.fn(),
     enrichFromComments: async () => ({}),
+    markBadakanValidated: vi.fn(),
     returnToInbox: vi.fn(),
     ...overrides,
   }

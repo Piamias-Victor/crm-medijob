@@ -13,6 +13,7 @@ import {
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import { toCandidateTableRows } from '@/view-models/candidate-list-vm'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
+import { mergeCandidateListWindowFilters } from '@/view-models/candidate-list-window-filters'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
 
 type InitialList = { rows: RawCandidate[]; stages: RawStage[] }
@@ -24,7 +25,7 @@ export function useCvthequeListQuery(
   onCountChange?: (count: number) => void,
 ) {
   const { values, filters, onChange, reset } = useEntityFilters(filterConfig, {
-    preserveSearchParams: ['tab'],
+    preserveSearchParams: ['tab', 'createdWithinHours', 'validatedWithinHours'],
   })
 
   const setFilters = useCallback(
@@ -33,8 +34,12 @@ export function useCvthequeListQuery(
   )
 
   const apiFilters = useMemo(
-    () => toCandidateListFilters(normalizeCvthequeFilterValues(filters)),
-    [filters],
+    () =>
+      mergeCandidateListWindowFilters(
+        toCandidateListFilters(normalizeCvthequeFilterValues(filters)),
+        serverFilters,
+      ),
+    [filters, serverFilters],
   )
   const listQuery = trpc.candidate.list.useQuery(apiFilters, {
     placeholderData: keepPreviousData,

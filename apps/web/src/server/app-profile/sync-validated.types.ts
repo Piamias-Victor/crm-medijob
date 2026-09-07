@@ -15,6 +15,18 @@ export type LinkedAppCandidate = {
   origin: 'APP' | 'CRM'
   status: CandidateStatus
   statusBeforeInactive: CandidateStatus | null
+  badakanValidatedAt?: Date | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  city?: string | null
+  postalCode?: string | null
+  jobTitleId?: string | null
+  jobTitleName?: string | null
+  nir?: string | null
+  iban?: string | null
 }
 
 export type SyncValidatedDeps = {
@@ -38,6 +50,7 @@ export type SyncValidatedDeps = {
   mapJobTitleId: (activityLabel: string) => Promise<string | null>
   syncDossier: (candidateId: string, badakanId: string) => Promise<unknown>
   enrichFromComments: (badakanId: string) => Promise<CommentIntakePatch>
+  markBadakanValidated: (candidateId: string) => Promise<unknown>
   returnToInbox: (
     row: BadakanRecipient,
     existing: LinkedAppCandidate | null,

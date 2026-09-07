@@ -47,6 +47,19 @@ export function buildCandidateListWhere(
       createdAt: { gte: new Date(now.getTime() - filters.createdWithinHours * 3_600_000) },
     })
   }
+  if (filters.validatedWithinHours != null) {
+    clauses.push({
+      badakanValidatedAt: {
+        gte: new Date(now.getTime() - filters.validatedWithinHours * 3_600_000),
+      },
+    })
+  }
+  if (filters.badakanValidated === true) {
+    clauses.push({ badakanValidatedAt: { not: null } })
+  }
+  if (filters.badakanValidated === false) {
+    clauses.push({ badakanValidatedAt: null })
+  }
 
   if (clauses.length === 0) return {}
   if (clauses.length === 1) return clauses[0]!
