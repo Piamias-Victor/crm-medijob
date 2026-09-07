@@ -74,9 +74,13 @@ export async function syncAppValidated(
       result.linked += 1
       continue
     }
-    const intake = await deps.enrichFromComments(row.badakanId)
-    const jobTitleId = await resolveCreateJobTitleId(row, intake.jobTitleId, deps)
-    if (!jobTitleId) {
+    const jobTitleId = await resolveCreateJobTitleId(row, undefined, deps)
+    const intake = jobTitleId
+      ? {}
+      : await deps.enrichFromComments(row.badakanId)
+    const resolved =
+      jobTitleId ?? intake.jobTitleId ?? (await deps.resolveJobTitleId(row.activityLabel))
+    if (!resolved) {
       result.skipped += 1
       continue
     }
@@ -89,7 +93,7 @@ export async function syncAppValidated(
       address: row.address,
       city: row.city,
       postalCode: row.postalCode,
-      jobTitleId,
+      jobTitleId: resolved,
       origin: 'APP',
       status: 'NOUVEAU',
       badakanId: row.badakanId,
