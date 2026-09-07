@@ -65,4 +65,17 @@ describe('appProfileRepository', () => {
       data: { status: 'EN_ATTENTE', candidateId: null },
     })
   })
+
+  it('lists convert queue oldest first', async () => {
+    const db = mockDb()
+    db.appProfile.findMany.mockResolvedValue([])
+    const repo = makeAppProfileRepository(db as never)
+    await repo.listConvertQueue()
+    expect(db.appProfile.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { status: 'EN_ATTENTE' },
+        orderBy: { createdAt: 'asc' },
+      }),
+    )
+  })
 })

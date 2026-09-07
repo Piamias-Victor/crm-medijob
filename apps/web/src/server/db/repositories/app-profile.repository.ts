@@ -76,6 +76,12 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         where: { id },
         data: { status: 'EN_ATTENTE', candidateId: null },
       }),
+    listConvertQueue: () =>
+      db.appProfile.findMany({
+        where: { status: 'EN_ATTENTE' },
+        orderBy: { createdAt: 'asc' },
+        select: { badakanId: true, createdAt: true },
+      }),
   }
 }
 

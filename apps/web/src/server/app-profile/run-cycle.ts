@@ -1,5 +1,6 @@
 import { syncAppProfiles } from '@/server/app-profile/sync'
 import { mergeBadakanRecipients } from '@/server/app-profile/merge-badakan-recipients'
+import { orderConvertBatch } from '@/server/app-profile/convert-batch'
 import {
   defaultAppProfileCycleDeps,
   type AppProfileCycleDeps,
@@ -18,8 +19,9 @@ export async function runAppProfileCycle(
   const newcomers = await resolved.client.searchNewEmployees()
   const employees = await resolved.client.searchEmployees()
   const inactive = await resolved.probeInactive(employees)
+  const pending = await resolved.listConvertQueue()
   const validated = await resolved.syncValidated(
-    mergeBadakanRecipients(newcomers, employees, inactive),
+    orderConvertBatch(mergeBadakanRecipients(newcomers, employees, inactive), pending),
   )
   const sync = await syncAppProfiles({
     searchNewEmployees: async () => newcomers,
