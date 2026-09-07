@@ -6,11 +6,13 @@ import type { DuplicateIdentity } from '@/server/candidate/detect-duplicate.type
 import type { CandidateStatus } from '@/view-models/candidate-status'
 import type { AppLifecyclePatch } from '@/server/db/repositories/candidate-app-lifecycle.repo'
 import type { CommentIntakePatch } from '@/server/app-profile/enrich-from-comments'
+import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 
 export type { AppCandidateCreate, AppIdentityPatch }
 
 export type LinkedAppCandidate = {
   id: string
+  origin: 'APP' | 'CRM'
   status: CandidateStatus
   statusBeforeInactive: CandidateStatus | null
 }
@@ -36,6 +38,10 @@ export type SyncValidatedDeps = {
   mapJobTitleId: (activityLabel: string) => Promise<string | null>
   syncDossier: (candidateId: string, badakanId: string) => Promise<unknown>
   enrichFromComments: (badakanId: string) => Promise<CommentIntakePatch>
+  returnToInbox: (
+    row: BadakanRecipient,
+    existing: LinkedAppCandidate | null,
+  ) => Promise<unknown>
 }
 
 export type SyncValidatedResult = {

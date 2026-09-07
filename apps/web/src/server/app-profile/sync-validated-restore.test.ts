@@ -8,6 +8,7 @@ describe('syncAppValidated restore COMPLETED', () => {
     const deps = stubValidatedDeps({
       findByBadakanId: async () => ({
         id: 'c-marie',
+        origin: 'APP',
         status: 'INACTIF',
         statusBeforeInactive: 'QUALIFIE',
       }),
@@ -28,6 +29,7 @@ describe('syncAppValidated restore COMPLETED', () => {
       stubValidatedDeps({
         findByBadakanId: async () => ({
           id: 'c-marie',
+          origin: 'APP',
           status: 'INACTIF',
           statusBeforeInactive: null,
         }),
@@ -44,6 +46,7 @@ describe('syncAppValidated restore COMPLETED', () => {
       stubValidatedDeps({
         findByBadakanId: async () => ({
           id: 'c-marie',
+          origin: 'APP',
           status: 'BLACKLISTE',
           statusBeforeInactive: 'QUALIFIE',
         }),

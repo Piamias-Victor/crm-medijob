@@ -20,7 +20,6 @@ function persistFields(data: BadakanMissionToPersist) {
     periods: data.periods as Prisma.InputJsonValue,
     activityId: data.activityId,
     activityLabel: data.activityLabel,
-    jobTitleId: data.jobTitleId,
     softwareId: data.softwareId,
     address: data.address,
     city: data.city,
@@ -86,10 +85,12 @@ export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
         where: { badakanId: data.badakanId },
         create: {
           ...persistFields(data),
+          jobTitleId: data.jobTitleId,
           searchApplied: { create: data.searchApplied },
         },
         update: {
           ...persistFields(data),
+          ...(data.jobTitleId ? { jobTitleId: data.jobTitleId } : {}),
           searchApplied: { deleteMany: {}, create: data.searchApplied },
         },
       }),
