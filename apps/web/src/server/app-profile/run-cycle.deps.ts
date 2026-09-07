@@ -18,6 +18,7 @@ import { candidateRepository } from '@/server/db/repositories/candidate.reposito
 import { probeInactiveRecipients } from '@/server/app-profile/sync-validated-probe'
 import type { InviteDueResult } from '@/server/app-profile/invite-due.types'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
+import type { ConvertQueueItem } from '@/server/app-profile/convert-batch'
 
 export type AppProfileCycleDeps = {
   client: BadakanClient
@@ -27,6 +28,7 @@ export type AppProfileCycleDeps = {
   inviteDue: () => Promise<InviteDueResult>
   syncValidated: (rows: BadakanRecipient[]) => Promise<SyncValidatedResult>
   probeInactive: (completed: BadakanRecipient[]) => Promise<BadakanRecipient[]>
+  listConvertQueue: () => Promise<ConvertQueueItem[]>
   syncMissions: () => Promise<{ fetched: number; upserted: number }>
   syncEnterprises: () => Promise<{ fetched: number; upserted: number }>
   syncContracts: () => Promise<{ fetched: number; upserted: number }>
@@ -50,6 +52,7 @@ export function defaultAppProfileCycleDeps(
         listLinked: candidateRepository.listAppLinkedBadakanIds,
         getRecipient: (id) => client.getRecipient(id),
       }),
+    listConvertQueue: appProfileRepository.listConvertQueue,
     syncMissions: () =>
       syncBadakanMissions({
         searchMissions: () => client.searchMissions(),

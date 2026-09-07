@@ -34,6 +34,7 @@ export function stubCycleDeps(overrides: CycleOverrides = {}): AppProfileCycleDe
     inviteDue: async () => emptyInvite,
     syncValidated: async () => ({ created: 0, linked: 0, skipped: 0 }),
     probeInactive: async () => [],
+    listConvertQueue: async () => [],
     syncMissions: async () => emptySyncCount,
     syncEnterprises: async () => emptySyncCount,
     syncContracts: async () => emptySyncCount,
