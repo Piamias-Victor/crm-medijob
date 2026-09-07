@@ -24,6 +24,7 @@ export type BadakanRecipient = {
   nir: string | null
   iban: string | null
   status: BadakanEmployeeStatus | null
+  isValid: boolean
   snapshot: BadakanRecipientRaw
 }
 
@@ -64,6 +65,7 @@ export function mapBadakanRecipient(raw: unknown): BadakanRecipient | null {
     nir: present(r.healthCareNumber),
     iban: present(r.bankAccount?.iban),
     status: mapBadakanEmployeeStatus(r.status),
+    isValid: r.isValid === true || r.valid === true,
     snapshot: r,
   }
 }

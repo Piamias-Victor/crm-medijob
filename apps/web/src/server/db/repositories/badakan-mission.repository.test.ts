@@ -46,6 +46,32 @@ describe('badakanMissionRepository', () => {
     )
   })
 
+  it('keeps an existing job title when resolve returns null', async () => {
+    const db = mockDb()
+    db.badakanMission.upsert.mockResolvedValue({ id: 'row1' })
+    const repo = makeBadakanMissionRepository(db as never)
+    await repo.upsertFromRead(mapped)
+    const payload = db.badakanMission.upsert.mock.calls[0]?.[0] as {
+      create: { jobTitleId: unknown }
+      update: { jobTitleId?: unknown }
+    }
+    expect(payload.create.jobTitleId).toBeNull()
+    expect(payload.update).not.toHaveProperty('jobTitleId')
+  })
+
+  it('writes the resolved job title on create and update', async () => {
+    const db = mockDb()
+    db.badakanMission.upsert.mockResolvedValue({ id: 'row1' })
+    const repo = makeBadakanMissionRepository(db as never)
+    await repo.upsertFromRead({ ...mapped, jobTitleId: 'jt-prep' })
+    expect(db.badakanMission.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({ jobTitleId: 'jt-prep' }),
+        update: expect.objectContaining({ jobTitleId: 'jt-prep' }),
+      }),
+    )
+  })
+
   it('upserts SEARCH_APPLIED applicants on a Badakan mission', async () => {
     const db = mockDb()
     db.badakanMission.upsert.mockResolvedValue({ id: 'row1' })
@@ -97,6 +123,7 @@ describe('badakanMissionRepository', () => {
         include: {
           jobTitle: { select: { name: true } },
           software: { select: { name: true } },
+          proposals: { select: { status: true } },
         },
       }),
     )

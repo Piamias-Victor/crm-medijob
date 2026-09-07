@@ -35,6 +35,8 @@ export const badakanRecipientSchema = z
       .nullable(),
     city: z.string().optional().nullable(),
     zipCode: z.string().optional().nullable(),
+    isValid: z.boolean().optional().nullable(),
+    valid: z.boolean().optional().nullable(),
     activity: activityItem.optional().nullable(),
     activities: z.array(activityItem).optional().nullable(),
     healthCareNumber: z.string().optional().nullable(),

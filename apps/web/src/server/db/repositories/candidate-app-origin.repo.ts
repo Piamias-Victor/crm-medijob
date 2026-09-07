@@ -40,7 +40,7 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
     findByBadakanId: (badakanId: string) =>
       db.candidate.findFirst({
         where: { badakanId, ...NOT_DELETED },
-        select: { id: true, status: true, statusBeforeInactive: true },
+        select: { id: true, origin: true, status: true, statusBeforeInactive: true },
       }),
     createAppCandidate: (data: AppOriginCreateInput) =>
       db.candidate.create({
@@ -51,6 +51,12 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
       db.candidate.update({
         where: { id },
         data: { origin: 'APP', badakanId },
+        select: { id: true },
+      }),
+    unlinkAppOrigin: (id: string) =>
+      db.candidate.update({
+        where: { id },
+        data: { origin: 'CRM', badakanId: null },
         select: { id: true },
       }),
     patchAppIdentity: (id: string, patch: AppIdentityPatch) =>
