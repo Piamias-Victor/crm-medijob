@@ -12,7 +12,7 @@ export default async function Page() {
   const caller = await createServerCaller()
   const [needs, recent] = await Promise.all([
     caller.badakanMission.listAllNeeds(),
-    caller.candidate.list({ createdWithinHours: 24 }),
+    caller.candidate.list({ validatedWithinHours: 24 }),
   ])
   const missionRows = listUnfilledThisWeek(needs)
   const candidateRows = toHomeAlertCandidates(recent.rows)

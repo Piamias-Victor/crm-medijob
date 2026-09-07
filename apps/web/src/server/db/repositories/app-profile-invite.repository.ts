@@ -6,7 +6,7 @@ export function makeAppProfileInviteRepository(db: PrismaClient = defaultDb) {
   return {
     listDue: () =>
       db.appProfile.findMany({
-        where: { status: 'EN_ATTENTE', inviteEmailSentAt: null },
+        where: { status: { not: 'IGNORE' }, inviteEmailSentAt: null },
         orderBy: { createdAt: 'asc' },
       }),
     saveHireflix: (id: string, data: HireflixInviteResult) =>

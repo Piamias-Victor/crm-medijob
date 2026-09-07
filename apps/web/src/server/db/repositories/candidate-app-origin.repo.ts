@@ -35,13 +35,36 @@ export type AppOriginCreateInput = {
   softwareIds?: string[]
 }
 
+const APP_LINKED_SELECT = {
+  id: true,
+  origin: true,
+  status: true,
+  statusBeforeInactive: true,
+  badakanValidatedAt: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  phone: true,
+  address: true,
+  city: true,
+  postalCode: true,
+  jobTitleId: true,
+  jobTitle: { select: { name: true } },
+  nir: true,
+  iban: true,
+} as const
+
 export function makeCandidateAppOriginRepository(db: PrismaClient) {
   return {
-    findByBadakanId: (badakanId: string) =>
-      db.candidate.findFirst({
+    findByBadakanId: async (badakanId: string) => {
+      const row = await db.candidate.findFirst({
         where: { badakanId, ...NOT_DELETED },
-        select: { id: true, origin: true, status: true, statusBeforeInactive: true },
-      }),
+        select: APP_LINKED_SELECT,
+      })
+      if (!row) return null
+      const { jobTitle, ...rest } = row
+      return { ...rest, jobTitleName: jobTitle?.name ?? null }
+    },
     createAppCandidate: (data: AppOriginCreateInput) =>
       db.candidate.create({
         data: toAppOriginCreateData(data),
@@ -57,6 +80,12 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
       db.candidate.update({
         where: { id },
         data: { origin: 'CRM', badakanId: null },
+        select: { id: true },
+      }),
+    markBadakanValidated: (id: string) =>
+      db.candidate.update({
+        where: { id },
+        data: { badakanValidatedAt: new Date() },
         select: { id: true },
       }),
     patchAppIdentity: (id: string, patch: AppIdentityPatch) =>
