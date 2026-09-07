@@ -8,6 +8,7 @@ export const marieValidated = mapBadakanRecipient({
   lastName: 'App',
   email: 'marie@app.fr',
   phone: '0600000001',
+  isValid: true,
 })!
 
 export const marieMoved = mapBadakanRecipient({
@@ -18,10 +19,12 @@ export const marieMoved = mapBadakanRecipient({
   phone: '0611111111',
   address: { address1: '12 rue Test', city: 'Lyon', zipCode: '69001' },
   activity: 'Pharmacien',
+  isValid: true,
 })!
 
 export const existingLinked = {
   id: 'c-existing',
+  origin: 'APP' as const,
   status: 'NOUVEAU' as const,
   statusBeforeInactive: null,
 }
@@ -43,6 +46,7 @@ export function stubValidatedDeps(
     mapJobTitleId: async () => null,
     syncDossier: vi.fn(),
     enrichFromComments: async () => ({}),
+    returnToInbox: vi.fn(),
     ...overrides,
   }
 }

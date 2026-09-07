@@ -15,6 +15,7 @@ function marieWithStatus(status: 'SUSPENDED' | 'BANNED' | 'COMPLETED') {
 function linked(status: 'QUALIFIE' | 'BLACKLISTE' | 'INACTIF', previous: 'QUALIFIE' | null = null) {
   return {
     id: 'c-marie' as const,
+    origin: 'APP' as const,
     status,
     statusBeforeInactive: previous,
   }

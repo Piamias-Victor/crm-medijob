@@ -71,6 +71,11 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         where: { id },
         data: { status, candidateId: candidateId ?? undefined },
       }),
+    restorePending: (id: string) =>
+      db.appProfile.update({
+        where: { id },
+        data: { status: 'EN_ATTENTE', candidateId: null },
+      }),
   }
 }
 

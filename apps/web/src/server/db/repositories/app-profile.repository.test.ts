@@ -54,4 +54,15 @@ describe('appProfileRepository', () => {
       data: { status: 'APP_VALIDATED', candidateId: 'c1' },
     })
   })
+
+  it('restores a profile to the Profils app inbox', async () => {
+    const db = mockDb()
+    db.appProfile.update.mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE' })
+    const repo = makeAppProfileRepository(db as never)
+    await repo.restorePending('p1')
+    expect(db.appProfile.update).toHaveBeenCalledWith({
+      where: { id: 'p1' },
+      data: { status: 'EN_ATTENTE', candidateId: null },
+    })
+  })
 })
