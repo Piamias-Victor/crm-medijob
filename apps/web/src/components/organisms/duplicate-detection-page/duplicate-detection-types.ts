@@ -13,8 +13,9 @@ export type DuplicateDetectionPageProps<T extends Record<string, unknown>> = {
   rightTitle?: string
   fields: DuplicateField<T>[]
   onMerge: (merged: T) => void | Promise<void>
-  onIgnore: () => void | Promise<void>
-  onCancel: () => void
+    onIgnore?: () => void | Promise<void>
+    showIgnore?: boolean
+    onCancel: () => void
 }
 
 export type DuplicateFieldRowProps<T extends Record<string, unknown>> = {
