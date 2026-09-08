@@ -9,6 +9,10 @@
       "schedule": "*/15 * * * *"
     },
     {
+      "path": "/api/cron/badakan-catalog",
+      "schedule": "5,20,35,50 * * * *"
+    },
+    {
       "path": "/api/cron/availability-sms",
       "schedule": "*/5 * * * *"
     }
