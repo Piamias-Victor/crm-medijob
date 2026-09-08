@@ -6,6 +6,7 @@ const emptyClient: BadakanClient = {
   searchEmployees: async () => [],
   searchMissions: async () => [],
   searchContracts: async () => [],
+  searchEnterprises: async () => [],
   getRecipient: async () => null,
   getComments: async () => [],
   getEnterprise: async () => null,

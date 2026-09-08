@@ -34,6 +34,28 @@ describe('syncBadakanEnterprises', () => {
     expect(result).toEqual({ fetched: 1, upserted: 1 })
   })
 
+  it('upserts one enterprise when two ids share a SIRET', async () => {
+    const polygoneA: BadakanEnterprise = { ...hermes, badakanId: 'ent-b', name: 'Polygone A' }
+    const polygoneB: BadakanEnterprise = {
+      ...hermes,
+      badakanId: 'ent-a',
+      name: 'Polygone B',
+    }
+    const getEnterprise = vi.fn(async (id: string) =>
+      id === 'ent-a' ? polygoneB : polygoneA,
+    )
+    const upsertFromRead = vi.fn()
+    const result = await syncBadakanEnterprises({
+      listEnterpriseIds: async () => ['ent-b', 'ent-a'],
+      getEnterprise,
+      upsertFromRead,
+    })
+    expect(getEnterprise).toHaveBeenCalledTimes(2)
+    expect(upsertFromRead).toHaveBeenCalledTimes(1)
+    expect(upsertFromRead).toHaveBeenCalledWith(polygoneB)
+    expect(result).toEqual({ fetched: 2, upserted: 1 })
+  })
+
   it('skips ids that GET maps to null', async () => {
     const upsertFromRead = vi.fn()
     const result = await syncBadakanEnterprises({

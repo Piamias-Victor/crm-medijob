@@ -52,4 +52,31 @@ describe('createBadakanClient getEnterprise', () => {
     expect(init.method ?? 'GET').toBe('GET')
     expect(init.headers).toMatchObject({ security_token: 'tok' })
   })
+
+  it('lists enterprise ids from the page search', async () => {
+    const fetchFn = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ securityToken: 'tok' }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          content: [{ id: 'ent-hermes', enterpriseName: 'Pharmacie Hermes' }],
+          totalPages: 1,
+        }),
+      })
+
+    const ids = await testBadakanClient(fetchFn).searchEnterprises(5)
+    expect(ids).toEqual(['ent-hermes'])
+    expect(String(fetchFn.mock.calls[1]?.[0])).toContain(
+      '/services/v3/enterprises/page',
+    )
+    const init = fetchFn.mock.calls[1]?.[1] as RequestInit
+    expect(init.method).toBe('POST')
+    expect(JSON.parse(String(init.body)).orders).toEqual([
+      { descending: true, parameter: 'ENTERPRISE_NAME' },
+    ])
+  })
 })
