@@ -1,6 +1,7 @@
 import { mapBadakanRecipient } from './map-recipient'
 import { mapBadakanMission } from './map-mission'
 import { mapBadakanContract } from './map-contract'
+import { mapBadakanEnterpriseId } from './map-enterprise'
 import { searchPages } from './paged-search'
 
 // Each search endpoint validates order.parameter against its own enum (cf. /v3/api-docs) and
@@ -9,6 +10,7 @@ const ORDER = {
   recipients: 'CREATION_DATE',
   missions: 'EXPECTED_START_DATE',
   contracts: 'START_DATE',
+  enterprises: 'ENTERPRISE_NAME',
 } as const
 
 export function badakanClientSearches(
@@ -22,6 +24,7 @@ export function badakanClientSearches(
     label: string,
     mapItem: (raw: unknown) => T | null,
     pageSize: number,
+    orderAsArray = false,
   ) =>
     searchPages({
       fetchFn,
@@ -31,6 +34,7 @@ export function badakanClientSearches(
       orderParameter,
       failLabel: `Badakan ${label}`,
       mapItem,
+      orderAsArray,
     })
 
   return {
@@ -65,6 +69,15 @@ export function badakanClientSearches(
         'searchContracts',
         mapBadakanContract,
         pageSize,
+      ),
+    searchEnterprises: (pageSize = 100) =>
+      run(
+        '/services/v3/enterprises/page?flat=true',
+        ORDER.enterprises,
+        'searchEnterprises',
+        mapBadakanEnterpriseId,
+        pageSize,
+        true,
       ),
   }
 }

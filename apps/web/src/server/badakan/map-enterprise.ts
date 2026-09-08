@@ -78,3 +78,8 @@ export function mapBadakanEnterprise(raw: unknown): BadakanEnterprise | null {
     principal: pickPrincipal(r),
   }
 }
+
+export function mapBadakanEnterpriseId(raw: unknown): string | null {
+  const parsed = badakanEnterpriseSchema.safeParse(raw)
+  return parsed.success ? parsed.data.id : null
+}

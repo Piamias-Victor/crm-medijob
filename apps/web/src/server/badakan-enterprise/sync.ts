@@ -1,4 +1,5 @@
 import type { BadakanEnterprise } from '@/server/badakan/map-enterprise'
+import { pickEnterprisePerSiret } from './pick-per-siret'
 
 export type SyncBadakanEnterpriseDeps = {
   listEnterpriseIds: () => Promise<string[]>
@@ -8,12 +9,14 @@ export type SyncBadakanEnterpriseDeps = {
 
 export async function syncBadakanEnterprises(deps: SyncBadakanEnterpriseDeps) {
   const ids = [...new Set(await deps.listEnterpriseIds())]
-  let upserted = 0
+  const rows: BadakanEnterprise[] = []
   for (const id of ids) {
     const row = await deps.getEnterprise(id)
-    if (!row) continue
-    await deps.upsertFromRead(row)
-    upserted += 1
+    if (row) rows.push(row)
   }
-  return { fetched: ids.length, upserted }
+  const picked = pickEnterprisePerSiret(rows)
+  for (const row of picked) {
+    await deps.upsertFromRead(row)
+  }
+  return { fetched: ids.length, upserted: picked.length }
 }
