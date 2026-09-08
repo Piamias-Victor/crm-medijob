@@ -4,10 +4,11 @@
  */
 import { runAppProfileCycle } from '@/server/app-profile/run-cycle'
 import { defaultAppProfileCycleDeps } from '@/server/app-profile/run-cycle.deps'
+import { runBadakanCatalogCycle } from '@/server/badakan-catalog/run-cycle'
 
 async function main() {
   const base = defaultAppProfileCycleDeps(process.env)
-  const result = await runAppProfileCycle(process.env, {
+  const profiles = await runAppProfileCycle(process.env, {
     ...base,
     inviteDue: async () => ({
       sent: 0,
@@ -16,7 +17,8 @@ async function main() {
       cancelled: 0,
     }),
   })
-  console.log(JSON.stringify(result, null, 2))
+  const catalog = await runBadakanCatalogCycle()
+  console.log(JSON.stringify({ profiles, catalog }, null, 2))
 }
 
 main().catch((error) => {

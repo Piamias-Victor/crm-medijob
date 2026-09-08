@@ -37,8 +37,6 @@ export function stubCycleDeps(overrides: CycleOverrides = {}): AppProfileCycleDe
     probeInactive: async () => [],
     listConvertQueue: async () => [],
     syncMissions: async () => emptySyncCount,
-    syncEnterprises: async () => emptySyncCount,
-    syncContracts: async () => emptySyncCount,
     ...rest,
   }
 }
