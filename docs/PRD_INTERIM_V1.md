@@ -91,7 +91,7 @@ Le CRM **pilote** l’intérim en lecture. Badakan reste la source app ; **V1 n�
 ## Implementation Decisions
 
 - **PDF vs V1** : workflow 1 « validation MediJob + email » n’est pas la porte V1 — la porte est **App-validated** Badakan. Workflow 3 relances J+2/5/10 hors V1. Workflow 2 : un SMS à App-validated, pas un SMS chaque semaine. Workflow 4 : filtre créneau + métier + geo, pas logiciels / élargir rayon / MissionCandidate auto.
-- **ADR** : 0024 (périmètre V1), 0025 superseded by 0026 (Candidate origine App), 0027 (Badakan mission ≠ Mission), 0028 (Pharmacy après vérif SIRET), 0029 (pièces identité sur fiche), 0030 (Badakan contract ≠ Ligne de suivi).
+- **ADR** : 0024 (périmètre V1), 0025 superseded by 0026 (Candidate origine App), 0027 (Badakan mission ≠ Mission), 0028 superseded by 0031 (Pharmacy auto si SIRET unique), 0029 (pièces identité sur fiche), 0030 (Badakan contract ≠ Ligne de suivi).
 - **BadakanClient** : étendre le client injecté actuel (`searchNewEmployees` + `fetchFn`) en lecture v3 : `searchEmployees` (COMPLETED), GET recipient, GET comments/target/{id}, POST missions/search, GET enterprises/{id}, POST contracts/search, GET contract. Header `security_token`. **Aucun POST/PUT/DELETE** métier en V1.
 - **Sync** : même cron que Profils app (`isCronAuthorized` + cycle périodique). Pas de contrôle Rafraîchir UI. Quand COMPLETED : sortir l’AppProfile de l’inbox ; create/link Candidate.
 - **Candidate** : `badakanId` unique nullable ; **Candidate origin** (App vs autres chemins). Status create = Nouveau. SUSPENDED/BANNED → Inactif + mémoriser le status précédent pour restore.
@@ -101,7 +101,7 @@ Le CRM **pilote** l’intérim en lecture. Badakan reste la source app ; **V1 n�
 - **Weekly availability** : entité/slots datés AM|PM + flag « semaine soumise » (inconnu vs vide déclaré). Token secret public. Route App Router hors dashboard (pas de session). Mutation publique Zod + token.
 - **SMS** : nouveau port sortant injecté (aujourd’hui seul Brevo email Hireflix existe ; `sms:` URLs sont des deep links recruteur). Un envoi à App-validated ; attente tél comme `invite-due` attend l’email ; pas de 2e envoi auto au restore.
 - **Filtre** : requête déterministe (pas `matchingRouter` / score IA). JobTitle + geo existants (`mobilityRadiusKm` défaut 30, lat/lng Candidate). Population : origin App + App-validated + pas Inactif.
-- **Pharmacy** : file de vérif calquée sur l’import pharmacies / `siretMatches`. Contact create/link via router Contact existant.
+- **Pharmacy** : SIRET unique → create auto (Prospect + Contact). SIRET manquant ou déjà dans le CRM → file Intérim officines. Jamais un 2e fichier.
 - **UI** : module Intérim opérationnel ≠ `/facturation/interim`. Atomic design + view-models ; Prisma seulement dans les repositories ; lectures RSC `createCaller` ; mutations tRPC.
 - **Permissions** : `crm.write` pour vérif pharmacie / notes ActivityLog ; lecture Intérim pour les rôles qui voient Candidats/Pharmacies. Page dispo : pas d’auth.
 - **Fichiers < 100 lignes**, Zod, zéro `any`, pas de write Badakan même « pour tester en prod ».

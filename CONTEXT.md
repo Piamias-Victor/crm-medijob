@@ -137,7 +137,7 @@ The positioning of a Candidate on a Mission at a given PipelineStage. A Candidat
 _Avoid_: Matching, affectation, liaison, Placement (that's the financial line)
 
 **Pharmacy**:
-The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person. A Badakan enterprise becomes a Pharmacy only after recruiter verification of the imported card; the same SIRET never creates a second Pharmacy (verification shows the existing file).
+The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person. A Badakan enterprise with a unique SIRET becomes a Pharmacy automatically (Prospect + primary Contact). Missing or already-used SIRET stays on Intérim officines for correction — never a second Pharmacy.
 _Avoid_: Client (ambiguous with Contact), établissement (too generic), officine (too narrow — use when type is INDEPENDANTE)
 
 **Pharmacy status**:
@@ -203,7 +203,7 @@ Outbound: referenced by Pipeline (MissionCandidate), Missions (matching).
 
 **Pharmacies** — client organization portfolio.
 Owns: Pharmacy, commercial status, SIRET identity, LGO (`softwareId`), network affiliation (`groupementId`).
-Inbound: recruiter-verified import from a Badakan enterprise (same SIRET merges, never a second file).
+Inbound: unique-SIRET Badakan enterprises auto-create a Pharmacy; missing or duplicate SIRET stays on Intérim officines for correction (never a second file).
 Outbound: Contacts (children), Missions (staffing needs), ActivityLog, Document.
 
 **Contacts** — human interlocutors at pharmacies.
@@ -238,7 +238,7 @@ Outbound: Candidate creation or merge on recruiter ACCEPTE (rare). When the reci
 **Intérim (operational)** — App-validated Candidates, weekly availability, Badakan read model.
 Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts.
 Inbound: Badakan API, same periodic cycle as AppProfiles (no manual refresh control required).
-Outbound: Candidate create or link (origin App). Recruiter-verified Pharmacy import (SIRET unique). **V1 never writes to Badakan** (no staff, validate, PUT, POST comments, or contract writes). Never turns a Badakan mission into a Mission. Distinct from Finance « Intérim » (Lignes de suivi) and from AppProfiles inbox.
+Outbound: Candidate create or link (origin App). Unique-SIRET Badakan enterprise auto-creates a Pharmacy; missing or duplicate SIRET is corrected on Intérim officines. **V1 never writes to Badakan** (no staff, validate, PUT, POST comments, or contract writes). Never turns a Badakan mission into a Mission. Distinct from Finance « Intérim » (Lignes de suivi) and from AppProfiles inbox.
 
 **Interviews** — structured qualification conversations replacing medijob-eval.
 Owns: Interview, InterviewTemplate (versioned trames).

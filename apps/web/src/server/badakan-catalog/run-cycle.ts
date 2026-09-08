@@ -14,6 +14,7 @@ export async function runBadakanCatalogCycle(
   }
   const resolved = deps ?? defaultCatalogCycleDeps(env)
   const enterprises = await resolved.syncEnterprises()
+  const pharmacies = await resolved.promoteReady()
   const contracts = await resolved.syncContracts()
-  return { enterprises, contracts }
+  return { enterprises, pharmacies, contracts }
 }

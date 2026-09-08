@@ -49,6 +49,8 @@ const enterprise = {
   siretLabel: '12345678900011',
   cityLabel: 'Paris',
   href: '/interim/officines/e1',
+  blockKind: 'ready' as const,
+  blockLabel: 'Prêt',
 }
 
 describe('matchesMission', () => {

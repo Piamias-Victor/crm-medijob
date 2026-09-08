@@ -70,5 +70,5 @@ export function matchesEnterprise(
   row: BadakanEnterpriseListItem,
   values: FilterValues<typeof enterpriseFilterConfig>,
 ): boolean {
-  return matchesText([row.name, row.cityLabel, row.siretLabel], values.q)
+  return matchesText([row.name, row.cityLabel, row.siretLabel, row.blockLabel], values.q)
 }

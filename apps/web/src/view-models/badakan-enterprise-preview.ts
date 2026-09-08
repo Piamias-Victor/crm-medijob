@@ -8,8 +8,11 @@ export type BadakanEnterprisePreview = {
   name: string
   statusLabel: string
   contactActionLabel: string
+  confirmLabel: string
   existingPharmacyHref: string | null
   existingPharmacyName: string | null
+  siret: string
+  blockHint: string | null
   fields: Array<{ label: string; value: string | null }>
 }
 
@@ -21,7 +24,7 @@ function principalName(row: EnterpriseVerifyRow) {
 function contactActionLabel(preview: Preview): string {
   if (preview.contactMatch?.reason === 'email') return 'Fusionner par email'
   if (preview.contactMatch?.reason === 'phone') return 'Fusionner par téléphone'
-  return 'Créer le Contact principal'
+  return 'Créer le contact principal'
 }
 
 export function toBadakanEnterprisePreview(
@@ -32,10 +35,17 @@ export function toBadakanEnterprisePreview(
   return {
     id: row.id,
     name: row.name,
-    statusLabel: existing ? 'Pharmacy existante' : 'Nouvelle Pharmacy',
+    statusLabel: existing ? 'Pharmacie déjà dans le CRM' : 'Nouvelle pharmacie',
     contactActionLabel: contactActionLabel(preview),
+    confirmLabel: existing ? 'Lier à la pharmacie existante' : 'Créer la pharmacie',
     existingPharmacyHref: existing ? `/pharmacies/${existing.id}` : null,
     existingPharmacyName: existing?.name ?? null,
+    siret: row.siret?.trim() ?? '',
+    blockHint: existing
+      ? 'Ce SIRET est déjà dans le CRM. Liez cette officine ou corrigez le numéro.'
+      : row.siret?.trim()
+        ? null
+        : 'SIRET manquant. Saisissez-le pour créer la pharmacie.',
     fields: [
       { label: 'Nom', value: row.name },
       { label: 'SIRET', value: row.siret },
