@@ -10,6 +10,7 @@ export function inviteProfile(
     firstName: 'Camille',
     lastName: 'Dupont',
     email: 'camille@example.com',
+    phone: null,
     hireflixInterviewId: null,
     hireflixUrl: null,
     inviteEmailSentAt: null,

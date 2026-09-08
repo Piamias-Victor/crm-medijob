@@ -6,6 +6,7 @@ export type InviteDueProfile = {
   firstName: string
   lastName: string
   email: string | null
+  phone: string | null
   hireflixInterviewId: string | null
   hireflixUrl: string | null
   inviteEmailSentAt: Date | null
@@ -30,6 +31,7 @@ export type InviteDueDeps = {
   saveError: (id: string, error: string) => Promise<void>
   inviteHireflix: (input: HireflixInviteInput) => Promise<HireflixInviteResult>
   sendInviteEmail: (input: InviteEmailInput) => Promise<void>
+  sendCalendarSms?: (to: string) => Promise<void>
   testTo?: string
 }
 

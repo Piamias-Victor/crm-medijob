@@ -1,3 +1,4 @@
+import { maybeSendHireflixCalendarSms } from './invite-due-calendar'
 import type { InviteDueDeps, InviteDueProfile } from './invite-due.types'
 
 async function stillPending(id: string, deps: InviteDueDeps) {
@@ -31,6 +32,7 @@ export async function inviteOneAppProfile(
     firstName: row.firstName,
     url: hf.url,
   })
+  await maybeSendHireflixCalendarSms(row, deps)
   if (!deps.testTo) await deps.saveSent(row.id)
   return 'sent'
 }
