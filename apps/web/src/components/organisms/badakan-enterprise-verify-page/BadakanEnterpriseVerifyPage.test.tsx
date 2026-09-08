@@ -18,10 +18,13 @@ vi.mock('@/lib/trpc/client', () => ({
 const preview: BadakanEnterprisePreview = {
   id: 'row1',
   name: 'Pharmacie Hermes',
-  statusLabel: 'Pharmacy existante',
+  statusLabel: 'Pharmacie déjà dans le CRM',
   contactActionLabel: 'Fusionner par email',
+  confirmLabel: 'Lier à la pharmacie existante',
   existingPharmacyHref: '/pharmacies/p-exist',
   existingPharmacyName: 'Hermes CRM',
+  siret: '12345678901234',
+  blockHint: 'Ce SIRET est déjà dans le CRM. Liez cette officine ou corrigez le numéro.',
   fields: [
     { label: 'Nom', value: 'Pharmacie Hermes' },
     { label: 'SIRET', value: '12345678901234' },
@@ -29,15 +32,18 @@ const preview: BadakanEnterprisePreview = {
 }
 
 describe('BadakanEnterpriseVerifyPage', () => {
-  it('shows imported card, existing Pharmacy and confirm action', () => {
+  it('shows imported card, existing pharmacie and link action', () => {
     render(<BadakanEnterpriseVerifyPage preview={preview} />)
     expect(screen.getByRole('heading', { name: 'Pharmacie Hermes' })).toBeInTheDocument()
-    expect(screen.getAllByText('Pharmacy existante').length).toBeGreaterThan(0)
-    expect(screen.getByText('Fusionner par email')).toBeInTheDocument()
+    expect(screen.getAllByText('Pharmacie déjà dans le CRM').length).toBeGreaterThan(0)
+    expect(
+      screen.getByText('Ce SIRET est déjà dans le CRM. Liez cette officine ou corrigez le numéro.'),
+    ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Hermes CRM' })).toHaveAttribute(
       'href',
       '/pharmacies/p-exist',
     )
-    expect(screen.getByRole('button', { name: 'Valider Pharmacy' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Lier à la pharmacie existante' })).toBeInTheDocument()
+    expect(screen.getByLabelText('SIRET')).toHaveValue('12345678901234')
   })
 })

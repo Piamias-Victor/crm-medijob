@@ -20,6 +20,8 @@ const row: BadakanEnterpriseListItem = {
   siretLabel: '12345678901234',
   cityLabel: 'Paris',
   href: '/interim/officines/row1',
+  blockKind: 'ready',
+  blockLabel: 'Prêt',
 }
 
 describe('BadakanEnterpriseList', () => {
@@ -28,6 +30,7 @@ describe('BadakanEnterpriseList', () => {
     expect(screen.getByText('Pharmacie Hermes')).toBeInTheDocument()
     expect(screen.getByText('12345678901234')).toBeInTheDocument()
     expect(screen.getByText('Paris')).toBeInTheDocument()
+    expect(screen.getByText('Prêt')).toBeInTheDocument()
   })
 
   it('opens the enterprise when the row is activated', () => {
@@ -42,11 +45,11 @@ describe('BadakanEnterpriseList', () => {
       target: { value: 'lyon' },
     })
     expect(screen.queryByText('Pharmacie Hermes')).not.toBeInTheDocument()
-    expect(screen.getByText('Aucune officine à vérifier')).toBeInTheDocument()
+    expect(screen.getByText('Aucune officine à corriger')).toBeInTheDocument()
   })
 
   it('explains an empty verification queue', () => {
     render(<BadakanEnterpriseList rows={[]} />)
-    expect(screen.getByText('Aucune officine à vérifier')).toBeInTheDocument()
+    expect(screen.getByText('Aucune officine à corriger')).toBeInTheDocument()
   })
 })

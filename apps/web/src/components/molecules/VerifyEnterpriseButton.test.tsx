@@ -23,9 +23,22 @@ describe('VerifyEnterpriseButton', () => {
     mutate.mockReset()
   })
 
-  it('confirms the enterprise as a Pharmacy', () => {
-    render(<VerifyEnterpriseButton enterpriseId="row1" />)
-    fireEvent.click(screen.getByRole('button', { name: 'Valider Pharmacy' }))
-    expect(mutate).toHaveBeenCalledWith({ id: 'row1' })
+  it('confirms the enterprise as a pharmacie', () => {
+    render(
+      <VerifyEnterpriseButton
+        enterpriseId="row1"
+        siret="12345678901234"
+        label="Créer la pharmacie"
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Créer la pharmacie' }))
+    expect(mutate).toHaveBeenCalledWith({ id: 'row1', siret: '12345678901234' })
+  })
+
+  it('stays disabled until a SIRET is typed', () => {
+    render(
+      <VerifyEnterpriseButton enterpriseId="row1" siret="" label="Créer la pharmacie" />,
+    )
+    expect(screen.getByRole('button', { name: 'Créer la pharmacie' })).toBeDisabled()
   })
 })

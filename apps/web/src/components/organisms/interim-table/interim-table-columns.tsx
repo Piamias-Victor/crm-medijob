@@ -5,7 +5,10 @@ import type { ColumnDef } from '@/components/organisms/entity-table/entity-table
 import { InterimContractFiles } from '@/components/molecules/InterimContractFiles'
 import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import type { BadakanContractListItem } from '@/view-models/badakan-contract-list'
-import type { BadakanEnterpriseListItem } from '@/view-models/badakan-enterprise-list'
+import {
+  enterpriseBlockVariant,
+  type BadakanEnterpriseListItem,
+} from '@/view-models/badakan-enterprise-list'
 import type { BadakanNeedListItem } from '@/view-models/badakan-need-list'
 import type { BadakanMissionListItem } from '@/view-models/badakan-mission-list'
 import { badakanContractStatusVariant } from '@/view-models/badakan-contract-status'
@@ -62,4 +65,13 @@ export const enterpriseColumns: ColumnDef<BadakanEnterpriseListItem>[] = [
   { id: 'name', header: 'Officine', accessor: (row) => row.name, sortable: true },
   { id: 'cityLabel', header: 'Ville', accessor: (row) => row.cityLabel, sortable: true },
   { id: 'siretLabel', header: 'SIRET', accessor: (row) => row.siretLabel, sortable: true },
+  {
+    id: 'blockLabel',
+    header: 'Problème',
+    accessor: (row) => row.blockLabel,
+    sortable: true,
+    cell: (row) => (
+      <Badge variant={enterpriseBlockVariant(row.blockKind)}>{row.blockLabel}</Badge>
+    ),
+  },
 ]

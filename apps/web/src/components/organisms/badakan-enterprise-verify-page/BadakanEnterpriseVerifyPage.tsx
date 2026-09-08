@@ -5,16 +5,17 @@ import { DetailPageHeader } from '@/components/molecules/DetailPageHeader'
 import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { DetailFieldList } from '@/components/molecules/DetailFieldList'
-import { VerifyEnterpriseButton } from '@/components/molecules/VerifyEnterpriseButton'
+import { VerifyEnterpriseSiretForm } from '@/components/molecules/VerifyEnterpriseSiretForm'
 import type { BadakanEnterprisePreview } from '@/view-models/badakan-enterprise-preview'
 
 export function BadakanEnterpriseVerifyPage({ preview }: { preview: BadakanEnterprisePreview }) {
+  const fields = preview.fields.filter((field) => field.label !== 'SIRET')
   return (
     <EntityDetailShell
       header={
         <DetailPageHeader
           backHref="/interim/officines"
-          backLabel="Vérif officines"
+          backLabel="Officines à corriger"
           name={preview.name}
           chips={[{ icon: Building2, label: preview.statusLabel }]}
         />
@@ -24,8 +25,7 @@ export function BadakanEnterpriseVerifyPage({ preview }: { preview: BadakanEnter
       <SectionCard
         variant="glass"
         title={preview.statusLabel}
-        description={preview.contactActionLabel}
-        actions={<VerifyEnterpriseButton enterpriseId={preview.id} />}
+        description={preview.blockHint ?? preview.contactActionLabel}
       >
         {preview.existingPharmacyHref ? (
           <p className="mb-4 text-sm">
@@ -34,7 +34,12 @@ export function BadakanEnterpriseVerifyPage({ preview }: { preview: BadakanEnter
             </a>
           </p>
         ) : null}
-        <DetailFieldList fields={preview.fields} />
+        <VerifyEnterpriseSiretForm
+          enterpriseId={preview.id}
+          siret={preview.siret}
+          confirmLabel={preview.confirmLabel}
+        />
+        <DetailFieldList fields={fields} />
       </SectionCard>
     </EntityDetailShell>
   )

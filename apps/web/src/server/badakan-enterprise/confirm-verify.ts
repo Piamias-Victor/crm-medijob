@@ -50,6 +50,9 @@ export async function confirmEnterpriseVerify(
   row: EnterpriseVerifyRow,
   deps: ConfirmVerifyDeps,
 ): Promise<ConfirmVerifyResult> {
+  if (!row.siret?.trim()) {
+    throw new Error('SIRET manquant')
+  }
   const preview = await previewEnterpriseVerify(row, deps)
   const createdPharmacy = !preview.existingPharmacy
   const pharmacyId = preview.existingPharmacy?.id ?? (await deps.createPharmacy(toPharmacyInput(row))).id
@@ -71,6 +74,6 @@ export async function confirmEnterpriseVerify(
     contactId = created.id
     createdContact = true
   }
-  await deps.markVerified(row.id, pharmacyId)
+    await deps.markVerified(row.id, pharmacyId)
   return { pharmacyId, contactId, createdPharmacy, createdContact }
 }
