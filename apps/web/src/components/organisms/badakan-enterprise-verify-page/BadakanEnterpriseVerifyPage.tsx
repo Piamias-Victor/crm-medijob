@@ -6,6 +6,7 @@ import { EntityDetailShell } from '@/components/molecules/EntityDetailShell'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { DetailFieldList } from '@/components/molecules/DetailFieldList'
 import { VerifyEnterpriseSiretForm } from '@/components/molecules/VerifyEnterpriseSiretForm'
+import { EnterprisePharmacyMerge } from '@/components/organisms/badakan-enterprise-verify-page/EnterprisePharmacyMerge'
 import type { BadakanEnterprisePreview } from '@/view-models/badakan-enterprise-preview'
 
 export function BadakanEnterpriseVerifyPage({ preview }: { preview: BadakanEnterprisePreview }) {
@@ -27,19 +28,18 @@ export function BadakanEnterpriseVerifyPage({ preview }: { preview: BadakanEnter
         title={preview.statusLabel}
         description={preview.blockHint ?? preview.contactActionLabel}
       >
-        {preview.existingPharmacyHref ? (
-          <p className="mb-4 text-sm">
-            <a className="text-accent-hover underline" href={preview.existingPharmacyHref}>
-              {preview.existingPharmacyName}
-            </a>
-          </p>
-        ) : null}
-        <VerifyEnterpriseSiretForm
-          enterpriseId={preview.id}
-          siret={preview.siret}
-          confirmLabel={preview.confirmLabel}
-        />
-        <DetailFieldList fields={fields} />
+        {preview.existingPharmacyId ? (
+          <EnterprisePharmacyMerge preview={preview} />
+        ) : (
+          <>
+            <VerifyEnterpriseSiretForm
+              enterpriseId={preview.id}
+              siret={preview.siret}
+              confirmLabel={preview.confirmLabel}
+            />
+            <DetailFieldList fields={fields} />
+          </>
+        )}
       </SectionCard>
     </EntityDetailShell>
   )

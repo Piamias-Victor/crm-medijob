@@ -1,5 +1,7 @@
 import type { EnterpriseVerifyRow } from '@/server/badakan-enterprise/verify.types'
 import type { previewEnterpriseVerify } from '@/server/badakan-enterprise/preview-verify'
+import { toIncomingPharmacyRow } from '@/view-models/badakan-enterprise-incoming'
+import type { PharmacyDuplicateRow } from '@/view-models/pharmacy-duplicate-compare'
 
 type Preview = Awaited<ReturnType<typeof previewEnterpriseVerify>>
 
@@ -9,10 +11,12 @@ export type BadakanEnterprisePreview = {
   statusLabel: string
   contactActionLabel: string
   confirmLabel: string
+  existingPharmacyId: string | null
   existingPharmacyHref: string | null
   existingPharmacyName: string | null
   siret: string
   blockHint: string | null
+  incomingPharmacy: PharmacyDuplicateRow
   fields: Array<{ label: string; value: string | null }>
 }
 
@@ -37,12 +41,14 @@ export function toBadakanEnterprisePreview(
     name: row.name,
     statusLabel: existing ? 'Pharmacie déjà dans le CRM' : 'Nouvelle pharmacie',
     contactActionLabel: contactActionLabel(preview),
-    confirmLabel: existing ? 'Lier à la pharmacie existante' : 'Créer la pharmacie',
+    confirmLabel: existing ? 'Fusionner' : 'Créer la pharmacie',
+    existingPharmacyId: existing?.id ?? null,
     existingPharmacyHref: existing ? `/pharmacies/${existing.id}` : null,
     existingPharmacyName: existing?.name ?? null,
     siret: row.siret?.trim() ?? '',
+    incomingPharmacy: toIncomingPharmacyRow(row),
     blockHint: existing
-      ? 'Ce SIRET est déjà dans le CRM. Liez cette officine ou corrigez le numéro.'
+      ? 'Ce SIRET est déjà dans le CRM. Comparez les fiches puis fusionnez.'
       : row.siret?.trim()
         ? null
         : 'SIRET manquant. Saisissez-le pour créer la pharmacie.',

@@ -1,9 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { BadakanEnterpriseVerifyPage } from './BadakanEnterpriseVerifyPage'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { EnterprisePharmacyMerge } from './EnterprisePharmacyMerge'
 import { toIncomingPharmacyRow } from '@/view-models/badakan-enterprise-incoming'
 import type { BadakanEnterprisePreview } from '@/view-models/badakan-enterprise-preview'
 import type { EnterpriseVerifyRow } from '@/server/badakan-enterprise/verify.types'
+
+const { mergeAsync, confirmAsync } = vi.hoisted(() => ({
+  mergeAsync: vi.fn(),
+  confirmAsync: vi.fn(),
+}))
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -11,9 +16,6 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('@/lib/trpc/client', () => ({
   trpc: {
-    badakanEnterprise: {
-      confirm: { useMutation: () => ({ mutate: vi.fn(), mutateAsync: vi.fn(), isPending: false }) },
-    },
     pharmacy: {
       getById: {
         useQuery: () => ({
@@ -37,7 +39,10 @@ vi.mock('@/lib/trpc/client', () => ({
           },
         }),
       },
-      merge: { useMutation: () => ({ mutateAsync: vi.fn(), isPending: false }) },
+      merge: { useMutation: () => ({ mutateAsync: mergeAsync }) },
+    },
+    badakanEnterprise: {
+      confirm: { useMutation: () => ({ mutateAsync: confirmAsync }) },
     },
   },
 }))
@@ -57,7 +62,7 @@ const row: EnterpriseVerifyRow = {
   verifiedAt: null,
 }
 
-const existingPreview: BadakanEnterprisePreview = {
+const preview: BadakanEnterprisePreview = {
   id: 'row1',
   name: 'Pharmacie Hermes',
   statusLabel: 'Pharmacie déjà dans le CRM',
@@ -67,34 +72,22 @@ const existingPreview: BadakanEnterprisePreview = {
   existingPharmacyHref: '/pharmacies/p-exist',
   existingPharmacyName: 'Hermes CRM',
   siret: '12345678901234',
-  blockHint: 'Ce SIRET est déjà dans le CRM. Comparez les fiches puis fusionnez.',
-  incomingPharmacy: toIncomingPharmacyRow(row),
-  fields: [{ label: 'Nom', value: 'Pharmacie Hermes' }],
-}
-
-const newPreview: BadakanEnterprisePreview = {
-  ...existingPreview,
-  statusLabel: 'Nouvelle pharmacie',
-  confirmLabel: 'Créer la pharmacie',
-  existingPharmacyId: null,
-  existingPharmacyHref: null,
-  existingPharmacyName: null,
   blockHint: null,
+  incomingPharmacy: toIncomingPharmacyRow(row),
+  fields: [],
 }
 
-describe('BadakanEnterpriseVerifyPage', () => {
-  it('opens the field-by-field fusion when the SIRET already exists', () => {
-    render(<BadakanEnterpriseVerifyPage preview={existingPreview} />)
-    expect(screen.getByText('Pharmacie CRM')).toBeInTheDocument()
-    expect(screen.getByText('Import Badakan')).toBeInTheDocument()
-    expect(screen.getByText('Hermes CRM')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Fusionner' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Ignorer' })).not.toBeInTheDocument()
-  })
-
-  it('keeps the SIRET form when the pharmacie is new', () => {
-    render(<BadakanEnterpriseVerifyPage preview={newPreview} />)
-    expect(screen.getByRole('button', { name: 'Créer la pharmacie' })).toBeInTheDocument()
-    expect(screen.getByLabelText('SIRET')).toHaveValue('12345678901234')
+describe('EnterprisePharmacyMerge', () => {
+  it('merges into the CRM pharmacie then verifies the Badakan row', async () => {
+    mergeAsync.mockResolvedValue({ id: 'p-exist' })
+    confirmAsync.mockResolvedValue({ pharmacyId: 'p-exist' })
+    render(<EnterprisePharmacyMerge preview={preview} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Fusionner' }))
+    await vi.waitFor(() => {
+      expect(mergeAsync).toHaveBeenCalledWith(
+        expect.objectContaining({ keptId: 'p-exist' }),
+      )
+      expect(confirmAsync).toHaveBeenCalledWith({ id: 'row1', siret: '12345678901234' })
+    })
   })
 })

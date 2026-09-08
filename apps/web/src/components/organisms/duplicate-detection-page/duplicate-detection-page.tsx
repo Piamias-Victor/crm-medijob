@@ -23,6 +23,7 @@ export function DuplicateDetectionPage<T extends Record<string, unknown>>({
   fields,
   onMerge,
   onIgnore,
+  showIgnore = true,
   onCancel,
 }: DuplicateDetectionPageProps<T>) {
   const fieldKeys = useMemo(() => fields.map((field) => field.key), [fields])
@@ -45,6 +46,7 @@ export function DuplicateDetectionPage<T extends Record<string, unknown>>({
   }
 
   async function handleIgnore() {
+    if (!onIgnore) return
     setIgnoring(true)
     try {
       await onIgnore()
@@ -68,9 +70,11 @@ export function DuplicateDetectionPage<T extends Record<string, unknown>>({
         <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>
           {DUPLICATE_CANCEL}
         </Button>
-        <Button type="button" variant="primary" onClick={handleIgnore} disabled={busy}>
-          {DUPLICATE_IGNORE}
-        </Button>
+        {showIgnore ? (
+          <Button type="button" variant="primary" onClick={handleIgnore} disabled={busy}>
+            {DUPLICATE_IGNORE}
+          </Button>
+        ) : null}
         <Button type="button" variant="accent" onClick={handleMerge} disabled={busy} className="min-w-30">
           {merging ? DUPLICATE_MERGING : DUPLICATE_MERGE}
         </Button>
