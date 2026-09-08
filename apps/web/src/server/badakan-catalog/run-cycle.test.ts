@@ -10,7 +10,7 @@ describe('runBadakanCatalogCycle', () => {
     })
   })
 
-  it('syncs enterprises then contracts on the catalog cron', async () => {
+  it('syncs enterprises, auto-creates ready pharmacies, then contracts', async () => {
     const order: string[] = []
     const syncEnterprises = vi.fn().mockImplementation(async () => {
       order.push('enterprises')
@@ -22,11 +22,16 @@ describe('runBadakanCatalogCycle', () => {
     })
     const result = await runBadakanCatalogCycle(env, {
       syncEnterprises,
+      promoteReady: async () => {
+        order.push('pharmacies')
+        return { created: 80, skipped: 14 }
+      },
       syncContracts,
     })
-    expect(order).toEqual(['enterprises', 'contracts'])
+    expect(order).toEqual(['enterprises', 'pharmacies', 'contracts'])
     expect(result).toEqual({
       enterprises: { fetched: 162, upserted: 94 },
+      pharmacies: { created: 80, skipped: 14 },
       contracts: { fetched: 1, upserted: 1 },
     })
   })

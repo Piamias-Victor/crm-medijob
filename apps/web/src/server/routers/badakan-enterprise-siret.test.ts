@@ -8,7 +8,7 @@ import type { EnterpriseVerifyRow } from '@/server/badakan-enterprise/verify.typ
 const hermes: EnterpriseVerifyRow = {
   id: 'row1',
   name: 'Pharmacie Hermes',
-  siret: '12345678901234',
+  siret: null,
   address: '1 rue de la Paix',
   city: 'Paris',
   postalCode: '75001',
@@ -41,42 +41,22 @@ function caller(deps: BadakanEnterpriseDeps) {
   return createCallerFactory(makeBadakanEnterpriseRouter(deps))({ session })
 }
 
-describe('badakanEnterpriseRouter', () => {
-  it('lists pending enterprises for the verification queue', async () => {
+describe('badakanEnterpriseRouter SIRET queue', () => {
+  it('flags a missing SIRET on the officines queue', async () => {
     const rows = await caller(makeDeps()).listPending()
-    expect(rows[0]).toMatchObject({
-      name: 'Pharmacie Hermes',
-      href: '/interim/officines/row1',
-    })
+    expect(rows[0]?.blockLabel).toBe('SIRET manquant')
   })
 
-  it('previews a new SIRET as Nouvelle pharmacie', async () => {
-    const preview = await caller(makeDeps()).getPreview({ id: 'row1' })
-    expect(preview?.statusLabel).toBe('Nouvelle pharmacie')
-    expect(preview?.contactActionLabel).toBe('Créer le contact principal')
-    expect(preview?.confirmLabel).toBe('Créer la pharmacie')
-  })
-
-  it('confirms a new SIRET by creating Pharmacy and Contact', async () => {
+  it('creates a pharmacie from a corrected SIRET', async () => {
     const deps = makeDeps()
-    const result = await caller(deps).confirm({ id: 'row1' })
-    expect(deps.createPharmacy).toHaveBeenCalled()
-    expect(deps.createContact).toHaveBeenCalled()
-    expect(result.pharmacyId).toBe('p-new')
+    const result = await caller(deps).confirm({ id: 'row1', siret: '12345678901234' })
+    expect(deps.createPharmacy).toHaveBeenCalledWith(
+      expect.objectContaining({ siret: '12345678901234' }),
+    )
     expect(result.createdPharmacy).toBe(true)
   })
 
-  it('confirms an existing SIRET without a second Pharmacy', async () => {
-    const deps = makeDeps({
-      findIdentityBySiret: vi.fn().mockResolvedValue({
-        id: 'p-exist',
-        name: 'Hermes CRM',
-        siret: '12345678901234',
-      }),
-    })
-    const result = await caller(deps).confirm({ id: 'row1' })
-    expect(deps.createPharmacy).not.toHaveBeenCalled()
-    expect(result.pharmacyId).toBe('p-exist')
-    expect(result.createdPharmacy).toBe(false)
+  it('rejects confirm when SIRET is still missing', async () => {
+    await expect(caller(makeDeps()).confirm({ id: 'row1' })).rejects.toThrow('SIRET manquant')
   })
 })

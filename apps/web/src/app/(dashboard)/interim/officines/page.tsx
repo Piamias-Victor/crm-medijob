@@ -9,7 +9,10 @@ export default async function Page() {
   const caller = await createServerCaller()
   const rows = await caller.badakanEnterprise.listPending()
   return (
-    <SectionCard title="Officines" description={interimCountLabel(rows.length, 'officine')}>
+    <SectionCard
+      title="Officines"
+      description={`${interimCountLabel(rows.length, 'officine')} à corriger — SIRET manquant ou déjà dans le CRM`}
+    >
       <Suspense fallback={<EntityTableSkeleton />}>
         <BadakanEnterpriseList rows={rows} />
       </Suspense>

@@ -15,8 +15,8 @@ export function BadakanEnterpriseList({ rows }: { rows: BadakanEnterpriseListIte
       matches={matchesEnterprise}
       getRowHref={(row) => row.href}
       emptyIcon={Building2}
-      emptyTitle="Aucune officine à vérifier"
-      emptyDescription="Ajustez les filtres pour afficher des résultats."
+      emptyTitle="Aucune officine à corriger"
+      emptyDescription="Les officines avec un SIRET unique sont créées automatiquement."
     />
   )
 }
