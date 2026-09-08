@@ -30,6 +30,7 @@ describe('createBadakanClient reads', () => {
       'getRecipient',
       'searchContracts',
       'searchEmployees',
+      'searchEnterprises',
       'searchMissions',
       'searchNewEmployees',
     ])

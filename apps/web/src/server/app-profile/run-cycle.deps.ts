@@ -61,7 +61,7 @@ export function defaultAppProfileCycleDeps(
       }),
     syncEnterprises: () =>
       syncBadakanEnterprises({
-        listEnterpriseIds: badakanMissionRepository.listEnterpriseIds,
+        listEnterpriseIds: () => client.searchEnterprises(),
         getEnterprise: (id) => client.getEnterprise(id),
         upsertFromRead: badakanEnterpriseRepository.upsertFromRead,
       }),

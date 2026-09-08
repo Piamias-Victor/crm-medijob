@@ -19,6 +19,7 @@ export type BadakanClient = {
   searchEmployees: (pageSize?: number) => Promise<BadakanRecipient[]>
   searchMissions: (pageSize?: number) => Promise<BadakanMission[]>
   searchContracts: (pageSize?: number) => Promise<BadakanContract[]>
+  searchEnterprises: (pageSize?: number) => Promise<string[]>
   getRecipient: (badakanId: string) => Promise<BadakanRecipient | null>
   getComments: (targetId: string) => Promise<BadakanComment[]>
   getEnterprise: (enterpriseId: string) => Promise<BadakanEnterprise | null>
