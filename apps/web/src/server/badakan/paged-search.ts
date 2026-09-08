@@ -8,6 +8,7 @@ export type SearchPagesInput<T> = {
   orderParameter: string
   failLabel: string
   mapItem: (raw: unknown) => T | null
+  orderAsArray?: boolean
 }
 
 export async function searchPages<T>(input: SearchPagesInput<T>): Promise<T[]> {
@@ -19,10 +20,7 @@ export async function searchPages<T>(input: SearchPagesInput<T>): Promise<T[]> {
         'Content-Type': 'application/json',
         security_token: input.token,
       },
-      body: JSON.stringify({
-        order: { descending: true, parameter: input.orderParameter },
-        page: { pageNumber, pageSize: input.pageSize },
-      }),
+      body: JSON.stringify(searchPageBody(input, pageNumber)),
     })
     if (!res.ok) throw new Error(`${input.failLabel} failed (${res.status})`)
     const body = (await res.json()) as PageListing
@@ -34,4 +32,11 @@ export async function searchPages<T>(input: SearchPagesInput<T>): Promise<T[]> {
     if (pageNumber + 1 >= (body.totalPages ?? 1) || chunk.length === 0) break
   }
   return rows
+}
+
+function searchPageBody<T>(input: SearchPagesInput<T>, pageNumber: number) {
+  const order = { descending: true, parameter: input.orderParameter }
+  const page = { pageNumber, pageSize: input.pageSize }
+  if (input.orderAsArray) return { orders: [order], page }
+  return { order, page }
 }
