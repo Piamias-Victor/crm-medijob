@@ -6,7 +6,7 @@ export function smsDueRow(overrides: Partial<SmsDueRow> = {}): SmsDueRow {
     candidateId: 'c1',
     firstName: 'Marie',
     phone: '06 12 34 56 78',
-    postalCode: '83000',
+    kind: 'first',
     ...overrides,
   }
 }

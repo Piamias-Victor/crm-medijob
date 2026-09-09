@@ -1,12 +1,15 @@
+export type SmsDueKind = 'first' | 'reminder'
+
 export type SmsDueRow = {
   candidateId: string
   firstName: string
   phone: string | null
-  postalCode?: string | null
+  kind: SmsDueKind
 }
 
 export type AvailabilitySmsContact = {
   origin: 'APP' | 'CRM'
+  status: string
   firstName: string
   phone: string | null
 }
@@ -22,7 +25,6 @@ export type SmsDueDeps = {
 export type SmsDueResult = {
   sent: number
   skippedNoPhone: number
-  skippedOutOfZone: number
   failed: number
   lastError?: string
 }

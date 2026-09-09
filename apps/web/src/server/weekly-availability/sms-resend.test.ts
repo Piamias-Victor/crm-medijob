@@ -2,10 +2,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { resendAvailabilitySms } from './sms-resend'
 import { smsDueDeps } from './sms-due.fixtures'
 import type { AvailabilitySmsContact } from './sms-due.types'
-import { weeklyAvailabilitySmsContent } from '@/view-models/weekly-availability-sms'
+import { weeklyAvailabilityReminderSmsContent } from '@/view-models/weekly-availability-sms'
 
 function contact(overrides: Partial<AvailabilitySmsContact> = {}): AvailabilitySmsContact {
-  return { origin: 'APP', firstName: 'Marie', phone: '0612345678', ...overrides }
+  return { origin: 'APP', status: 'NOUVEAU', firstName: 'Marie', phone: '0612345678', ...overrides }
 }
 
 describe('resendAvailabilitySms', () => {
@@ -18,7 +18,7 @@ describe('resendAvailabilitySms', () => {
     expect(result).toBe('sent')
     expect(sendSms).toHaveBeenCalledWith({
       to: '33612345678',
-      content: weeklyAvailabilitySmsContent('http://localhost:3000/dispo/secret-token'),
+      content: weeklyAvailabilityReminderSmsContent('http://localhost:3000/dispo/secret-token'),
     })
   })
 
@@ -27,6 +27,16 @@ describe('resendAvailabilitySms', () => {
     const deps = {
       ...smsDueDeps({ sendSms }),
       findContact: async () => contact({ origin: 'CRM' }),
+    }
+    expect(await resendAvailabilitySms('c1', deps)).toBe('not_app')
+    expect(sendSms).not.toHaveBeenCalled()
+  })
+
+  it('skips Blacklisté', async () => {
+    const sendSms = vi.fn()
+    const deps = {
+      ...smsDueDeps({ sendSms }),
+      findContact: async () => contact({ status: 'BLACKLISTE' }),
     }
     expect(await resendAvailabilitySms('c1', deps)).toBe('not_app')
     expect(sendSms).not.toHaveBeenCalled()

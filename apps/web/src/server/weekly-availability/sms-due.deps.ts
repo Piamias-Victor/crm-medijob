@@ -36,3 +36,8 @@ export function defaultResendSmsDeps(env: NodeJS.ProcessEnv = process.env): Rese
   const sms = makeWeeklyAvailabilitySmsRepository(prisma)
   return { ...defaultSmsDueDeps(env), findContact: sms.findContact }
 }
+
+export function defaultReminderSmsDueDeps(env: NodeJS.ProcessEnv = process.env): SmsDueDeps {
+  const sms = makeWeeklyAvailabilitySmsRepository(prisma)
+  return { ...defaultSmsDueDeps(env), listDue: () => sms.listReminderDue() }
+}
