@@ -1,41 +1,13 @@
-import type { Prisma, PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import type { BadakanMissionToPersist } from '@/server/badakan-mission/sync'
 import { isOpenNeed } from '@/view-models/badakan-need'
-
-const includeApplied = { searchApplied: true } as const
-const includeReferentials = {
-  jobTitle: { select: { name: true } },
-  software: { select: { name: true } },
-} as const
-
-function persistFields(data: BadakanMissionToPersist) {
-  return {
-    badakanId: data.badakanId,
-    identifier: data.identifier,
-    pharmacyName: data.pharmacyName,
-    enterpriseId: data.enterpriseId,
-    step: data.step,
-    periods: data.periods as Prisma.InputJsonValue,
-    activityId: data.activityId,
-    activityLabel: data.activityLabel,
-    softwareId: data.softwareId,
-    address: data.address,
-    city: data.city,
-    postalCode: data.postalCode,
-    latitude: data.latitude,
-    longitude: data.longitude,
-    softwareLabel: data.softwareLabel,
-    contactName: data.contactName,
-    contactPhone: data.contactPhone,
-    hourlyRate: data.hourlyRate,
-    reasonLabel: data.reasonLabel,
-    expectedRecipients: data.expectedRecipients,
-    staffedRecipients: data.staffedRecipients,
-    syncedAt: new Date(),
-  }
-}
+import {
+  includeApplied,
+  includeReferentials,
+  persistFields,
+} from './badakan-mission-persist'
 
 export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
   return {

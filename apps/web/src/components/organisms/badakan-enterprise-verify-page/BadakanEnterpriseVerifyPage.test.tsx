@@ -1,9 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { BadakanEnterpriseVerifyPage } from './BadakanEnterpriseVerifyPage'
-import { toIncomingPharmacyRow } from '@/view-models/badakan-enterprise-incoming'
-import type { BadakanEnterprisePreview } from '@/view-models/badakan-enterprise-preview'
-import type { EnterpriseVerifyRow } from '@/server/badakan-enterprise/verify.types'
+import { existingVerifyPreview, newVerifyPreview } from './BadakanEnterpriseVerifyPage.fixtures'
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -42,49 +40,9 @@ vi.mock('@/lib/trpc/client', () => ({
   },
 }))
 
-const row: EnterpriseVerifyRow = {
-  id: 'row1',
-  name: 'Pharmacie Hermes',
-  siret: '12345678901234',
-  address: '1 rue de la Paix',
-  city: 'Paris',
-  postalCode: '75001',
-  principalFirstName: 'Dominique',
-  principalLastName: 'Litzler',
-  principalEmail: 'd.litzler@hermes.fr',
-  principalPhone: '0601020304',
-  pharmacyId: null,
-  verifiedAt: null,
-}
-
-const existingPreview: BadakanEnterprisePreview = {
-  id: 'row1',
-  name: 'Pharmacie Hermes',
-  statusLabel: 'Pharmacie déjà dans le CRM',
-  contactActionLabel: 'Fusionner par email',
-  confirmLabel: 'Fusionner',
-  existingPharmacyId: 'p-exist',
-  existingPharmacyHref: '/pharmacies/p-exist',
-  existingPharmacyName: 'Hermes CRM',
-  siret: '12345678901234',
-  blockHint: 'Ce SIRET est déjà dans le CRM. Comparez les fiches puis fusionnez.',
-  incomingPharmacy: toIncomingPharmacyRow(row),
-  fields: [{ label: 'Nom', value: 'Pharmacie Hermes' }],
-}
-
-const newPreview: BadakanEnterprisePreview = {
-  ...existingPreview,
-  statusLabel: 'Nouvelle pharmacie',
-  confirmLabel: 'Créer la pharmacie',
-  existingPharmacyId: null,
-  existingPharmacyHref: null,
-  existingPharmacyName: null,
-  blockHint: null,
-}
-
 describe('BadakanEnterpriseVerifyPage', () => {
   it('opens the field-by-field fusion when the SIRET already exists', () => {
-    render(<BadakanEnterpriseVerifyPage preview={existingPreview} />)
+    render(<BadakanEnterpriseVerifyPage preview={existingVerifyPreview} />)
     expect(screen.getByText('Pharmacie CRM')).toBeInTheDocument()
     expect(screen.getByText('Import Badakan')).toBeInTheDocument()
     expect(screen.getByText('Hermes CRM')).toBeInTheDocument()
@@ -93,7 +51,7 @@ describe('BadakanEnterpriseVerifyPage', () => {
   })
 
   it('keeps the SIRET form when the pharmacie is new', () => {
-    render(<BadakanEnterpriseVerifyPage preview={newPreview} />)
+    render(<BadakanEnterpriseVerifyPage preview={newVerifyPreview} />)
     expect(screen.getByRole('button', { name: 'Créer la pharmacie' })).toBeInTheDocument()
     expect(screen.getByLabelText('SIRET')).toHaveValue('12345678901234')
   })

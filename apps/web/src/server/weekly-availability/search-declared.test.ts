@@ -32,7 +32,7 @@ describe('searchDeclared', () => {
       input: {},
       today: new Date('2026-09-03T10:00:00Z'),
     })
-    expect(listDeclared).toHaveBeenCalledWith({ from: '2026-09-03' })
+    expect(listDeclared).toHaveBeenCalledWith({ from: '2026-09-03', hasDispo: 'yes' })
     expect(rows).toHaveLength(1)
   })
 
@@ -49,6 +49,7 @@ describe('searchDeclared', () => {
       dateTo: '2026-09-11',
       period: 'AM',
       jobTitleIds: ['jt1'],
+      hasDispo: 'yes',
     })
   })
 
@@ -60,7 +61,7 @@ describe('searchDeclared', () => {
       input: { dateFrom: '2026-01-01' },
       today: new Date('2026-09-03T10:00:00Z'),
     })
-    expect(listDeclared).toHaveBeenCalledWith({ from: '2026-09-03' })
+    expect(listDeclared).toHaveBeenCalledWith({ from: '2026-09-03', hasDispo: 'yes' })
   })
 
   it('keeps only names or cities matching the search box', async () => {
