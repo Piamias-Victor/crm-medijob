@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { sendDueAvailabilitySms } from './sms-due'
 import { memorySmsDue, smsDueDeps, smsDueRow } from './sms-due.fixtures'
-import { weeklyAvailabilitySmsContent } from '@/view-models/weekly-availability-sms'
+import {
+  weeklyAvailabilityReminderSmsContent,
+  weeklyAvailabilitySmsContent,
+} from '@/view-models/weekly-availability-sms'
 
 describe('sendDueAvailabilitySms', () => {
   it('texts the secret weekly availability URL to the Candidate', async () => {
@@ -27,7 +30,7 @@ describe('sendDueAvailabilitySms', () => {
     const row = smsDueRow({ phone: null })
     const deps = smsDueDeps({ listDue: async () => [row], testTo: undefined })
     const result = await sendDueAvailabilitySms(deps)
-    expect(result).toEqual({ sent: 0, skippedNoPhone: 1, skippedOutOfZone: 0, failed: 0 })
+    expect(result).toEqual({ sent: 0, skippedNoPhone: 1, failed: 0 })
     expect(deps.sendSms).not.toHaveBeenCalled()
     expect(deps.markSent).not.toHaveBeenCalled()
   })
@@ -50,15 +53,16 @@ describe('sendDueAvailabilitySms', () => {
     expect(deps.sendSms).toHaveBeenCalledTimes(1)
   })
 
-  it('does not text a Candidate outside the live SMS departments', async () => {
+  it('texts the reminder copy when the row is a 15-day refresh', async () => {
     const deps = smsDueDeps({
       testTo: undefined,
-      listDue: async () => [smsDueRow({ postalCode: '69001' })],
+      listDue: async () => [smsDueRow({ kind: 'reminder' })],
     })
-    const result = await sendDueAvailabilitySms(deps)
-    expect(result.sent).toBe(0)
-    expect(result.skippedOutOfZone).toBe(1)
-    expect(deps.sendSms).not.toHaveBeenCalled()
-    expect(deps.markSent).not.toHaveBeenCalled()
+    await sendDueAvailabilitySms(deps)
+    expect(deps.sendSms).toHaveBeenCalledWith({
+      to: '33612345678',
+      content: weeklyAvailabilityReminderSmsContent('http://localhost:3000/dispo/secret-token'),
+    })
+    expect(deps.markSent).toHaveBeenCalledWith('c1')
   })
 })

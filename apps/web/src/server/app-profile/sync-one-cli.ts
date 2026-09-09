@@ -20,7 +20,7 @@ async function main() {
   if (!linked) throw new Error('Candidate origin App not found after sync')
 
   const sms = await sendOneAvailabilitySms(
-    { candidateId: linked.id, firstName: row.firstName, phone: row.phone },
+    { candidateId: linked.id, firstName: row.firstName, phone: row.phone, kind: 'first' },
     defaultSmsDueDeps(process.env),
   )
 
