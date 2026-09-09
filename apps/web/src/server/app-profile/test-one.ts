@@ -38,6 +38,7 @@ export async function runAppValidatedTest(
     candidateId: candidate.id,
     firstName: recipient.firstName,
     phone: recipient.phone,
+    kind: 'first',
   })
   return {
     ok: true,

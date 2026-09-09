@@ -5,15 +5,22 @@ export type ResendSmsDeps = SmsDueDeps & {
   findContact: (candidateId: string) => Promise<AvailabilitySmsContact | null>
 }
 
+const BLOCKED = new Set(['INACTIF', 'BLACKLISTE'])
+
 export async function resendAvailabilitySms(
   candidateId: string,
   deps: ResendSmsDeps,
 ): Promise<'sent' | 'skippedNoPhone' | 'not_app' | 'not_found'> {
   const contact = await deps.findContact(candidateId)
   if (!contact) return 'not_found'
-  if (contact.origin !== 'APP') return 'not_app'
+  if (contact.origin !== 'APP' || BLOCKED.has(contact.status)) return 'not_app'
   return sendOneAvailabilitySms(
-    { candidateId, firstName: contact.firstName, phone: contact.phone },
+    {
+      candidateId,
+      firstName: contact.firstName,
+      phone: contact.phone,
+      kind: 'reminder',
+    },
     deps,
   )
 }

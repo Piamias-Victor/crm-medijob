@@ -6,11 +6,10 @@ describe('runAvailabilitySmsCron', () => {
     const result = await runAvailabilitySmsCron({ CRON_ENABLED: 'true' }, async () => ({
       sent: 3,
       skippedNoPhone: 0,
-      skippedOutOfZone: 1,
       failed: 0,
     }))
     expect(result).toEqual({
-      sms: { sent: 3, skippedNoPhone: 0, skippedOutOfZone: 1, failed: 0 },
+      sms: { sent: 3, skippedNoPhone: 0, failed: 0 },
     })
   })
 
@@ -18,7 +17,7 @@ describe('runAvailabilitySmsCron', () => {
     let sent = false
     const result = await runAvailabilitySmsCron({}, async () => {
       sent = true
-      return { sent: 1, skippedNoPhone: 0, skippedOutOfZone: 0, failed: 0 }
+      return { sent: 1, skippedNoPhone: 0, failed: 0 }
     })
     expect(sent).toBe(false)
     expect(result).toEqual({ skipped: true, reason: 'cron_disabled' })
