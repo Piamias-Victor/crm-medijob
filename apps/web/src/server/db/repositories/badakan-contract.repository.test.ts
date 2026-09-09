@@ -6,6 +6,7 @@ const mapped = {
   status: 'VALIDATED',
   pdfUrl: 'https://files.badakan.test/c-lucie.pdf',
   dpaeUrl: 'https://files.badakan.test/c-lucie-dpae.pdf',
+  recipientId: 'bk-lucie',
   recipientName: 'Lucie Robert',
   pharmacyName: 'Pharmacie Hermes',
 }
@@ -45,7 +46,11 @@ describe('badakanContractRepository', () => {
         create: expect.objectContaining({
           status: 'VALIDATED',
           pdfUrl: mapped.pdfUrl,
+          recipientId: 'bk-lucie',
           pharmacyName: 'Pharmacie Hermes',
+        }),
+        update: expect.not.objectContaining({
+          signInviteSmsSentAt: expect.anything(),
         }),
       }),
     )

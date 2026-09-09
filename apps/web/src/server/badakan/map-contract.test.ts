@@ -18,9 +18,26 @@ describe('mapBadakanContract', () => {
       status: 'VALIDATED',
       pdfUrl: 'https://files.badakan.test/c-lucie.pdf',
       dpaeUrl: 'https://files.badakan.test/c-lucie-dpae.pdf',
+      recipientId: null,
       recipientName: 'Lucie Robert',
       pharmacyName: 'Pharmacie Hermes',
     })
+  })
+
+  it('maps the Badakan recipient id for Candidate lookup', () => {
+    const mapped = mapBadakanContract({
+      ...lucieRaw,
+      recipient: { id: 'bk-lucie', firstName: 'Lucie', lastName: 'Robert' },
+    })
+    expect(mapped?.recipientId).toBe('bk-lucie')
+  })
+
+  it('prefers recipientId when id is missing', () => {
+    const mapped = mapBadakanContract({
+      ...lucieRaw,
+      recipient: { recipientId: 99, firstName: 'Lucie', lastName: 'Robert' },
+    })
+    expect(mapped?.recipientId).toBe('99')
   })
 
   it('returns null without an id', () => {

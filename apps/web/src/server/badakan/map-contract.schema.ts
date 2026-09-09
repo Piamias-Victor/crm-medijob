@@ -1,7 +1,14 @@
 import { z } from 'zod'
 
+const identifier = z
+  .union([z.string(), z.number()])
+  .nullish()
+  .transform((value) => (value == null ? undefined : String(value)))
+
 const namedSchema = z
   .object({
+    id: identifier,
+    recipientId: identifier,
     firstName: z.string().optional().nullable(),
     lastName: z.string().optional().nullable(),
     enterpriseName: z.string().optional().nullable(),
