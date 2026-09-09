@@ -7,6 +7,5 @@ export type HireflixCalendarSmsEnv = {
 export function isHireflixCalendarSmsEnabled(
   env: HireflixCalendarSmsEnv = process.env,
 ): boolean {
-  if (env.VERCEL_ENV === 'production') return false
   return env.HIREFLIX_CALENDAR_SMS?.trim() === 'true'
 }

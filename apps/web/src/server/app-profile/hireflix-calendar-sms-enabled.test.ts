@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest'
 import { isHireflixCalendarSmsEnabled } from './hireflix-calendar-sms-enabled'
 
 describe('isHireflixCalendarSmsEnabled', () => {
-  it('stays off in Vercel production even when the flag is true', () => {
+  it('turns on in Vercel production when the flag is true', () => {
     expect(
       isHireflixCalendarSmsEnabled({
         VERCEL_ENV: 'production',
         HIREFLIX_CALENDAR_SMS: 'true',
       }),
-    ).toBe(false)
+    ).toBe(true)
   })
 
   it('turns on in preview when the flag is true', () => {
