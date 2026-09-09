@@ -81,7 +81,7 @@ An interim shift that lives in Badakan (pharmacy, periods, applicants at `SEARCH
 _Avoid_: Mission, besoin CRM, vacation (as entity name)
 
 **Interim need SMS**:
-Daily 9h Europe/Paris (Vercel cron `0 7 * * *` UTC = 9h CEST / 8h CET) transactional SMS (same Brevo port as the availability SMS) to App-origin App-validated Candidates who are not Inactif or Blacklisté. Sent when at least one open Badakan need (`CREATED` + staffing gap) has the same JobTitle, is within 80 km (stored coords or commune postal lookup like matching; not Mobility radius), and `createdAt` is after `interimNeedSmsSentAt`. `syncedAt` is ignored. One SMS per Candidate. Existing Candidates and new App-validated are stamped without sending so only later needs notify. Copy points to the Medijob app. Distinct from the weekly-availability SMS and from Mission matching.
+Daily 12h45 Europe/Paris (Vercel cron `45 10 * * *` UTC = 12h45 CEST / 11h45 CET) transactional SMS (same Brevo port as the availability SMS) to App-origin App-validated Candidates who are not Inactif or Blacklisté. Sent when at least one open Badakan need (`CREATED` + staffing gap) has the same JobTitle, is within 80 km (stored coords or commune postal lookup like matching; not Mobility radius), and `createdAt` is after `interimNeedSmsSentAt`. `syncedAt` is ignored. One SMS per Candidate. Existing Candidates and new App-validated are stamped without sending so only later needs notify. Copy points to the Medijob app. Distinct from the weekly-availability SMS and from Mission matching.
 _Avoid_: matching SMS, push, weekly availability SMS (that's the dispo link)
 
 **Badakan contract**:
