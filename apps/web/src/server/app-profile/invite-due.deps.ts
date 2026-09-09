@@ -25,6 +25,9 @@ export function defaultInviteDueDeps(
     saveSent: async (id) => {
       await appProfileInviteRepository.saveSent(id)
     },
+    saveCalendarSmsSent: async (id) => {
+      await appProfileInviteRepository.saveCalendarSmsSent(id)
+    },
     saveError: async (id, error) => {
       await appProfileInviteRepository.saveError(id, error)
     },

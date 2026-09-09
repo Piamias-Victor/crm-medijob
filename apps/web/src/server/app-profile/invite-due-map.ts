@@ -7,6 +7,8 @@ export function toInviteDueProfile(row: {
   lastName: string
   email: string | null
   phone: string | null
+  candidateId: string | null
+  calendarSmsSentAt: Date | null
   hireflixInterviewId: string | null
   hireflixUrl: string | null
   inviteEmailSentAt: Date | null
@@ -18,6 +20,8 @@ export function toInviteDueProfile(row: {
     lastName: row.lastName,
     email: row.email,
     phone: row.phone,
+    candidateId: row.candidateId,
+    calendarSmsSentAt: row.calendarSmsSentAt,
     hireflixInterviewId: row.hireflixInterviewId,
     hireflixUrl: row.hireflixUrl,
     inviteEmailSentAt: row.inviteEmailSentAt,

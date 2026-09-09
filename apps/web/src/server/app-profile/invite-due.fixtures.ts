@@ -11,6 +11,8 @@ export function inviteProfile(
     lastName: 'Dupont',
     email: 'camille@example.com',
     phone: null,
+    candidateId: null,
+    calendarSmsSentAt: null,
     hireflixInterviewId: null,
     hireflixUrl: null,
     inviteEmailSentAt: null,
@@ -31,6 +33,7 @@ export function inviteDeps(overrides: Partial<InviteDueDeps> = {}): InviteDueDep
       url: 'https://app.hireflix.com/abc',
     }),
     sendInviteEmail: vi.fn(),
+    saveCalendarSmsSent: vi.fn(),
     ...overrides,
   }
 }

@@ -15,6 +15,7 @@ describe('inviteDueAppProfiles calendar SMS', () => {
     expect(result.sent).toBe(1)
     expect(d.sendInviteEmail).toHaveBeenCalled()
     expect(sendCalendarSms).toHaveBeenCalledWith('33612345678')
+    expect(d.saveCalendarSmsSent).toHaveBeenCalledWith('p1')
   })
 
   it('skips the calendar SMS when the profile has no phone', async () => {
@@ -50,5 +51,34 @@ describe('inviteDueAppProfiles calendar SMS', () => {
     expect(result.sent).toBe(1)
     expect(result.failed).toBe(0)
     expect(d.saveSent).toHaveBeenCalledWith('p1')
+  })
+
+  it('skips the calendar SMS when the profile is already in the CVthèque', async () => {
+    const row = inviteProfile({ phone: '0612345678', candidateId: 'c1' })
+    const sendCalendarSms = vi.fn()
+    const d = inviteDeps({
+      listDue: async () => [row],
+      findById: async () => row,
+      sendCalendarSms,
+    })
+    const result = await inviteDueAppProfiles(d)
+    expect(result.sent).toBe(1)
+    expect(d.sendInviteEmail).toHaveBeenCalled()
+    expect(sendCalendarSms).not.toHaveBeenCalled()
+  })
+
+  it('skips the calendar SMS when existing profiles are marked already sent', async () => {
+    const row = inviteProfile({
+      phone: '0612345678',
+      calendarSmsSentAt: new Date('2026-09-01T00:00:00.000Z'),
+    })
+    const sendCalendarSms = vi.fn()
+    const d = inviteDeps({
+      listDue: async () => [row],
+      findById: async () => row,
+      sendCalendarSms,
+    })
+    await inviteDueAppProfiles(d)
+    expect(sendCalendarSms).not.toHaveBeenCalled()
   })
 })
