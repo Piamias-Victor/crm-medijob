@@ -332,6 +332,7 @@ model Candidate {
   consentSource      ConsentSource?
   referentId         String?
   badakanValidatedAt DateTime?
+  interimNeedSmsSentAt DateTime?
   deletedAt          DateTime?
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt

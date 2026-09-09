@@ -1,58 +1,14 @@
 import type { PrismaClient } from '@prisma/client'
 import { NOT_DELETED } from './soft-delete'
 import { toAppOriginCreateData } from './candidate-app-origin-create'
+import { toMarkAppValidatedData } from './candidate-app-origin-validated'
+import {
+  APP_LINKED_SELECT,
+  type AppIdentityPatch,
+  type AppOriginCreateInput,
+} from './candidate-app-origin.types'
 
-export type AppIdentityPatch = {
-  firstName?: string
-  lastName?: string
-  email?: string
-  phone?: string
-  address?: string
-  city?: string
-  postalCode?: string
-  jobTitleId?: string
-  cvUrl?: string
-  nir?: string
-  iban?: string
-}
-
-export type AppOriginCreateInput = {
-  firstName: string
-  lastName: string
-  email: string | null
-  phone: string | null
-  address: string | null
-  city: string | null
-  postalCode: string | null
-  jobTitleId: string
-  origin: 'APP'
-  status: 'NOUVEAU'
-  badakanId: string
-  notes?: string
-  availableFrom?: Date
-  mobilityRadiusKm?: number
-  mobilityNotes?: string
-  softwareIds?: string[]
-}
-
-const APP_LINKED_SELECT = {
-  id: true,
-  origin: true,
-  status: true,
-  statusBeforeInactive: true,
-  badakanValidatedAt: true,
-  firstName: true,
-  lastName: true,
-  email: true,
-  phone: true,
-  address: true,
-  city: true,
-  postalCode: true,
-  jobTitleId: true,
-  jobTitle: { select: { name: true } },
-  nir: true,
-  iban: true,
-} as const
+export type { AppIdentityPatch, AppOriginCreateInput }
 
 export function makeCandidateAppOriginRepository(db: PrismaClient) {
   return {
@@ -85,7 +41,7 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
     markBadakanValidated: (id: string) =>
       db.candidate.update({
         where: { id },
-        data: { badakanValidatedAt: new Date() },
+        data: toMarkAppValidatedData(),
         select: { id: true },
       }),
     patchAppIdentity: (id: string, patch: AppIdentityPatch) =>

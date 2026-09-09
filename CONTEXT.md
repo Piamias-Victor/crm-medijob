@@ -9,7 +9,7 @@ A person actively tracked in the CVthèque — created directly (CV upload + hum
 _Avoid_: Applicant, postulant, profil (when meaning an inbound application), candidature
 
 **Candidate status**:
-Lifecycle of a Candidate in the CVthèque: Nouveau / À qualifier / Qualifié / En mission / Inactif / Blacklisté. Distinct from PipelineStage on a Mission. « En mission » is derived when the Candidate has a non-terminal MissionCandidate positioning (manual Inactif/Blacklisté still allowed). A Candidate created from App-validated starts at **Nouveau**. Origin App is not Qualifié. If Badakan later reports SUSPENDED or BANNED, the Candidate becomes **Inactif** (out of weekly-availability filter and the availability SMS) — that is not Blacklisté. If Badakan restores `COMPLETED`, status returns to what it was before Inactif (Qualifié stays Qualifié) and they re-enter the filter; no second automatic SMS.
+Lifecycle of a Candidate in the CVthèque: Nouveau / À qualifier / Qualifié / En mission / Inactif / Blacklisté. Distinct from PipelineStage on a Mission. « En mission » is derived when the Candidate has a non-terminal MissionCandidate positioning (manual Inactif/Blacklisté still allowed). A Candidate created from App-validated starts at **Nouveau**. Origin App is not Qualifié. If Badakan later reports SUSPENDED or BANNED, the Candidate becomes **Inactif** (out of weekly-availability filter, the availability SMS, and the interim need SMS) — that is not Blacklisté. If Badakan restores `COMPLETED`, status returns to what it was before Inactif (Qualifié stays Qualifié) and they re-enter the filter; no second automatic SMS.
 _Avoid_: statut (without qualifier), pipeline stage, phase
 
 **Profile completeness**:
@@ -79,6 +79,10 @@ _Avoid_: Poste, besoin, vacation (as entity name), annonce, Badakan mission
 **Badakan mission**:
 An interim shift that lives in Badakan (pharmacy, periods, applicants at `SEARCH_APPLIED`). Shown in the Intérim module. Not a Mission: it does not enter the CRM kanban or PipelineStage.
 _Avoid_: Mission, besoin CRM, vacation (as entity name)
+
+**Interim need SMS**:
+Daily 9h Europe/Paris (Vercel cron `0 7 * * *` UTC = 9h CEST / 8h CET) transactional SMS (same Brevo port as the availability SMS) to App-origin App-validated Candidates who are not Inactif or Blacklisté. Sent when at least one open Badakan need (`CREATED` + staffing gap) has the same JobTitle, is within 80 km (stored coords or commune postal lookup like matching; not Mobility radius), and `createdAt` is after `interimNeedSmsSentAt`. `syncedAt` is ignored. One SMS per Candidate. Existing Candidates and new App-validated are stamped without sending so only later needs notify. Copy points to the Medijob app. Distinct from the weekly-availability SMS and from Mission matching.
+_Avoid_: matching SMS, push, weekly availability SMS (that's the dispo link)
 
 **Badakan contract**:
 An INTERIM (or extra/permanent) contract that lives in Badakan (PDF, DPAE, status CREATED/VALIDATED/CANCELLED). Read into the Intérim module. Not a Ligne de suivi, not a Devis, not a CRM Document of category contract unless a file is attached on the fiche.

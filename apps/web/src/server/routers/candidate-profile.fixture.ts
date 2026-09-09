@@ -29,6 +29,7 @@ export const profileFixture = {
   consentGivenAt: null,
   consentSource: null,
   badakanValidatedAt: null,
+  interimNeedSmsSentAt: null,
   createdAt: new Date('2026-01-15'),
   updatedAt: new Date('2026-01-15'),
   deletedAt: null,

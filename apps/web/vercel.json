@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/availability-sms",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/interim-need-sms",
+      "schedule": "0 7 * * *"
     }
   ]
 }
