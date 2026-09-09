@@ -20,6 +20,7 @@ JOBS_*
 
 ## INTERDIT pour l’instant
 RESEND_API_KEY / BREVO_* / HIREFLIX_* / AVAILABILITY_LINK_TEST_PHONE
+# HIREFLIX_CALENDAR_SMS=true pour activer le SMS créneau (Production + Preview)
 AUTH_DEV_AUTO_LOGIN
 BLOB_READ_WRITE_TOKEN     # inutile si S3_DOCUMENTS_BUCKET set
 

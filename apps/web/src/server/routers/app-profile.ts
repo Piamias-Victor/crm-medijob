@@ -39,6 +39,7 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })
       return deps.runTestProcess(row.badakanId)
     }),
+    testCalendarSms: protectedProcedure.mutation(() => deps.sendCalendarSmsTest()),
     ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
       try {
         return await ignoreAppProfile(input.id, {

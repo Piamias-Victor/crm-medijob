@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/atoms/Button'
+import { AppProfileTestCalendarSmsButton } from '@/components/molecules/AppProfileTestCalendarSmsButton'
 import { AppProfileTestProcessButton } from '@/components/molecules/AppProfileTestProcessButton'
 import { appProfileConvertPath } from '@/view-models/inbox-detail-href'
 import { candidatsPageHref } from '@/view-models/candidats-tab'
@@ -59,6 +60,7 @@ export function AppProfileDetailActions({
         </Button>
       )}
       <AppProfileTestProcessButton profileId={profileId} />
+      <AppProfileTestCalendarSmsButton />
     </div>
   )
 }

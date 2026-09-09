@@ -20,6 +20,7 @@ function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
     getBadakanClient: () => stubBadakanClient(),
     importCvUrl: vi.fn().mockResolvedValue(null),
     runTestProcess: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
+    sendCalendarSmsTest: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
     ...overrides,
   }
 }
@@ -34,6 +35,16 @@ describe('appProfileRouter', () => {
     const result = await caller(makeDeps({ runTestProcess })).testProcess({ id: 'p1' })
     expect(runTestProcess).toHaveBeenCalledWith('bk1')
     expect(result).toEqual({ ok: false, reason: 'recipient_missing' })
+  })
+
+  it('sends the calendar booking SMS to the test phone', async () => {
+    const sendCalendarSmsTest = vi.fn().mockResolvedValue({
+      ok: true,
+      sentTo: '33624174724',
+    })
+    const result = await caller(makeDeps({ sendCalendarSmsTest })).testCalendarSms()
+    expect(sendCalendarSmsTest).toHaveBeenCalled()
+    expect(result).toEqual({ ok: true, sentTo: '33624174724' })
   })
 
   it('ignores a pending profile', async () => {

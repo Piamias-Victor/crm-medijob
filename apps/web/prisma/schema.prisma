@@ -680,6 +680,7 @@ model AppProfile {
   hireflixUrl         String?
   inviteEmailSentAt   DateTime?
   inviteLastError     String?
+  calendarSmsSentAt   DateTime?
   syncedAt            DateTime         @default(now())
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt

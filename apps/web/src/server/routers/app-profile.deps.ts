@@ -6,6 +6,8 @@ import { importBadakanCvToBlob } from '@/server/app-profile/import-cv'
 import { resolveBlobClient } from '@/server/services/resolve-blob-client'
 import { runAppValidatedTest, type TestOneReport } from '@/server/app-profile/test-one'
 import { defaultTestOneDeps } from '@/server/app-profile/test-one.deps'
+import { runHireflixCalendarSmsTest } from '@/server/app-profile/hireflix-calendar-sms-test-run'
+import type { CalendarSmsTestResult } from '@/server/app-profile/hireflix-calendar-sms-test'
 
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
@@ -19,6 +21,7 @@ export type AppProfileDeps = {
   getBadakanClient: () => BadakanClient
   importCvUrl: (badakanId: string) => Promise<string | null>
   runTestProcess: (badakanId: string) => Promise<TestOneReport>
+  sendCalendarSmsTest: () => Promise<CalendarSmsTestResult>
 }
 
 export const defaultAppProfileDeps: AppProfileDeps = {
@@ -33,4 +36,5 @@ export const defaultAppProfileDeps: AppProfileDeps = {
   getBadakanClient: () => badakanClientFromEnv(),
   importCvUrl: (badakanId) => importBadakanCvToBlob(badakanId, resolveBlobClient()),
   runTestProcess: (badakanId) => runAppValidatedTest(badakanId, defaultTestOneDeps()),
+  sendCalendarSmsTest: () => runHireflixCalendarSmsTest(),
 }
