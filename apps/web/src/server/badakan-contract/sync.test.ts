@@ -7,6 +7,7 @@ const mapped: BadakanContract = {
   status: 'VALIDATED',
   pdfUrl: 'https://files.badakan.test/c-lucie.pdf',
   dpaeUrl: 'https://files.badakan.test/c-lucie-dpae.pdf',
+  recipientId: 'bk-lucie',
   recipientName: 'Lucie Robert',
   pharmacyName: 'Pharmacie Hermes',
 }

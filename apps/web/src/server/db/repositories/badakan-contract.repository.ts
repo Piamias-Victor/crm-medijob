@@ -9,6 +9,7 @@ function persistFields(data: BadakanContract) {
     status: data.status,
     pdfUrl: data.pdfUrl,
     dpaeUrl: data.dpaeUrl,
+    recipientId: data.recipientId,
     recipientName: data.recipientName,
     pharmacyName: data.pharmacyName,
     syncedAt: new Date(),
