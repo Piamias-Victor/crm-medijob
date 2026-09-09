@@ -37,6 +37,7 @@ const baseProfile = {
   consentGivenAt: null,
   consentSource: null,
   badakanValidatedAt: null,
+  interimNeedSmsSentAt: null,
   jobTitle: { id: 'jt1', name: 'Pharmacien' },
   referent: { id: 'u1', name: 'Bob Réf' },
   softwares: [],

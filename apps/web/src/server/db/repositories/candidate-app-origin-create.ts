@@ -1,4 +1,4 @@
-import type { AppOriginCreateInput } from './candidate-app-origin.repo'
+import type { AppOriginCreateInput } from './candidate-app-origin.types'
 
 export function toAppOriginCreateData(data: AppOriginCreateInput) {
   return {
@@ -17,6 +17,7 @@ export function toAppOriginCreateData(data: AppOriginCreateInput) {
     availableFrom: data.availableFrom,
     mobilityRadiusKm: data.mobilityRadiusKm,
     mobilityNotes: data.mobilityNotes,
+    interimNeedSmsSentAt: new Date(),
     ...(data.softwareIds?.length
       ? { softwares: { create: data.softwareIds.map((softwareId) => ({ softwareId })) } }
       : {}),
