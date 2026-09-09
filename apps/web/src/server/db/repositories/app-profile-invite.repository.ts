@@ -23,6 +23,11 @@ export function makeAppProfileInviteRepository(db: PrismaClient = defaultDb) {
         where: { id },
         data: { inviteEmailSentAt: new Date(), inviteLastError: null },
       }),
+    saveCalendarSmsSent: (id: string) =>
+      db.appProfile.update({
+        where: { id },
+        data: { calendarSmsSentAt: new Date() },
+      }),
     saveError: (id: string, error: string) =>
       db.appProfile.update({
         where: { id },
