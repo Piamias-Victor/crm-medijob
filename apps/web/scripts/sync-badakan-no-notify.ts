@@ -5,6 +5,7 @@
 import { runAppProfileCycle } from '@/server/app-profile/run-cycle'
 import { defaultAppProfileCycleDeps } from '@/server/app-profile/run-cycle.deps'
 import { runBadakanCatalogCycle } from '@/server/badakan-catalog/run-cycle'
+import { defaultCatalogCycleDeps } from '@/server/badakan-catalog/run-cycle.deps'
 
 async function main() {
   const base = defaultAppProfileCycleDeps(process.env)
@@ -17,7 +18,10 @@ async function main() {
       cancelled: 0,
     }),
   })
-  const catalog = await runBadakanCatalogCycle()
+  const catalog = await runBadakanCatalogCycle(process.env, {
+    ...defaultCatalogCycleDeps(process.env),
+    sendSignInviteSms: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
+  })
   console.log(JSON.stringify({ profiles, catalog }, null, 2))
 }
 

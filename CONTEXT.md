@@ -85,7 +85,7 @@ Daily 12h45 Europe/Paris (Vercel cron `45 10 * * *` UTC = 12h45 CEST / 11h45 CET
 _Avoid_: matching SMS, push, weekly availability SMS (that's the dispo link)
 
 **Badakan contract**:
-An INTERIM (or extra/permanent) contract that lives in Badakan (PDF, DPAE, status CREATED/VALIDATED/CANCELLED). Read into the Intérim module. Not a Ligne de suivi, not a Devis, not a CRM Document of category contract unless a file is attached on the fiche.
+An INTERIM (or extra/permanent) contract that lives in Badakan (PDF, DPAE, status CREATED/VALIDATED/CANCELLED). Read into the Intérim module. Not a Ligne de suivi, not a Devis, not a CRM Document of category contract unless a file is attached on the fiche. When a contract first appears as `CREATED` after go-live, a transactional SMS invites the Candidate (`badakanId` = Badakan recipient id) to sign the email PDF; a reminder follows 24h later if still `CREATED`. Existing `CREATED` rows are stamped without sending. Not Inactif or Blacklisté. Distinct from the weekly-availability SMS and the interim-need SMS.
 _Avoid_: Ligne de suivi Intérim, contrat CRM, Devis
 
 **JobOffer**:
@@ -240,7 +240,7 @@ Inbound: Badakan API (read-only), including Badakan comments on CREATED recipien
 Outbound: Candidate creation or merge on recruiter ACCEPTE (rare). When the recipient becomes App-validated, they leave this inbox; Candidate write is owned by the Intérim context. Never the Intérim positioning filter.
 
 **Intérim (operational)** — App-validated Candidates, weekly availability, Badakan read model.
-Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts.
+Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts (sign-invite SMS on new `CREATED`).
 Inbound: Badakan API, same periodic cycle as AppProfiles (no manual refresh control required).
 Outbound: Candidate create or link (origin App). Unique-SIRET Badakan enterprise auto-creates a Pharmacy; missing or duplicate SIRET is corrected on Intérim officines. **V1 never writes to Badakan** (no staff, validate, PUT, POST comments, or contract writes). Never turns a Badakan mission into a Mission. Distinct from Finance « Intérim » (Lignes de suivi) and from AppProfiles inbox.
 

@@ -6,10 +6,15 @@ import { syncBadakanContracts } from '@/server/badakan-contract/sync'
 import { promoteReadyEnterprises } from '@/server/badakan-enterprise/promote-ready'
 import { defaultBadakanEnterpriseDeps } from '@/server/routers/badakan-enterprise.deps'
 
+import { sendDueContractSignSms } from '@/server/badakan-contract-sms/send-due'
+import { defaultContractSmsDueDeps } from '@/server/badakan-contract-sms/send-due.deps'
+import type { ContractSmsDueResult } from '@/server/badakan-contract-sms/send-due.types'
+
 export type CatalogCycleDeps = {
   syncEnterprises: () => Promise<{ fetched: number; upserted: number }>
   promoteReady: () => Promise<{ created: number; skipped: number }>
   syncContracts: () => Promise<{ fetched: number; upserted: number }>
+  sendSignInviteSms: () => Promise<ContractSmsDueResult>
 }
 
 export function defaultCatalogCycleDeps(
@@ -30,5 +35,6 @@ export function defaultCatalogCycleDeps(
         searchContracts: () => client.searchContracts(),
         upsertFromRead: badakanContractRepository.upsertFromRead,
       }),
+    sendSignInviteSms: () => sendDueContractSignSms(defaultContractSmsDueDeps(env)),
   }
 }

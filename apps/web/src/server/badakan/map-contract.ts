@@ -5,6 +5,7 @@ export type BadakanContract = {
   status: string
   pdfUrl: string | null
   dpaeUrl: string | null
+  recipientId: string | null
   recipientName: string
   pharmacyName: string
 }
@@ -32,6 +33,7 @@ export function mapBadakanContract(raw: unknown): BadakanContract | null {
     status: present(r.currentStep ?? r.status) ?? '—',
     pdfUrl: fileUrl(r.pdfUrl) ?? fileUrl(r.pdf) ?? fileUrl(r.contractPdf) ?? fileUrl(r.contractFile),
     dpaeUrl: fileUrl(r.dpaeUrl) ?? fileUrl(r.dpae) ?? fileUrl(r.dpaePdf) ?? fileUrl(r.dpaeFile),
+    recipientId: present(r.recipient?.id ?? r.recipient?.recipientId),
     recipientName: fullName(r.recipient?.firstName, r.recipient?.lastName),
     pharmacyName: present(r.enterprise?.enterpriseName ?? r.enterprise?.name) ?? '—',
   }
