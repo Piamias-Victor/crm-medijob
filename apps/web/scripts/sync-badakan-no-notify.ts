@@ -22,6 +22,7 @@ async function main() {
   const catalog = await runBadakanCatalogCycle(process.env, {
     ...defaultCatalogCycleDeps(process.env),
     sendSignInviteSms: async () => ({ sent: 0, skippedNoPhone: 0, failed: 0 }),
+    sendSignInviteEmail: async () => ({ sent: 0, skippedNoEmail: 0, failed: 0 }),
   })
   console.log(JSON.stringify({ profiles, catalog }, null, 2))
 }

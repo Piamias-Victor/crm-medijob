@@ -10,7 +10,7 @@ describe('runBadakanCatalogCycle', () => {
     })
   })
 
-  it('syncs enterprises, auto-creates ready pharmacies, then contracts, then sign-invite SMS', async () => {
+  it('syncs enterprises, auto-creates ready pharmacies, then contracts, then sign-invite SMS then email', async () => {
     const order: string[] = []
     const syncEnterprises = vi.fn().mockImplementation(async () => {
       order.push('enterprises')
@@ -24,6 +24,10 @@ describe('runBadakanCatalogCycle', () => {
       order.push('sms')
       return { sent: 1, skippedNoPhone: 0, failed: 0 }
     })
+    const sendSignInviteEmail = vi.fn().mockImplementation(async () => {
+      order.push('email')
+      return { sent: 1, skippedNoEmail: 0, failed: 0 }
+    })
     const result = await runBadakanCatalogCycle(env, {
       syncEnterprises,
       promoteReady: async () => {
@@ -32,13 +36,15 @@ describe('runBadakanCatalogCycle', () => {
       },
       syncContracts,
       sendSignInviteSms,
+      sendSignInviteEmail,
     })
-    expect(order).toEqual(['enterprises', 'pharmacies', 'contracts', 'sms'])
+    expect(order).toEqual(['enterprises', 'pharmacies', 'contracts', 'sms', 'email'])
     expect(result).toEqual({
       enterprises: { fetched: 162, upserted: 94 },
       pharmacies: { created: 80, skipped: 14 },
       contracts: { fetched: 1, upserted: 1 },
       sms: { sent: 1, skippedNoPhone: 0, failed: 0 },
+      email: { sent: 1, skippedNoEmail: 0, failed: 0 },
     })
   })
 })
