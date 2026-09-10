@@ -31,10 +31,12 @@ export async function runAppProfileCycle(
   })
   const invite = await resolved.inviteDue()
   const missions = await resolved.syncMissions()
+  const pharmacyApplyEmail = await resolved.sendApplyEmails()
   return {
     sync,
     invite,
     employees: { fetched: employees.length, ...validated },
     missions,
+    pharmacyApplyEmail,
   }
 }

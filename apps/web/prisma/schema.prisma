@@ -869,6 +869,17 @@ model BadakanSearchApplied {
   @@index([badakanMissionId])
 }
 
+model BadakanPharmacyApplyEmail {
+  id               String   @id @default(cuid())
+  missionBadakanId String
+  recipientId      String
+  sentAt           DateTime @default(now())
+  createdAt        DateTime @default(now())
+
+  @@unique([missionBadakanId, recipientId])
+  @@index([missionBadakanId])
+}
+
 model BadakanMissionProposal {
   id               String                @id @default(cuid())
   badakanMissionId String

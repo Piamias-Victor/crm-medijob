@@ -17,6 +17,7 @@ async function main() {
       failed: 0,
       cancelled: 0,
     }),
+    sendApplyEmails: async () => ({ sent: 0, skippedNoEmail: 0, failed: 0 }),
   })
   const catalog = await runBadakanCatalogCycle(process.env, {
     ...defaultCatalogCycleDeps(process.env),
