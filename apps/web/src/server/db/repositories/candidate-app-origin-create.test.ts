@@ -16,8 +16,8 @@ const base = {
 }
 
 describe('toAppOriginCreateData', () => {
-  it('stamps interimNeedSmsSentAt on origin App create', () => {
+  it('does not stamp interimNeedSmsSentAt on origin App create', () => {
     const data = toAppOriginCreateData(base)
-    expect(data.interimNeedSmsSentAt).toBeInstanceOf(Date)
+    expect('interimNeedSmsSentAt' in data).toBe(false)
   })
 })

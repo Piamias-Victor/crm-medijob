@@ -10,15 +10,9 @@ export async function sendDueInterimNeedSms(
   const result: InterimNeedSmsResult = {
     sent: 0,
     skippedNoPhone: 0,
-    skippedInit: 0,
     failed: 0,
   }
   for (const row of candidates) {
-    if (!row.lastSentAt) {
-      await deps.markSent(row.id)
-      result.skippedInit += 1
-      continue
-    }
     if (!(await hasMatchingNewNeed(row, needs, deps.lookupGeo))) continue
     try {
       const outcome = await sendOneInterimNeedSms(row, deps)
