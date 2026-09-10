@@ -17,5 +17,6 @@ export async function runBadakanCatalogCycle(
   const pharmacies = await resolved.promoteReady()
   const contracts = await resolved.syncContracts()
   const sms = await resolved.sendSignInviteSms()
-  return { enterprises, pharmacies, contracts, sms }
+  const email = await resolved.sendSignInviteEmail()
+  return { enterprises, pharmacies, contracts, sms, email }
 }

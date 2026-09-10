@@ -9,6 +9,7 @@ const mapped = {
   recipientId: 'bk-lucie',
   recipientName: 'Lucie Robert',
   pharmacyName: 'Pharmacie Hermes',
+  enterpriseId: 'ent-hermes',
 }
 
 function mockDb() {
@@ -48,9 +49,11 @@ describe('badakanContractRepository', () => {
           pdfUrl: mapped.pdfUrl,
           recipientId: 'bk-lucie',
           pharmacyName: 'Pharmacie Hermes',
+          enterpriseId: 'ent-hermes',
         }),
         update: expect.not.objectContaining({
           signInviteSmsSentAt: expect.anything(),
+          signInviteEmailSentAt: expect.anything(),
         }),
       }),
     )

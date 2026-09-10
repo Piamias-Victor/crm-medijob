@@ -21,7 +21,16 @@ describe('mapBadakanContract', () => {
       recipientId: null,
       recipientName: 'Lucie Robert',
       pharmacyName: 'Pharmacie Hermes',
+      enterpriseId: null,
     })
+  })
+
+  it('maps the Badakan enterprise id for Pharmacy lookup', () => {
+    const mapped = mapBadakanContract({
+      ...lucieRaw,
+      enterprise: { id: 'ent-hermes', enterpriseName: 'Pharmacie Hermes' },
+    })
+    expect(mapped?.enterpriseId).toBe('ent-hermes')
   })
 
   it('maps the Badakan recipient id for Candidate lookup', () => {

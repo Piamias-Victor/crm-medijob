@@ -12,6 +12,7 @@ function persistFields(data: BadakanContract) {
     recipientId: data.recipientId,
     recipientName: data.recipientName,
     pharmacyName: data.pharmacyName,
+    enterpriseId: data.enterpriseId,
     syncedAt: new Date(),
   }
 }

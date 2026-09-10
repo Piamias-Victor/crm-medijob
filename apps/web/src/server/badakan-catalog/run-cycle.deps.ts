@@ -9,12 +9,16 @@ import { defaultBadakanEnterpriseDeps } from '@/server/routers/badakan-enterpris
 import { sendDueContractSignSms } from '@/server/badakan-contract-sms/send-due'
 import { defaultContractSmsDueDeps } from '@/server/badakan-contract-sms/send-due.deps'
 import type { ContractSmsDueResult } from '@/server/badakan-contract-sms/send-due.types'
+import { sendDueContractSignEmails } from '@/server/pharmacy-contract-email/send-due'
+import { defaultContractSignEmailDeps } from '@/server/pharmacy-contract-email/send-due.deps'
+import type { ContractSignEmailDueResult } from '@/server/pharmacy-contract-email/send-due.types'
 
 export type CatalogCycleDeps = {
   syncEnterprises: () => Promise<{ fetched: number; upserted: number }>
   promoteReady: () => Promise<{ created: number; skipped: number }>
   syncContracts: () => Promise<{ fetched: number; upserted: number }>
   sendSignInviteSms: () => Promise<ContractSmsDueResult>
+  sendSignInviteEmail: () => Promise<ContractSignEmailDueResult>
 }
 
 export function defaultCatalogCycleDeps(
@@ -36,5 +40,6 @@ export function defaultCatalogCycleDeps(
         upsertFromRead: badakanContractRepository.upsertFromRead,
       }),
     sendSignInviteSms: () => sendDueContractSignSms(defaultContractSmsDueDeps(env)),
+    sendSignInviteEmail: () => sendDueContractSignEmails(defaultContractSignEmailDeps(env)),
   }
 }
