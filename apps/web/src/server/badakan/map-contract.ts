@@ -8,6 +8,7 @@ export type BadakanContract = {
   recipientId: string | null
   recipientName: string
   pharmacyName: string
+  enterpriseId: string | null
 }
 
 function present(value: string | null | undefined): string | null {
@@ -36,5 +37,6 @@ export function mapBadakanContract(raw: unknown): BadakanContract | null {
     recipientId: present(r.recipient?.id ?? r.recipient?.recipientId),
     recipientName: fullName(r.recipient?.firstName, r.recipient?.lastName),
     pharmacyName: present(r.enterprise?.enterpriseName ?? r.enterprise?.name) ?? '—',
+    enterpriseId: present(r.enterprise?.id),
   }
 }

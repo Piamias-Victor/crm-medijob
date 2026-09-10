@@ -10,6 +10,7 @@ const mapped: BadakanContract = {
   recipientId: 'bk-lucie',
   recipientName: 'Lucie Robert',
   pharmacyName: 'Pharmacie Hermes',
+  enterpriseId: 'ent-hermes',
 }
 
 describe('syncBadakanContracts', () => {
