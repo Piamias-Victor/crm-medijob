@@ -80,6 +80,10 @@ _Avoid_: Poste, besoin, vacation (as entity name), annonce, Badakan mission
 An interim shift that lives in Badakan (pharmacy, periods, applicants at `SEARCH_APPLIED`). Shown in the Intérim module. Not a Mission: it does not enter the CRM kanban or PipelineStage.
 _Avoid_: Mission, besoin CRM, vacation (as entity name)
 
+**Pharmacy apply email**:
+Transactional Brevo template when a recipient first appears at `SEARCH_APPLIED` on a Badakan mission. Goes to `Pharmacy.email` and the primary Contact email. `contact.PRENOM` is the primary Contact first name, never the applicant. One send per `(missionBadakanId, recipientId)` journaled outside the SEARCH_APPLIED snapshot (sync still replaces applicants each cycle). Existing applicants are seeded in the journal at go-live without sending.
+_Avoid_: Application (job board), Hireflix invite, interim need SMS
+
 **Interim need SMS**:
 Daily 12h45 Europe/Paris (Vercel cron `45 10 * * *` UTC = 12h45 CEST / 11h45 CET) transactional SMS (same Brevo port as the availability SMS) to App-origin App-validated Candidates who are not Inactif or Blacklisté. Sent when at least one open Badakan need (`CREATED` + staffing gap) has the same JobTitle and is within 80 km (stored coords or commune postal lookup like matching; not Mobility radius). If `interimNeedSmsSentAt` is set, only a need with `createdAt` after that stamp counts. `syncedAt` is ignored. One SMS per Candidate. `interimNeedSmsSentAt` is written only after a real send — never at App-validated or on a dry cron pass. Copy points to the Medijob app. Distinct from the weekly-availability SMS and from Mission matching.
 _Avoid_: matching SMS, push, weekly availability SMS (that's the dispo link)
@@ -240,7 +244,7 @@ Inbound: Badakan API (read-only), including Badakan comments on CREATED recipien
 Outbound: Candidate creation or merge on recruiter ACCEPTE (rare). When the recipient becomes App-validated, they leave this inbox; Candidate write is owned by the Intérim context. Never the Intérim positioning filter.
 
 **Intérim (operational)** — App-validated Candidates, weekly availability, Badakan read model.
-Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts (sign-invite SMS on new `CREATED`).
+Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts (sign-invite SMS on new `CREATED`); pharmacy apply email (Brevo 232) on first `SEARCH_APPLIED`.
 Inbound: Badakan API, same periodic cycle as AppProfiles (no manual refresh control required).
 Outbound: Candidate create or link (origin App). Unique-SIRET Badakan enterprise auto-creates a Pharmacy; missing or duplicate SIRET is corrected on Intérim officines. **V1 never writes to Badakan** (no staff, validate, PUT, POST comments, or contract writes). Never turns a Badakan mission into a Mission. Distinct from Finance « Intérim » (Lignes de suivi) and from AppProfiles inbox.
 

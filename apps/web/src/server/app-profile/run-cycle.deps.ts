@@ -15,6 +15,9 @@ import { probeInactiveRecipients } from '@/server/app-profile/sync-validated-pro
 import type { InviteDueResult } from '@/server/app-profile/invite-due.types'
 import type { BadakanRecipient } from '@/server/badakan/map-recipient'
 import type { ConvertQueueItem } from '@/server/app-profile/convert-batch'
+import { sendDuePharmacyApplyEmails } from '@/server/pharmacy-apply-email/send-due'
+import { defaultPharmacyApplyEmailDeps } from '@/server/pharmacy-apply-email/send-due.deps'
+import type { PharmacyApplyEmailDueResult } from '@/server/pharmacy-apply-email/send-due.types'
 
 export type AppProfileCycleDeps = {
   client: BadakanClient
@@ -26,6 +29,7 @@ export type AppProfileCycleDeps = {
   probeInactive: (completed: BadakanRecipient[]) => Promise<BadakanRecipient[]>
   listConvertQueue: () => Promise<ConvertQueueItem[]>
   syncMissions: () => Promise<{ fetched: number; upserted: number }>
+  sendApplyEmails: () => Promise<PharmacyApplyEmailDueResult>
 }
 
 export function defaultAppProfileCycleDeps(
@@ -53,5 +57,6 @@ export function defaultAppProfileCycleDeps(
         upsertFromRead: badakanMissionRepository.upsertFromRead,
         resolveReferentials: defaultMissionReferentialResolver(),
       }),
+    sendApplyEmails: () => sendDuePharmacyApplyEmails(defaultPharmacyApplyEmailDeps(env)),
   }
 }
