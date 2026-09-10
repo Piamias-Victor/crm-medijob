@@ -1,6 +1,7 @@
 import { sendAvailabilitySms } from '@/server/sms/send'
 import { prisma } from '@/server/db/repositories/client'
 import { makeBadakanContractSmsRepository } from '@/server/db/repositories/badakan-contract-sms.repo'
+import { defaultLogAutomaticSend } from '@/server/activity-log/default-automatic-send'
 import type { ContractSmsDueDeps } from './send-due.types'
 
 export function defaultContractSmsDueDeps(
@@ -17,5 +18,6 @@ export function defaultContractSmsDueDeps(
           BREVO_SMS_SENDER: env.BREVO_SMS_SENDER,
         },
       }),
+    logSend: defaultLogAutomaticSend,
   }
 }

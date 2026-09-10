@@ -15,6 +15,7 @@ export function needSmsDeps(overrides: Partial<InterimNeedSmsDeps> = {}): Interi
     markSent: vi.fn(),
     lookupGeo: noGeoLookup,
     testTo: '06 99 99 99 99',
+    logSend: vi.fn(),
     ...overrides,
   }
 }

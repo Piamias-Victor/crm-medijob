@@ -9,10 +9,15 @@ export const ACTIVITY_TYPE_LABELS: Record<ActivityTypeValue, string> = {
   ACTION_COMMERCIALE: 'Action commerciale',
   DEVIS: 'Devis',
   AUTRE: 'Autre',
+  SMS: 'SMS',
 }
 
 export const ACTIVITY_TYPE_OPTIONS = (
   Object.entries(ACTIVITY_TYPE_LABELS) as [ActivityTypeValue, string][]
 ).map(([value, label]) => ({ value, label }))
+
+export const ACTIVITY_TYPE_FORM_OPTIONS = ACTIVITY_TYPE_OPTIONS.filter(
+  (option) => option.value !== 'SMS',
+)
 
 export const ACTIVITY_LOG_FILTER_LABEL = 'Filtrer par type'

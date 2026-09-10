@@ -19,6 +19,7 @@ export function smsDueDeps(overrides: Partial<SmsDueDeps> = {}): SmsDueDeps {
     sendSms: vi.fn(),
     markSent: vi.fn(),
     testTo: '06 99 99 99 99',
+    logSend: vi.fn(),
     ...overrides,
   }
 }

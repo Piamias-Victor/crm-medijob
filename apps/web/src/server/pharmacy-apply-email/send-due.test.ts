@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { sendDuePharmacyApplyEmails } from './send-due'
+import { AUTOMATIC_OUTBOUND } from '@/view-models/automatic-outbound'
 import {
   memoryPharmacyApplyDue,
   pharmacyApplyDueDeps,
@@ -16,6 +17,14 @@ describe('sendDuePharmacyApplyEmails', () => {
       firstName: 'Marie',
     })
     expect(deps.markSent).toHaveBeenCalledWith('m-hermes', 'rec-1')
+    expect(deps.logSend).toHaveBeenCalledWith({
+      type: 'EMAIL',
+      content: AUTOMATIC_OUTBOUND.emailPharmacyApply,
+      targets: [
+        { entityType: 'PHARMACY', entityId: 'p1' },
+        { entityType: 'CONTACT', entityId: 'ct1' },
+      ],
+    })
   })
 
   it('waits when neither pharmacy nor contact has a valid email', async () => {
@@ -28,6 +37,7 @@ describe('sendDuePharmacyApplyEmails', () => {
     expect(result).toEqual({ sent: 0, skippedNoEmail: 1, failed: 0 })
     expect(deps.sendEmail).not.toHaveBeenCalled()
     expect(deps.markSent).not.toHaveBeenCalled()
+    expect(deps.logSend).not.toHaveBeenCalled()
   })
 
   it('sends once per SEARCH_APPLIED then stops', async () => {
@@ -35,5 +45,17 @@ describe('sendDuePharmacyApplyEmails', () => {
     expect((await sendDuePharmacyApplyEmails(deps)).sent).toBe(1)
     expect((await sendDuePharmacyApplyEmails(deps)).sent).toBe(0)
     expect(deps.sendEmail).toHaveBeenCalledTimes(1)
+  })
+
+  it('writes EMAIL on Pharmacy only when there is no Contact', async () => {
+    const deps = pharmacyApplyDueDeps({
+      listDue: async () => [pharmacyApplyDueRow({ contactId: null })],
+    })
+    await sendDuePharmacyApplyEmails(deps)
+    expect(deps.logSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        targets: [{ entityType: 'PHARMACY', entityId: 'p1' }],
+      }),
+    )
   })
 })

@@ -1,5 +1,6 @@
 import type { SmsInput } from '@/server/sms/send'
 import type { GeoLookup } from '@/server/matching/distance'
+import type { LogAutomaticSend } from '@/server/activity-log/log-automatic-send'
 import type { NeedSmsNeed, NeedSmsRow } from './match.types'
 
 export type InterimNeedSmsResult = {
@@ -16,4 +17,5 @@ export type InterimNeedSmsDeps = {
   markSent: (candidateId: string) => Promise<unknown>
   lookupGeo: GeoLookup
   testTo?: string
+  logSend: LogAutomaticSend
 }

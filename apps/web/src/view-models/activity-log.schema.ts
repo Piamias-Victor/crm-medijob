@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { DOCUMENT_ENTITY_TYPES } from '@/view-models/activity-log.types'
 
-export const ACTIVITY_TYPES = [
+export const ACTIVITY_FORM_TYPES = [
   'APPEL',
   'EMAIL',
   'ENTRETIEN',
@@ -12,7 +12,10 @@ export const ACTIVITY_TYPES = [
   'AUTRE',
 ] as const
 
+export const ACTIVITY_TYPES = [...ACTIVITY_FORM_TYPES, 'SMS'] as const
+
 export type ActivityTypeValue = (typeof ACTIVITY_TYPES)[number]
+export type ActivityFormTypeValue = (typeof ACTIVITY_FORM_TYPES)[number]
 
 export const activityEntitySchema = z.object({
   entityType: z.enum(DOCUMENT_ENTITY_TYPES),
@@ -24,7 +27,7 @@ export const listActivityLogSchema = activityEntitySchema.extend({
 })
 
 export const createActivityLogSchema = activityEntitySchema.extend({
-  type: z.enum(ACTIVITY_TYPES),
+  type: z.enum(ACTIVITY_FORM_TYPES),
   content: z.string().trim().optional(),
   date: z.coerce.date(),
 })
