@@ -1,4 +1,5 @@
 import { toSmsRecipient } from '@/lib/phone-normalize'
+import { AUTOMATIC_OUTBOUND } from '@/view-models/automatic-outbound'
 import {
   badakanContractReminderSmsContent,
   badakanContractSignSmsContent,
@@ -10,6 +11,11 @@ function contentFor(row: ContractSmsDueRow) {
   return badakanContractSignSmsContent
 }
 
+function logContent(row: ContractSmsDueRow) {
+  if (row.kind === 'reminder') return AUTOMATIC_OUTBOUND.smsContractReminder
+  return AUTOMATIC_OUTBOUND.smsContractSign
+}
+
 export async function sendOneContractSignSms(
   row: ContractSmsDueRow,
   deps: ContractSmsDueDeps,
@@ -18,5 +24,11 @@ export async function sendOneContractSignSms(
   if (!to) return 'skippedNoPhone'
   await deps.sendSms({ to, content: contentFor(row) })
   await deps.markSent(row.contractId, row.kind)
+  await deps.logSend({
+    type: 'SMS',
+    content: logContent(row),
+    targets: [{ entityType: 'CANDIDATE', entityId: row.candidateId }],
+  })
   return 'sent'
 }
+

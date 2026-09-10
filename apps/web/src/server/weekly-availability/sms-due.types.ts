@@ -1,3 +1,5 @@
+import type { LogAutomaticSend } from '@/server/activity-log/log-automatic-send'
+
 export type SmsDueKind = 'first' | 'reminder'
 
 export type SmsDueRow = {
@@ -20,6 +22,7 @@ export type SmsDueDeps = {
   sendSms: (input: { to: string; content: string }) => Promise<void>
   markSent: (candidateId: string) => Promise<void>
   testTo?: string
+  logSend: LogAutomaticSend
 }
 
 export type SmsDueResult = {

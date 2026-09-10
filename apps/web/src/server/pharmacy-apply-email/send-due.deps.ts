@@ -1,6 +1,7 @@
 import { sendPharmacyApplyEmail } from '@/server/brevo/send-apply-email'
 import { prisma } from '@/server/db/repositories/client'
 import { makePharmacyApplyEmailRepository } from '@/server/db/repositories/pharmacy-apply-email.repo'
+import { defaultLogAutomaticSend } from '@/server/activity-log/default-automatic-send'
 import type { PharmacyApplyEmailDueDeps } from './send-due.types'
 
 export function defaultPharmacyApplyEmailDeps(
@@ -18,5 +19,6 @@ export function defaultPharmacyApplyEmailDeps(
           BREVO_PHARMACY_APPLY_TEMPLATE_ID: env.BREVO_PHARMACY_APPLY_TEMPLATE_ID,
         },
       }),
+    logSend: defaultLogAutomaticSend,
   }
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { sendDueAvailabilitySms } from './sms-due'
 import { memorySmsDue, smsDueDeps, smsDueRow } from './sms-due.fixtures'
+import { AUTOMATIC_OUTBOUND } from '@/view-models/automatic-outbound'
 import {
   weeklyAvailabilityReminderSmsContent,
   weeklyAvailabilitySmsContent,
@@ -64,5 +65,25 @@ describe('sendDueAvailabilitySms', () => {
       content: weeklyAvailabilityReminderSmsContent('http://localhost:3000/dispo/secret-token'),
     })
     expect(deps.markSent).toHaveBeenCalledWith('c1')
+    expect(deps.logSend).toHaveBeenCalledWith(
+      expect.objectContaining({ content: AUTOMATIC_OUTBOUND.smsAvailabilityReminder }),
+    )
+  })
+
+  it('writes SMS ActivityLog on the Candidate after a real send', async () => {
+    const deps = smsDueDeps({ testTo: undefined })
+    await sendDueAvailabilitySms(deps)
+    expect(deps.logSend).toHaveBeenCalledWith({
+      type: 'SMS',
+      content: AUTOMATIC_OUTBOUND.smsAvailability,
+      targets: [{ entityType: 'CANDIDATE', entityId: 'c1' }],
+    })
+  })
+
+  it('does not write ActivityLog when the Candidate has no phone', async () => {
+    const row = smsDueRow({ phone: null })
+    const deps = smsDueDeps({ listDue: async () => [row], testTo: undefined })
+    await sendDueAvailabilitySms(deps)
+    expect(deps.logSend).not.toHaveBeenCalled()
   })
 })

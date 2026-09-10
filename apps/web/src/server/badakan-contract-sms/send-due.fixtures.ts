@@ -20,6 +20,7 @@ export function contractSmsDueDeps(
     listDue: async () => [contractSmsDueRow()],
     sendSms: vi.fn(),
     markSent: vi.fn(),
+    logSend: vi.fn(),
     ...overrides,
   }
 }

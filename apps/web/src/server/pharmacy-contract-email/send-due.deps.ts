@@ -1,6 +1,7 @@
 import { sendPharmacyContractEmail } from '@/server/brevo/send-contract-email'
 import { prisma } from '@/server/db/repositories/client'
 import { makeBadakanContractSignEmailRepository } from '@/server/db/repositories/badakan-contract-sign-email.repo'
+import { defaultLogAutomaticSend } from '@/server/activity-log/default-automatic-send'
 import type { ContractSignEmailDueDeps } from './send-due.types'
 
 export function defaultContractSignEmailDeps(
@@ -18,5 +19,6 @@ export function defaultContractSignEmailDeps(
           BREVO_PHARMACY_CONTRACT_TEMPLATE_ID: env.BREVO_PHARMACY_CONTRACT_TEMPLATE_ID,
         },
       }),
+    logSend: defaultLogAutomaticSend,
   }
 }

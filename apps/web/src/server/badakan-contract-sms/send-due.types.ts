@@ -1,4 +1,5 @@
 import type { SmsDueKind } from '@/view-models/badakan-contract-sms'
+import type { LogAutomaticSend } from '@/server/activity-log/log-automatic-send'
 
 export type ContractSmsDueRow = {
   contractId: string
@@ -18,4 +19,5 @@ export type ContractSmsDueDeps = {
   listDue: () => Promise<ContractSmsDueRow[]>
   sendSms: (input: { to: string; content: string }) => Promise<void>
   markSent: (contractId: string, kind: SmsDueKind) => Promise<void>
+  logSend: LogAutomaticSend
 }

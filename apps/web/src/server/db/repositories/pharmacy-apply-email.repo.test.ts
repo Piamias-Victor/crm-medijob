@@ -16,13 +16,15 @@ describe('pharmacyApplyEmailRepository listDue', () => {
     db.badakanEnterprise.findMany.mockResolvedValue([enterpriseLinked])
     db.pharmacy.findMany.mockResolvedValue([{ id: 'p1', email: 'officine@example.com' }])
     db.contact.findMany.mockResolvedValue([
-      { pharmacyId: 'p1', email: 'marie@example.com', firstName: 'Marie' },
+      { id: 'ct1', pharmacyId: 'p1', email: 'marie@example.com', firstName: 'Marie' },
     ])
     const rows = await makePharmacyApplyEmailRepository(db as never).listDue()
     expect(rows).toEqual([
       {
         missionBadakanId: 'm-hermes',
         recipientId: 'rec-1',
+        pharmacyId: 'p1',
+        contactId: 'ct1',
         pharmacyEmail: 'officine@example.com',
         primaryEmail: 'marie@example.com',
         primaryFirstName: 'Marie',
@@ -62,6 +64,8 @@ describe('pharmacyApplyEmailRepository listDue', () => {
       {
         missionBadakanId: 'm-hermes',
         recipientId: 'rec-1',
+        pharmacyId: null,
+        contactId: null,
         pharmacyEmail: 'd.litzler@hermes.fr',
         primaryEmail: 'd.litzler@hermes.fr',
         primaryFirstName: 'Dominique',

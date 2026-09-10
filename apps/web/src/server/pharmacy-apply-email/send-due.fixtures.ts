@@ -10,6 +10,8 @@ export function pharmacyApplyDueRow(
   return {
     missionBadakanId: 'm-hermes',
     recipientId: 'rec-1',
+    pharmacyId: 'p1',
+    contactId: 'ct1',
     pharmacyEmail: 'officine@example.com',
     primaryEmail: 'marie@example.com',
     primaryFirstName: 'Marie',
@@ -24,6 +26,7 @@ export function pharmacyApplyDueDeps(
     listDue: async () => [pharmacyApplyDueRow()],
     sendEmail: vi.fn(),
     markSent: vi.fn(),
+    logSend: vi.fn(),
     ...overrides,
   }
 }

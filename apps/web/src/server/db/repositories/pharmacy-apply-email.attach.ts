@@ -41,7 +41,7 @@ export async function attachPharmacyApplyRecipients(
     }),
     db.contact.findMany({
       where: { pharmacyId: { in: pharmacyIds }, ...NOT_DELETED, isPrimary: true },
-      select: { pharmacyId: true, email: true, firstName: true },
+      select: { pharmacyId: true, email: true, firstName: true, id: true },
     }),
   ])
   const pharmacyById = new Map(pharmacies.map((row) => [row.id, row]))
@@ -53,7 +53,7 @@ function toDueRow(
   row: AppliedPending,
   byEnterprise: Map<string, EnterpriseRow>,
   pharmacyById: Map<string, { id: string; email: string | null }>,
-  contactByPharmacy: Map<string, { email: string | null; firstName: string }>,
+  contactByPharmacy: Map<string, { id: string; email: string | null; firstName: string }>,
 ): PharmacyApplyEmailDueRow {
   const enterprise = row.mission.enterpriseId
     ? byEnterprise.get(row.mission.enterpriseId)
@@ -63,6 +63,8 @@ function toDueRow(
   return {
     missionBadakanId: row.mission.badakanId,
     recipientId: row.recipientId,
+    pharmacyId: pharmacy?.id ?? null,
+    contactId: contact?.id ?? null,
     pharmacyEmail: pharmacy?.email ?? enterprise?.principalEmail ?? null,
     primaryEmail: contact?.email ?? enterprise?.principalEmail ?? null,
     primaryFirstName: contact?.firstName ?? enterprise?.principalFirstName ?? null,

@@ -3,6 +3,7 @@ import { sendAvailabilitySms } from '@/server/sms/send'
 import { prisma } from '@/server/db/repositories/client'
 import { makeInterimNeedSmsRepository } from '@/server/db/repositories/interim-need-sms.repo'
 import { resolveAvailabilityLinkTestPhone } from '@/server/weekly-availability/availability-link-test-phone'
+import { defaultLogAutomaticSend } from '@/server/activity-log/default-automatic-send'
 import type { InterimNeedSmsDeps } from './send-due.types'
 
 export function defaultInterimNeedSmsDeps(
@@ -22,5 +23,6 @@ export function defaultInterimNeedSmsDeps(
         },
       }),
     testTo: resolveAvailabilityLinkTestPhone(env),
+    logSend: defaultLogAutomaticSend,
   }
 }

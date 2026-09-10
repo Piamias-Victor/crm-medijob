@@ -11,6 +11,7 @@ export const ACTIVITY_TYPE_BADGE: Record<ActivityTypeValue, BadgeVariant> = {
   ACTION_COMMERCIALE: 'warning',
   DEVIS: 'warning',
   AUTRE: 'default',
+  SMS: 'accent',
 }
 
 export function formatActivityDate(value: Date) {
