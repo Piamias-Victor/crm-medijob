@@ -9,6 +9,7 @@ import { weeklyAvailabilityUrl } from '@/view-models/weekly-availability-path'
 import { resolveAvailabilityLinkTestPhone } from '@/server/weekly-availability/availability-link-test-phone'
 import type { ResendSmsDeps } from '@/server/weekly-availability/sms-resend'
 import type { SmsDueDeps } from '@/server/weekly-availability/sms-due.types'
+import { defaultLogAutomaticSend } from '@/server/activity-log/default-automatic-send'
 
 export function defaultSmsDueDeps(env: NodeJS.ProcessEnv = process.env): SmsDueDeps {
   const store = makeWeeklyAvailabilityRepository(prisma)
@@ -29,6 +30,7 @@ export function defaultSmsDueDeps(env: NodeJS.ProcessEnv = process.env): SmsDueD
       }),
     markSent: sms.markSent,
     testTo: resolveAvailabilityLinkTestPhone(env),
+    logSend: defaultLogAutomaticSend,
   }
 }
 

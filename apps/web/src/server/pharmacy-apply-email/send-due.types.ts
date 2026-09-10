@@ -1,6 +1,10 @@
+import type { LogAutomaticSend } from '@/server/activity-log/log-automatic-send'
+
 export type PharmacyApplyEmailDueRow = {
   missionBadakanId: string
   recipientId: string
+  pharmacyId: string | null
+  contactId: string | null
   pharmacyEmail: string | null
   primaryEmail: string | null
   primaryFirstName: string | null
@@ -17,4 +21,5 @@ export type PharmacyApplyEmailDueDeps = {
   listDue: () => Promise<PharmacyApplyEmailDueRow[]>
   sendEmail: (input: { to: string[]; firstName: string }) => Promise<void>
   markSent: (missionBadakanId: string, recipientId: string) => Promise<void>
+  logSend: LogAutomaticSend
 }

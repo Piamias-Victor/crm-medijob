@@ -5,6 +5,7 @@ import {
   contractSmsDueRow,
   memoryContractSmsDue,
 } from './send-due.fixtures'
+import { AUTOMATIC_OUTBOUND } from '@/view-models/automatic-outbound'
 import {
   badakanContractReminderSmsContent,
   badakanContractSignSmsContent,
@@ -20,6 +21,11 @@ describe('sendDueContractSignSms', () => {
       content: badakanContractSignSmsContent,
     })
     expect(deps.markSent).toHaveBeenCalledWith('row1', 'first')
+    expect(deps.logSend).toHaveBeenCalledWith({
+      type: 'SMS',
+      content: AUTOMATIC_OUTBOUND.smsContractSign,
+      targets: [{ entityType: 'CANDIDATE', entityId: 'c1' }],
+    })
   })
 
   it('texts the reminder copy 24h later while still CREATED', async () => {
@@ -32,6 +38,9 @@ describe('sendDueContractSignSms', () => {
       content: badakanContractReminderSmsContent,
     })
     expect(deps.markSent).toHaveBeenCalledWith('row1', 'reminder')
+    expect(deps.logSend).toHaveBeenCalledWith(
+      expect.objectContaining({ content: AUTOMATIC_OUTBOUND.smsContractReminder }),
+    )
   })
 
   it('waits when the Candidate has no phone', async () => {
@@ -42,6 +51,7 @@ describe('sendDueContractSignSms', () => {
     expect(result).toEqual({ sent: 0, skippedNoPhone: 1, failed: 0 })
     expect(deps.sendSms).not.toHaveBeenCalled()
     expect(deps.markSent).not.toHaveBeenCalled()
+    expect(deps.logSend).not.toHaveBeenCalled()
   })
 
   it('sends once per contract then stops', async () => {

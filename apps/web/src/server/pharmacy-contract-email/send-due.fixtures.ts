@@ -9,6 +9,8 @@ export function contractSignEmailDueRow(
 ): ContractSignEmailDueRow {
   return {
     contractId: 'row1',
+    pharmacyId: 'p1',
+    contactId: 'ct1',
     pharmacyEmail: 'officine@example.com',
     primaryEmail: 'marie@example.com',
     primaryFirstName: 'Marie',
@@ -23,6 +25,7 @@ export function contractSignEmailDueDeps(
     listDue: async () => [contractSignEmailDueRow()],
     sendEmail: vi.fn(),
     markSent: vi.fn(),
+    logSend: vi.fn(),
     ...overrides,
   }
 }

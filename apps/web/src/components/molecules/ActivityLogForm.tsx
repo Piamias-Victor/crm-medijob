@@ -12,13 +12,13 @@ import { FormSection } from '@/components/molecules/FormSection'
 import { trpc } from '@/lib/trpc/client'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import {
-  ACTIVITY_TYPE_OPTIONS,
+  ACTIVITY_TYPE_FORM_OPTIONS,
 } from '@/view-models/activity-log.labels'
 import type { ActivityLogScope } from '@/view-models/activity-log.types'
 import {
   activityLogFormSchema,
   type ActivityLogFormInput,
-  type ActivityTypeValue,
+  type ActivityFormTypeValue,
 } from '@/view-models/activity-log-form.schema'
 import { CLEAR_DATE_LABEL, formatIsoDate, parseIsoDate, SELECT_DATE_LABEL } from '@/lib/date-picker-utils'
 
@@ -63,8 +63,8 @@ export function ActivityLogForm({ scope }: Props) {
           <FormField label="Type" error={formState.errors.type?.message}>
             <Combobox
               value={watch('type')}
-              onChange={(value) => setValue('type', value as ActivityTypeValue, { shouldValidate: true })}
-              options={ACTIVITY_TYPE_OPTIONS}
+              onChange={(value) => setValue('type', value as ActivityFormTypeValue, { shouldValidate: true })}
+              options={ACTIVITY_TYPE_FORM_OPTIONS}
             />
           </FormField>
           <FormField label="Date" error={formState.errors.date?.message}>

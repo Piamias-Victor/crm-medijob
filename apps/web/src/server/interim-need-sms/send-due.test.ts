@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { sendDueInterimNeedSms } from './send-due'
+import { AUTOMATIC_OUTBOUND } from '@/view-models/automatic-outbound'
 import { INTERIM_NEED_SMS_CONTENT } from '@/view-models/interim-need-sms'
 import { needSmsDeps, needSmsRow } from './send-due.fixtures'
 import { needSmsNeed } from './match.fixtures'
@@ -14,6 +15,11 @@ describe('sendDueInterimNeedSms', () => {
       content: INTERIM_NEED_SMS_CONTENT,
     })
     expect(deps.markSent).toHaveBeenCalledWith('c1')
+    expect(deps.logSend).toHaveBeenCalledWith({
+      type: 'SMS',
+      content: AUTOMATIC_OUTBOUND.smsInterimNeed,
+      targets: [{ entityType: 'CANDIDATE', entityId: 'c1' }],
+    })
   })
 
   it('texts a Candidate who has never been stamped when a matching need is open', async () => {
@@ -48,6 +54,7 @@ describe('sendDueInterimNeedSms', () => {
     expect(result.skippedNoPhone).toBe(1)
     expect(deps.sendSms).not.toHaveBeenCalled()
     expect(deps.markSent).not.toHaveBeenCalled()
+    expect(deps.logSend).not.toHaveBeenCalled()
   })
 
   it('sends one SMS even when several matching needs exist', async () => {
