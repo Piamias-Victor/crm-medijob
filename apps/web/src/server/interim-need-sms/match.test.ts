@@ -19,14 +19,14 @@ describe('hasMatchingNewNeed', () => {
     ).toBe(false)
   })
 
-  it('ignores a Candidate who has never been stamped', async () => {
+  it('matches a Candidate who has never been stamped when a need is open', async () => {
     expect(
       await hasMatchingNewNeed(
         needSmsCandidate({ lastSentAt: null }),
         [needSmsNeed()],
         noGeoLookup,
       ),
-    ).toBe(false)
+    ).toBe(true)
   })
 
   it('ignores a need farther than 80 km', async () => {

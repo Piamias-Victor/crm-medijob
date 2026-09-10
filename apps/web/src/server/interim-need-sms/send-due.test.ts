@@ -16,15 +16,26 @@ describe('sendDueInterimNeedSms', () => {
     expect(deps.markSent).toHaveBeenCalledWith('c1')
   })
 
-  it('stamps lastSentAt without texting when the Candidate was never initialized', async () => {
+  it('texts a Candidate who has never been stamped when a matching need is open', async () => {
     const deps = needSmsDeps({
       testTo: undefined,
       listCandidates: async () => [needSmsRow({ lastSentAt: null })],
     })
     const result = await sendDueInterimNeedSms(deps)
-    expect(result).toEqual({ sent: 0, skippedNoPhone: 0, skippedInit: 1, failed: 0 })
-    expect(deps.sendSms).not.toHaveBeenCalled()
+    expect(result).toEqual({ sent: 1, skippedNoPhone: 0, failed: 0 })
+    expect(deps.sendSms).toHaveBeenCalled()
     expect(deps.markSent).toHaveBeenCalledWith('c1')
+  })
+
+  it('does not stamp when a never-notified Candidate has no matching need', async () => {
+    const deps = needSmsDeps({
+      testTo: undefined,
+      listCandidates: async () => [needSmsRow({ lastSentAt: null, jobTitleId: 'jt-other' })],
+    })
+    const result = await sendDueInterimNeedSms(deps)
+    expect(result.sent).toBe(0)
+    expect(deps.sendSms).not.toHaveBeenCalled()
+    expect(deps.markSent).not.toHaveBeenCalled()
   })
 
   it('waits when the Candidate has no phone and no override', async () => {

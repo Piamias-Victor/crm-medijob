@@ -22,9 +22,8 @@ async function isNewMatch(
   need: NeedSmsNeed,
   lookupGeo: GeoLookup,
 ) {
-  if (!candidate.lastSentAt) return false
   if (need.jobTitleId !== candidate.jobTitleId) return false
-  if (need.createdAt <= candidate.lastSentAt) return false
+  if (candidate.lastSentAt && need.createdAt <= candidate.lastSentAt) return false
   const from = await coordsForSms(candidate, lookupGeo)
   const to = await coordsForSms(need, lookupGeo)
   if (!from || !to) return false
