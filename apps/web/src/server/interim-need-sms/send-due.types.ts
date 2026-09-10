@@ -5,7 +5,6 @@ import type { NeedSmsNeed, NeedSmsRow } from './match.types'
 export type InterimNeedSmsResult = {
   sent: number
   skippedNoPhone: number
-  skippedInit: number
   failed: number
   lastError?: string
 }
