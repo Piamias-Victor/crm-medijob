@@ -59,4 +59,18 @@ describe('badakanMissionRepository', () => {
       }),
     )
   })
+
+  it('replaces SEARCH_APPLIED snapshot on each sync without merging', async () => {
+    const db = mockMissionDb()
+    db.badakanMission.upsert.mockResolvedValue({ id: 'row1' })
+    const repo = makeBadakanMissionRepository(db as never)
+    await repo.upsertFromRead(mappedMission)
+    const payload = db.badakanMission.upsert.mock.calls[0]?.[0] as {
+      update: { searchApplied: unknown }
+    }
+    expect(payload.update.searchApplied).toEqual({
+      deleteMany: {},
+      create: mappedMission.searchApplied,
+    })
+  })
 })
