@@ -12,7 +12,7 @@ export type { AppCandidateCreate, AppIdentityPatch }
 
 export type LinkedAppCandidate = {
   id: string
-  origin: 'APP' | 'CRM'
+  origin: 'APP' | 'CRM' | 'T4S'
   status: CandidateStatus
   statusBeforeInactive: CandidateStatus | null
   badakanValidatedAt?: Date | null

@@ -37,6 +37,7 @@ enum CandidateStatus {
 enum CandidateOrigin {
   CRM
   APP
+  T4S
 }
 
 enum WeeklyAvailabilityPeriod {
@@ -353,6 +354,7 @@ model Candidate {
   jobTitleId         String
   origin             CandidateOrigin @default(CRM)
   badakanId          String?         @unique
+  t4sId              String?         @unique
   status             CandidateStatus @default(NOUVEAU)
   statusBeforeInactive CandidateStatus?
   salaryExpectations String?
@@ -362,6 +364,7 @@ model Candidate {
   mobilityNotes      String?
   availableFrom      DateTime?
   cvUrl              String?
+  photoUrl           String?
   nir                String?
   iban               String?
   cvSummary          String?
@@ -472,6 +475,7 @@ model Pharmacy {
   phone             String?
   email             String?
   website           String?
+  t4sId             String?        @unique
   status            PharmacyStatus @default(PROSPECT)
   groupementId      String?
   softwareId        String?
@@ -511,6 +515,7 @@ model Contact {
   phone         String?
   contactRoleId String
   isPrimary     Boolean   @default(false)
+  t4sId         String?   @unique
   notes         String?
   referentId    String?
   deletedAt     DateTime?

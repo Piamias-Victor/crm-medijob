@@ -13,5 +13,6 @@ describe('weekly availability view-models', () => {
   it('exposes the copy action only for origin App', () => {
     expect(canCopyWeeklyAvailabilityLink('APP')).toBe(true)
     expect(canCopyWeeklyAvailabilityLink('CRM')).toBe(false)
+    expect(canCopyWeeklyAvailabilityLink('T4S')).toBe(false)
   })
 })

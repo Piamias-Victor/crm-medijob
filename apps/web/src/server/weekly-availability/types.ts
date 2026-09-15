@@ -30,7 +30,7 @@ export type WeeklyAvailabilityStore = {
     weekStart: string,
     slots: AvailabilitySlot[],
   ) => Promise<void>
-  findOrigin: (candidateId: string) => Promise<'APP' | 'CRM' | null>
+  findOrigin: (candidateId: string) => Promise<'APP' | 'CRM' | 'T4S' | null>
   findTokenByCandidate: (candidateId: string) => Promise<string | null>
   insertToken: (candidateId: string, token: string) => Promise<void>
 }
