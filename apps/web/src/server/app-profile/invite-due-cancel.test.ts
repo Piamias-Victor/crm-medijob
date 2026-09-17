@@ -16,7 +16,7 @@ describe('inviteDueAppProfiles cancel', () => {
     expect(d.saveSent).not.toHaveBeenCalled()
   })
 
-  it('still mails Hireflix when AppProfile is App-validated', async () => {
+  it('still mails when AppProfile is App-validated', async () => {
     const pending = inviteProfile()
     const validated = inviteProfile({ status: 'APP_VALIDATED' })
     const d = inviteDeps({

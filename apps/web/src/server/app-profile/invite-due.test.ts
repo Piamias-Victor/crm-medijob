@@ -12,15 +12,15 @@ function deps(overrides: Partial<InviteDueDeps> = {}) {
 }
 
 describe('inviteDueAppProfiles', () => {
-  it('mails the Hireflix URL and marks the invitation sent', async () => {
+  it('mails the Brevo template without a Hireflix URL and marks sent', async () => {
     const d = deps()
     const result = await inviteDueAppProfiles(d)
     expect(result.sent).toBe(1)
     expect(d.sendInviteEmail).toHaveBeenCalledWith({
       to: 'camille@example.com',
       firstName: 'Camille',
-      url: 'https://app.hireflix.com/abc',
     })
+    expect(d.inviteHireflix).not.toHaveBeenCalled()
     expect(d.saveSent).toHaveBeenCalledWith('p1')
   })
 
@@ -38,7 +38,7 @@ describe('inviteDueAppProfiles', () => {
     expect(d.sendInviteEmail).not.toHaveBeenCalled()
   })
 
-  it('does not create a second Hireflix interview when the URL exists', async () => {
+  it('does not create a Hireflix interview', async () => {
     const row = profile({
       hireflixInterviewId: 'hf1',
       hireflixUrl: 'https://app.hireflix.com/abc',
@@ -47,8 +47,9 @@ describe('inviteDueAppProfiles', () => {
     const result = await inviteDueAppProfiles(d)
     expect(result.sent).toBe(1)
     expect(d.inviteHireflix).not.toHaveBeenCalled()
-    expect(d.sendInviteEmail).toHaveBeenCalledWith(
-      expect.objectContaining({ url: 'https://app.hireflix.com/abc' }),
-    )
+    expect(d.sendInviteEmail).toHaveBeenCalledWith({
+      to: 'camille@example.com',
+      firstName: 'Camille',
+    })
   })
 })

@@ -8,31 +8,28 @@ const env = {
 }
 
 describe('sendHireflixInviteEmail', () => {
-  it('sends Brevo template 206 with prénom and Hireflix URL', async () => {
+  it('sends Brevo template 206 with prénom only', async () => {
     const fetchFn = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) })
     await sendHireflixInviteEmail(
-      { to: 'camille@example.com', firstName: 'Camille', url: 'https://app.hireflix.com/abc' },
+      { to: 'camille@example.com', firstName: 'Camille' },
       { fetchFn, env },
     )
     const [, init] = fetchFn.mock.calls[0] as [string, RequestInit]
     const body = JSON.parse(String(init.body)) as {
       templateId: number
       to: { email: string }[]
-      params: { PRENOM: string; HIREFLIX_URL: string }
+      params: { PRENOM: string }
     }
     expect(body.templateId).toBe(206)
     expect(body.to[0]?.email).toBe('camille@example.com')
-    expect(body.params).toEqual({
-      PRENOM: 'Camille',
-      HIREFLIX_URL: 'https://app.hireflix.com/abc',
-    })
+    expect(body.params).toEqual({ PRENOM: 'Camille' })
   })
 
   it('fails closed when Brevo env is missing', async () => {
     const fetchFn = vi.fn()
     await expect(
       sendHireflixInviteEmail(
-        { to: 'a@b.c', firstName: 'A', url: 'https://app.hireflix.com/x' },
+        { to: 'a@b.c', firstName: 'A' },
         { fetchFn, env: {} },
       ),
     ).rejects.toThrow('Envoi email indisponible')
