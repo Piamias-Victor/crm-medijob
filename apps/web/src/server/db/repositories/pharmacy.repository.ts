@@ -1,11 +1,12 @@
 import type { PrismaClient, Prisma } from '@prisma/client'
-import { DEFAULT_LIST_LIMIT, DETAIL_MISSIONS_LIMIT } from '@/lib/list-limits'
+import { DETAIL_MISSIONS_LIMIT } from '@/lib/list-limits'
 import type { PharmacyListFilters } from '@/view-models/pharmacy-list-filters.schema'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { buildPharmacyListWhere } from './pharmacy-list-where'
 import { listPharmaciesForRadiusSearch } from './pharmacy-list-in-radius.repo'
 import { pharmacyListInclude } from './pharmacy-list-include'
+import { searchPharmacies } from './pharmacy-search.repo'
 
 function buildPharmacyListQueryWhere(filters?: PharmacyListFilters): Prisma.PharmacyWhereInput {
   const filterWhere = buildPharmacyListWhere(filters)
@@ -60,26 +61,21 @@ export function makePharmacyRepository(db: PrismaClient = defaultDb) {
       }),
     update: (id: string, data: Prisma.PharmacyUncheckedUpdateInput) =>
       db.pharmacy.update({ where: { id }, data }),
-    list: (filters?: PharmacyListFilters, limit = DEFAULT_LIST_LIMIT) =>
+    list: (filters?: PharmacyListFilters, limit?: number) =>
       db.pharmacy.findMany({
         where: buildPharmacyListQueryWhere(filters),
         include: pharmacyListInclude,
         orderBy: { name: 'asc' },
-        take: limit,
+        ...(limit !== undefined ? { take: limit } : {}),
       }),
-    listForPicker: (limit = DEFAULT_LIST_LIMIT) =>
+    listForPicker: (limit?: number) =>
       db.pharmacy.findMany({
         where: NOT_DELETED,
         select: { id: true, name: true },
         orderBy: { name: 'asc' },
-        take: limit,
+        ...(limit !== undefined ? { take: limit } : {}),
       }),
-    search: (term: string, limit = 8) =>
-      db.pharmacy.findMany({
-        where: { ...NOT_DELETED, name: { contains: term, mode: 'insensitive' } },
-        orderBy: { name: 'asc' },
-        take: limit,
-      }),
+    search: (term: string, limit = 8) => searchPharmacies(db, term, limit),
     listForRadiusSearch: (postalCodePrefix?: string | null) =>
       listPharmaciesForRadiusSearch(db, postalCodePrefix),
     softDelete: (id: string) =>
