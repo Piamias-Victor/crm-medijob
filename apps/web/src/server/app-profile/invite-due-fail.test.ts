@@ -3,15 +3,14 @@ import { inviteDueAppProfiles } from './invite-due'
 import { inviteDeps } from './invite-due.fixtures'
 
 describe('inviteDueAppProfiles failure', () => {
-  it('still mails Brevo when Hireflix would have failed', async () => {
+  it('records a Brevo failure and retries later without marking sent', async () => {
     const d = inviteDeps({
-      inviteHireflix: vi.fn().mockRejectedValue(new Error('hireflix down')),
+      sendInviteEmail: vi.fn().mockRejectedValue(new Error('Envoi email indisponible')),
     })
     const result = await inviteDueAppProfiles(d)
-    expect(result.sent).toBe(1)
-    expect(result.failed).toBe(0)
-    expect(d.sendInviteEmail).toHaveBeenCalled()
-    expect(d.saveSent).toHaveBeenCalledWith('p1')
-    expect(d.saveError).not.toHaveBeenCalled()
+    expect(result.failed).toBe(1)
+    expect(result.lastError).toBe('Envoi email indisponible')
+    expect(d.saveError).toHaveBeenCalledWith('p1', 'Envoi email indisponible')
+    expect(d.saveSent).not.toHaveBeenCalled()
   })
 })

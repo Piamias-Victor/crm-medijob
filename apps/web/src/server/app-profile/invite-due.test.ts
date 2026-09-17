@@ -20,7 +20,6 @@ describe('inviteDueAppProfiles', () => {
       to: 'camille@example.com',
       firstName: 'Camille',
     })
-    expect(d.inviteHireflix).not.toHaveBeenCalled()
     expect(d.saveSent).toHaveBeenCalledWith('p1')
   })
 
@@ -34,11 +33,10 @@ describe('inviteDueAppProfiles', () => {
       cancelled: 0,
       failed: 0,
     })
-    expect(d.inviteHireflix).not.toHaveBeenCalled()
     expect(d.sendInviteEmail).not.toHaveBeenCalled()
   })
 
-  it('does not create a Hireflix interview', async () => {
+  it('mails even when a Hireflix URL is already stored', async () => {
     const row = profile({
       hireflixInterviewId: 'hf1',
       hireflixUrl: 'https://app.hireflix.com/abc',
@@ -46,7 +44,6 @@ describe('inviteDueAppProfiles', () => {
     const d = deps({ listDue: async () => [row], findById: async () => row })
     const result = await inviteDueAppProfiles(d)
     expect(result.sent).toBe(1)
-    expect(d.inviteHireflix).not.toHaveBeenCalled()
     expect(d.sendInviteEmail).toHaveBeenCalledWith({
       to: 'camille@example.com',
       firstName: 'Camille',

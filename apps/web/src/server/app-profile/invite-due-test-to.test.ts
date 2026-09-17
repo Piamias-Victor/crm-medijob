@@ -15,7 +15,6 @@ describe('inviteDueAppProfiles test override', () => {
     })
     const result = await inviteDueAppProfiles(d)
     expect(result.sent).toBe(1)
-    expect(d.inviteHireflix).not.toHaveBeenCalled()
     expect(d.sendInviteEmail).toHaveBeenCalledWith({
       to: TEST_TO,
       firstName: 'Camille',
