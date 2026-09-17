@@ -3,7 +3,7 @@ import { inviteDueAppProfiles } from './invite-due'
 import { inviteDeps, inviteProfile } from './invite-due.fixtures'
 
 describe('inviteDueAppProfiles calendar SMS', () => {
-  it('sends the calendar SMS after the Hireflix mail when a phone exists', async () => {
+  it('does not send the calendar SMS after the Brevo mail', async () => {
     const row = inviteProfile({ phone: '0612345678' })
     const sendCalendarSms = vi.fn()
     const d = inviteDeps({
@@ -14,8 +14,8 @@ describe('inviteDueAppProfiles calendar SMS', () => {
     const result = await inviteDueAppProfiles(d)
     expect(result.sent).toBe(1)
     expect(d.sendInviteEmail).toHaveBeenCalled()
-    expect(sendCalendarSms).toHaveBeenCalledWith('33612345678')
-    expect(d.saveCalendarSmsSent).toHaveBeenCalledWith('p1')
+    expect(sendCalendarSms).not.toHaveBeenCalled()
+    expect(d.saveCalendarSmsSent).not.toHaveBeenCalled()
   })
 
   it('skips the calendar SMS when the profile has no phone', async () => {
