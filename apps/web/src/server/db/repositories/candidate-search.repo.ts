@@ -1,8 +1,6 @@
 import type { PrismaClient } from '@prisma/client'
-import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
-import { filterSearchPool } from '@/lib/search-pool'
-import { matchesFoldedCandidateSearch } from '@/lib/search-fold'
 import { NOT_DELETED } from './soft-delete'
+import { buildPersonSearchWhere } from './candidate-list-where-search'
 
 const searchSelect = {
   id: true,
@@ -17,12 +15,10 @@ export async function searchCandidates(db: PrismaClient, term: string, limit = 8
   const trimmed = term.trim()
   if (!trimmed) return []
 
-  const pool = await db.candidate.findMany({
-    where: NOT_DELETED,
+  return db.candidate.findMany({
+    where: { AND: [NOT_DELETED, buildPersonSearchWhere(trimmed)] },
     select: searchSelect,
     orderBy: { lastName: 'asc' },
-    take: DEFAULT_LIST_LIMIT,
+    take: limit,
   })
-
-  return filterSearchPool(pool, trimmed, matchesFoldedCandidateSearch, limit)
 }
