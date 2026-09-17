@@ -55,7 +55,7 @@ describe('makeContactRepository listByPharmacyIds', () => {
 })
 
 describe('makeContactRepository search', () => {
-  it('filters contacts by name in a case-insensitive way', async () => {
+  it('searches every contact by name in SQL, not a 500-row pool', async () => {
     const findMany = vi.fn().mockResolvedValue([
       {
         id: 'c1',
@@ -64,19 +64,24 @@ describe('makeContactRepository search', () => {
         email: 'marie@example.com',
         pharmacy: { name: 'Pharmacie du Centre' },
       },
-      {
-        id: 'c2',
-        firstName: 'Paul',
-        lastName: 'Bert',
-        email: null,
-        pharmacy: { name: 'Pharmacie Gare' },
-      },
     ])
     const repo = makeContactRepository({ contact: { findMany } } as unknown as PrismaClient)
-
     const results = await repo.search('marie')
-
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        take: 8,
+        where: expect.objectContaining({
+          AND: expect.arrayContaining([
+            { deletedAt: null },
+            expect.objectContaining({
+              OR: expect.arrayContaining([
+                { lastName: { contains: 'marie', mode: 'insensitive' } },
+              ]),
+            }),
+          ]),
+        }),
+      }),
+    )
     expect(results).toHaveLength(1)
-    expect(results[0]?.id).toBe('c1')
   })
 })
