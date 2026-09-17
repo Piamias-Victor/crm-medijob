@@ -38,4 +38,25 @@ describe('makeCandidateRepository listForKanban', () => {
       }),
     )
   })
+
+  it('searches every candidate by name, not the first 500 last names', async () => {
+    const findMany = vi.fn().mockResolvedValue([])
+    const repo = makeCandidateRepository({ candidate: { findMany } } as unknown as PrismaClient)
+    await repo.search('Fauret', 8)
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        take: 8,
+        where: {
+          AND: [
+            { deletedAt: null },
+            expect.objectContaining({
+              OR: expect.arrayContaining([
+                { lastName: { contains: 'Fauret', mode: 'insensitive' } },
+              ]),
+            }),
+          ],
+        },
+      }),
+    )
+  })
 })

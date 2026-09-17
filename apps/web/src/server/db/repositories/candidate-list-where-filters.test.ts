@@ -67,6 +67,8 @@ describe('buildCandidateListWhere filters', () => {
         { email: { contains: 'Marie', mode: 'insensitive' } },
         { phone: { contains: 'Marie', mode: 'insensitive' } },
         { city: { contains: 'Marie', mode: 'insensitive' } },
+        { postalCode: { contains: 'Marie', mode: 'insensitive' } },
+        { jobTitle: { name: { contains: 'Marie', mode: 'insensitive' } } },
       ],
     })
   })
