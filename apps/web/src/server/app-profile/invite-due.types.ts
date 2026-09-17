@@ -23,7 +23,7 @@ export type HireflixInviteInput = {
 
 export type HireflixInviteResult = { interviewId: string; url: string }
 
-export type InviteEmailInput = { to: string; firstName: string; url: string }
+export type InviteEmailInput = { to: string; firstName: string }
 
 export type InviteDueDeps = {
   listDue: () => Promise<InviteDueProfile[]>
@@ -31,7 +31,6 @@ export type InviteDueDeps = {
   saveHireflix: (id: string, data: HireflixInviteResult) => Promise<void>
   saveSent: (id: string) => Promise<void>
   saveError: (id: string, error: string) => Promise<void>
-  inviteHireflix: (input: HireflixInviteInput) => Promise<HireflixInviteResult>
   sendInviteEmail: (input: InviteEmailInput) => Promise<void>
   sendCalendarSms?: (to: string) => Promise<void>
   saveCalendarSmsSent?: (id: string) => Promise<void>

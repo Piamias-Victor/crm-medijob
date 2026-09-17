@@ -43,7 +43,7 @@ export async function sendHireflixInviteEmail(
       sender: { email: sender, name: 'MediJob' },
       to: [{ email: input.to, name: input.firstName }],
       templateId,
-      params: { PRENOM: input.firstName, HIREFLIX_URL: input.url },
+      params: { PRENOM: input.firstName },
     }),
   })
   if (!res.ok) {

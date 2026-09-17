@@ -28,10 +28,6 @@ export function inviteDeps(overrides: Partial<InviteDueDeps> = {}): InviteDueDep
     saveHireflix: vi.fn(),
     saveSent: vi.fn(),
     saveError: vi.fn(),
-    inviteHireflix: vi.fn().mockResolvedValue({
-      interviewId: 'hf1',
-      url: 'https://app.hireflix.com/abc',
-    }),
     sendInviteEmail: vi.fn(),
     saveCalendarSmsSent: vi.fn(),
     ...overrides,

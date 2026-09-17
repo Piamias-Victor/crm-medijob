@@ -1,8 +1,6 @@
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { appProfileInviteRepository } from '@/server/db/repositories/app-profile-invite.repository'
-import { inviteHireflixCandidate } from '@/server/hireflix/invite'
 import { sendHireflixInviteEmail } from '@/server/brevo/send-invite-email'
-import { hireflixCalendarSmsSender } from './hireflix-calendar-sms-sender'
 import { toInviteDueProfile } from './invite-due-map'
 import type { InviteDueDeps } from './invite-due.types'
 
@@ -31,9 +29,7 @@ export function defaultInviteDueDeps(
     saveError: async (id, error) => {
       await appProfileInviteRepository.saveError(id, error)
     },
-    inviteHireflix: (input) => inviteHireflixCandidate(input),
     sendInviteEmail: (input) => sendHireflixInviteEmail(input),
-    sendCalendarSms: hireflixCalendarSmsSender(env),
     testTo: testTo || undefined,
   }
 }
