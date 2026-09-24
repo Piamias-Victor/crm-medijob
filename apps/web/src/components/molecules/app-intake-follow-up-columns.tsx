@@ -8,6 +8,7 @@ import { AppIntakeRdvCell } from '@/components/molecules/AppIntakeRdvCell'
 import { AppIntakeNotesCell } from '@/components/molecules/AppIntakeNotesCell'
 import { AppReferentCell } from '@/components/molecules/AppReferentCell'
 import { AppRelanceCell } from '@/components/molecules/AppRelanceCell'
+import { AppIntakeIgnoreCell } from '@/components/molecules/AppIntakeIgnoreCell'
 import {
   APP_CALL_OUTCOME_LABELS,
   APP_INTAKE_STATUS_LABELS,
@@ -71,6 +72,12 @@ export function buildAppIntakeFollowUpColumns(
       header: 'Notes',
       accessor: (row) => row.notes ?? TABLE_EMPTY_CELL,
       cell: (row) => <AppIntakeNotesCell row={row} />,
+    },
+    {
+      id: 'actions',
+      header: '',
+      accessor: () => '',
+      cell: (row) => <AppIntakeIgnoreCell row={row} />,
     },
   ]
 }

@@ -21,6 +21,7 @@ describe('buildAppIntakeFollowUpColumns', () => {
       ['relanceAt', 'Relance'],
       ['lastCalledAt', 'Dernier appel'],
       ['notes', 'Notes'],
+      ['actions', ''],
     ])
   })
 
@@ -35,6 +36,7 @@ describe('buildAppIntakeFollowUpColumns', () => {
       referent: true,
       relanceAt: true,
       notes: true,
+      actions: true,
       lastCalledAt: false,
       phone: false,
     })

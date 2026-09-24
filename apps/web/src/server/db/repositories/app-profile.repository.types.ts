@@ -36,6 +36,7 @@ export type AppProfileIntakeUpdate = {
 export type ListIntakeFollowUpOpts = {
   limit?: number
   referentScope?: 'mine' | 'all'
+  population?: 'default' | 'archive'
   currentUserId?: string
 }
 

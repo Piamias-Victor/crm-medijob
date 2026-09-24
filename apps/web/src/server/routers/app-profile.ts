@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server'
-import { router, protectedProcedure } from '@/server/trpc'
+import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import { acceptAppProfile, ignoreAppProfile, AppProfileError } from '@/server/app-profile/accept'
 import { toAppProfileListItem } from '@/view-models/app-profile-list'
 import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-profile-accept.schema'
@@ -30,8 +30,10 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       .input(listIntakeFollowUpSchema.optional())
       .query(async ({ input, ctx }) => {
         const referentScope = input?.referentScope ?? 'mine'
+        const population = input?.population ?? 'default'
         const rows = await deps.listIntakeFollowUp({
           referentScope,
+          population,
           currentUserId: ctx.session.user.id,
         })
         return mapIntakeFollowUpWithComments(rows, (id) =>
@@ -56,16 +58,18 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
     }),
     testCalendarSms: protectedProcedure.mutation(() => deps.sendCalendarSmsTest()),
     updateIntake: updateIntakeProcedure(deps),
-    ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
-      try {
-        return await ignoreAppProfile(input.id, {
-          findById: deps.findById,
-          markStatus: deps.markStatus,
-        })
-      } catch (error) {
-        mapError(error)
-      }
-    }),
+    ignore: permissionProcedure('crm.write')
+      .input(appProfileIdSchema)
+      .mutation(async ({ input }) => {
+        try {
+          return await ignoreAppProfile(input.id, {
+            findById: deps.findById,
+            markStatus: deps.markStatus,
+          })
+        } catch (error) {
+          mapError(error)
+        }
+      }),
     accept: protectedProcedure.input(appProfileAcceptSchema).mutation(async ({ input }) => {
       try {
         return await acceptAppProfile(
