@@ -49,20 +49,38 @@ A versioned question bank (trame) for one JobTitle `profileKey` × InterviewMode
 _Avoid_: questionnaire, eval config, brouillon (that word means Interview status DRAFT, not an unpublished template)
 
 **AppProfile**:
-A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the CRM "Profils app" tab — not part of the CVthèque until a recruiter accepts it, or until Badakan reports App-validated. Distinct from Application (website candidacy). Once accepted or ignored, it must not reappear on the next sync. Becoming App-validated also removes it from this inbox (that is not Ignore) and creates or links a Candidate with origin App. Recruiter ACCEPTE from this inbox is rare. A Hireflix invitation does not change this status and does not remove the profile from the inbox.
-_Avoid_: Application, candidature app, recipient (as UI label), Badakan candidate, envoyé (as AppProfile status)
+A profile pulled from the Medijob mobile app (Badakan `searchNewEmployees`) into the Intérim **App intake follow-up** list (UI: « Entrées app » at `/interim/entrees-app`; replaces the former "Profils app" tab) — not part of the CVthèque until Badakan reports App-validated. Distinct from Application (website candidacy). **Ignore** archives it out of the default follow-up view (same class of exit as negative Call outcome / `Hors zone`); it must not reappear on the next sync. There is no recruiter ACCEPTE path — App-validated is the only door into the CVthèque from this list. Becoming App-validated also removes it from the default follow-up view (that is not Ignore) and creates or links a Candidate with origin App.
+_Avoid_: Application, candidature app, recipient (as UI label), Badakan candidate, envoyé (as AppProfile status), Profils app (legacy UI label), Suivi candidats (rejected nav label), Hireflix, ACCEPTE
 
 **App-validated**:
 A Badakan recipient whose app dossier is validated (`valid` / `validationStep COMPLETED`). On sync the CRM creates or links a Candidate with origin App — no recruiter ACCEPTE required. Link is by email, then phone. Distinct from AppProfile status ACCEPTE, from Candidate status Qualifié, and from the PDF « profil validé » (MediJob accept after interview — out of Intérim V1).
 _Avoid_: profil validé (unqualified), validé MediJob, COMPLETED (as UI label), valider (unqualified)
 
+**App intake follow-up**:
+The Intérim working list (UI: « Entrées app », `/interim/entrees-app`) of people from the app who are not yet App-validated — recruiters track contact and dossier actions here. **Table-only** (no AppProfile detail page): Ignore is a row action. The table shows read-only identity/contact (phone, name, email, job/profile, city, postal code, enrolled-at), Badakan comments, and Intake booking SMS sent indicator; editable ops fields mirror the Syncro sheet: **Intake status**, **Call outcome**, planned RDV date, a free-text **notes** field on the AppProfile (not ActivityLog — there is no Candidate yet), **Referent** (assignee), and **relance date**. Relance defaults to the intake day on arrival and to last-call + 2 days when Call outcome is saved; the recruiter may override. A past relance date is shown as overdue (sort/badge) but does **not** auto-change Intake status. The default list filter is the current User as Referent **or** unassigned; recruiters can switch to the full queue. Last-call timestamp and caller are stamped automatically when Call outcome is saved (current User) — not free-text. No one-shot import from the Syncro sheet — existing rows start at Intake status `À appeler`; sheet history stays an archive. Flow: arrive → Intake booking SMS (unchanged) → recruiter updates those fields → after the video RDV, validation happens **in Badakan** (CRM stays read-only toward Badakan) → sync marks App-validated → person leaves the default view and receives the weekly-availability SMS. Negative exits (`Pas intéressé`, `Hors cible`, `Hors zone`, and **Ignore**) also leave the default view; they remain findable via an archived/refused filter. Distinct from Candidate status Qualifié, from `/interim/candidats`, from `/interim/suivi`, and from sheet STATUT « Validé » as a synonym of App-validated.
+_Avoid_: Syncro, Suivi (unqualified), Suivi candidats, Candidats Intérim, Hireflix, Candidate status (for these ops fields), ATTRIBUE A, APPEL PAR, _RELANCE, Profils app
+
+**Intake status**:
+Recruiter-owned lifecycle on an AppProfile in App intake follow-up. Closed set: `À appeler`, `Dossier incomplet`, `À relancer`, `Hors zone`. New AppProfiles default to `À appeler`. `Hors zone` is a negative exit from the default view. Not Candidate status, not Badakan `validationStep`, not App-validated. `Validé` and `Suspendu` are never Intake status values — they come from Badakan sync (App-validated / Inactif).
+_Avoid_: statut (unqualified), Validé (as Intake status), Suspendu (as Intake status), STATUT
+
+**Call outcome**:
+Result of the last recruiter contact attempt on an AppProfile. Closed set: `Messagerie`, `RDV pris`, `À rappeler`, `Pas intéressé`, `Hors cible`, `Pas de réponse`. `Pas intéressé` and `Hors cible` are negative exits from the default view. Choosing `RDV pris` requires a planned RDV date. Distinct from Intake status and from Badakan comment.
+_Avoid_: RESULTAT, résultat d'appel (as entity), ActivityLog (that's the CRM note stream)
+
+
 **Candidate origin**:
 How the Candidate entered the CVthèque. Origin App means created or linked from an App-validated Badakan recipient. Distinct from Candidate status and from AppProfile ACCEPTE.
 _Avoid_: vient de l'app (as a status), source (unqualified), InterimProfile (not a person entity)
 
+
 **Hireflix invitation**:
-A one-shot outbound video-interview invite on an AppProfile, always the same Hireflix Position. It is owed once an email exists (wait if missing; includes profiles already in the inbox), only while the AppProfile is EN_ATTENTE, and complete only when the Hireflix URL and the Brevo mail both succeed. Accept or ignore before completion cancels it (no mail). It is not a qualification and does not track whether the person recorded the video. Completeness is visible on the Profils app inbox. Medijob mail is the required notification; Hireflix does not email. A calendar-booking SMS (Google Calendar slot) may go out after that mail when `HIREFLIX_CALENDAR_SMS=true`, only for new EN_ATTENTE AppProfiles that are not yet in the CVthèque; profiles present at rollout are marked already sent. Missing phone or SMS failure does not fail the invitation. A recruiter may send that same SMS to `HIREFLIX_CALENDAR_SMS_TEST_PHONE` from a Profil app fiche (local/Preview only). Distinct from Interview.
-_Avoid_: envoyé (as lifecycle status), statut envoyé, sent (as AppProfileStatus), video completed (as AppProfile state)
+_Removed._ Video-interview invites via Hireflix are no longer part of the product. Replaced by the **Intake booking SMS** (Google Calendar slot) on App intake follow-up.
+_Avoid_: Hireflix, video interview invite (as AppProfile lifecycle)
+
+**Intake booking SMS**:
+A one-shot transactional SMS to a new AppProfile inviting them to book a video RDV with MediJob via a Google Calendar appointment link. Already shipped; App intake follow-up does not change send rules or copy. Distinct from the weekly-availability SMS (sent at App-validated) and from Interview.
+_Avoid_: Hireflix SMS, SMS RDV (unqualified), availability SMS
 
 **JobTitle**:
 An administrable job role in the pharmacy staffing domain (e.g. Pharmacien, Préparateur). Referenced by Candidate and Mission — replaces the former fixed enum.
@@ -165,8 +183,8 @@ An administrable function of a Contact at a Pharmacy (e.g. Titulaire, Comptabili
 _Avoid_: ContactRole enum (legacy fixed list), fonction (as free text)
 
 **Referent**:
-The Medijob User responsible for follow-up on a Pharmacy, Contact, Candidate, Mission, or Ligne de suivi. Optional on the four operational entities — informational and for reporting/filters; visibility and reassignment rights depend on UserRole permissions. CA and Marge of a Mission are attributed to that Mission's Referent. CA and Marge of a Ligne de suivi are attributed to the Referent chosen on that line (one User). No co-credit: a line never counts for two commerciaux.
-_Avoid_: Owner, propriétaire, assigné (implies exclusivity), gestionnaire, opérateur, compte opérateur, recruteur (as a free-text field)
+The Medijob User responsible for follow-up on a Pharmacy, Contact, Candidate, Mission, Ligne de suivi, or AppProfile (App intake follow-up assignee). Optional on those entities — informational and for reporting/filters; visibility and reassignment rights depend on UserRole permissions. CA and Marge of a Mission are attributed to that Mission's Referent. CA and Marge of a Ligne de suivi are attributed to the Referent chosen on that line (one User). No co-credit: a line never counts for two commerciaux.
+_Avoid_: Commercial, owner, assignee, ATTRIBUE A, Owner, propriétaire, assigné (implies exclusivity), gestionnaire, opérateur, compte opérateur, recruteur (as a free-text field)
 
 **UserRole**:
 One of four internal access roles: Direction, Recruteur, Communication, RH-Admin. Rights are differentiated per module for actions; financial fields (CA, Marge) have separate view rights by role. Operational records are otherwise visible to all roles.
@@ -185,7 +203,7 @@ An administrable pharmacy management software (LGO) — e.g. Winpharma, Pharmage
 _Avoid_: Logiciel (without LGO qualifier), outil, application, programme
 
 **ActivityLog**:
-A timestamped record on a domain entity (Candidate, Pharmacy, Contact, or Mission). Includes recruiter interactions (call, email, note…) and automatic system entries on create/update. Polymorphic — each entry belongs to exactly one entity. New Intérim call notes are ActivityLog. Distinct from a Badakan comment (read from the app, not written back).
+A timestamped record on a domain entity (Candidate, Pharmacy, Contact, or Mission). Includes recruiter interactions (call, email, note…) and automatic system entries on create/update. Polymorphic — each entry belongs to exactly one entity. App intake follow-up notes live on the AppProfile free-text field, not ActivityLog (no Candidate yet). Distinct from a Badakan comment (read from the app, not written back).
 _Avoid_: Historique (as entity name), timeline, journal, note (as entity name), audit log (as separate entity), commentaire Badakan
 
 **Badakan comment**:
@@ -238,10 +256,10 @@ Owns: Application, deduplication logic, accept/refuse workflow.
 Inbound: job-board candidacies tied to a JobOffer.
 Outbound: Candidate creation on acceptance (into Candidates).
 
-**AppProfiles** — Badakan app registration inbox ("Profils app").
-Owns: AppProfile, Hireflix invitation (send-once), periodic sync from Badakan `searchNewEmployees`, accept/ignore workflow.
+**AppProfiles** — Badakan app registration inbox, surfaced as Intérim **App intake follow-up** (UI: « Entrées app » `/interim/entrees-app`; replaces "Profils app").
+Owns: AppProfile, Intake booking SMS (unchanged), Intake status, Call outcome, planned RDV date, intake notes, Referent on AppProfile, auto last-call stamp, relance date, Ignore (archive), periodic sync from Badakan `searchNewEmployees`.
 Inbound: Badakan API (read-only), including Badakan comments on CREATED recipients.
-Outbound: Candidate creation or merge on recruiter ACCEPTE (rare). When the recipient becomes App-validated, they leave this inbox; Candidate write is owned by the Intérim context. Never the Intérim positioning filter.
+Outbound: No recruiter ACCEPTE. When the recipient becomes App-validated, they leave the default follow-up view; Candidate write is owned by the Intérim context. Ignore and negative outcomes also leave the default view. Never the Intérim positioning filter.
 
 **Intérim (operational)** — App-validated Candidates, weekly availability, Badakan read model.
 Owns: Weekly availability; App-validated sync that creates or links a Candidate with origin App; read of Badakan missions, pharmacies, comments, `SEARCH_APPLIED` applicants, and Badakan contracts (sign-invite SMS + pharmacy email 231 on new `CREATED`); pharmacy apply email (Brevo 232) on first `SEARCH_APPLIED`.
