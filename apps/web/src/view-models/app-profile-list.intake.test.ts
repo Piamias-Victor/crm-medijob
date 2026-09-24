@@ -45,4 +45,14 @@ describe('toAppProfileListItem intake fields', () => {
       notes: 'ok',
     })
   })
+
+  it('maps Intake booking SMS indicator from calendarSmsSentAt', () => {
+    expect(toAppProfileListItem(base).intakeBookingSmsLabel).toBe('—')
+    expect(
+      toAppProfileListItem({
+        ...base,
+        calendarSmsSentAt: new Date('2026-09-01T00:00:00.000Z'),
+      }).intakeBookingSmsLabel,
+    ).toBe('Envoyé')
+  })
 })

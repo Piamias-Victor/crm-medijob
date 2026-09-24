@@ -1,4 +1,6 @@
+import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import { appProfileInvitationLabel } from './app-profile-invitation'
+import { intakeBookingSmsLabel } from './app-profile-intake-booking-sms'
 import type { AppProfileListItem } from './app-profile-list.types'
 import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
 
@@ -24,6 +26,8 @@ export function toAppProfileListItem(row: {
   notes?: string | null
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
+  calendarSmsSentAt?: Date | null
+  badakanCommentsLabel?: string
   syncedAt: Date
   createdAt: Date
   jobTitle: { id: string; name: string } | null
@@ -52,6 +56,8 @@ export function toAppProfileListItem(row: {
       inviteEmailSentAt: row.inviteEmailSentAt ?? null,
       inviteLastError: row.inviteLastError ?? null,
     }),
+    intakeBookingSmsLabel: intakeBookingSmsLabel(row.calendarSmsSentAt ?? null),
+    badakanCommentsLabel: row.badakanCommentsLabel ?? TABLE_EMPTY_CELL,
     syncedAt: row.syncedAt,
     createdAt: row.createdAt,
   }

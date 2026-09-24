@@ -10,6 +10,7 @@ import {
   APP_CALL_OUTCOME_LABELS,
   APP_INTAKE_STATUS_LABELS,
 } from '@/view-models/app-profile-intake.labels'
+import { BADAKAN_COMMENTS_TITLE } from '@/view-models/badakan-comment'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 export function buildAppIntakeFollowUpColumns(): ColumnDef<AppProfileListItem>[] {
@@ -34,6 +35,16 @@ export function buildAppIntakeFollowUpColumns(): ColumnDef<AppProfileListItem>[]
       header: 'Inscrit le',
       accessor: (row) => new Date(row.createdAt).toLocaleDateString('fr-FR'),
       sortable: true,
+    },
+    {
+      id: 'badakanComments',
+      header: BADAKAN_COMMENTS_TITLE,
+      accessor: (row) => row.badakanCommentsLabel,
+    },
+    {
+      id: 'intakeBookingSms',
+      header: 'SMS RDV',
+      accessor: (row) => row.intakeBookingSmsLabel,
     },
     {
       id: 'intakeStatus',
