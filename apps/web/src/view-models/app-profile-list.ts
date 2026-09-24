@@ -18,6 +18,7 @@ export type AppProfileListItem = {
   status: AppProfileStatus
   invitationLabel: string
   syncedAt: Date
+  createdAt: Date
 }
 
 export function toAppProfileListItem(row: {
@@ -37,6 +38,7 @@ export function toAppProfileListItem(row: {
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
   syncedAt: Date
+  createdAt: Date
   jobTitle: { id: string; name: string } | null
 }): AppProfileListItem {
   return {
@@ -60,5 +62,6 @@ export function toAppProfileListItem(row: {
       inviteLastError: row.inviteLastError ?? null,
     }),
     syncedAt: row.syncedAt,
+    createdAt: row.createdAt,
   }
 }

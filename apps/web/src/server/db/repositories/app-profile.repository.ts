@@ -25,6 +25,13 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         ...(limit != null ? { take: limit } : {}),
         include: { jobTitle: { select: { id: true, name: true } } },
       }),
+    listIntakeFollowUp: (limit?: number) =>
+      db.appProfile.findMany({
+        where: { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+        orderBy: { createdAt: 'desc' },
+        ...(limit != null ? { take: limit } : {}),
+        include: { jobTitle: { select: { id: true, name: true } } },
+      }),
     countPending: () => db.appProfile.count({ where: { status: 'EN_ATTENTE' } }),
     findById: (id: string) =>
       db.appProfile.findUnique({

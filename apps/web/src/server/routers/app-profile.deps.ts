@@ -11,6 +11,7 @@ import type { CalendarSmsTestResult } from '@/server/app-profile/hireflix-calend
 
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
+  listIntakeFollowUp: typeof appProfileRepository.listIntakeFollowUp
   countPending: typeof appProfileRepository.countPending
   findById: typeof appProfileRepository.findById
   findByBadakanIds: typeof appProfileRepository.findByBadakanIds
@@ -26,6 +27,7 @@ export type AppProfileDeps = {
 
 export const defaultAppProfileDeps: AppProfileDeps = {
   listPending: () => appProfileRepository.listPending(),
+  listIntakeFollowUp: () => appProfileRepository.listIntakeFollowUp(),
   countPending: () => appProfileRepository.countPending(),
   findById: (id) => appProfileRepository.findById(id),
   findByBadakanIds: (ids) => appProfileRepository.findByBadakanIds(ids),

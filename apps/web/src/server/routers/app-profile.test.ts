@@ -10,6 +10,7 @@ const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999
 function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
   return {
     listPending: vi.fn().mockResolvedValue([]),
+    listIntakeFollowUp: vi.fn().mockResolvedValue([]),
     countPending: vi.fn().mockResolvedValue(0),
     findById: vi.fn().mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE', badakanId: 'bk1' }),
     findByBadakanIds: vi.fn().mockResolvedValue([]),
@@ -89,5 +90,39 @@ describe('appProfileRouter', () => {
       }),
     ).listComments({ id: 'p1' })
     expect(rows).toEqual([])
+  })
+
+  it('lists App intake follow-up excluding App-validated and Ignore', async () => {
+    const listIntakeFollowUp = vi.fn().mockResolvedValue([
+      {
+        id: 'p1',
+        badakanId: 'bk1',
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        email: 'ada@example.com',
+        phone: '0600000000',
+        address: null,
+        city: 'Paris',
+        postalCode: '75001',
+        activityLabel: 'Pharmacien',
+        jobTitleId: null,
+        hasResume: false,
+        status: 'EN_ATTENTE',
+        syncedAt: new Date('2026-03-12T10:00:00.000Z'),
+        createdAt: new Date('2026-03-10T08:00:00.000Z'),
+        jobTitle: null,
+      },
+    ])
+    const rows = await caller(makeDeps({ listIntakeFollowUp })).listIntakeFollowUp()
+    expect(listIntakeFollowUp).toHaveBeenCalled()
+    expect(rows[0]).toMatchObject({
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      phone: '0600000000',
+      email: 'ada@example.com',
+      city: 'Paris',
+      postalCode: '75001',
+      createdAt: new Date('2026-03-10T08:00:00.000Z'),
+    })
   })
 })
