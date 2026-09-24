@@ -28,7 +28,7 @@ export type AppProfileDeps = {
 
 export const defaultAppProfileDeps: AppProfileDeps = {
   listPending: () => appProfileRepository.listPending(),
-  listIntakeFollowUp: () => appProfileRepository.listIntakeFollowUp(),
+  listIntakeFollowUp: (opts) => appProfileRepository.listIntakeFollowUp(opts),
   countPending: () => appProfileRepository.countPending(),
   findById: (id) => appProfileRepository.findById(id),
   findByBadakanIds: (ids) => appProfileRepository.findByBadakanIds(ids),

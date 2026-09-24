@@ -19,6 +19,12 @@ export type AppProfileListItem = {
   callOutcome: AppCallOutcome | null
   plannedRdvAt: Date | null
   notes: string | null
+  referentId: string | null
+  referentName: string | null
+  relanceAt: Date | null
+  isRelanceOverdue: boolean
+  lastCalledAt: Date | null
+  lastCalledByName: string | null
   invitationLabel: string
   intakeBookingSmsLabel: string
   badakanCommentsLabel: string

@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest'
 import { appProfileCaller, makeAppProfileTestDeps } from './app-profile.test-deps'
+import { defaultRelanceAfterCall } from '@/view-models/app-profile-relance'
 
 const intakeRow = {
   id: 'p1',
@@ -20,33 +21,63 @@ const intakeRow = {
   callOutcome: 'MESSAGERIE' as const,
   plannedRdvAt: null,
   notes: 'rappel',
+  referentId: null,
+  relanceAt: new Date('2026-03-12T12:00:00.000Z'),
+  lastCalledAt: new Date('2026-03-10T15:00:00.000Z'),
+  lastCalledById: 'u1',
   syncedAt: new Date('2026-03-12T10:00:00.000Z'),
   createdAt: new Date('2026-03-10T08:00:00.000Z'),
   jobTitle: null,
+  referent: null,
+  lastCalledBy: { id: 'u1', name: 'Alice' },
 }
 
 describe('appProfileRouter updateIntake', () => {
-  it('updates Intake ops fields and returns list item', async () => {
+  it('stamps last-call and bumps relance when Call outcome changes', async () => {
+    const findById = vi.fn().mockResolvedValue({ ...intakeRow, callOutcome: null })
     const updateIntake = vi.fn().mockResolvedValue(intakeRow)
-    const result = await appProfileCaller(makeAppProfileTestDeps({ updateIntake })).updateIntake({
+    await appProfileCaller(makeAppProfileTestDeps({ findById, updateIntake })).updateIntake({
       id: 'p1',
       intakeStatus: 'A_RELANCER',
       callOutcome: 'MESSAGERIE',
       plannedRdvAt: null,
       notes: 'rappel',
+      referentId: null,
+      relanceAt: new Date('2026-03-10T12:00:00.000Z'),
+    })
+    const [, data] = updateIntake.mock.calls[0]!
+    expect(data.lastCalledById).toBe('u1')
+    expect(data.lastCalledAt).toBeInstanceOf(Date)
+    expect(data.relanceAt).toEqual(defaultRelanceAfterCall(data.lastCalledAt as Date))
+  })
+
+  it('persists Referent without stamping when Call outcome unchanged', async () => {
+    const findById = vi.fn().mockResolvedValue(intakeRow)
+    const updateIntake = vi.fn().mockResolvedValue({
+      ...intakeRow,
+      referentId: 'u1',
+      referent: { id: 'u1', name: 'Alice' },
+    })
+    const result = await appProfileCaller(
+      makeAppProfileTestDeps({ findById, updateIntake }),
+    ).updateIntake({
+      id: 'p1',
+      intakeStatus: 'A_RELANCER',
+      callOutcome: 'MESSAGERIE',
+      plannedRdvAt: null,
+      notes: 'rappel',
+      referentId: 'u1',
+      relanceAt: new Date('2026-03-20T12:00:00.000Z'),
     })
     expect(updateIntake).toHaveBeenCalledWith('p1', {
       intakeStatus: 'A_RELANCER',
       callOutcome: 'MESSAGERIE',
       plannedRdvAt: null,
       notes: 'rappel',
+      referentId: 'u1',
+      relanceAt: new Date('2026-03-20T12:00:00.000Z'),
     })
-    expect(result).toMatchObject({
-      id: 'p1',
-      intakeStatus: 'A_RELANCER',
-      callOutcome: 'MESSAGERIE',
-      notes: 'rappel',
-    })
+    expect(result.referentId).toBe('u1')
   })
 
   it('rejects RDV_PRIS without planned RDV date', async () => {
@@ -57,6 +88,8 @@ describe('appProfileRouter updateIntake', () => {
         callOutcome: 'RDV_PRIS',
         plannedRdvAt: null,
         notes: null,
+        referentId: null,
+        relanceAt: null,
       }),
     ).rejects.toThrow()
   })

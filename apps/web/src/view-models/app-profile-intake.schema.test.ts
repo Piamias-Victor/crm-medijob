@@ -7,6 +7,8 @@ const base = {
   callOutcome: null,
   plannedRdvAt: null,
   notes: null,
+  referentId: null,
+  relanceAt: null,
 }
 
 describe('updateIntakeSchema', () => {
@@ -34,13 +36,14 @@ describe('updateIntakeSchema', () => {
     ).toMatchObject({ callOutcome: 'RDV_PRIS', plannedRdvAt })
   })
 
-  it('accepts other Call outcomes without planned RDV', () => {
+  it('accepts Referent and relance override', () => {
+    const relanceAt = new Date('2026-04-05T12:00:00.000Z')
     expect(
       updateIntakeSchema.parse({
         ...base,
-        callOutcome: 'MESSAGERIE',
-        plannedRdvAt: null,
-      }).callOutcome,
-    ).toBe('MESSAGERIE')
+        referentId: 'u1',
+        relanceAt,
+      }),
+    ).toMatchObject({ referentId: 'u1', relanceAt })
   })
 })

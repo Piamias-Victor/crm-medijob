@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildAppIntakeFollowUpColumns } from './app-intake-follow-up-columns'
 
 describe('buildAppIntakeFollowUpColumns', () => {
-  it('lists identity, comments, SMS, plus editable Intake ops columns', () => {
+  it('lists identity, Intake ops, Referent, relance, last-call', () => {
     expect(buildAppIntakeFollowUpColumns().map((col) => [col.id, col.header])).toEqual([
       ['phone', 'Téléphone'],
       ['firstName', 'Prénom'],
@@ -17,11 +17,14 @@ describe('buildAppIntakeFollowUpColumns', () => {
       ['intakeStatus', 'Intake'],
       ['callOutcome', 'Appel'],
       ['plannedRdvAt', 'RDV'],
+      ['referent', 'Referent'],
+      ['relanceAt', 'Relance'],
+      ['lastCalledAt', 'Dernier appel'],
       ['notes', 'Notes'],
     ])
   })
 
-  it('wires cell editors for Intake ops columns only', () => {
+  it('wires cell editors for ops columns including Referent and relance', () => {
     const cols = Object.fromEntries(
       buildAppIntakeFollowUpColumns().map((col) => [col.id, Boolean(col.cell)]),
     )
@@ -29,10 +32,11 @@ describe('buildAppIntakeFollowUpColumns', () => {
       intakeStatus: true,
       callOutcome: true,
       plannedRdvAt: true,
+      referent: true,
+      relanceAt: true,
       notes: true,
+      lastCalledAt: false,
       phone: false,
-      badakanComments: false,
-      intakeBookingSms: false,
     })
   })
 })

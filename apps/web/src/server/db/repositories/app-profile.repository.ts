@@ -4,9 +4,12 @@ import {
   appProfileJobTitleInclude,
   type AppProfileIntakeUpdate,
   type AppProfileUpsertInput,
+  type ListIntakeFollowUpOpts,
 } from './app-profile.repository.types'
+import { intakeFollowUpWhere } from './app-profile-intake-where'
+import { upsertPendingAppProfile } from './app-profile-upsert-pending'
 
-export type { AppProfileUpsertInput, AppProfileIntakeUpdate }
+export type { AppProfileUpsertInput, AppProfileIntakeUpdate, ListIntakeFollowUpOpts }
 
 export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
   return {
@@ -17,11 +20,11 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         ...(limit != null ? { take: limit } : {}),
         include: appProfileJobTitleInclude,
       }),
-    listIntakeFollowUp: (limit?: number) =>
+    listIntakeFollowUp: (opts: ListIntakeFollowUpOpts = {}) =>
       db.appProfile.findMany({
-        where: { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
-        orderBy: { createdAt: 'desc' },
-        ...(limit != null ? { take: limit } : {}),
+        where: intakeFollowUpWhere(opts),
+        orderBy: [{ relanceAt: 'asc' }, { createdAt: 'desc' }],
+        ...(opts.limit != null ? { take: opts.limit } : {}),
         include: appProfileJobTitleInclude,
       }),
     countPending: () => db.appProfile.count({ where: { status: 'EN_ATTENTE' } }),
@@ -39,25 +42,7 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
       }),
     linkCandidate: (id: string, candidateId: string) =>
       db.appProfile.update({ where: { id }, data: { candidateId } }),
-    upsertPending: (data: AppProfileUpsertInput) =>
-      db.appProfile.upsert({
-        where: { badakanId: data.badakanId },
-        create: { ...data, status: 'EN_ATTENTE', syncedAt: new Date() },
-        update: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          address: data.address,
-          city: data.city,
-          postalCode: data.postalCode,
-          activityLabel: data.activityLabel,
-          jobTitleId: data.jobTitleId,
-          hasResume: data.hasResume ?? false,
-          snapshot: data.snapshot,
-          syncedAt: new Date(),
-        },
-      }),
+    upsertPending: (data: AppProfileUpsertInput) => upsertPendingAppProfile(db, data),
     updateIntake: (id: string, data: AppProfileIntakeUpdate) =>
       db.appProfile.update({
         where: { id },

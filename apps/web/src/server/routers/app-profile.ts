@@ -3,6 +3,7 @@ import { router, protectedProcedure } from '@/server/trpc'
 import { acceptAppProfile, ignoreAppProfile, AppProfileError } from '@/server/app-profile/accept'
 import { toAppProfileListItem } from '@/view-models/app-profile-list'
 import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-profile-accept.schema'
+import { listIntakeFollowUpSchema } from '@/view-models/app-profile-intake-list.schema'
 import { toCandidateCreateData } from '@/view-models/candidate-profile-map'
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
 import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
@@ -23,14 +24,20 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
   return router({
     listPending: protectedProcedure.query(async () => {
       const rows = await deps.listPending()
-      return rows.map(toAppProfileListItem)
+      return rows.map((row) => toAppProfileListItem(row))
     }),
-    listIntakeFollowUp: protectedProcedure.query(async () => {
-      const rows = await deps.listIntakeFollowUp()
-      return mapIntakeFollowUpWithComments(rows, (id) =>
-        deps.getBadakanClient().getComments(id),
-      )
-    }),
+    listIntakeFollowUp: protectedProcedure
+      .input(listIntakeFollowUpSchema.optional())
+      .query(async ({ input, ctx }) => {
+        const referentScope = input?.referentScope ?? 'mine'
+        const rows = await deps.listIntakeFollowUp({
+          referentScope,
+          currentUserId: ctx.session.user.id,
+        })
+        return mapIntakeFollowUpWithComments(rows, (id) =>
+          deps.getBadakanClient().getComments(id),
+        )
+      }),
     getById: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
       const row = await deps.findById(input.id)
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })

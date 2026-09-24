@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { APP_CALL_OUTCOMES, APP_INTAKE_STATUSES } from './app-profile-intake.enums'
+import { optionalReferentIdSchema } from './optional-referent-id.schema'
 
 export const updateIntakeSchema = z
   .object({
@@ -8,6 +9,8 @@ export const updateIntakeSchema = z
     callOutcome: z.enum(APP_CALL_OUTCOMES).nullable(),
     plannedRdvAt: z.coerce.date().nullable(),
     notes: z.string().trim().nullable(),
+    referentId: optionalReferentIdSchema,
+    relanceAt: z.coerce.date().nullable(),
   })
   .superRefine((data, ctx) => {
     if (data.callOutcome === 'RDV_PRIS' && !data.plannedRdvAt) {
