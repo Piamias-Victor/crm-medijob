@@ -1,14 +1,25 @@
-export type CandidatsTab = 'cvtheque' | 'inbox' | 'app-profiles'
+export type CandidatsTab = 'cvtheque' | 'inbox'
+
+export const CANDIDAT_TAB_ITEMS = [
+  { id: 'cvtheque' as const, label: 'CVthèque' },
+  { id: 'inbox' as const, label: 'Candidatures reçues' },
+]
+
+export const ENTREES_APP_HREF = '/interim/entrees-app'
 
 export function parseCandidatsTab(param: string | null | undefined): CandidatsTab {
   if (param === 'inbox') return 'inbox'
-  if (param === 'app-profiles') return 'app-profiles'
   return 'cvtheque'
+}
+
+export function legacyProfilsAppRedirect(target: string): string | null {
+  if (target === 'app-profiles') return ENTREES_APP_HREF
+  if (target.startsWith('/candidats/profils-app')) return ENTREES_APP_HREF
+  return null
 }
 
 export function candidatsPageHref(tab: CandidatsTab = 'cvtheque'): string {
   if (tab === 'inbox') return '/candidats?tab=inbox'
-  if (tab === 'app-profiles') return '/candidats?tab=app-profiles'
   return '/candidats'
 }
 

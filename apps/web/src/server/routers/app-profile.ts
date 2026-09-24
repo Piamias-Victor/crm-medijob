@@ -1,10 +1,9 @@
 import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
-import { acceptAppProfile, ignoreAppProfile, AppProfileError } from '@/server/app-profile/accept'
+import { ignoreAppProfile, AppProfileError } from '@/server/app-profile/accept'
 import { toAppProfileListItem } from '@/view-models/app-profile-list'
 import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-profile-accept.schema'
 import { listIntakeFollowUpSchema } from '@/view-models/app-profile-intake-list.schema'
-import { toCandidateCreateData } from '@/view-models/candidate-profile-map'
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
 import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
 import { updateIntakeProcedure } from './app-profile-intake-update'
@@ -70,24 +69,11 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
           mapError(error)
         }
       }),
-    accept: protectedProcedure.input(appProfileAcceptSchema).mutation(async ({ input }) => {
-      try {
-        return await acceptAppProfile(
-          input.id,
-          {
-            data: input.data ? toCandidateCreateData(input.data, 'MANUAL') : undefined,
-            mergeCandidateId: input.mergeCandidateId,
-          },
-          {
-            findById: deps.findById,
-            createCandidate: deps.createProfile,
-            markStatus: deps.markStatus,
-            importCvUrl: deps.importCvUrl,
-          },
-        )
-      } catch (error) {
-        mapError(error)
-      }
+    accept: protectedProcedure.input(appProfileAcceptSchema).mutation(() => {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'ACCEPTE retiré — porte CVthèque = App-validated (Entrées app)',
+      })
     }),
   })
 }

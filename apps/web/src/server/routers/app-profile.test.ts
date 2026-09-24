@@ -31,6 +31,20 @@ describe('appProfileRouter', () => {
     expect(markStatus).toHaveBeenCalledWith('p1', 'IGNORE')
   })
 
+  it('hard-fails accept — ACCEPTE retired', async () => {
+    const markStatus = vi.fn()
+    await expect(
+      appProfileCaller(makeAppProfileTestDeps({ markStatus })).accept({
+        id: 'p1',
+        mergeCandidateId: 'c9',
+      }),
+    ).rejects.toMatchObject({
+      code: 'BAD_REQUEST',
+      message: expect.stringMatching(/ACCEPTE|Entrées app/i),
+    })
+    expect(markStatus).not.toHaveBeenCalled()
+  })
+
   it('lists Badakan comments for a CREATED profile', async () => {
     const getComments = vi.fn().mockResolvedValue([
       {
