@@ -29,6 +29,7 @@ describe('appProfileRouter listIntakeFollowUp', () => {
     ).listIntakeFollowUp()
     expect(listIntakeFollowUp).toHaveBeenCalledWith({
       referentScope: 'mine',
+      population: 'default',
       currentUserId: 'u1',
     })
     expect(rows[0]).toMatchObject({
@@ -49,6 +50,19 @@ describe('appProfileRouter listIntakeFollowUp', () => {
     ).listIntakeFollowUp({ referentScope: 'all' })
     expect(listIntakeFollowUp).toHaveBeenCalledWith({
       referentScope: 'all',
+      population: 'default',
+      currentUserId: 'u1',
+    })
+  })
+
+  it('passes archive population when requested', async () => {
+    const listIntakeFollowUp = vi.fn().mockResolvedValue([])
+    await appProfileCaller(
+      makeAppProfileTestDeps({ listIntakeFollowUp }),
+    ).listIntakeFollowUp({ population: 'archive' })
+    expect(listIntakeFollowUp).toHaveBeenCalledWith({
+      referentScope: 'mine',
+      population: 'archive',
       currentUserId: 'u1',
     })
   })

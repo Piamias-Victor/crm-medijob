@@ -13,14 +13,25 @@ describe('appProfileRepository', () => {
     )
   })
 
-  it('lists App intake follow-up excluding App-validated and Ignore', async () => {
+  it('lists App intake follow-up excluding App-validated, Ignore, negatives', async () => {
     const db = mockAppProfileDb()
     db.appProfile.findMany.mockResolvedValue([{ id: 'p1' }])
     const repo = makeAppProfileRepository(db as never)
     await repo.listIntakeFollowUp()
     expect(db.appProfile.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+        where: {
+          AND: [
+            { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+            {
+              OR: [
+                { callOutcome: null },
+                { callOutcome: { notIn: ['PAS_INTERESSE', 'HORS_CIBLE'] } },
+              ],
+            },
+            { intakeStatus: { not: 'HORS_ZONE' } },
+          ],
+        },
         orderBy: [{ relanceAt: 'asc' }, { createdAt: 'desc' }],
       }),
     )
@@ -34,8 +45,21 @@ describe('appProfileRepository', () => {
     expect(db.appProfile.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
-          status: { notIn: ['APP_VALIDATED', 'IGNORE'] },
-          OR: [{ referentId: 'u1' }, { referentId: null }],
+          AND: [
+            {
+              AND: [
+                { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+                {
+                  OR: [
+                    { callOutcome: null },
+                    { callOutcome: { notIn: ['PAS_INTERESSE', 'HORS_CIBLE'] } },
+                  ],
+                },
+                { intakeStatus: { not: 'HORS_ZONE' } },
+              ],
+            },
+            { OR: [{ referentId: 'u1' }, { referentId: null }] },
+          ],
         },
       }),
     )
