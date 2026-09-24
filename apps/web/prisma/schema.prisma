@@ -231,6 +231,8 @@ model User {
   gdprErases      GdprEraseAudit[]
   interviewRefs   Interview[]      @relation("ReferentInterviews")
   financeLineRefs FinanceLine[]    @relation("ReferentFinanceLines")
+  appProfileRefs  AppProfile[]     @relation("ReferentAppProfiles")
+  appProfileCalls AppProfile[]     @relation("LastCalledByAppProfiles")
   accounts        Account[]
   sessions        Session[]
 
@@ -697,6 +699,10 @@ model AppProfile {
   callOutcome         AppCallOutcome?
   plannedRdvAt        DateTime?
   notes               String?
+  referentId          String?
+  relanceAt           DateTime?
+  lastCalledAt        DateTime?
+  lastCalledById      String?
   candidateId         String?
   hireflixInterviewId String?
   hireflixUrl         String?
@@ -707,13 +713,17 @@ model AppProfile {
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
-  jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
-  candidate Candidate? @relation(fields: [candidateId], references: [id])
+  jobTitle     JobTitle?  @relation(fields: [jobTitleId], references: [id])
+  candidate    Candidate? @relation(fields: [candidateId], references: [id])
+  referent     User?      @relation("ReferentAppProfiles", fields: [referentId], references: [id], onDelete: SetNull)
+  lastCalledBy User?      @relation("LastCalledByAppProfiles", fields: [lastCalledById], references: [id], onDelete: SetNull)
 
   @@index([status])
   @@index([candidateId])
   @@index([status, inviteEmailSentAt])
   @@index([intakeStatus])
+  @@index([referentId])
+  @@index([relanceAt])
 }
 
 // ─── Historique polymorphe ────────────────────────────────────

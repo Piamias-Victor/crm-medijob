@@ -1,12 +1,13 @@
 import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import { appProfileInvitationLabel } from './app-profile-invitation'
 import { intakeBookingSmsLabel } from './app-profile-intake-booking-sms'
+import { isRelanceOverdue } from './app-profile-relance'
 import type { AppProfileListItem } from './app-profile-list.types'
 import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
 
 export type { AppProfileListItem }
 
-export function toAppProfileListItem(row: {
+type Row = {
   id: string
   badakanId: string
   firstName: string
@@ -24,6 +25,9 @@ export function toAppProfileListItem(row: {
   callOutcome?: AppCallOutcome | null
   plannedRdvAt?: Date | null
   notes?: string | null
+  referentId?: string | null
+  relanceAt?: Date | null
+  lastCalledAt?: Date | null
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
   calendarSmsSentAt?: Date | null
@@ -31,7 +35,12 @@ export function toAppProfileListItem(row: {
   syncedAt: Date
   createdAt: Date
   jobTitle: { id: string; name: string } | null
-}): AppProfileListItem {
+  referent?: { id: string; name: string } | null
+  lastCalledBy?: { id: string; name: string } | null
+}
+
+export function toAppProfileListItem(row: Row, now: Date = new Date()): AppProfileListItem {
+  const relanceAt = row.relanceAt ?? null
   return {
     id: row.id,
     badakanId: row.badakanId,
@@ -51,6 +60,12 @@ export function toAppProfileListItem(row: {
     callOutcome: row.callOutcome ?? null,
     plannedRdvAt: row.plannedRdvAt ?? null,
     notes: row.notes ?? null,
+    referentId: row.referentId ?? row.referent?.id ?? null,
+    referentName: row.referent?.name ?? null,
+    relanceAt,
+    isRelanceOverdue: isRelanceOverdue(relanceAt, now),
+    lastCalledAt: row.lastCalledAt ?? null,
+    lastCalledByName: row.lastCalledBy?.name ?? null,
     invitationLabel: appProfileInvitationLabel({
       email: row.email,
       inviteEmailSentAt: row.inviteEmailSentAt ?? null,

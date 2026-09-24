@@ -20,6 +20,8 @@ export function useAppIntakeUpdate(row: AppProfileListItem) {
       callOutcome: patch.callOutcome !== undefined ? patch.callOutcome : row.callOutcome,
       plannedRdvAt: patch.plannedRdvAt !== undefined ? patch.plannedRdvAt : row.plannedRdvAt,
       notes: patch.notes !== undefined ? patch.notes : row.notes,
+      referentId: patch.referentId !== undefined ? patch.referentId : row.referentId,
+      relanceAt: patch.relanceAt !== undefined ? patch.relanceAt : row.relanceAt,
     })
   }
 

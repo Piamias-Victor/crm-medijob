@@ -6,46 +6,22 @@ import { AppIntakeStatusCell } from '@/components/molecules/AppIntakeStatusCell'
 import { AppCallOutcomeCell } from '@/components/molecules/AppCallOutcomeCell'
 import { AppIntakeRdvCell } from '@/components/molecules/AppIntakeRdvCell'
 import { AppIntakeNotesCell } from '@/components/molecules/AppIntakeNotesCell'
+import { AppReferentCell } from '@/components/molecules/AppReferentCell'
+import { AppRelanceCell } from '@/components/molecules/AppRelanceCell'
 import {
   APP_CALL_OUTCOME_LABELS,
   APP_INTAKE_STATUS_LABELS,
 } from '@/view-models/app-profile-intake.labels'
-import { BADAKAN_COMMENTS_TITLE } from '@/view-models/badakan-comment'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
+import { buildAppIntakeIdentityColumns } from './app-intake-identity-columns'
 
-export function buildAppIntakeFollowUpColumns(): ColumnDef<AppProfileListItem>[] {
+type Ref = { id: string; name: string }
+
+export function buildAppIntakeFollowUpColumns(
+  recruiters: readonly Ref[] = [],
+): ColumnDef<AppProfileListItem>[] {
   return [
-    { id: 'phone', header: 'Téléphone', accessor: (row) => row.phone ?? TABLE_EMPTY_CELL },
-    { id: 'firstName', header: 'Prénom', accessor: (row) => row.firstName, sortable: true },
-    { id: 'lastName', header: 'Nom', accessor: (row) => row.lastName, sortable: true },
-    { id: 'email', header: 'Email', accessor: (row) => row.email ?? TABLE_EMPTY_CELL },
-    {
-      id: 'metier',
-      header: 'Métier',
-      accessor: (row) => row.jobTitleName ?? row.activityLabel ?? TABLE_EMPTY_CELL,
-    },
-    { id: 'city', header: 'Ville', accessor: (row) => row.city ?? TABLE_EMPTY_CELL },
-    {
-      id: 'postalCode',
-      header: 'CP',
-      accessor: (row) => row.postalCode ?? TABLE_EMPTY_CELL,
-    },
-    {
-      id: 'enrolledAt',
-      header: 'Inscrit le',
-      accessor: (row) => new Date(row.createdAt).toLocaleDateString('fr-FR'),
-      sortable: true,
-    },
-    {
-      id: 'badakanComments',
-      header: BADAKAN_COMMENTS_TITLE,
-      accessor: (row) => row.badakanCommentsLabel,
-    },
-    {
-      id: 'intakeBookingSms',
-      header: 'SMS RDV',
-      accessor: (row) => row.intakeBookingSmsLabel,
-    },
+    ...buildAppIntakeIdentityColumns(),
     {
       id: 'intakeStatus',
       header: 'Intake',
@@ -65,6 +41,30 @@ export function buildAppIntakeFollowUpColumns(): ColumnDef<AppProfileListItem>[]
       accessor: (row) =>
         row.plannedRdvAt ? new Date(row.plannedRdvAt).toLocaleDateString('fr-FR') : TABLE_EMPTY_CELL,
       cell: (row) => <AppIntakeRdvCell row={row} />,
+    },
+    {
+      id: 'referent',
+      header: 'Referent',
+      accessor: (row) => row.referentName ?? TABLE_EMPTY_CELL,
+      cell: (row) => <AppReferentCell row={row} recruiters={recruiters} />,
+    },
+    {
+      id: 'relanceAt',
+      header: 'Relance',
+      accessor: (row) =>
+        row.relanceAt ? new Date(row.relanceAt).toLocaleDateString('fr-FR') : TABLE_EMPTY_CELL,
+      sortable: true,
+      cell: (row) => <AppRelanceCell row={row} />,
+    },
+    {
+      id: 'lastCalledAt',
+      header: 'Dernier appel',
+      accessor: (row) =>
+        row.lastCalledAt
+          ? `${new Date(row.lastCalledAt).toLocaleDateString('fr-FR')}${
+              row.lastCalledByName ? ` · ${row.lastCalledByName}` : ''
+            }`
+          : TABLE_EMPTY_CELL,
     },
     {
       id: 'notes',

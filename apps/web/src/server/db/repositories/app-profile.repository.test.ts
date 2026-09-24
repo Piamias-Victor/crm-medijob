@@ -21,7 +21,22 @@ describe('appProfileRepository', () => {
     expect(db.appProfile.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [{ relanceAt: 'asc' }, { createdAt: 'desc' }],
+      }),
+    )
+  })
+
+  it('filters mine ∪ unassigned when referentScope is mine', async () => {
+    const db = mockAppProfileDb()
+    db.appProfile.findMany.mockResolvedValue([])
+    const repo = makeAppProfileRepository(db as never)
+    await repo.listIntakeFollowUp({ referentScope: 'mine', currentUserId: 'u1' })
+    expect(db.appProfile.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          status: { notIn: ['APP_VALIDATED', 'IGNORE'] },
+          OR: [{ referentId: 'u1' }, { referentId: null }],
+        },
       }),
     )
   })

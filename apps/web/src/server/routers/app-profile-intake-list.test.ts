@@ -27,7 +27,10 @@ describe('appProfileRouter listIntakeFollowUp', () => {
     const rows = await appProfileCaller(
       makeAppProfileTestDeps({ listIntakeFollowUp }),
     ).listIntakeFollowUp()
-    expect(listIntakeFollowUp).toHaveBeenCalled()
+    expect(listIntakeFollowUp).toHaveBeenCalledWith({
+      referentScope: 'mine',
+      currentUserId: 'u1',
+    })
     expect(rows[0]).toMatchObject({
       firstName: 'Ada',
       lastName: 'Lovelace',
@@ -36,6 +39,17 @@ describe('appProfileRouter listIntakeFollowUp', () => {
       city: 'Paris',
       postalCode: '75001',
       createdAt: new Date('2026-03-10T08:00:00.000Z'),
+    })
+  })
+
+  it('passes full queue scope when referentScope is all', async () => {
+    const listIntakeFollowUp = vi.fn().mockResolvedValue([])
+    await appProfileCaller(
+      makeAppProfileTestDeps({ listIntakeFollowUp }),
+    ).listIntakeFollowUp({ referentScope: 'all' })
+    expect(listIntakeFollowUp).toHaveBeenCalledWith({
+      referentScope: 'all',
+      currentUserId: 'u1',
     })
   })
 })
