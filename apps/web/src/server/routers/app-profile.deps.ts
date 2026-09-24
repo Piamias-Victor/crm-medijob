@@ -16,6 +16,7 @@ export type AppProfileDeps = {
   findById: typeof appProfileRepository.findById
   findByBadakanIds: typeof appProfileRepository.findByBadakanIds
   upsertPending: typeof appProfileRepository.upsertPending
+  updateIntake: typeof appProfileRepository.updateIntake
   markStatus: typeof appProfileRepository.markStatus
   createProfile: typeof candidateRepository.createProfile
   findJobTitleIdByName: (name: string) => Promise<string | null>
@@ -32,6 +33,7 @@ export const defaultAppProfileDeps: AppProfileDeps = {
   findById: (id) => appProfileRepository.findById(id),
   findByBadakanIds: (ids) => appProfileRepository.findByBadakanIds(ids),
   upsertPending: (data) => appProfileRepository.upsertPending(data),
+  updateIntake: (id, data) => appProfileRepository.updateIntake(id, data),
   markStatus: (id, status, candidateId) => appProfileRepository.markStatus(id, status, candidateId),
   createProfile: (input) => candidateRepository.createProfile(input),
   findJobTitleIdByName: (name) => jobTitleRepository.findIdByNameInsensitive(name),

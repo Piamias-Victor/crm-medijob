@@ -109,6 +109,22 @@ enum AppProfileStatus {
   APP_VALIDATED
 }
 
+enum AppIntakeStatus {
+  A_APPELER
+  DOSSIER_INCOMPLET
+  A_RELANCER
+  HORS_ZONE
+}
+
+enum AppCallOutcome {
+  MESSAGERIE
+  RDV_PRIS
+  A_RAPPELER
+  PAS_INTERESSE
+  HORS_CIBLE
+  PAS_DE_REPONSE
+}
+
 enum JobOfferStatus {
   BROUILLON
   PUBLIEE
@@ -677,6 +693,10 @@ model AppProfile {
   hasResume           Boolean          @default(false)
   snapshot            Json?
   status              AppProfileStatus @default(EN_ATTENTE)
+  intakeStatus        AppIntakeStatus  @default(A_APPELER)
+  callOutcome         AppCallOutcome?
+  plannedRdvAt        DateTime?
+  notes               String?
   candidateId         String?
   hireflixInterviewId String?
   hireflixUrl         String?
@@ -693,6 +713,7 @@ model AppProfile {
   @@index([status])
   @@index([candidateId])
   @@index([status, inviteEmailSentAt])
+  @@index([intakeStatus])
 }
 
 // ─── Historique polymorphe ────────────────────────────────────
