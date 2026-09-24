@@ -16,6 +16,7 @@ export function makeAppProfileTestDeps(
     findById: vi.fn().mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE', badakanId: 'bk1' }),
     findByBadakanIds: vi.fn().mockResolvedValue([]),
     upsertPending: vi.fn(),
+    updateIntake: vi.fn(),
     markStatus: vi.fn(),
     createProfile: vi.fn().mockResolvedValue({ id: 'c1' }),
     findJobTitleIdByName: vi.fn().mockResolvedValue(null),

@@ -6,6 +6,7 @@ import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-pr
 import { toCandidateCreateData } from '@/view-models/candidate-profile-map'
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
 import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
+import { updateIntakeProcedure } from './app-profile-intake-update'
 
 function mapError(error: unknown): never {
   if (error instanceof AppProfileError) {
@@ -44,6 +45,7 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       return deps.runTestProcess(row.badakanId)
     }),
     testCalendarSms: protectedProcedure.mutation(() => deps.sendCalendarSmsTest()),
+    updateIntake: updateIntakeProcedure(deps),
     ignore: protectedProcedure.input(appProfileIdSchema).mutation(async ({ input }) => {
       try {
         return await ignoreAppProfile(input.id, {

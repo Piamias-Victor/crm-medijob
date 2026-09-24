@@ -1,21 +1,10 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { makeAppProfileRepository } from './app-profile.repository'
-
-function mockDb() {
-  return {
-    appProfile: {
-      findMany: vi.fn(),
-      count: vi.fn(),
-      findUnique: vi.fn(),
-      upsert: vi.fn(),
-      update: vi.fn(),
-    },
-  }
-}
+import { mockAppProfileDb } from './app-profile.repository.test-deps'
 
 describe('appProfileRepository', () => {
   it('lists only EN_ATTENTE profiles', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.findMany.mockResolvedValue([{ id: 'p1' }])
     const repo = makeAppProfileRepository(db as never)
     await repo.listPending(10)
@@ -25,7 +14,7 @@ describe('appProfileRepository', () => {
   })
 
   it('lists App intake follow-up excluding App-validated and Ignore', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.findMany.mockResolvedValue([{ id: 'p1' }])
     const repo = makeAppProfileRepository(db as never)
     await repo.listIntakeFollowUp()
@@ -38,7 +27,7 @@ describe('appProfileRepository', () => {
   })
 
   it('lists pending without a take cap', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.findMany.mockResolvedValue([])
     const repo = makeAppProfileRepository(db as never)
     await repo.listPending()
@@ -47,7 +36,7 @@ describe('appProfileRepository', () => {
   })
 
   it('marks profile ignored without candidate', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.update.mockResolvedValue({ id: 'p1', status: 'IGNORE' })
     const repo = makeAppProfileRepository(db as never)
     await repo.markStatus('p1', 'IGNORE')
@@ -58,7 +47,7 @@ describe('appProfileRepository', () => {
   })
 
   it('marks App-validated without IGNORE', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.update.mockResolvedValue({ id: 'p1', status: 'APP_VALIDATED' })
     const repo = makeAppProfileRepository(db as never)
     await repo.markStatus('p1', 'APP_VALIDATED', 'c1')
@@ -69,7 +58,7 @@ describe('appProfileRepository', () => {
   })
 
   it('restores a profile to the Profils app inbox', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.update.mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE' })
     const repo = makeAppProfileRepository(db as never)
     await repo.restorePending('p1')
@@ -80,7 +69,7 @@ describe('appProfileRepository', () => {
   })
 
   it('lists convert queue oldest first', async () => {
-    const db = mockDb()
+    const db = mockAppProfileDb()
     db.appProfile.findMany.mockResolvedValue([])
     const repo = makeAppProfileRepository(db as never)
     await repo.listConvertQueue()

@@ -1,25 +1,8 @@
-import type { AppProfileStatus } from '@prisma/client'
 import { appProfileInvitationLabel } from './app-profile-invitation'
+import type { AppProfileListItem } from './app-profile-list.types'
+import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
 
-export type AppProfileListItem = {
-  id: string
-  badakanId: string
-  firstName: string
-  lastName: string
-  email: string | null
-  phone: string | null
-  address: string | null
-  city: string | null
-  postalCode: string | null
-  activityLabel: string | null
-  jobTitleId: string | null
-  jobTitleName: string | null
-  hasResume: boolean
-  status: AppProfileStatus
-  invitationLabel: string
-  syncedAt: Date
-  createdAt: Date
-}
+export type { AppProfileListItem }
 
 export function toAppProfileListItem(row: {
   id: string
@@ -35,6 +18,10 @@ export function toAppProfileListItem(row: {
   jobTitleId: string | null
   hasResume: boolean
   status: AppProfileStatus
+  intakeStatus?: AppIntakeStatus | null
+  callOutcome?: AppCallOutcome | null
+  plannedRdvAt?: Date | null
+  notes?: string | null
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
   syncedAt: Date
@@ -56,6 +43,10 @@ export function toAppProfileListItem(row: {
     jobTitleName: row.jobTitle?.name ?? null,
     hasResume: row.hasResume,
     status: row.status,
+    intakeStatus: row.intakeStatus ?? 'A_APPELER',
+    callOutcome: row.callOutcome ?? null,
+    plannedRdvAt: row.plannedRdvAt ?? null,
+    notes: row.notes ?? null,
     invitationLabel: appProfileInvitationLabel({
       email: row.email,
       inviteEmailSentAt: row.inviteEmailSentAt ?? null,
