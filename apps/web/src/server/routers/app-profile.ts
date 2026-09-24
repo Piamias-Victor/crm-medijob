@@ -7,6 +7,7 @@ import { toCandidateCreateData } from '@/view-models/candidate-profile-map'
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
 import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
 import { updateIntakeProcedure } from './app-profile-intake-update'
+import { mapIntakeFollowUpWithComments } from './app-profile-intake-list-map'
 
 function mapError(error: unknown): never {
   if (error instanceof AppProfileError) {
@@ -26,7 +27,9 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
     }),
     listIntakeFollowUp: protectedProcedure.query(async () => {
       const rows = await deps.listIntakeFollowUp()
-      return rows.map(toAppProfileListItem)
+      return mapIntakeFollowUpWithComments(rows, (id) =>
+        deps.getBadakanClient().getComments(id),
+      )
     }),
     getById: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
       const row = await deps.findById(input.id)

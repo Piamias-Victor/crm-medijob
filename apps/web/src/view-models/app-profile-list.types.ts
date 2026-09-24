@@ -20,6 +20,8 @@ export type AppProfileListItem = {
   plannedRdvAt: Date | null
   notes: string | null
   invitationLabel: string
+  intakeBookingSmsLabel: string
+  badakanCommentsLabel: string
   syncedAt: Date
   createdAt: Date
 }
