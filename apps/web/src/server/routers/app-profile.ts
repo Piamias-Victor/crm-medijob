@@ -23,6 +23,10 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
       const rows = await deps.listPending()
       return rows.map(toAppProfileListItem)
     }),
+    listIntakeFollowUp: protectedProcedure.query(async () => {
+      const rows = await deps.listIntakeFollowUp()
+      return rows.map(toAppProfileListItem)
+    }),
     getById: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
       const row = await deps.findById(input.id)
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })

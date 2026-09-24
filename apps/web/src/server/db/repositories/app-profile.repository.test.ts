@@ -24,6 +24,19 @@ describe('appProfileRepository', () => {
     )
   })
 
+  it('lists App intake follow-up excluding App-validated and Ignore', async () => {
+    const db = mockDb()
+    db.appProfile.findMany.mockResolvedValue([{ id: 'p1' }])
+    const repo = makeAppProfileRepository(db as never)
+    await repo.listIntakeFollowUp()
+    expect(db.appProfile.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+        orderBy: { createdAt: 'desc' },
+      }),
+    )
+  })
+
   it('lists pending without a take cap', async () => {
     const db = mockDb()
     db.appProfile.findMany.mockResolvedValue([])
