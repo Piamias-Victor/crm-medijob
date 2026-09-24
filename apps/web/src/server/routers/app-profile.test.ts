@@ -1,39 +1,14 @@
 // @vitest-environment node
 import { describe, it, expect, vi } from 'vitest'
-import { createCallerFactory } from '@/server/trpc'
-import { makeAppProfileRouter } from './app-profile'
-import type { AppProfileDeps } from './app-profile.deps'
 import { stubBadakanClient } from './app-profile.test-client'
-
-const session = { user: { id: 'u1', role: 'RECRUTEUR' as const }, expires: '2999-01-01' }
-
-function makeDeps(overrides: Partial<AppProfileDeps> = {}): AppProfileDeps {
-  return {
-    listPending: vi.fn().mockResolvedValue([]),
-    listIntakeFollowUp: vi.fn().mockResolvedValue([]),
-    countPending: vi.fn().mockResolvedValue(0),
-    findById: vi.fn().mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE', badakanId: 'bk1' }),
-    findByBadakanIds: vi.fn().mockResolvedValue([]),
-    upsertPending: vi.fn(),
-    markStatus: vi.fn(),
-    createProfile: vi.fn().mockResolvedValue({ id: 'c1' }),
-    findJobTitleIdByName: vi.fn().mockResolvedValue(null),
-    getBadakanClient: () => stubBadakanClient(),
-    importCvUrl: vi.fn().mockResolvedValue(null),
-    runTestProcess: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
-    sendCalendarSmsTest: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
-    ...overrides,
-  }
-}
-
-function caller(deps: AppProfileDeps) {
-  return createCallerFactory(makeAppProfileRouter(deps))({ session })
-}
+import { appProfileCaller, makeAppProfileTestDeps } from './app-profile.test-deps'
 
 describe('appProfileRouter', () => {
   it('runs the test process against the Badakan id of the profile', async () => {
     const runTestProcess = vi.fn().mockResolvedValue({ ok: false, reason: 'recipient_missing' })
-    const result = await caller(makeDeps({ runTestProcess })).testProcess({ id: 'p1' })
+    const result = await appProfileCaller(
+      makeAppProfileTestDeps({ runTestProcess }),
+    ).testProcess({ id: 'p1' })
     expect(runTestProcess).toHaveBeenCalledWith('bk1')
     expect(result).toEqual({ ok: false, reason: 'recipient_missing' })
   })
@@ -43,14 +18,16 @@ describe('appProfileRouter', () => {
       ok: true,
       sentTo: '33624174724',
     })
-    const result = await caller(makeDeps({ sendCalendarSmsTest })).testCalendarSms()
+    const result = await appProfileCaller(
+      makeAppProfileTestDeps({ sendCalendarSmsTest }),
+    ).testCalendarSms()
     expect(sendCalendarSmsTest).toHaveBeenCalled()
     expect(result).toEqual({ ok: true, sentTo: '33624174724' })
   })
 
   it('ignores a pending profile', async () => {
     const markStatus = vi.fn()
-    await caller(makeDeps({ markStatus })).ignore({ id: 'p1' })
+    await appProfileCaller(makeAppProfileTestDeps({ markStatus })).ignore({ id: 'p1' })
     expect(markStatus).toHaveBeenCalledWith('p1', 'IGNORE')
   })
 
@@ -63,8 +40,8 @@ describe('appProfileRouter', () => {
         date: new Date('2026-03-12T14:32:00.000Z'),
       },
     ])
-    const rows = await caller(
-      makeDeps({
+    const rows = await appProfileCaller(
+      makeAppProfileTestDeps({
         findById: vi.fn().mockResolvedValue({
           id: 'p1',
           status: 'EN_ATTENTE',
@@ -81,8 +58,8 @@ describe('appProfileRouter', () => {
   })
 
   it('returns empty comments when Badakan read fails', async () => {
-    const rows = await caller(
-      makeDeps({
+    const rows = await appProfileCaller(
+      makeAppProfileTestDeps({
         getBadakanClient: () =>
           stubBadakanClient({
             getComments: vi.fn().mockRejectedValue(new Error('missing env')),
@@ -90,39 +67,5 @@ describe('appProfileRouter', () => {
       }),
     ).listComments({ id: 'p1' })
     expect(rows).toEqual([])
-  })
-
-  it('lists App intake follow-up excluding App-validated and Ignore', async () => {
-    const listIntakeFollowUp = vi.fn().mockResolvedValue([
-      {
-        id: 'p1',
-        badakanId: 'bk1',
-        firstName: 'Ada',
-        lastName: 'Lovelace',
-        email: 'ada@example.com',
-        phone: '0600000000',
-        address: null,
-        city: 'Paris',
-        postalCode: '75001',
-        activityLabel: 'Pharmacien',
-        jobTitleId: null,
-        hasResume: false,
-        status: 'EN_ATTENTE',
-        syncedAt: new Date('2026-03-12T10:00:00.000Z'),
-        createdAt: new Date('2026-03-10T08:00:00.000Z'),
-        jobTitle: null,
-      },
-    ])
-    const rows = await caller(makeDeps({ listIntakeFollowUp })).listIntakeFollowUp()
-    expect(listIntakeFollowUp).toHaveBeenCalled()
-    expect(rows[0]).toMatchObject({
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      phone: '0600000000',
-      email: 'ada@example.com',
-      city: 'Paris',
-      postalCode: '75001',
-      createdAt: new Date('2026-03-10T08:00:00.000Z'),
-    })
   })
 })
