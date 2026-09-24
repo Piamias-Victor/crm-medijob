@@ -18,7 +18,6 @@ import type { CandidatsPageProps } from '@/view-models/candidats-page.props'
 export function CandidatsPage({
   list,
   inbox,
-  appProfiles,
   serverFilters,
   filterConfig,
   initialTab = 'cvtheque',
@@ -37,9 +36,8 @@ export function CandidatsPage({
   )
 
   const description = useMemo(
-    () =>
-      `${cvthequeCount} CVthèque · ${inbox.length} candidature(s) · ${appProfiles.length} profil(s) app`,
-    [cvthequeCount, inbox.length, appProfiles.length],
+    () => `${cvthequeCount} CVthèque · ${inbox.length} candidature(s)`,
+    [cvthequeCount, inbox.length],
   )
 
   return (
@@ -47,14 +45,7 @@ export function CandidatsPage({
       icon={<Users className="size-5" />}
       title="Candidats"
       description={description}
-      nav={
-        <CandidatTabs
-          active={tab}
-          onChange={onTabChange}
-          inboxCount={inbox.length}
-          appProfileCount={appProfiles.length}
-        />
-      }
+      nav={<CandidatTabs active={tab} onChange={onTabChange} inboxCount={inbox.length} />}
       actions={
         <div className="flex flex-wrap items-center gap-2">
           <Link
@@ -82,7 +73,6 @@ export function CandidatsPage({
             tab={tab}
             list={list}
             inbox={inbox}
-            appProfiles={appProfiles}
             serverFilters={serverFilters}
             filterConfig={filterConfig}
             onCountChange={setCvthequeCount}

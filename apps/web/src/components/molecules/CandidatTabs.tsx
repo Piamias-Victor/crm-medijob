@@ -1,34 +1,29 @@
 'use client'
 
-import { Inbox, List, Smartphone } from 'lucide-react'
+import { Inbox, List } from 'lucide-react'
 import { PillTabs } from '@/components/molecules/PillTabs'
-import type { CandidatsTab } from '@/view-models/candidats-tab'
+import { CANDIDAT_TAB_ITEMS, type CandidatsTab } from '@/view-models/candidats-tab'
 
 export type { CandidatsTab }
 
-const tabs = [
-  { id: 'cvtheque' as const, label: 'CVthèque', icon: List },
-  { id: 'inbox' as const, label: 'Candidatures reçues', icon: Inbox },
-  { id: 'app-profiles' as const, label: 'Profils app', icon: Smartphone },
-]
+const icons = { cvtheque: List, inbox: Inbox } as const
 
 type Props = {
   active: CandidatsTab
   onChange: (tab: CandidatsTab) => void
   inboxCount: number
-  appProfileCount: number
 }
 
-export function CandidatTabs({ active, onChange, inboxCount, appProfileCount }: Props) {
+export function CandidatTabs({ active, onChange, inboxCount }: Props) {
   return (
     <PillTabs
       aria-label="Sections candidats"
       active={active}
       onChange={(id) => onChange(id as CandidatsTab)}
-      items={tabs.map((tab) => ({
+      items={CANDIDAT_TAB_ITEMS.map((tab) => ({
         ...tab,
-        badge:
-          tab.id === 'inbox' ? inboxCount : tab.id === 'app-profiles' ? appProfileCount : undefined,
+        icon: icons[tab.id],
+        badge: tab.id === 'inbox' ? inboxCount : undefined,
       }))}
     />
   )
