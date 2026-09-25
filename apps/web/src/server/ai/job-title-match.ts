@@ -1,5 +1,7 @@
 export type JobTitleOption = { id: string; name: string }
 
+const STOP_WORDS = new Set(['en', 'de', 'du', 'des', 'la', 'le', 'les', 'et', 'a', 'au', 'aux'])
+
 function normalize(value: string) {
   return value
     .normalize('NFD')
@@ -9,11 +11,24 @@ function normalize(value: string) {
 }
 
 function tokenize(value: string) {
-  return normalize(value).split(/\s+/).filter(Boolean)
+  return normalize(value)
+    .split(/[^a-z0-9]+/)
+    .filter((word) => word.length > 0 && !STOP_WORDS.has(word))
 }
 
 function toRoleStem(word: string) {
-  return word.replace(/trice$/, 'teur').replace(/rice$/, 'r')
+  return word
+    .replace(/trice$/, 'teur')
+    .replace(/rice$/, 'r')
+    .replace(/ere$/, 'er')
+    .replace(/euse$/, 'eur')
+}
+
+function wordsOverlap(a: string, b: string) {
+  if (a === b) return true
+  const stemA = toRoleStem(a)
+  const stemB = toRoleStem(b)
+  return stemA === b || a === stemB || stemA === stemB
 }
 
 function scoreMatch(needle: string, haystack: string) {
@@ -22,19 +37,12 @@ function scoreMatch(needle: string, haystack: string) {
 
   const needleWords = tokenize(needle)
   const hayWords = tokenize(haystack)
-  const exactHits = needleWords.filter((word) => hayWords.includes(word)).length
-  if (exactHits > 0) {
-    const coversOption = hayWords.every((word) => needleWords.includes(word))
-    return exactHits * 25 + (coversOption ? 30 : 0)
-  }
-
-  const stemHits = needleWords.filter((word) =>
-    hayWords.some((hayWord) => {
-      const stem = toRoleStem(word)
-      return stem === hayWord || word === toRoleStem(hayWord) || stem === toRoleStem(hayWord)
-    }),
-  ).length
-  return stemHits > 0 ? stemHits * 35 : 0
+  const hits = needleWords.filter((word) => hayWords.some((hayWord) => wordsOverlap(word, hayWord)))
+  if (hits.length === 0) return 0
+  const coversOption = hayWords.every((word) =>
+    needleWords.some((needleWord) => wordsOverlap(needleWord, word)),
+  )
+  return hits.length * 25 + (coversOption ? 30 : 0)
 }
 
 export function matchJobTitles(extracted: string, options: JobTitleOption[], limit = 5) {
@@ -42,7 +50,7 @@ export function matchJobTitles(extracted: string, options: JobTitleOption[], lim
   if (!needle) return []
   return options
     .map((option) => ({ ...option, score: scoreMatch(needle, normalize(option.name)) }))
-    .filter((option) => option.score > 0)
+    .filter((option) => option.score > 0 && normalize(option.name) !== 'autre')
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
 }

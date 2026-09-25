@@ -5,6 +5,7 @@ export type CvExtractionFileInput = {
   filename: string
   mimeType: string
   dataBase64: string
+  jobTitles?: string[]
 }
 
 export interface CvExtractionProvider {

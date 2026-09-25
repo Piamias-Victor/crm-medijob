@@ -28,4 +28,14 @@ describe('matchJobTitles', () => {
   it('returns empty list for blank input', () => {
     expect(matchJobTitles('   ', titles)).toEqual([])
   })
+
+  it('maps conseillère para-pharmacie to conseiller parapharmacie', () => {
+    const titlesWithPara = [
+      { id: 'jt-autre', name: 'Autre' },
+      { id: 'jt-para', name: 'Conseiller parapharmacie' },
+      { id: 'jt-etudiant', name: 'Étudiant en pharmacie' },
+    ]
+    const matches = matchJobTitles('Conseillère para-pharmacie', titlesWithPara)
+    expect(matches[0]?.id).toBe('jt-para')
+  })
 })

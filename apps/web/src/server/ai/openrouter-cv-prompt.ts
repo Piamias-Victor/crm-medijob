@@ -26,6 +26,9 @@ export function buildCvOpenRouterMessages(
   return [{ role: 'user', content: [{ type: 'text', text: prompt }, filePart] }]
 }
 
-export function buildCvExtractionPromptForFile(filename: string) {
-  return buildCvExtractionPrompt(filename)
+export function buildCvExtractionPromptForFile(
+  filename: string,
+  jobTitles?: string[],
+) {
+  return buildCvExtractionPrompt(filename, { jobTitles })
 }
