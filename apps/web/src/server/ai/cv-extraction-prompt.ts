@@ -15,8 +15,22 @@ const CV_JSON_SHAPE = `{
   "rawText"?: string (texte brut lu dans le CV)
 }`
 
-export function buildCvExtractionPrompt(filename: string) {
-  return [
+export type CvExtractionPromptOptions = {
+  jobTitles?: string[]
+}
+
+function referentialJobTitles(jobTitles: string[] | undefined) {
+  return (jobTitles ?? [])
+    .map((name) => name.trim())
+    .filter((name) => name.length > 0 && name.toLowerCase() !== 'autre')
+}
+
+export function buildCvExtractionPrompt(
+  filename: string,
+  options: CvExtractionPromptOptions = {},
+) {
+  const titles = referentialJobTitles(options.jobTitles)
+  const lines = [
     'Tu es un assistant de recrutement médical pour le CRM MediJob.',
     'Analyse le CV joint (PDF ou image) et extrais un maximum de champs.',
     `Réponds STRICTEMENT en JSON valide : ${CV_JSON_SHAPE}.`,
@@ -24,9 +38,13 @@ export function buildCvExtractionPrompt(filename: string) {
     '- Parcours en-tête, pied de page et encadrés contact.',
     '- Renseigne email, téléphone, adresse, ville, code postal dès qu’ils sont visibles.',
     '- Formats FR : téléphone 0X XX XX XX XX ou +33X, code postal 5 chiffres.',
-    '- jobTitle = intitulé de poste EXACT lu dans le CV (Préparatrice, Préparateur, Pharmacien, etc.).',
+    '- jobTitle = libellé EXACT du référentiel métiers (plus proche du poste lu).',
+    '- Variantes = même métier (para-pharmacie / para pharmacie / para - pharmacie / parapharmacie ; Conseillère = Conseiller).',
     '- jobTitle : ne pas généraliser ni surclasser (Préparatrice/Préparateur ≠ Pharmacien).',
-    '- Logiciels (Winpharma, Crystal, etc.), contrats préférés.',
+    ...(titles.length > 0 ? [`- Référentiel métiers : ${titles.join(' | ')}.`] : []),
+    '- Logiciels (Winpharma, Crystal, etc.).',
+    '- preferredContractTypes : uniquement préférences de contrat explicites dans le CV.',
+    '- preferredContractTypes : jamais les CDI/CDD/intérim des expériences passées. Omettre si absent.',
     '- profileSummary = notes internes factuelles pour le recruteur (2-4 phrases max).',
     '- profileSummary : uniquement faits vérifiables dans le CV (diplômes, postes, durées, logiciels).',
     '- profileSummary : interdit compliments, jugements ("motivé", "passionné"), supposition ou invention.',
@@ -36,5 +54,6 @@ export function buildCvExtractionPrompt(filename: string) {
     'N’ajoute aucun texte hors JSON.',
     '',
     `Fichier : ${filename}`,
-  ].join('\n')
+  ]
+  return lines.join('\n')
 }

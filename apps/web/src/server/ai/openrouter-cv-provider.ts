@@ -14,7 +14,7 @@ type OpenRouterResponse = {
 export function createOpenRouterCvProvider(apiKey: string, model: string): CvExtractionProvider {
   return {
     async extract(file: CvExtractionFileInput) {
-      const prompt = buildCvExtractionPromptForFile(file.filename)
+      const prompt = buildCvExtractionPromptForFile(file.filename, file.jobTitles)
       const res = await fetch(ENDPOINT, {
         method: 'POST',
         headers: {
