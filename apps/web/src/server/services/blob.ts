@@ -5,23 +5,25 @@ export const BLOB_ACCESS = 'private' as const
 const VERCEL_BLOB_HOST_SUFFIX = '.blob.vercel-storage.com'
 const MEMORY_BLOB_HOST = 'memory.blob.local'
 
-function envTrim(...keys: string[]) {
-  for (const key of keys) {
-    const value = process.env[key]?.trim()
-    if (value) return value
-  }
-  return null
-}
-
+/** Static process.env.NEXT_PUBLIC_* reads — Next inlines only these, not process.env[key]. */
 function s3DocumentsHost(): string | null {
-  const bucket = envTrim('S3_DOCUMENTS_BUCKET', 'NEXT_PUBLIC_S3_DOCUMENTS_BUCKET')
-  const region = envTrim('S3_DOCUMENTS_REGION', 'NEXT_PUBLIC_S3_DOCUMENTS_REGION') || 'eu-west-3'
+  const bucket =
+    process.env.S3_DOCUMENTS_BUCKET?.trim() ||
+    process.env.NEXT_PUBLIC_S3_DOCUMENTS_BUCKET?.trim() ||
+    null
+  const region =
+    process.env.S3_DOCUMENTS_REGION?.trim() ||
+    process.env.NEXT_PUBLIC_S3_DOCUMENTS_REGION?.trim() ||
+    'eu-west-3'
   if (!bucket) return null
   return `${bucket}.s3.${region}.amazonaws.com`
 }
 
 function blobUrlAllowlist(): string[] {
-  const raw = envTrim('BLOB_URL_ALLOWLIST', 'NEXT_PUBLIC_BLOB_URL_ALLOWLIST')
+  const raw =
+    process.env.BLOB_URL_ALLOWLIST?.trim() ||
+    process.env.NEXT_PUBLIC_BLOB_URL_ALLOWLIST?.trim() ||
+    null
   if (!raw) return []
   return raw.split(',').map((entry) => entry.trim()).filter(Boolean)
 }
