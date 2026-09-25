@@ -20,7 +20,12 @@ export type CandidateCvDeps = {
   findProfileById: (id: string) => Promise<ProfileRecord | null>
   uploadCvBlob: (input: BlobInput) => Promise<{ url: string }>
   deleteCvBlob: (url: string) => Promise<void>
-  runCvExtraction: (file: { filename: string; mimeType: string; dataBase64: string }) => Promise<CvExtraction>
+  runCvExtraction: (file: {
+    filename: string
+    mimeType: string
+    dataBase64: string
+    jobTitles?: string[]
+  }) => Promise<CvExtraction>
   listJobTitles: () => Promise<JobTitleOption[]>
   confirmCvExtraction: (id: string, data: CandidateProfileUpdate & { cvUrl: string }) => Promise<unknown>
 }
@@ -37,13 +42,15 @@ async function uploadAndExtractCv(
   })
 
   try {
+    const jobTitles = await deps.listJobTitles()
     const extraction = await deps.runCvExtraction({
       filename: input.filename,
       mimeType: input.mimeType,
       dataBase64: input.dataBase64,
+      jobTitles: jobTitles.map((title) => title.name),
     })
     const suggestedJobTitles = extraction.jobTitle
-      ? matchJobTitles(extraction.jobTitle, await deps.listJobTitles())
+      ? matchJobTitles(extraction.jobTitle, jobTitles)
       : []
     return { cvUrl: blob.url, extraction, suggestedJobTitles }
   } catch (error) {

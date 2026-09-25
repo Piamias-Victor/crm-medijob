@@ -1,6 +1,13 @@
 import type { CandidateCreateInput } from '@/view-models/candidate-profile.schema'
 import { CREATE_DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 
+export function pickDefaultJobTitleId(
+  jobTitles: readonly { id: string; name: string }[],
+): string | undefined {
+  const preferred = jobTitles.find((job) => job.name.trim().toLowerCase() !== 'autre')
+  return preferred?.id ?? jobTitles[0]?.id
+}
+
 export function buildCandidateCreateDefaults(
   referentId: string | null,
   jobTitleId: string,

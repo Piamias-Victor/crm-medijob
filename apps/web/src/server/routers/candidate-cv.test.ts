@@ -30,6 +30,7 @@ describe('candidateRouter CV extraction', () => {
       filename: 'cv.pdf',
       mimeType: 'application/pdf',
       dataBase64: pdfBase64,
+      jobTitles: ['Pharmacien'],
     })
     expect(deps.confirmCvExtraction).not.toHaveBeenCalled()
     expect(result).toMatchObject({
