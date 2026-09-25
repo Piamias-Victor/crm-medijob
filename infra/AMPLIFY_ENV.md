@@ -8,6 +8,8 @@ NEXTAUTH_SECRET       # = AUTH_SECRET
 NEXTAUTH_URL          # https://<branch>.<app>.amplifyapp.com  (après 1er deploy)
 S3_DOCUMENTS_BUCKET   # déjà posé par Terraform (vérifier)
 S3_DOCUMENTS_REGION   # eu-west-3 (déjà posé)
+NEXT_PUBLIC_S3_DOCUMENTS_BUCKET  # = S3_DOCUMENTS_BUCKET (allowlist client ; rebuild requis)
+NEXT_PUBLIC_S3_DOCUMENTS_REGION  # = S3_DOCUMENTS_REGION
 CRON_ENABLED=false    # déjà posé — NE PAS passer à true
 
 ## OK métier (pas d’envoi auto si CRON off)
