@@ -9,6 +9,8 @@ NEXTAUTH_SECRET           # = AUTH_SECRET
 NEXTAUTH_URL              # https://<projet>.vercel.app (ou domaine custom)
 S3_DOCUMENTS_BUCKET       # `tofu -chdir=infra output -raw documents_bucket`
 S3_DOCUMENTS_REGION       # eu-west-3
+NEXT_PUBLIC_S3_DOCUMENTS_BUCKET  # = S3_DOCUMENTS_BUCKET (allowlist client ; rebuild requis)
+NEXT_PUBLIC_S3_DOCUMENTS_REGION  # = S3_DOCUMENTS_REGION
 AWS_ACCESS_KEY_ID         # `tofu -chdir=infra output -raw vercel_aws_access_key_id`
 AWS_SECRET_ACCESS_KEY     # `tofu -chdir=infra output -raw vercel_aws_secret_access_key`
 CRON_ENABLED=false        # go-live sans mail/SMS
@@ -25,6 +27,8 @@ AUTH_DEV_AUTO_LOGIN
 BLOB_READ_WRITE_TOKEN     # inutile si S3_DOCUMENTS_BUCKET set
 
 ## Check
-1. Deploy Vercel Production
-2. Ouvrir `/login` → admin Victor
-3. Upload doc candidat → objet dans le bucket S3
+1. Poser `NEXT_PUBLIC_S3_DOCUMENTS_*` (= S3_*) puis **redeploy** (inliné au build)
+2. Deploy Vercel Production
+3. Ouvrir `/login` → admin Victor
+4. Upload doc candidat → objet dans le bucket S3
+5. Créer via CV → reste sur `/candidats/new?source=cv` (pas de bounce liste)
