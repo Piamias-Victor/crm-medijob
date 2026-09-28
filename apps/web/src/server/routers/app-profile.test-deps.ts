@@ -22,6 +22,8 @@ export function makeAppProfileTestDeps(
     getBadakanClient: () => stubBadakanClient(),
     runTestProcess: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
     sendCalendarSmsTest: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
+    logActivity: vi.fn(),
+    updateCandidateReferent: vi.fn(),
     ...overrides,
   }
 }

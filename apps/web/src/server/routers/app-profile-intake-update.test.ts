@@ -2,35 +2,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { appProfileCaller, makeAppProfileTestDeps } from './app-profile.test-deps'
 import { defaultRelanceAfterCall } from '@/view-models/app-profile-relance'
-
-const intakeRow = {
-  id: 'p1',
-  badakanId: 'bk1',
-  firstName: 'Ada',
-  lastName: 'Lovelace',
-  email: null,
-  phone: null,
-  address: null,
-  city: null,
-  postalCode: null,
-  activityLabel: null,
-  jobTitleId: null,
-  hasResume: false,
-  status: 'EN_ATTENTE' as const,
-  intakeStatus: 'A_RELANCER' as const,
-  callOutcome: 'MESSAGERIE' as const,
-  plannedRdvAt: null,
-  notes: 'rappel',
-  referentId: null,
-  relanceAt: new Date('2026-03-12T12:00:00.000Z'),
-  lastCalledAt: new Date('2026-03-10T15:00:00.000Z'),
-  lastCalledById: 'u1',
-  syncedAt: new Date('2026-03-12T10:00:00.000Z'),
-  createdAt: new Date('2026-03-10T08:00:00.000Z'),
-  jobTitle: null,
-  referent: null,
-  lastCalledBy: { id: 'u1', name: 'Alice' },
-}
+import { intakeRow } from './app-profile-intake-update.fixtures'
 
 describe('appProfileRouter updateIntake', () => {
   it('stamps last-call and bumps relance when Call outcome changes', async () => {

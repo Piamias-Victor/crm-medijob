@@ -27,6 +27,9 @@ describe('makeCandidateRepository listForKanban', () => {
         where: {
           AND: [
             { deletedAt: null },
+            expect.objectContaining({
+              NOT: expect.objectContaining({ appProfiles: expect.anything() }),
+            }),
             {
               AND: [
                 { jobTitleId: { in: ['jt1'] } },

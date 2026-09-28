@@ -25,6 +25,7 @@ export type AppProfileListItem = {
   isRelanceOverdue: boolean
   lastCalledAt: Date | null
   lastCalledByName: string | null
+  candidateId: string | null
   invitationLabel: string
   intakeBookingSmsLabel: string
   badakanCommentsLabel: string

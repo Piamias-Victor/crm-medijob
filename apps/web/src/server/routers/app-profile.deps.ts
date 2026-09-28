@@ -1,10 +1,13 @@
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
+import { activityLogRepository } from '@/server/db/repositories/activity-log.repository'
+import { prisma } from '@/server/db/repositories/client'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
 import { runAppValidatedTest, type TestOneReport } from '@/server/app-profile/test-one'
 import { defaultTestOneDeps } from '@/server/app-profile/test-one.deps'
 import { runHireflixCalendarSmsTest } from '@/server/app-profile/hireflix-calendar-sms-test-run'
 import type { CalendarSmsTestResult } from '@/server/app-profile/hireflix-calendar-sms-test'
+import type { MirrorIntakeDeps } from '@/server/app-profile/mirror-intake-to-candidate'
 
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
@@ -19,6 +22,8 @@ export type AppProfileDeps = {
   getBadakanClient: () => BadakanClient
   runTestProcess: (badakanId: string) => Promise<TestOneReport>
   sendCalendarSmsTest: () => Promise<CalendarSmsTestResult>
+  logActivity: MirrorIntakeDeps['logActivity']
+  updateCandidateReferent: MirrorIntakeDeps['updateCandidateReferent']
 }
 
 export const defaultAppProfileDeps: AppProfileDeps = {
@@ -34,4 +39,7 @@ export const defaultAppProfileDeps: AppProfileDeps = {
   getBadakanClient: () => badakanClientFromEnv(),
   runTestProcess: (badakanId) => runAppValidatedTest(badakanId, defaultTestOneDeps()),
   sendCalendarSmsTest: () => runHireflixCalendarSmsTest(),
+  logActivity: (input) => activityLogRepository.create(input),
+  updateCandidateReferent: (id, referentId) =>
+    prisma.candidate.update({ where: { id }, data: { referentId } }),
 }

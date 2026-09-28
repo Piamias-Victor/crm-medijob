@@ -28,6 +28,7 @@ type Row = {
   referentId?: string | null
   relanceAt?: Date | null
   lastCalledAt?: Date | null
+  candidateId?: string | null
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
   calendarSmsSentAt?: Date | null
@@ -66,6 +67,7 @@ export function toAppProfileListItem(row: Row, now: Date = new Date()): AppProfi
     isRelanceOverdue: isRelanceOverdue(relanceAt, now),
     lastCalledAt: row.lastCalledAt ?? null,
     lastCalledByName: row.lastCalledBy?.name ?? null,
+    candidateId: row.candidateId ?? null,
     invitationLabel: appProfileInvitationLabel({
       email: row.email,
       inviteEmailSentAt: row.inviteEmailSentAt ?? null,

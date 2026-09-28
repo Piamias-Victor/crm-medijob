@@ -15,4 +15,23 @@ describe('buildCandidateListQuery', () => {
     await buildCandidateListQuery(db, {}, candidateCvthequeSelect, 500)
     expect(findMany).toHaveBeenLastCalledWith(expect.objectContaining({ take: 500 }))
   })
+
+  it('soft-hides Entrées app archive exits from CVthèque', async () => {
+    const findMany = vi.fn().mockResolvedValue([])
+    const db = { candidate: { findMany } } as never
+    await buildCandidateListQuery(db, {}, candidateCvthequeSelect)
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          AND: expect.arrayContaining([
+            expect.objectContaining({
+              NOT: expect.objectContaining({
+                appProfiles: expect.anything(),
+              }),
+            }),
+          ]),
+        }),
+      }),
+    )
+  })
 })
