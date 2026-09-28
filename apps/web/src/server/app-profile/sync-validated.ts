@@ -27,7 +27,7 @@ export async function syncAppValidated(
         await deps.markBadakanValidated(existing.id)
       }
       await patchIdentityFromRow(row, existing.id, deps, existing)
-      await attachAppProfile(row.badakanId, existing.id, deps)
+      await attachAppProfile(row.badakanId, existing.id, deps, row.isValid)
       result.skipped += 1
       continue
     }
@@ -46,6 +46,10 @@ async function convertNewRow(
   deps: SyncValidatedDeps,
   result: SyncValidatedResult,
 ) {
+  if (!row.isValid) {
+    result.skipped += 1
+    return false
+  }
   const match = await deps.findMatch({
     email: row.email,
     phone: row.phone,
@@ -56,7 +60,7 @@ async function convertNewRow(
     await deps.linkAppOrigin(match.id, row.badakanId)
     if (row.isValid) await deps.markBadakanValidated(match.id)
     await patchIdentityFromRow(row, match.id, deps, match)
-    await attachAppProfile(row.badakanId, match.id, deps)
+    await attachAppProfile(row.badakanId, match.id, deps, row.isValid)
     await deps.syncDossier(match.id, row.badakanId)
     result.linked += 1
     return true
@@ -83,7 +87,7 @@ async function convertNewRow(
     status: 'NOUVEAU',
     badakanId: row.badakanId,
   })
-  await attachAppProfile(row.badakanId, created.id, deps)
+  await attachAppProfile(row.badakanId, created.id, deps, row.isValid)
   if (row.isValid) await deps.markBadakanValidated(created.id)
   await deps.syncDossier(created.id, row.badakanId)
   result.created += 1
