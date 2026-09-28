@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { AppIntakeIgnoreCell } from '@/components/molecules/AppIntakeIgnoreCell'
+import { AppIntakeExitCell } from '@/components/molecules/AppIntakeExitCell'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Props = { row: AppProfileListItem }
@@ -17,7 +17,7 @@ export function AppIntakeActionsCell({ row }: Props) {
           Fiche
         </Link>
       ) : null}
-      <AppIntakeIgnoreCell row={row} />
+      <AppIntakeExitCell row={row} />
     </div>
   )
 }

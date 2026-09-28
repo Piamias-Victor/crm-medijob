@@ -43,6 +43,15 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
     linkCandidate: (id: string, candidateId: string) =>
       db.appProfile.update({ where: { id }, data: { candidateId } }),
     upsertPending: (data: AppProfileUpsertInput) => upsertPendingAppProfile(db, data),
+    muteOutbound: (id: string) =>
+      db.appProfile.update({
+        where: { id },
+        data: {
+          inviteEmailSentAt: new Date(),
+          calendarSmsSentAt: new Date(),
+          inviteLastError: 'syncro_import_muted',
+        },
+      }),
     updateIntake: (id: string, data: AppProfileIntakeUpdate) =>
       db.appProfile.update({
         where: { id },

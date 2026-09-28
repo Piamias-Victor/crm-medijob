@@ -31,6 +31,7 @@ function row(overrides: Partial<AppProfileListItem> = {}): AppProfileListItem {
     lastCalledAt: null,
     lastCalledByName: null,
     candidateId: null,
+    candidateStatus: null,
     invitationLabel: '',
     intakeBookingSmsLabel: 'Envoyé',
     badakanCommentsLabel: 'lgpi winpharma',

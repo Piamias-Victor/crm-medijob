@@ -4,6 +4,7 @@ export const appProfileJobTitleInclude = {
   jobTitle: { select: { id: true, name: true } },
   referent: { select: { id: true, name: true } },
   lastCalledBy: { select: { id: true, name: true } },
+  candidate: { select: { status: true } },
 } as const
 
 export type AppProfileUpsertInput = {
@@ -20,6 +21,8 @@ export type AppProfileUpsertInput = {
   hasResume?: boolean
   snapshot?: Prisma.InputJsonValue
   relanceAt?: Date
+  /** Syncro one-shot: stamp invite/SMS so cron never mails/SMS this row. */
+  muteOutbound?: boolean
 }
 
 export type AppProfileIntakeUpdate = {

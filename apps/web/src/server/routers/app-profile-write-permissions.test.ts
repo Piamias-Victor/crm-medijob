@@ -41,4 +41,9 @@ describe('appProfile write permissions', () => {
     await caller(makeAppProfileTestDeps({ markStatus })).ignore({ id: 'p1' })
     expect(markStatus).toHaveBeenCalledWith('p1', 'IGNORE')
   })
+
+  it('rejects qualify without crm.write', async () => {
+    vi.spyOn(permissions, 'can').mockReturnValue(false)
+    await expect(caller().qualify({ id: 'p1' })).rejects.toMatchObject({ code: 'FORBIDDEN' })
+  })
 })

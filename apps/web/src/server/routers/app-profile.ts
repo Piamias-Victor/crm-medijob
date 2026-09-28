@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import { ignoreAppProfile, AppProfileError } from '@/server/app-profile/accept'
+import { qualifyAppProfile } from '@/server/app-profile/qualify'
 import { toAppProfileListItem } from '@/view-models/app-profile-list'
 import { appProfileAcceptSchema, appProfileIdSchema } from '@/view-models/app-profile-accept.schema'
 import { listIntakeFollowUpSchema } from '@/view-models/app-profile-intake-list.schema'
@@ -63,6 +64,19 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
           return await ignoreAppProfile(input.id, {
             findById: deps.findById,
             markStatus: deps.markStatus,
+            setCandidateInactive: deps.setCandidateInactive,
+          })
+        } catch (error) {
+          mapError(error)
+        }
+      }),
+    qualify: permissionProcedure('crm.write')
+      .input(appProfileIdSchema)
+      .mutation(async ({ input }) => {
+        try {
+          return await qualifyAppProfile(input.id, {
+            findById: deps.findById,
+            setCandidateQualifie: deps.setCandidateQualifie,
           })
         } catch (error) {
           mapError(error)

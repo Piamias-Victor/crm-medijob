@@ -36,6 +36,7 @@ export type SyncroImportDeps = {
   }) => Promise<{ id: string }>
   linkCandidate: (profileId: string, candidateId: string) => Promise<unknown>
   findCandidateByBadakanId: (badakanId: string) => Promise<{ id: string } | null>
+  muteOutbound: (profileId: string) => Promise<unknown>
 }
 
 export type SyncroImportResult = {

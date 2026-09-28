@@ -27,8 +27,21 @@ describe('appProfileRouter', () => {
 
   it('ignores a pending profile', async () => {
     const markStatus = vi.fn()
-    await appProfileCaller(makeAppProfileTestDeps({ markStatus })).ignore({ id: 'p1' })
+    const setCandidateInactive = vi.fn()
+    await appProfileCaller(
+      makeAppProfileTestDeps({ markStatus, setCandidateInactive }),
+    ).ignore({ id: 'p1' })
     expect(markStatus).toHaveBeenCalledWith('p1', 'IGNORE')
+    expect(setCandidateInactive).toHaveBeenCalledWith('c1', 'NOUVEAU')
+  })
+
+  it('qualifies linked candidate', async () => {
+    const setCandidateQualifie = vi.fn()
+    const result = await appProfileCaller(
+      makeAppProfileTestDeps({ setCandidateQualifie }),
+    ).qualify({ id: 'p1' })
+    expect(setCandidateQualifie).toHaveBeenCalledWith('c1')
+    expect(result).toMatchObject({ candidateStatus: 'QUALIFIE' })
   })
 
   it('hard-fails accept — ACCEPTE retired', async () => {
