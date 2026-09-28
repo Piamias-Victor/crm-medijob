@@ -3,7 +3,7 @@ import { appProfileInvitationLabel } from './app-profile-invitation'
 import { intakeBookingSmsLabel } from './app-profile-intake-booking-sms'
 import { isRelanceOverdue } from './app-profile-relance'
 import type { AppProfileListItem } from './app-profile-list.types'
-import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
+import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus, CandidateStatus } from '@prisma/client'
 
 export type { AppProfileListItem }
 
@@ -29,6 +29,7 @@ type Row = {
   relanceAt?: Date | null
   lastCalledAt?: Date | null
   candidateId?: string | null
+  candidate?: { status: CandidateStatus } | null
   inviteEmailSentAt?: Date | null
   inviteLastError?: string | null
   calendarSmsSentAt?: Date | null
@@ -68,6 +69,7 @@ export function toAppProfileListItem(row: Row, now: Date = new Date()): AppProfi
     lastCalledAt: row.lastCalledAt ?? null,
     lastCalledByName: row.lastCalledBy?.name ?? null,
     candidateId: row.candidateId ?? null,
+    candidateStatus: row.candidate?.status ?? null,
     invitationLabel: appProfileInvitationLabel({
       email: row.email,
       inviteEmailSentAt: row.inviteEmailSentAt ?? null,

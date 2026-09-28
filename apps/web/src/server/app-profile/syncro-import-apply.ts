@@ -68,7 +68,9 @@ export async function applySyncroMapped(
       activityLabel: mapped.activityLabel,
       jobTitleId,
       relanceAt: mapped.relanceAt ?? undefined,
+      muteOutbound: true,
     }))
+  await deps.muteOutbound(profile.id)
   const candidateId = await ensureCandidate(
     mapped,
     deps,

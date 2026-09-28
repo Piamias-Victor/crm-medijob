@@ -32,6 +32,7 @@ function row(overrides: Partial<AppProfileListItem> = {}): AppProfileListItem {
     lastCalledAt: null,
     lastCalledByName: null,
     candidateId: null,
+    candidateStatus: 'NOUVEAU',
     invitationLabel: '',
     intakeBookingSmsLabel: '',
     badakanCommentsLabel: 'comment',
@@ -51,15 +52,20 @@ describe('patchIntakeFollowUpList', () => {
     })
   })
 
-  it('removes negative exits from default view', () => {
-    const next = row({ callOutcome: 'PAS_INTERESSE' })
-    expect(patchIntakeFollowUpList([row()], next, 'default')).toEqual([])
+  it('removes when candidate leaves Nouveau', () => {
+    const next = row({ candidateStatus: 'QUALIFIE', candidateId: 'c1' })
+    expect(patchIntakeFollowUpList([row({ candidateId: 'c1' })], next, 'default')).toEqual([])
     expect(staysInDefaultIntakeView(next)).toBe(false)
   })
 
-  it('keeps negatives in archive view', () => {
-    const next = row({ intakeStatus: 'HORS_ZONE' })
-    expect(patchIntakeFollowUpList([row()], next, 'archive')?.[0]?.intakeStatus).toBe('HORS_ZONE')
+  it('keeps App-validated while candidate still Nouveau', () => {
+    const next = row({ status: 'APP_VALIDATED', candidateId: 'c1', candidateStatus: 'NOUVEAU' })
+    expect(staysInDefaultIntakeView(next)).toBe(true)
+  })
+
+  it('keeps ignored rows in archive view', () => {
+    const next = row({ status: 'IGNORE' })
+    expect(patchIntakeFollowUpList([row()], next, 'archive')?.[0]?.status).toBe('IGNORE')
   })
 
   it('keeps Badakan comments when server omits them as empty cell', () => {

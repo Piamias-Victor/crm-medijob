@@ -8,6 +8,7 @@ import { defaultTestOneDeps } from '@/server/app-profile/test-one.deps'
 import { runHireflixCalendarSmsTest } from '@/server/app-profile/hireflix-calendar-sms-test-run'
 import type { CalendarSmsTestResult } from '@/server/app-profile/hireflix-calendar-sms-test'
 import type { MirrorIntakeDeps } from '@/server/app-profile/mirror-intake-to-candidate'
+import type { CandidateStatus } from '@prisma/client'
 
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
@@ -24,6 +25,8 @@ export type AppProfileDeps = {
   sendCalendarSmsTest: () => Promise<CalendarSmsTestResult>
   logActivity: MirrorIntakeDeps['logActivity']
   updateCandidateReferent: MirrorIntakeDeps['updateCandidateReferent']
+  setCandidateInactive: (candidateId: string, previous: CandidateStatus) => Promise<unknown>
+  setCandidateQualifie: (candidateId: string) => Promise<unknown>
 }
 
 export const defaultAppProfileDeps: AppProfileDeps = {
@@ -42,4 +45,14 @@ export const defaultAppProfileDeps: AppProfileDeps = {
   logActivity: (input) => activityLogRepository.create(input),
   updateCandidateReferent: (id, referentId) =>
     prisma.candidate.update({ where: { id }, data: { referentId } }),
+  setCandidateInactive: (candidateId, previous) =>
+    prisma.candidate.update({
+      where: { id: candidateId },
+      data: { status: 'INACTIF', statusBeforeInactive: previous },
+    }),
+  setCandidateQualifie: (candidateId) =>
+    prisma.candidate.update({
+      where: { id: candidateId },
+      data: { status: 'QUALIFIE', statusBeforeInactive: null },
+    }),
 }
