@@ -57,10 +57,7 @@ export function EntityTableRow<TRow>({
         </td>
       ))}
       {hasActions ? (
-        <td
-          className="sticky right-0 bg-surface px-3 py-2 text-right shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.08)]"
-          onClick={(event) => event.stopPropagation()}
-        >
+        <td className="px-3 py-2 text-right" onClick={(event) => event.stopPropagation()}>
           {renderActions?.(row)}
         </td>
       ) : null}

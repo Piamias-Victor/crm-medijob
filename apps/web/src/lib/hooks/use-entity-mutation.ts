@@ -5,19 +5,22 @@ import { useToastStore } from '@/stores/toast-store'
 
 type MutationError = { message: string }
 
-type Options = {
+type Options<TData = unknown> = {
   successMessage?: string
-  onSuccess?: () => void
+  onSuccess?: (data?: TData) => void
   onError?: (error: MutationError) => void
 }
 
-export function useEntityMutation(options: Options = {}) {
+export function useEntityMutation<TData = unknown>(options: Options<TData> = {}) {
   const push = useToastStore((s) => s.push)
 
-  const onSuccess = useCallback(() => {
-    if (options.successMessage) push({ variant: 'success', message: options.successMessage })
-    options.onSuccess?.()
-  }, [options, push])
+  const onSuccess = useCallback(
+    (data?: TData) => {
+      if (options.successMessage) push({ variant: 'success', message: options.successMessage })
+      options.onSuccess?.(data)
+    },
+    [options, push],
+  )
 
   const onError = useCallback(
     (error: MutationError) => {

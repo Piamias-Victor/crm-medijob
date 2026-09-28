@@ -35,4 +35,6 @@ export type EntityTableProps<TRow> = {
   page?: number
   onPageChange?: (page: number) => void
   onPageSizeChange?: (pageSize: number) => void
+  /** When set, table body scrolls both axes inside this max height. */
+  scrollMaxHeightClassName?: string
 }

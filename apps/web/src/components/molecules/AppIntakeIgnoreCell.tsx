@@ -1,22 +1,34 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/atoms/Button'
 import { useCan } from '@/lib/hooks/use-can'
-import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
+import { useAppIntakeListKey } from '@/lib/hooks/use-app-intake-list-key'
 import { trpc } from '@/lib/trpc/client'
+import { useToastStore } from '@/stores/toast-store'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Props = { row: AppProfileListItem }
 
 export function AppIntakeIgnoreCell({ row }: Props) {
   const canWrite = useCan('crm.write')
-  const router = useRouter()
-  const opts = useEntityMutation({
-    successMessage: 'Entrée ignorée',
-    onSuccess: () => router.refresh(),
+  const listKey = useAppIntakeListKey()
+  const utils = trpc.useUtils()
+  const push = useToastStore((s) => s.push)
+  const ignore = trpc.appProfile.ignore.useMutation({
+    onMutate: async () => {
+      await utils.appProfile.listIntakeFollowUp.cancel(listKey)
+      const previous = utils.appProfile.listIntakeFollowUp.getData(listKey)
+      utils.appProfile.listIntakeFollowUp.setData(listKey, (old) =>
+        old?.filter((item) => item.id !== row.id),
+      )
+      return { previous }
+    },
+    onError: (error, _input, ctx) => {
+      if (ctx?.previous) utils.appProfile.listIntakeFollowUp.setData(listKey, ctx.previous)
+      push({ variant: 'error', message: error.message })
+    },
+    onSuccess: () => push({ variant: 'success', message: 'Entrée ignorée' }),
   })
-  const ignore = trpc.appProfile.ignore.useMutation(opts)
 
   if (!canWrite) return null
   if (row.status === 'IGNORE' || row.status === 'APP_VALIDATED') return null

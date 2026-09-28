@@ -14,7 +14,7 @@ describe('buildAppIntakeFollowUpColumns', () => {
       ['enrolledAt', 'Inscrit le'],
       ['badakanComments', 'Commentaires Badakan'],
       ['intakeBookingSms', 'SMS RDV'],
-      ['intakeStatus', 'Intake'],
+      ['intakeStatus', 'Statut'],
       ['callOutcome', 'Appel'],
       ['plannedRdvAt', 'RDV'],
       ['referent', 'Referent'],

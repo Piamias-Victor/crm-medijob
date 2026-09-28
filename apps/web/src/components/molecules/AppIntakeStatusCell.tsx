@@ -1,31 +1,28 @@
 'use client'
 
-import { Select } from '@/components/atoms/Select'
+import { Combobox } from '@/components/molecules/Combobox'
 import { useAppIntakeUpdate } from '@/lib/hooks/use-app-intake-update'
+import { useAppIntakeListKey } from '@/lib/hooks/use-app-intake-list-key'
 import {
-  APP_INTAKE_STATUSES,
-  type AppIntakeStatus,
-} from '@/view-models/app-profile-intake.enums'
-import { APP_INTAKE_STATUS_LABELS } from '@/view-models/app-profile-intake.labels'
+  INTAKE_CELL_COMBOBOX_CLASS,
+  INTAKE_STATUS_OPTIONS,
+} from '@/view-models/app-intake-combobox-options'
+import type { AppIntakeStatus } from '@/view-models/app-profile-intake.enums'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Props = { row: AppProfileListItem }
 
 export function AppIntakeStatusCell({ row }: Props) {
-  const { save, isPending } = useAppIntakeUpdate(row)
+  const listKey = useAppIntakeListKey()
+  const { save, isPending } = useAppIntakeUpdate(row, listKey)
   return (
-    <Select
+    <Combobox
       aria-label="Intake status"
-      className="min-w-[9rem] py-1 text-xs"
+      className={INTAKE_CELL_COMBOBOX_CLASS}
       value={row.intakeStatus}
+      options={INTAKE_STATUS_OPTIONS}
       disabled={isPending}
-      onChange={(e) => save({ intakeStatus: e.target.value as AppIntakeStatus })}
-    >
-      {APP_INTAKE_STATUSES.map((value) => (
-        <option key={value} value={value}>
-          {APP_INTAKE_STATUS_LABELS[value]}
-        </option>
-      ))}
-    </Select>
+      onChange={(value) => save({ intakeStatus: value as AppIntakeStatus })}
+    />
   )
 }

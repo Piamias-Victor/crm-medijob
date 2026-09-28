@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QA — Entrées app (#480)</title>
+  <style>
+    :root {
+      --bg: #f6f4f1;
+      --surface: #fffdf9;
+      --ink: #1c1917;
+      --muted: #57534e;
+      --line: #e7e5e4;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --warn: #b45309;
+      --ok: #15803d;
+      --danger: #b91c1c;
+      --radius: 12px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #d1fae5 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #fde68a33 0%, transparent 50%),
+        var(--bg);
+      line-height: 1.45;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+    header {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 0 #fff inset;
+    }
+    header h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+    }
+    header p { margin: 0.25rem 0; color: var(--muted); font-size: 0.95rem; }
+    header code, .meta code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      background: #f5f5f4;
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .progress {
+      flex: 1 1 220px;
+      min-width: 180px;
+    }
+    .progress-bar {
+      height: 10px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #34d399);
+      transition: width 0.2s ease;
+    }
+    .progress-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 0.45rem 0.8rem;
+    }
+    button:hover { border-color: #a8a29e; }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button.danger { color: var(--danger); }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      margin-bottom: 0.85rem;
+      overflow: hidden;
+    }
+    section > summary,
+    details > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.95rem 1.1rem;
+      font-weight: 650;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      user-select: none;
+    }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before {
+      content: "▸";
+      color: var(--muted);
+      transition: transform 0.15s;
+    }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .sec-count {
+      margin-left: auto;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: #f5f5f4;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+    }
+    .sec-count.done {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .items { padding: 0 0.6rem 0.75rem; }
+    label.item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.55rem 0.75rem;
+      padding: 0.65rem 0.55rem;
+      border-top: 1px solid var(--line);
+      align-items: start;
+      cursor: pointer;
+    }
+    label.item:hover { background: #fafaf9; }
+    label.item.checked { background: #f0fdf4; }
+    label.item input {
+      margin-top: 0.2rem;
+      width: 1.1rem;
+      height: 1.1rem;
+      accent-color: var(--accent);
+    }
+    .item-body strong { display: block; font-size: 0.95rem; }
+    .item-body .expect {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 0.2rem;
+    }
+    .item-body .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      margin-bottom: 0.25rem;
+    }
+    .tag.nav { background: #e0e7ff; color: #3730a3; }
+    .tag.list { background: #ecfccb; color: #3f6212; }
+    .tag.edit { background: #fef3c7; color: #92400e; }
+    .tag.exit { background: #ffe4e6; color: #9f1239; }
+    .tag.perm { background: #f3e8ff; color: #6b21a8; }
+    .tag.sms { background: #cffafe; color: #155e75; }
+    .tag.gate { background: #dcfce7; color: #166534; }
+    .tag.edge { background: #f5f5f4; color: #44403c; }
+    .setup {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      margin-bottom: 1rem;
+      font-size: 0.92rem;
+    }
+    .setup h2 { margin: 0 0 0.5rem; font-size: 1rem; color: var(--warn); }
+    .setup ul { margin: 0.35rem 0 0; padding-left: 1.2rem; }
+    footer {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .verdict {
+      margin-top: 1rem;
+      padding: 1rem 1.15rem;
+      border-radius: var(--radius);
+      border: 1px dashed var(--line);
+      background: var(--surface);
+      text-align: center;
+      font-weight: 650;
+    }
+    .verdict.ready {
+      border-color: var(--ok);
+      background: #f0fdf4;
+      color: var(--ok);
+    }
+    @media print {
+      body { background: #fff; }
+      button, .toolbar { display: none !important; }
+      details { break-inside: avoid; }
+      details[open] > summary::before { content: ""; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>QA — Entrées app</h1>
+      <p>Epic <strong>#480</strong> · ADR-0032 · slices #481–#486 · suivi nouveaux candidats Badakan</p>
+      <p class="meta">URL cible : <code>/interim/entrees-app</code> · Env : local / preview <code>dev</code></p>
+      <div class="toolbar">
+        <div class="progress">
+          <div class="progress-bar"><span id="bar"></span></div>
+          <div class="progress-label" id="progressLabel">0 / 0</div>
+        </div>
+        <button type="button" id="expandAll">Tout ouvrir</button>
+        <button type="button" id="collapseAll">Tout fermer</button>
+        <button type="button" class="danger" id="reset">Réinitialiser</button>
+        <button type="button" class="primary" onclick="window.print()">Imprimer</button>
+      </div>
+    </header>
+
+    <div class="setup">
+      <h2>Prérequis</h2>
+      <ul>
+        <li>App démarrée (<code>pnpm dev</code>) ou preview Vercel à jour</li>
+        <li>Compte recruteur avec <code>crm.write</code> (+ un compte lecture seule si possible)</li>
+        <li>2–3 AppProfiles <code>EN_ATTENTE</code> (idéalement : comments Badakan, SMS déjà envoyé, lignes assignables)</li>
+      </ul>
+    </div>
+
+    <div id="sections"></div>
+
+    <div class="verdict" id="verdict">Coche les cases pour suivre la progression.</div>
+    <footer>
+      Sauvegarde auto dans ce navigateur (localStorage). Spec : <code>docs/PRD_APP_INTAKE_FOLLOW_UP.md</code>
+    </footer>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "medijob-qa-entrees-app-v1";
+
+    const SECTIONS = [
+      {
+        id: "nav",
+        title: "1. Navigation & remplacement Profils app",
+        tag: "nav",
+        items: [
+          { id: "1.1", action: "Intérim → subnav", expect: "Label « Entrées app » (pas « Suivi candidats »)" },
+          { id: "1.2", action: "Clic Entrées app", expect: "URL /interim/entrees-app — table seule, pas de fiche détail" },
+          { id: "1.3", action: "Page Candidats → onglets", expect: "Uniquement CVthèque + Candidatures reçues" },
+          { id: "1.4", action: "Chercher « Profils app »", expect: "Absent partout (tabs / nav)" },
+          { id: "1.5", action: "Ouvrir /candidats?tab=app-profiles", expect: "Redirect → /interim/entrees-app" },
+          { id: "1.6", action: "Ouvrir /candidats/profils-app/<id>", expect: "Redirect → Entrées app" },
+          { id: "1.7", action: "Ouvrir …/profils-app/<id>/convert", expect: "Redirect → Entrées app" },
+          { id: "1.8", action: "Sur Entrées app, chercher actions ACCEPTE / Convertir / Hireflix", expect: "Aucune de ces UI" },
+          { id: "1.9", action: "Ouvrir /interim/candidats", expect: "Pool staffable inchangé (≠ intake)" },
+        ],
+      },
+      {
+        id: "list",
+        title: "2. Liste défaut — lecture",
+        tag: "list",
+        items: [
+          { id: "2.1", action: "Colonnes identité", expect: "Tél, prénom, nom, email, métier, ville, CP, date inscription" },
+          { id: "2.2", action: "Colonnes ops", expect: "Intake, Appel, date RDV, notes, Référent, relance" },
+          { id: "2.3", action: "Colonnes extras", expect: "Commentaires Badakan + indicateur SMS RDV" },
+          { id: "2.4", action: "Clic sur une ligne", expect: "Pas de navigation vers fiche AppProfile" },
+          { id: "2.5", action: "Nouveau profil sync", expect: "Intake = À appeler ; relance ≈ jour d’arrivée (Paris)" },
+          { id: "2.6", action: "Filtre référent défaut", expect: "Moi ∪ non assignés" },
+          { id: "2.7", action: "Toggle file complète / tous", expect: "Voit aussi les lignes d’autres référents" },
+          { id: "2.8", action: "Chercher APP_VALIDATED / IGNORE / négatifs en vue défaut", expect: "Absents de la vue défaut" },
+        ],
+      },
+      {
+        id: "edit",
+        title: "3. Édition inline — Intake / Appel / RDV / Notes",
+        tag: "edit",
+        items: [
+          { id: "3.1", action: "Intake → Dossier incomplet puis À relancer", expect: "Sauve ; reste en vue défaut" },
+          { id: "3.2", action: "Appel → Messagerie / À rappeler / Pas de réponse", expect: "Sauve ; reste en défaut" },
+          { id: "3.3", action: "Appel → RDV pris SANS date RDV", expect: "Erreur / refus — pas de save" },
+          { id: "3.4", action: "RDV pris + date RDV renseignée", expect: "OK" },
+          { id: "3.5", action: "Date RDV seule (outcome ≠ RDV pris)", expect: "Optionnelle, OK" },
+          { id: "3.6", action: "Notes libre + refresh", expect: "Persiste" },
+          { id: "3.7", action: "Valeurs Intake disponibles", expect: "À appeler · Dossier incomplet · À relancer · Hors zone — PAS Validé/Suspendu" },
+        ],
+      },
+      {
+        id: "ref",
+        title: "4. Référent · last-call · relance",
+        tag: "edit",
+        items: [
+          { id: "4.1", action: "Assigner un Référent (user CRM)", expect: "Persiste ; filtre « moi » cohérent" },
+          { id: "4.2", action: "Sauver un Call outcome", expect: "lastCalledAt ≈ now ; lastCalledBy = toi" },
+          { id: "4.3", action: "Après outcome (sans override relance)", expect: "Relance ≈ last-call + 2 jours" },
+          { id: "4.4", action: "Override relance manuelle", expect: "Valeur choisie conservée" },
+          { id: "4.5", action: "Relance dans le passé", expect: "Badge overdue ; Intake ne change PAS tout seul" },
+        ],
+      },
+      {
+        id: "exit",
+        title: "5. Sorties négatives · Archives · Ignore",
+        tag: "exit",
+        items: [
+          { id: "5.1", action: "Appel → Pas intéressé", expect: "Disparaît de la vue défaut" },
+          { id: "5.2", action: "Appel → Hors cible", expect: "Disparaît de la vue défaut" },
+          { id: "5.3", action: "Intake → Hors zone", expect: "Disparaît de la vue défaut" },
+          { id: "5.4", action: "Action ligne Ignorer", expect: "Sort défaut ; sync ne la ramène pas en file active" },
+          { id: "5.5", action: "Toggle Archives / refusés", expect: "Voit négatifs + Ignore + App-validated" },
+          { id: "5.6", action: "Revenir vue défaut", expect: "Archives hors file" },
+        ],
+      },
+      {
+        id: "gate",
+        title: "6. Porte CVthèque = App-validated seulement",
+        tag: "gate",
+        items: [
+          { id: "6.1", action: "Depuis Entrées app", expect: "Impossible de créer Candidate via ACCEPTE" },
+          { id: "6.2", action: "Valider en Badakan → sync/cron (si dispo)", expect: "Ligne sort vue défaut ; pas de chemin ACCEPTE CRM" },
+          { id: "6.3", action: "Vérifier double saisie sheet", expect: "CRM = ops ; validation Badakan = succès" },
+        ],
+      },
+      {
+        id: "perm",
+        title: "7. Permissions",
+        tag: "perm",
+        items: [
+          { id: "7.1", action: "User lecture seule → liste", expect: "Liste visible" },
+          { id: "7.2", action: "User lecture → éditer / Ignorer", expect: "Bloqué ou FORBIDDEN" },
+          { id: "7.3", action: "User crm.write", expect: "Édition + Ignore OK" },
+        ],
+      },
+      {
+        id: "sms",
+        title: "8. SMS — non-régression",
+        tag: "sms",
+        items: [
+          { id: "8.1", action: "Nouvel inscrit (cycle invite/booking)", expect: "Intake booking SMS (lien Calendar) toujours envoyé comme avant" },
+          { id: "8.2", action: "Colonne indicateur SMS", expect: "Reflète envoi ; pas d’UI Hireflix" },
+          { id: "8.3", action: "Weekly dispos SMS après App-validated", expect: "Inchangé (hors scope mais à smoke si possible)" },
+        ],
+      },
+      {
+        id: "edge",
+        title: "9. Cas limites / non-régression",
+        tag: "edge",
+        items: [
+          { id: "9.1", action: "Refresh après edits", expect: "Données toujours là" },
+          { id: "9.2", action: "Deux onglets, edits concurrents", expect: "Pas de crash ; dernier write gagne" },
+          { id: "9.3", action: "Viewport mobile / étroit", expect: "Table utilisable (scroll OK)" },
+          { id: "9.4", action: "Home / alertes Candidats", expect: "Pas de deep-link Profils app cassé" },
+          { id: "9.5", action: "Réseau : appeler accept AppProfile (si test API)", expect: "4xx BAD_REQUEST — jamais 200 ACCEPTE" },
+        ],
+      },
+    ];
+
+    const TAG_LABEL = {
+      nav: "Nav",
+      list: "Liste",
+      edit: "Inline",
+      exit: "Sorties",
+      perm: "Perms",
+      sms: "SMS",
+      gate: "CVthèque",
+      edge: "Edge",
+    };
+
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function allIds() {
+      return SECTIONS.flatMap((s) => s.items.map((i) => i.id));
+    }
+
+    function render() {
+      const state = loadState();
+      const root = document.getElementById("sections");
+      root.innerHTML = "";
+
+      for (const section of SECTIONS) {
+        const details = document.createElement("details");
+        details.open = true;
+        details.dataset.section = section.id;
+
+        const done = section.items.filter((i) => state[i.id]).length;
+        const total = section.items.length;
+
+        const summary = document.createElement("summary");
+        summary.innerHTML = `<span>${section.title}</span><span class="sec-count ${done === total ? "done" : ""}">${done}/${total}</span>`;
+        details.appendChild(summary);
+
+        const items = document.createElement("div");
+        items.className = "items";
+
+        for (const item of section.items) {
+          const checked = Boolean(state[item.id]);
+          const label = document.createElement("label");
+          label.className = "item" + (checked ? " checked" : "");
+          label.innerHTML = `
+            <input type="checkbox" data-id="${item.id}" ${checked ? "checked" : ""} />
+            <div class="item-body">
+              <span class="tag ${section.tag}">${TAG_LABEL[section.tag] || section.tag} · ${item.id}</span>
+              <strong>${item.action}</strong>
+              <div class="expect">→ ${item.expect}</div>
+            </div>
+          `;
+          items.appendChild(label);
+        }
+
+        details.appendChild(items);
+        root.appendChild(details);
+      }
+
+      root.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          const s = loadState();
+          if (input.checked) s[input.dataset.id] = true;
+          else delete s[input.dataset.id];
+          saveState(s);
+          render();
+        });
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const state = loadState();
+      const ids = allIds();
+      const done = ids.filter((id) => state[id]).length;
+      const pct = ids.length ? Math.round((done / ids.length) * 100) : 0;
+      document.getElementById("bar").style.width = pct + "%";
+      document.getElementById("progressLabel").textContent =
+        `${done} / ${ids.length} · ${pct}%`;
+
+      const verdict = document.getElementById("verdict");
+      if (done === ids.length) {
+        verdict.className = "verdict ready";
+        verdict.textContent = "✓ Tout coché — OK pour fermer #480.";
+      } else {
+        verdict.className = "verdict";
+        verdict.textContent = `Encore ${ids.length - done} point(s) à valider.`;
+      }
+    }
+
+    document.getElementById("reset").addEventListener("click", () => {
+      if (confirm("Réinitialiser toutes les cases ?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      }
+    });
+    document.getElementById("expandAll").addEventListener("click", () => {
+      document.querySelectorAll("details").forEach((d) => (d.open = true));
+    });
+    document.getElementById("collapseAll").addEventListener("click", () => {
+      document.querySelectorAll("details").forEach((d) => (d.open = false));
+    });
+
+    render();
+  </script>
+</body>
+</html>
