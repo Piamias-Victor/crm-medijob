@@ -30,7 +30,7 @@ export function EntityListFilterBar<TValues extends FilterValues<readonly Filter
   trailing,
 }: Props<TValues>) {
   const [open, setOpen] = useState(false)
-  const panel = useAnchoredPanel(open, 360)
+  const panel = useAnchoredPanel(open, 576)
   useOutsidePointerClose(open, () => setOpen(false), panel.anchorRef, panel.panelRef)
   const showAdvanced = useMemo(() => advanced.length > 0, [advanced.length])
 

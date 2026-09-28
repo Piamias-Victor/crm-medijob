@@ -61,6 +61,7 @@ export const interimSubNav: { label: string; href: string }[] = [
   { label: 'Suivi', href: '/interim/suivi' },
   { label: 'Besoins', href: '/interim/besoins' },
   { label: 'Candidats', href: '/interim/candidats' },
+  { label: 'Entrées app', href: '/interim/entrees-app' },
   { label: 'Dispos', href: '/interim/disponibilites' },
   { label: 'Officines', href: '/interim/officines' },
 ]

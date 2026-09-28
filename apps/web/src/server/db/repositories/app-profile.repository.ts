@@ -1,20 +1,15 @@
-import type { AppProfileStatus, Prisma, PrismaClient } from '@prisma/client'
+import type { AppProfileStatus, PrismaClient } from '@prisma/client'
 import { prisma as defaultDb } from './client'
+import {
+  appProfileJobTitleInclude,
+  type AppProfileIntakeUpdate,
+  type AppProfileUpsertInput,
+  type ListIntakeFollowUpOpts,
+} from './app-profile.repository.types'
+import { intakeFollowUpWhere } from './app-profile-intake-where'
+import { upsertPendingAppProfile } from './app-profile-upsert-pending'
 
-export type AppProfileUpsertInput = {
-  badakanId: string
-  firstName: string
-  lastName: string
-  email?: string | null
-  phone?: string | null
-  address?: string | null
-  city?: string | null
-  postalCode?: string | null
-  activityLabel?: string | null
-  jobTitleId?: string | null
-  hasResume?: boolean
-  snapshot?: Prisma.InputJsonValue
-}
+export type { AppProfileUpsertInput, AppProfileIntakeUpdate, ListIntakeFollowUpOpts }
 
 export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
   return {
@@ -23,14 +18,18 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
         where: { status: 'EN_ATTENTE' },
         orderBy: { syncedAt: 'desc' },
         ...(limit != null ? { take: limit } : {}),
-        include: { jobTitle: { select: { id: true, name: true } } },
+        include: appProfileJobTitleInclude,
+      }),
+    listIntakeFollowUp: (opts: ListIntakeFollowUpOpts = {}) =>
+      db.appProfile.findMany({
+        where: intakeFollowUpWhere(opts),
+        orderBy: [{ relanceAt: 'asc' }, { createdAt: 'desc' }],
+        ...(opts.limit != null ? { take: opts.limit } : {}),
+        include: appProfileJobTitleInclude,
       }),
     countPending: () => db.appProfile.count({ where: { status: 'EN_ATTENTE' } }),
     findById: (id: string) =>
-      db.appProfile.findUnique({
-        where: { id },
-        include: { jobTitle: { select: { id: true, name: true } } },
-      }),
+      db.appProfile.findUnique({ where: { id }, include: appProfileJobTitleInclude }),
     findByBadakanIds: (ids: string[]) =>
       db.appProfile.findMany({
         where: { badakanId: { in: ids } },
@@ -43,24 +42,12 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
       }),
     linkCandidate: (id: string, candidateId: string) =>
       db.appProfile.update({ where: { id }, data: { candidateId } }),
-    upsertPending: (data: AppProfileUpsertInput) =>
-      db.appProfile.upsert({
-        where: { badakanId: data.badakanId },
-        create: { ...data, status: 'EN_ATTENTE', syncedAt: new Date() },
-        update: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          address: data.address,
-          city: data.city,
-          postalCode: data.postalCode,
-          activityLabel: data.activityLabel,
-          jobTitleId: data.jobTitleId,
-          hasResume: data.hasResume ?? false,
-          snapshot: data.snapshot,
-          syncedAt: new Date(),
-        },
+    upsertPending: (data: AppProfileUpsertInput) => upsertPendingAppProfile(db, data),
+    updateIntake: (id: string, data: AppProfileIntakeUpdate) =>
+      db.appProfile.update({
+        where: { id },
+        data,
+        include: appProfileJobTitleInclude,
       }),
     markStatus: (
       id: string,

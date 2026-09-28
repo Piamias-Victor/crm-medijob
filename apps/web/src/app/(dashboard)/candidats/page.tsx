@@ -1,7 +1,8 @@
 import { Suspense } from 'react'
+import { redirect } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { CandidatsPage } from '@/components/organisms/CandidatsPage'
-import { parseCandidatsTab } from '@/view-models/candidats-tab'
+import { legacyProfilsAppRedirect, parseCandidatsTab } from '@/view-models/candidats-tab'
 import { buildCvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import {
   normalizeCvthequeFilterValues,
@@ -15,16 +16,19 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 export default async function Page({ searchParams }: Props) {
   const params = await searchParams
   const { tab } = params
+  const tabParam = typeof tab === 'string' ? tab : undefined
+  const legacy = legacyProfilsAppRedirect(tabParam ?? '')
+  if (legacy) redirect(legacy)
+
   const caller = await createServerCaller()
   const referentials = await caller.candidate.referentials()
   const filterConfig = buildCvthequeFilterConfig(referentials)
   const listFilters = toCandidateListFilters(
     normalizeCvthequeFilterValues(deserializeFilters(filterConfig, toUrlSearchParams(params))),
   )
-  const [list, inbox, appProfiles] = await Promise.all([
+  const [list, inbox] = await Promise.all([
     caller.candidate.list(listFilters),
     caller.application.listInbox(),
-    caller.appProfile.listPending(),
   ])
 
   return (
@@ -32,10 +36,9 @@ export default async function Page({ searchParams }: Props) {
       <CandidatsPage
         list={list}
         inbox={inbox}
-        appProfiles={appProfiles}
         serverFilters={listFilters}
         filterConfig={filterConfig}
-        initialTab={parseCandidatsTab(typeof tab === 'string' ? tab : undefined)}
+        initialTab={parseCandidatsTab(tabParam)}
       />
     </Suspense>
   )

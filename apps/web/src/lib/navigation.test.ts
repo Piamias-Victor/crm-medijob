@@ -29,12 +29,13 @@ describe('navItems', () => {
 })
 
 describe('interimSubNav', () => {
-  it('lists Accueil first then Suivi Besoins Candidats Dispos Officines', () => {
+  it('lists Accueil first then Suivi Besoins Candidats Entrées app Dispos Officines', () => {
     expect(interimSubNav.map((item) => [item.label, item.href])).toEqual([
       ['Accueil', '/interim'],
       ['Suivi', '/interim/suivi'],
       ['Besoins', '/interim/besoins'],
       ['Candidats', '/interim/candidats'],
+      ['Entrées app', '/interim/entrees-app'],
       ['Dispos', '/interim/disponibilites'],
       ['Officines', '/interim/officines'],
     ])

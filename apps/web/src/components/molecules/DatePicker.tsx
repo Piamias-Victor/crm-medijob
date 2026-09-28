@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Calendar } from 'lucide-react'
-import { cn } from '@/lib/cn'
 import { DatePickerPanel } from '@/components/molecules/DatePickerPanel'
+import { DatePickerTrigger } from '@/components/molecules/DatePickerTrigger'
 import {
   ASAP_DATE_LABEL,
   calendarDays,
-  formatDisplayDate,
   formatIsoDate,
   parseIsoDate,
 } from '@/lib/date-picker-utils'
@@ -23,6 +21,8 @@ type Props = {
   emptyLabel?: string
   clearLabel?: string
   ariaLabel?: string
+  disabled?: boolean
+  className?: string
 }
 
 export function DatePicker({
@@ -32,6 +32,8 @@ export function DatePicker({
   emptyLabel = ASAP_DATE_LABEL,
   clearLabel = ASAP_DATE_LABEL,
   ariaLabel,
+  disabled = false,
+  className,
 }: Props) {
   const selected = parseIsoDate(value)
   const today = new Date()
@@ -43,8 +45,7 @@ export function DatePicker({
     if (!open) return
     const onClick = (e: MouseEvent) => {
       const target = e.target as Node
-      if (anchorRef.current?.contains(target)) return
-      if (panelRef.current?.contains(target)) return
+      if (anchorRef.current?.contains(target) || panelRef.current?.contains(target)) return
       setOpen(false)
     }
     document.addEventListener('mousedown', onClick)
@@ -80,16 +81,17 @@ export function DatePicker({
 
   return (
     <div ref={anchorRef} className="relative">
-      <button
+      <DatePickerTrigger
         id={id}
-        type="button"
-        aria-label={ariaLabel}
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm text-fg outline-none transition-colors hover:border-accent focus:border-accent focus:ring-2 focus:ring-accent-muted"
-      >
-        <span className={cn(!value && 'text-fg-muted')}>{formatDisplayDate(value, emptyLabel)}</span>
-        <Calendar className="size-4 text-fg-muted" />
-      </button>
+        ariaLabel={ariaLabel}
+        disabled={disabled}
+        className={className}
+        value={value}
+        emptyLabel={emptyLabel}
+        onToggle={() => {
+          if (!disabled) setOpen((v) => !v)
+        }}
+      />
       {typeof document !== 'undefined' && panel ? createPortal(panel, document.body) : null}
     </div>
   )

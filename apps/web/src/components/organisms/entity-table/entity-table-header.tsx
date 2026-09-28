@@ -17,7 +17,7 @@ function ariaSortValue(sort: EntityTableSortState | null | undefined, columnId: 
 
 export function EntityTableHeader<TRow>({ columns, sort, onSort, hasActions }: Props<TRow>) {
   return (
-    <thead className="border-b border-border/80 bg-gradient-to-r from-primary-muted/80 via-primary-muted/50 to-accent-muted/70">
+    <thead className="sticky top-0 z-10 border-b border-border/80 bg-gradient-to-r from-primary-muted via-primary-muted to-accent-muted">
       <tr>
         {columns.map((column) => (
           <th
@@ -37,7 +37,7 @@ export function EntityTableHeader<TRow>({ columns, sort, onSort, hasActions }: P
         {hasActions ? (
           <th
             scope="col"
-            className="sticky right-0 bg-accent-muted/70 px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-primary shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.08)]"
+            className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-primary"
           >
             Actions
           </th>

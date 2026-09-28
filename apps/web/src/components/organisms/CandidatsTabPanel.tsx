@@ -2,11 +2,9 @@
 
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
-import { AppProfilesSection } from '@/components/organisms/AppProfilesSection'
 import { CvthequeSection } from '@/components/organisms/CvthequeSection'
 import type { CandidatsTab } from '@/view-models/candidats-tab'
 import type { InboxItem } from '@/view-models/application-inbox'
-import type { AppProfileListItem } from '@/view-models/app-profile-list'
 import type { CvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
 import type { RawCandidate, RawStage } from '@/view-models/candidate-kanban.types'
@@ -15,7 +13,6 @@ type Props = {
   tab: CandidatsTab
   list: { rows: RawCandidate[]; stages: RawStage[] }
   inbox: InboxItem[]
-  appProfiles: AppProfileListItem[]
   serverFilters: CandidateListFilters
   filterConfig: CvthequeFilterConfig
   onCountChange: (n: number) => void
@@ -25,7 +22,6 @@ export function CandidatsTabPanel({
   tab,
   list,
   inbox,
-  appProfiles,
   serverFilters,
   filterConfig,
   onCountChange,
@@ -39,9 +35,6 @@ export function CandidatsTabPanel({
         onCountChange={onCountChange}
       />
     )
-  }
-  if (tab === 'app-profiles') {
-    return <AppProfilesSection initialItems={appProfiles} />
   }
   return (
     <SectionCard
