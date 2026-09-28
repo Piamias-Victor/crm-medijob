@@ -37,8 +37,11 @@ describe('buildAppIntakeFollowUpColumns', () => {
       relanceAt: true,
       notes: true,
       actions: true,
-      lastCalledAt: false,
-      phone: false,
+      lastCalledAt: true,
+      phone: true,
+      postalCode: false,
+      enrolledAt: false,
+      intakeBookingSms: false,
     })
   })
 })
