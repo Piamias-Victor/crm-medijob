@@ -25,6 +25,7 @@ describe('appProfileRepository updateIntake', () => {
         jobTitle: { select: { id: true, name: true } },
         referent: { select: { id: true, name: true } },
         lastCalledBy: { select: { id: true, name: true } },
+        candidate: { select: { status: true } },
       },
     })
   })
