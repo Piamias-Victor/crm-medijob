@@ -5,9 +5,13 @@ import { useCan } from '@/lib/hooks/use-can'
 import { useAppIntakeListKey } from '@/lib/hooks/use-app-intake-list-key'
 import { trpc } from '@/lib/trpc/client'
 import { useToastStore } from '@/stores/toast-store'
+import { appIntakeExitActions } from '@/view-models/app-intake-exit-actions'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Props = { row: AppProfileListItem }
+
+const iconBtn =
+  'size-8 shrink-0 rounded-full p-0 text-base font-semibold shadow-sm ring-1 ring-black/5'
 
 function useRemoveFromList(rowId: string) {
   const listKey = useAppIntakeListKey()
@@ -51,27 +55,30 @@ export function AppIntakeExitCell({ row }: Props) {
   if (!canWrite || row.status === 'IGNORE') return null
 
   const busy = ignore.isPending || qualify.isPending
+  const { ignore: ignoreAction, qualify: qualifyAction } = appIntakeExitActions
   return (
     <>
       <Button
         type="button"
-        variant="ghost"
-        className="px-2 py-1 text-xs"
-        aria-label="Ignorer"
+        variant={ignoreAction.variant}
+        className={iconBtn}
+        aria-label={ignoreAction.title}
+        title={ignoreAction.title}
         disabled={busy}
         onClick={() => ignore.mutate({ id: row.id })}
       >
-        ✗
+        {ignoreAction.label}
       </Button>
       <Button
         type="button"
-        variant="ghost"
-        className="px-2 py-1 text-xs"
-        aria-label="Qualifié"
+        variant={qualifyAction.variant}
+        className={iconBtn}
+        aria-label={qualifyAction.title}
+        title={qualifyAction.title}
         disabled={busy || row.candidateId == null}
         onClick={() => qualify.mutate({ id: row.id })}
       >
-        ✓
+        {qualifyAction.label}
       </Button>
     </>
   )
