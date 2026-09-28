@@ -7,7 +7,7 @@ import { listIntakeFollowUpSchema } from '@/view-models/app-profile-intake-list.
 import { defaultAppProfileDeps, type AppProfileDeps } from './app-profile.deps'
 import { readCommentsOrEmpty } from '@/server/badakan/read-comments'
 import { updateIntakeProcedure } from './app-profile-intake-update'
-import { mapIntakeFollowUpWithComments } from './app-profile-intake-list-map'
+import { mapIntakeFollowUpRows } from './app-profile-intake-list-map'
 
 function mapError(error: unknown): never {
   if (error instanceof AppProfileError) {
@@ -35,9 +35,8 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
           population,
           currentUserId: ctx.session.user.id,
         })
-        return mapIntakeFollowUpWithComments(rows, (id) =>
-          deps.getBadakanClient().getComments(id),
-        )
+        // No live Badakan comments on list — N+1 timed out « Voir tous » (~900 rows).
+        return mapIntakeFollowUpRows(rows)
       }),
     getById: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
       const row = await deps.findById(input.id)
