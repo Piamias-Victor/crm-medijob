@@ -24,7 +24,7 @@ const listRow = {
 }
 
 describe('appProfileRouter listIntakeFollowUp comments + SMS', () => {
-  it('batches Badakan comments and maps Intake booking SMS without live Badakan', async () => {
+  it('skips live Badakan comments on list (avoids N+1 timeout)', async () => {
     const getComments = vi.fn().mockResolvedValue([
       {
         id: 'c1',
@@ -39,21 +39,17 @@ describe('appProfileRouter listIntakeFollowUp comments + SMS', () => {
         getBadakanClient: () => stubBadakanClient({ getComments }),
       }),
     ).listIntakeFollowUp()
-    expect(getComments).toHaveBeenCalledWith('bk1')
+    expect(getComments).not.toHaveBeenCalled()
     expect(rows[0]).toMatchObject({
-      badakanCommentsLabel: 'Répondeur.',
+      badakanCommentsLabel: '—',
       intakeBookingSmsLabel: 'Envoyé',
     })
   })
 
-  it('keeps empty Badakan comments label when getComments fails', async () => {
+  it('still maps SMS from calendarSmsSentAt without Badakan', async () => {
     const rows = await appProfileCaller(
       makeAppProfileTestDeps({
         listIntakeFollowUp: vi.fn().mockResolvedValue([{ ...listRow, calendarSmsSentAt: null }]),
-        getBadakanClient: () =>
-          stubBadakanClient({
-            getComments: vi.fn().mockRejectedValue(new Error('missing env')),
-          }),
       }),
     ).listIntakeFollowUp()
     expect(rows[0]).toMatchObject({

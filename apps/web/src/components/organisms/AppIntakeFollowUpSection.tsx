@@ -32,8 +32,8 @@ export function AppIntakeFollowUpSection({ initialItems, recruiters }: Props) {
     initialData: useInitial ? initialItems : undefined,
   })
   const items = useMemo(
-    () => filterAppIntakeRows(query.data ?? initialItems, values),
-    [query.data, initialItems, values],
+    () => filterAppIntakeRows(query.data ?? (useInitial ? initialItems : []), values),
+    [query.data, initialItems, values, useInitial],
   )
   const description =
     listKey.population === 'archive'
