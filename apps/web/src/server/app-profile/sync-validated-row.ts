@@ -9,11 +9,15 @@ export async function attachAppProfile(
   badakanId: string,
   candidateId: string,
   deps: SyncValidatedDeps,
+  isValid: boolean,
 ) {
   const profile = await deps.findAppProfileByBadakanId(badakanId)
   if (!profile) return
-  if (profile.status === 'EN_ATTENTE') await deps.markAppValidated(profile.id, candidateId)
-  else if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
+  if (profile.status === 'EN_ATTENTE') {
+    if (isValid) await deps.markAppValidated(profile.id, candidateId)
+    return
+  }
+  if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
 }
 
 export async function patchIdentityFromRow(
