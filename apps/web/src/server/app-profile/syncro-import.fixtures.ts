@@ -14,6 +14,7 @@ export function stubSyncroDeps(
     createAppCandidate: vi.fn().mockResolvedValue({ id: 'c-new' }),
     linkCandidate: vi.fn(),
     findCandidateByBadakanId: async () => null,
+    muteOutbound: vi.fn(),
     ...overrides,
   }
 }

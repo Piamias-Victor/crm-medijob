@@ -1,13 +1,10 @@
 import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
-const NEGATIVE_OUTCOMES = new Set(['PAS_INTERESSE', 'HORS_CIBLE'])
-
 export function staysInDefaultIntakeView(row: AppProfileListItem): boolean {
-  if (row.status === 'IGNORE' || row.status === 'APP_VALIDATED') return false
-  if (row.intakeStatus === 'HORS_ZONE') return false
-  if (row.callOutcome && NEGATIVE_OUTCOMES.has(row.callOutcome)) return false
-  return true
+  if (row.status === 'IGNORE') return false
+  if (row.candidateId == null) return true
+  return row.candidateStatus === 'NOUVEAU'
 }
 
 function keepDisplayLabel(next: string, previous: string): string {

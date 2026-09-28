@@ -1,4 +1,4 @@
-import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
+import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus, CandidateStatus } from '@prisma/client'
 
 export type AppProfileListItem = {
   id: string
@@ -26,6 +26,7 @@ export type AppProfileListItem = {
   lastCalledAt: Date | null
   lastCalledByName: string | null
   candidateId: string | null
+  candidateStatus: CandidateStatus | null
   invitationLabel: string
   intakeBookingSmsLabel: string
   badakanCommentsLabel: string

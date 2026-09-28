@@ -13,7 +13,13 @@ export function makeAppProfileTestDeps(
     listPending: vi.fn().mockResolvedValue([]),
     listIntakeFollowUp: vi.fn().mockResolvedValue([]),
     countPending: vi.fn().mockResolvedValue(0),
-    findById: vi.fn().mockResolvedValue({ id: 'p1', status: 'EN_ATTENTE', badakanId: 'bk1' }),
+    findById: vi.fn().mockResolvedValue({
+      id: 'p1',
+      status: 'EN_ATTENTE',
+      badakanId: 'bk1',
+      candidateId: 'c1',
+      candidate: { status: 'NOUVEAU' },
+    }),
     findByBadakanIds: vi.fn().mockResolvedValue([]),
     upsertPending: vi.fn(),
     updateIntake: vi.fn(),
@@ -24,6 +30,8 @@ export function makeAppProfileTestDeps(
     sendCalendarSmsTest: vi.fn().mockResolvedValue({ ok: false, reason: 'test_phone_missing' }),
     logActivity: vi.fn(),
     updateCandidateReferent: vi.fn(),
+    setCandidateInactive: vi.fn(),
+    setCandidateQualifie: vi.fn(),
     ...overrides,
   }
 }

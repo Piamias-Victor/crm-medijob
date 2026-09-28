@@ -3,7 +3,7 @@ import { makeAppProfileRepository } from './app-profile.repository'
 import { mockAppProfileDb } from './app-profile.repository.test-deps'
 
 describe('appProfileRepository listIntakeFollowUp', () => {
-  it('excludes App-validated, Ignore, negatives', async () => {
+  it('keeps Nouveau candidates (incl. App-validated)', async () => {
     const db = mockAppProfileDb()
     db.appProfile.findMany.mockResolvedValue([{ id: 'p1' }])
     const repo = makeAppProfileRepository(db as never)
@@ -12,14 +12,10 @@ describe('appProfileRepository listIntakeFollowUp', () => {
       expect.objectContaining({
         where: {
           AND: [
-            { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+            { status: { not: 'IGNORE' } },
             {
-              OR: [
-                { callOutcome: null },
-                { callOutcome: { notIn: ['PAS_INTERESSE', 'HORS_CIBLE'] } },
-              ],
+              OR: [{ candidateId: null }, { candidate: { is: { status: 'NOUVEAU' } } }],
             },
-            { intakeStatus: { not: 'HORS_ZONE' } },
           ],
         },
         orderBy: [{ relanceAt: 'asc' }, { createdAt: 'desc' }],
@@ -38,14 +34,10 @@ describe('appProfileRepository listIntakeFollowUp', () => {
           AND: [
             {
               AND: [
-                { status: { notIn: ['APP_VALIDATED', 'IGNORE'] } },
+                { status: { not: 'IGNORE' } },
                 {
-                  OR: [
-                    { callOutcome: null },
-                    { callOutcome: { notIn: ['PAS_INTERESSE', 'HORS_CIBLE'] } },
-                  ],
+                  OR: [{ candidateId: null }, { candidate: { is: { status: 'NOUVEAU' } } }],
                 },
-                { intakeStatus: { not: 'HORS_ZONE' } },
               ],
             },
             { OR: [{ referentId: 'u1' }, { referentId: null }] },

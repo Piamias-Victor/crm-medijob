@@ -26,5 +26,6 @@ export async function defaultSyncroImportDeps(): Promise<SyncroImportDeps> {
       const row = await candidateRepository.findByBadakanId(badakanId)
       return row ? { id: row.id } : null
     },
+    muteOutbound: (id) => appProfileRepository.muteOutbound(id),
   }
 }

@@ -40,10 +40,20 @@ async function main() {
     console.error('Missing --file path.json')
     process.exit(1)
   }
+  const dbUrl = process.env.DATABASE_URL ?? ''
+  const host = dbUrl.match(/@([^/:?]+)/)?.[1] ?? ''
+  if (host.includes('recette')) {
+    console.error('Refusing Syncro import against RECETTE host:', host)
+    process.exit(2)
+  }
+  if (!dryRun && !process.argv.includes('--allow-prod-write')) {
+    console.error('Apply on prod requires --allow-prod-write (after mute-app-profile-outbound)')
+    process.exit(2)
+  }
   const rows = loadRows(file)
   const deps = await defaultSyncroImportDeps()
   const result = await importSyncroRows(rows, deps, { dryRun })
-  console.log(JSON.stringify({ file, rowCount: rows.length, ...result }, null, 2))
+  console.log(JSON.stringify({ file, host, rowCount: rows.length, ...result }, null, 2))
 }
 
 main().catch((error) => {
