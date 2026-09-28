@@ -11,21 +11,12 @@ const notValid = mapBadakanRecipient({
 })!
 
 describe('syncAppValidated isValid gate', () => {
-  it('creates a CVthèque Candidate when Badakan isValid is false', async () => {
+  it('does not create a CVthèque Candidate until Badakan isValid', async () => {
     const deps = stubValidatedDeps()
     const result = await syncAppValidated([notValid], deps)
-    expect(result).toEqual({ created: 1, linked: 0, skipped: 0 })
-    expect(deps.createAppCandidate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        firstName: 'Marie',
-        lastName: 'App',
-        origin: 'APP',
-        badakanId: 'bk-marie',
-      }),
-    )
-    expect(deps.createAppCandidate).toHaveBeenCalledWith(
-      expect.not.objectContaining({ badakanValidatedAt: expect.anything() }),
-    )
+    expect(result).toEqual({ created: 0, linked: 0, skipped: 1 })
+    expect(deps.createAppCandidate).not.toHaveBeenCalled()
+    expect(deps.markAppValidated).not.toHaveBeenCalled()
     expect(deps.returnToInbox).not.toHaveBeenCalled()
     expect(deps.markBadakanValidated).not.toHaveBeenCalled()
   })
@@ -74,5 +65,18 @@ describe('syncAppValidated isValid gate', () => {
     })
     await syncAppValidated([valid], deps)
     expect(deps.markBadakanValidated).not.toHaveBeenCalled()
+  })
+
+  it('keeps Entrées EN_ATTENTE when linked Candidate is not yet isValid', async () => {
+    const deps = stubValidatedDeps({
+      findByBadakanId: async () => existingLinked,
+      findAppProfileByBadakanId: async () => ({
+        id: 'p1',
+        status: 'EN_ATTENTE',
+        candidateId: null,
+      }),
+    })
+    await syncAppValidated([notValid], deps)
+    expect(deps.markAppValidated).not.toHaveBeenCalled()
   })
 })

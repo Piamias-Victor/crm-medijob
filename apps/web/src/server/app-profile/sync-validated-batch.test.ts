@@ -8,6 +8,7 @@ function person(id: string) {
     id,
     firstName: id,
     lastName: 'App',
+    isValid: true,
   })!
 }
 

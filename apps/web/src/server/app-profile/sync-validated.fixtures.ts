@@ -11,6 +11,16 @@ export const marieValidated = mapBadakanRecipient({
   isValid: true,
 })!
 
+export const mariePending = mapBadakanRecipient({
+  id: 'bk-marie',
+  firstName: 'Marie',
+  lastName: 'App',
+  email: 'marie@app.fr',
+  phone: '0600000001',
+  activity: 'Pharmacien',
+  isValid: false,
+})!
+
 export const marieMoved = mapBadakanRecipient({
   id: 'bk-marie',
   firstName: 'Marie',
