@@ -7,7 +7,7 @@ const notValid = mapBadakanRecipient({
   id: 'bk-marie',
   firstName: 'Marie',
   lastName: 'App',
-  isValid: false,
+    10|  isValid: false,
 })!
 
 describe('syncAppValidated isValid gate', () => {
