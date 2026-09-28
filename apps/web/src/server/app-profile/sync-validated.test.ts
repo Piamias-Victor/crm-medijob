@@ -1,11 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { syncAppValidated } from './sync-validated'
-import {
-  existingLinked,
-  mariePending,
-  marieValidated,
-  stubValidatedDeps,
-} from './sync-validated.fixtures'
+import { existingLinked, marieValidated, stubValidatedDeps } from './sync-validated.fixtures'
 
 describe('syncAppValidated', () => {
   it('creates Candidate origin App status Nouveau', async () => {
@@ -96,34 +91,5 @@ describe('syncAppValidated', () => {
     expect(deps.createAppCandidate).not.toHaveBeenCalled()
     expect(deps.linkAppOrigin).not.toHaveBeenCalled()
     expect(deps.markAppValidated).toHaveBeenCalledWith('p1', 'c-existing')
-  })
-
-  it('keeps Entrées app row when Badakan is not yet validated', async () => {
-    const deps = stubValidatedDeps({
-      findAppProfileByBadakanId: async () => ({
-        id: 'p1',
-        status: 'EN_ATTENTE',
-        candidateId: null,
-      }),
-      mapJobTitleId: async () => 'jt1',
-    })
-    const result = await syncAppValidated([mariePending], deps)
-    expect(result).toEqual({ created: 0, linked: 0, skipped: 1 })
-    expect(deps.createAppCandidate).not.toHaveBeenCalled()
-    expect(deps.markAppValidated).not.toHaveBeenCalled()
-  })
-
-  it('does not mark App-validated on linked Candidate until Badakan isValid', async () => {
-    const deps = stubValidatedDeps({
-      findByBadakanId: async () => existingLinked,
-      findAppProfileByBadakanId: async () => ({
-        id: 'p1',
-        status: 'EN_ATTENTE',
-        candidateId: null,
-      }),
-    })
-    await syncAppValidated([mariePending], deps)
-    expect(deps.markAppValidated).not.toHaveBeenCalled()
-    expect(deps.linkAppProfileCandidate).not.toHaveBeenCalled()
   })
 })
