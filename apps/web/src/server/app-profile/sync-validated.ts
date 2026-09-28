@@ -46,10 +46,6 @@ async function convertNewRow(
   deps: SyncValidatedDeps,
   result: SyncValidatedResult,
 ) {
-  if (!row.isValid) {
-    result.skipped += 1
-    return false
-  }
   const match = await deps.findMatch({
     email: row.email,
     phone: row.phone,

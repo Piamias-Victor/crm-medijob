@@ -31,6 +31,7 @@ function row(overrides: Partial<AppProfileListItem> = {}): AppProfileListItem {
     isRelanceOverdue: false,
     lastCalledAt: null,
     lastCalledByName: null,
+    candidateId: null,
     invitationLabel: '',
     intakeBookingSmsLabel: '',
     badakanCommentsLabel: 'comment',

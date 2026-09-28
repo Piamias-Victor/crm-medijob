@@ -15,6 +15,7 @@ export async function attachAppProfile(
   if (!profile) return
   if (profile.status === 'EN_ATTENTE') {
     if (isValid) await deps.markAppValidated(profile.id, candidateId)
+    else if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
     return
   }
   if (!profile.candidateId) await deps.linkAppProfileCandidate(profile.id, candidateId)
