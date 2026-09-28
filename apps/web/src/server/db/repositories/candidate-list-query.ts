@@ -3,6 +3,7 @@ import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { NOT_DELETED } from './soft-delete'
 import { buildCandidateListWhere } from './candidate-list-where'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
+import { entreesAppSoftHideWhere } from '@/view-models/entrees-app-soft-hide'
 
 export function buildCandidateListQuery<S extends Prisma.CandidateSelect>(
   db: PrismaClient,
@@ -11,8 +12,11 @@ export function buildCandidateListQuery<S extends Prisma.CandidateSelect>(
   limit?: number,
 ) {
   const filterWhere = buildCandidateListWhere(filters)
+  const softHide = entreesAppSoftHideWhere()
   const where: Prisma.CandidateWhereInput =
-    Object.keys(filterWhere).length === 0 ? NOT_DELETED : { AND: [NOT_DELETED, filterWhere] }
+    Object.keys(filterWhere).length === 0
+      ? { AND: [NOT_DELETED, softHide] }
+      : { AND: [NOT_DELETED, softHide, filterWhere] }
 
   return db.candidate.findMany({
     where,

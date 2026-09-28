@@ -9,7 +9,7 @@ import { AppIntakeRdvCell } from '@/components/molecules/AppIntakeRdvCell'
 import { AppIntakeNotesCell } from '@/components/molecules/AppIntakeNotesCell'
 import { AppReferentCell } from '@/components/molecules/AppReferentCell'
 import { AppRelanceCell } from '@/components/molecules/AppRelanceCell'
-import { AppIntakeIgnoreCell } from '@/components/molecules/AppIntakeIgnoreCell'
+import { AppIntakeActionsCell } from '@/components/molecules/AppIntakeActionsCell'
 import {
   APP_CALL_OUTCOME_LABELS,
   APP_INTAKE_STATUS_LABELS,
@@ -93,7 +93,7 @@ export function buildAppIntakeOpsColumns(
       id: 'actions',
       header: '',
       accessor: () => '',
-      cell: (row) => <AppIntakeIgnoreCell row={row} />,
+      cell: (row) => <AppIntakeActionsCell row={row} />,
     },
   ]
 }
