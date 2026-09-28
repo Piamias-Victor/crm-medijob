@@ -19,6 +19,9 @@ type Props = {
   onCreate?: (label: string) => Promise<ComboboxOption>
   remoteSearch?: boolean
   onQueryChange?: (query: string) => void
+  disabled?: boolean
+  className?: string
+  'aria-label'?: string
 }
 
 export function Combobox({
@@ -29,6 +32,9 @@ export function Combobox({
   onCreate,
   remoteSearch = false,
   onQueryChange,
+  disabled = false,
+  className,
+  'aria-label': ariaLabel,
 }: Props) {
   const [open, setOpen] = useState(false)
   const panel = useComboboxPanel(open, setOpen, onChange, onCreate)
@@ -59,10 +65,15 @@ export function Combobox({
     <div ref={panel.anchorRef} className="relative">
       <button
         type="button"
+        aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={open}
+        disabled={disabled}
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2 text-sm text-fg outline-none transition-colors hover:border-accent focus:border-accent focus:ring-2 focus:ring-accent-muted"
+        className={cn(
+          'flex w-full items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2 text-sm text-fg outline-none transition-colors hover:border-accent focus:border-accent focus:ring-2 focus:ring-accent-muted disabled:cursor-not-allowed disabled:opacity-60',
+          className,
+        )}
       >
         <span className={cn('min-w-0 flex-1 truncate text-left', !selected && 'text-fg-muted')} title={selected?.label}>
           {selected?.label ?? placeholder}

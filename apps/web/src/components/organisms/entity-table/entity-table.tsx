@@ -1,12 +1,16 @@
 'use client'
 
 import { EmptyState } from '@/components/atoms/EmptyState'
+import { cn } from '@/lib/cn'
 import { paginateEntityRows, sortEntityRows } from '@/components/organisms/entity-table/entity-table-logic'
 import { EntityTableHeader } from '@/components/organisms/entity-table/entity-table-header'
 import { EntityTablePagination } from '@/components/organisms/entity-table/entity-table-pagination'
 import { EntityTableRow } from '@/components/organisms/entity-table/entity-table-row'
 import { useEntityTableState } from '@/components/organisms/entity-table/entity-table-state'
 import type { EntityTableProps } from '@/components/organisms/entity-table/entity-table-types'
+
+const SCROLLBAR_ALWAYS =
+  'overflow-x-scroll overflow-y-auto [scrollbar-gutter:stable] [&::-webkit-scrollbar]:h-3 [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-surface'
 
 export function EntityTable<TRow>({
   rows,
@@ -25,6 +29,7 @@ export function EntityTable<TRow>({
   page: controlledPage,
   onPageChange,
   onPageSizeChange,
+  scrollMaxHeightClassName,
 }: EntityTableProps<TRow>) {
   const state = useEntityTableState<TRow>({
     pageSize,
@@ -47,9 +52,9 @@ export function EntityTable<TRow>({
   const hasActions = Boolean(renderActions)
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-surface/80">
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse text-sm">
+    <div className="overflow-hidden rounded-lg border border-border bg-surface">
+      <div className={cn(SCROLLBAR_ALWAYS, scrollMaxHeightClassName)}>
+        <table className="min-w-max w-full border-collapse text-sm">
           <EntityTableHeader
             columns={columns}
             sort={state.sort}

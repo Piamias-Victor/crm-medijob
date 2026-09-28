@@ -12,13 +12,17 @@ type Props = {
 }
 
 export function FilterSelectField({ config, value, onChange }: Props) {
+  const options =
+    config.options.some((option) => option.value === '')
+      ? [...config.options]
+      : [FILTER_ALL_OPTION, ...config.options]
   return (
     <FilterFieldLabel label={config.label} className="w-36">
       <Combobox
         value={value}
         onChange={onChange}
-        placeholder="Tous"
-        options={[FILTER_ALL_OPTION, ...config.options]}
+        placeholder={config.placeholder ?? 'Tous'}
+        options={options}
       />
     </FilterFieldLabel>
   )
