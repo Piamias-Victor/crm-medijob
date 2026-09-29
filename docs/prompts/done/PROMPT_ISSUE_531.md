@@ -44,3 +44,7 @@ Pilotage/listes : lignes non liées comptées ; libellé Excel affiché ; bucket
 
 ## Compte rendu
 
+## Compte rendu
+
+- Test Pilotage CA/Marge + slice Non liée for unlinked Excel lines
+- Dry-run audit 2026-09-29 (counts only, gap 0)
