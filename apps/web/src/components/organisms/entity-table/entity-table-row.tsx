@@ -1,7 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import type { KeyboardEvent, ReactNode } from 'react'
+import type { KeyboardEvent, MouseEvent, ReactNode } from 'react'
+
+const INTERACTIVE_SELECTOR =
+  'a, button, input, select, textarea, label, [role="combobox"], [data-row-click-ignore]'
 
 type Props<TRow> = {
   row: TRow
@@ -10,6 +13,10 @@ type Props<TRow> = {
   renderActions?: (row: TRow) => ReactNode
   getRowHref?: (row: TRow) => string
   onRowClick?: (row: TRow) => void
+}
+
+function isInteractiveTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && Boolean(target.closest(INTERACTIVE_SELECTOR))
 }
 
 export function EntityTableRow<TRow>({
@@ -24,7 +31,8 @@ export function EntityTableRow<TRow>({
   const href = getRowHref?.(row)
   const clickable = Boolean(onRowClick) || Boolean(href)
 
-  const activate = () => {
+  const activate = (event?: MouseEvent | KeyboardEvent) => {
+    if (event && isInteractiveTarget(event.target)) return
     if (onRowClick) {
       onRowClick(row)
       return
@@ -36,7 +44,7 @@ export function EntityTableRow<TRow>({
     if (!clickable) return
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
-      activate()
+      activate(event)
     }
   }
 

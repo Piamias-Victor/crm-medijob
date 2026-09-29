@@ -48,4 +48,30 @@ describe('EntityTableRow', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Ouvrir la fiche' }))
     expect(push).toHaveBeenCalledWith('/pharmacies/p1')
   })
+
+  it('ignores row navigation when clicking interactive controls', () => {
+    push.mockClear()
+    const interactiveColumns = [
+      {
+        id: 'status',
+        accessor: () => '',
+        cell: () => <select aria-label="Statut"><option>A</option></select>,
+      },
+    ]
+    render(
+      <table>
+        <tbody>
+          <EntityTableRow
+            row={{ name: 'Camille' }}
+            columns={interactiveColumns}
+            hasActions={false}
+            getRowHref={() => '/candidats/c1'}
+          />
+        </tbody>
+      </table>,
+    )
+
+    fireEvent.click(screen.getByRole('combobox', { name: 'Statut' }))
+    expect(push).not.toHaveBeenCalled()
+  })
 })
