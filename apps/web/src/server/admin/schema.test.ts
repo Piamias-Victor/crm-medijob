@@ -24,3 +24,20 @@ describe('reorderSchema', () => {
     expect(reorderSchema.safeParse({ orderedIds: [] }).success).toBe(false)
   })
 })
+
+describe('intakeStatusAdminSchema', () => {
+  it('accepts name + hex color', async () => {
+    const { intakeStatusAdminSchema } = await import('@/server/admin/schema')
+    expect(intakeStatusAdminSchema.parse({ name: '  Nouveau  ', color: '#FEF3C7' })).toEqual({
+      name: 'Nouveau',
+      color: '#FEF3C7',
+    })
+  })
+
+  it('normalizes lowercase hex and rejects invalid', async () => {
+    const { intakeStatusAdminSchema } = await import('@/server/admin/schema')
+    expect(intakeStatusAdminSchema.parse({ name: 'X', color: '#abc' }).color).toBe('#AABBCC')
+    expect(intakeStatusAdminSchema.safeParse({ name: 'X', color: 'red' }).success).toBe(false)
+    expect(intakeStatusAdminSchema.safeParse({ name: 'X', color: '#GGG' }).success).toBe(false)
+  })
+})

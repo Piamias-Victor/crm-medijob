@@ -10,7 +10,7 @@ describe('entreesAppSoftHideWhere', () => {
             OR: [
               { status: 'IGNORE' },
               { callOutcome: { in: ['PAS_INTERESSE', 'HORS_CIBLE'] } },
-              { intakeStatus: 'HORS_ZONE' },
+              { intakeStatusId: 'HORS_ZONE' },
             ],
           },
         },

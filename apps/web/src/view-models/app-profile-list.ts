@@ -2,8 +2,9 @@ import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import { appProfileInvitationLabel } from './app-profile-invitation'
 import { intakeBookingSmsLabel } from './app-profile-intake-booking-sms'
 import { isRelanceOverdue } from './app-profile-relance'
+import { resolveIntakeStatusRef, type IntakeStatusRef } from './resolve-intake-status-ref'
 import type { AppProfileListItem } from './app-profile-list.types'
-import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus, CandidateStatus } from '@prisma/client'
+import type { AppCallOutcome, AppProfileStatus, CandidateStatus } from '@prisma/client'
 
 export type { AppProfileListItem }
 
@@ -21,7 +22,8 @@ type Row = {
   jobTitleId: string | null
   hasResume: boolean
   status: AppProfileStatus
-  intakeStatus?: AppIntakeStatus | null
+  intakeStatusId?: string | null
+  intakeStatus?: IntakeStatusRef | string | null
   callOutcome?: AppCallOutcome | null
   plannedRdvAt?: Date | null
   notes?: string | null
@@ -43,6 +45,7 @@ type Row = {
 
 export function toAppProfileListItem(row: Row, now: Date = new Date()): AppProfileListItem {
   const relanceAt = row.relanceAt ?? null
+  const intake = resolveIntakeStatusRef(row)
   return {
     id: row.id,
     badakanId: row.badakanId,
@@ -58,7 +61,9 @@ export function toAppProfileListItem(row: Row, now: Date = new Date()): AppProfi
     jobTitleName: row.jobTitle?.name ?? null,
     hasResume: row.hasResume,
     status: row.status,
-    intakeStatus: row.intakeStatus ?? 'A_APPELER',
+    intakeStatus: intake.id,
+    intakeStatusName: intake.name,
+    intakeStatusColor: intake.color,
     callOutcome: row.callOutcome ?? null,
     plannedRdvAt: row.plannedRdvAt ?? null,
     notes: row.notes ?? null,

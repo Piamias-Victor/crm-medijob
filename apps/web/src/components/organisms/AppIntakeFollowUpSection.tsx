@@ -5,6 +5,7 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { AppIntakeFollowUpTable } from '@/components/molecules/AppIntakeFollowUpTable'
 import { AppIntakeFilterBar } from '@/components/molecules/AppIntakeFilterBar'
 import { AppIntakeListKeyProvider } from '@/lib/hooks/use-app-intake-list-key'
+import { AppIntakeStatusesProvider } from '@/lib/hooks/use-app-intake-statuses'
 import { useEntityFilters } from '@/hooks/use-entity-filters'
 import { buildAppIntakeFilterConfig } from '@/lib/filters/app-intake-filter-config'
 import {
@@ -14,13 +15,21 @@ import {
 import { filterAppIntakeRows } from '@/view-models/filter-app-intake-rows'
 import { trpc } from '@/lib/trpc/client'
 import { interimCountLabel } from '@/view-models/interim-count-label'
+import type { IntakeStatusOption } from '@/view-models/app-intake-combobox-options'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Ref = { id: string; name: string }
-type Props = { initialItems: AppProfileListItem[]; recruiters: readonly Ref[] }
+type Props = {
+  initialItems: AppProfileListItem[]
+  recruiters: readonly Ref[]
+  statuses: readonly IntakeStatusOption[]
+}
 
-export function AppIntakeFollowUpSection({ initialItems, recruiters }: Props) {
-  const filterConfig = useMemo(() => buildAppIntakeFilterConfig(recruiters), [recruiters])
+export function AppIntakeFollowUpSection({ initialItems, recruiters, statuses }: Props) {
+  const filterConfig = useMemo(
+    () => buildAppIntakeFilterConfig(recruiters, statuses),
+    [recruiters, statuses],
+  )
   const defaults = useMemo(() => buildAppIntakeFilterDefaults(filterConfig), [filterConfig])
   const { values, onChange, reset } = useEntityFilters(filterConfig, {
     syncUrl: false,
@@ -41,21 +50,23 @@ export function AppIntakeFollowUpSection({ initialItems, recruiters }: Props) {
       : `${interimCountLabel(items.length, 'entrée')} à traiter`
 
   return (
-    <AppIntakeListKeyProvider value={listKey}>
-      <SectionCard
-        variant="glass"
-        title="Entrées app"
-        description={description}
-        bodyClassName="space-y-4 p-4 sm:p-5"
-      >
-        <AppIntakeFilterBar
-          filterConfig={filterConfig}
-          values={values}
-          onChange={onChange}
-          onReset={reset}
-        />
-        <AppIntakeFollowUpTable items={items} recruiters={recruiters} />
-      </SectionCard>
-    </AppIntakeListKeyProvider>
+    <AppIntakeStatusesProvider statuses={statuses}>
+      <AppIntakeListKeyProvider value={listKey}>
+        <SectionCard
+          variant="glass"
+          title="Entrées app"
+          description={description}
+          bodyClassName="space-y-4 p-4 sm:p-5"
+        >
+          <AppIntakeFilterBar
+            filterConfig={filterConfig}
+            values={values}
+            onChange={onChange}
+            onReset={reset}
+          />
+          <AppIntakeFollowUpTable items={items} recruiters={recruiters} />
+        </SectionCard>
+      </AppIntakeListKeyProvider>
+    </AppIntakeStatusesProvider>
   )
 }

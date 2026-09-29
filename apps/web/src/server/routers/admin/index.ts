@@ -7,6 +7,7 @@ import { contactRoleRouter } from '@/server/routers/admin/contact-role'
 import { userRouter } from '@/server/routers/admin/user.live'
 import { interviewTemplateAdminRouter } from '@/server/routers/admin/interview-template'
 import { objectifRouter } from '@/server/routers/admin/objectif'
+import { intakeStatusAdminRouter } from '@/server/routers/admin/intake-status'
 
 export const adminRouter = router({
   pipeline: pipelineRouter,
@@ -17,4 +18,5 @@ export const adminRouter = router({
   user: userRouter,
   interviewTemplate: interviewTemplateAdminRouter,
   objectif: objectifRouter,
+  intakeStatus: intakeStatusAdminRouter,
 })

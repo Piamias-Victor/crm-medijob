@@ -109,13 +109,6 @@ enum AppProfileStatus {
   APP_VALIDATED
 }
 
-enum AppIntakeStatus {
-  A_APPELER
-  DOSSIER_INCOMPLET
-  A_RELANCER
-  HORS_ZONE
-}
-
 enum AppCallOutcome {
   MESSAGERIE
   RDV_PRIS
@@ -269,6 +262,21 @@ model PipelineStage {
   missionCandidates MissionCandidate[]
 
   @@index([position])
+}
+
+model IntakeStatus {
+  id         String    @id @default(cuid())
+  name       String
+  color      String
+  position   Int
+  archivedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  appProfiles AppProfile[]
+
+  @@index([position])
+  @@index([archivedAt])
 }
 
 model JobTitle {
@@ -695,7 +703,7 @@ model AppProfile {
   hasResume           Boolean          @default(false)
   snapshot            Json?
   status              AppProfileStatus @default(EN_ATTENTE)
-  intakeStatus        AppIntakeStatus  @default(A_APPELER)
+  intakeStatusId      String           @default("A_APPELER")
   callOutcome         AppCallOutcome?
   plannedRdvAt        DateTime?
   notes               String?
@@ -713,15 +721,16 @@ model AppProfile {
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
-  jobTitle     JobTitle?  @relation(fields: [jobTitleId], references: [id])
-  candidate    Candidate? @relation(fields: [candidateId], references: [id])
-  referent     User?      @relation("ReferentAppProfiles", fields: [referentId], references: [id], onDelete: SetNull)
-  lastCalledBy User?      @relation("LastCalledByAppProfiles", fields: [lastCalledById], references: [id], onDelete: SetNull)
+  jobTitle     JobTitle?     @relation(fields: [jobTitleId], references: [id])
+  intakeStatus IntakeStatus  @relation(fields: [intakeStatusId], references: [id])
+  candidate    Candidate?    @relation(fields: [candidateId], references: [id])
+  referent     User?         @relation("ReferentAppProfiles", fields: [referentId], references: [id], onDelete: SetNull)
+  lastCalledBy User?         @relation("LastCalledByAppProfiles", fields: [lastCalledById], references: [id], onDelete: SetNull)
 
   @@index([status])
   @@index([candidateId])
   @@index([status, inviteEmailSentAt])
-  @@index([intakeStatus])
+  @@index([intakeStatusId])
   @@index([referentId])
   @@index([relanceAt])
 }

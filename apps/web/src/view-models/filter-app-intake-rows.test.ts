@@ -21,6 +21,8 @@ function row(overrides: Partial<AppProfileListItem> = {}): AppProfileListItem {
     hasResume: false,
     status: 'EN_ATTENTE',
     intakeStatus: 'A_APPELER',
+    intakeStatusName: 'À appeler',
+    intakeStatusColor: '#FEF3C7',
     callOutcome: 'MESSAGERIE',
     plannedRdvAt: null,
     notes: 'rappeler',

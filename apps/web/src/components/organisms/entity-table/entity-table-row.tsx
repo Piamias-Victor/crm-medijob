@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import type { KeyboardEvent, MouseEvent, ReactNode } from 'react'
+import type { CSSProperties, KeyboardEvent, MouseEvent, ReactNode } from 'react'
 
 const INTERACTIVE_SELECTOR =
   'a, button, input, select, textarea, label, [role="combobox"], [data-row-click-ignore]'
@@ -12,6 +12,7 @@ type Props<TRow> = {
   hasActions: boolean
   renderActions?: (row: TRow) => ReactNode
   getRowHref?: (row: TRow) => string
+  getRowStyle?: (row: TRow) => CSSProperties | undefined
   onRowClick?: (row: TRow) => void
 }
 
@@ -25,6 +26,7 @@ export function EntityTableRow<TRow>({
   hasActions,
   renderActions,
   getRowHref,
+  getRowStyle,
   onRowClick,
 }: Props<TRow>) {
   const router = useRouter()
@@ -56,6 +58,7 @@ export function EntityTableRow<TRow>({
       className={`border-t border-border/70 transition-colors hover:bg-surface/60 ${
         clickable ? 'cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent' : ''
       }`}
+      style={getRowStyle?.(row)}
       onClick={clickable ? activate : undefined}
       onKeyDown={onKeyDown}
     >

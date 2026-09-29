@@ -20,12 +20,22 @@ describe('appProfileRepository updateIntake', () => {
     await repo.updateIntake('p1', data)
     expect(db.appProfile.update).toHaveBeenCalledWith({
       where: { id: 'p1' },
-      data,
+      data: {
+        intakeStatusId: 'A_RELANCER',
+        callOutcome: 'MESSAGERIE',
+        plannedRdvAt: null,
+        notes: 'rappel lundi',
+        referentId: 'u1',
+        relanceAt: new Date('2026-03-12T12:00:00.000Z'),
+        lastCalledAt: new Date('2026-03-10T15:00:00.000Z'),
+        lastCalledById: 'u1',
+      },
       include: {
         jobTitle: { select: { id: true, name: true } },
         referent: { select: { id: true, name: true } },
         lastCalledBy: { select: { id: true, name: true } },
         candidate: { select: { status: true } },
+        intakeStatus: { select: { id: true, name: true, color: true } },
       },
     })
   })

@@ -1,11 +1,12 @@
-import type { ActivityType, AppCallOutcome, AppIntakeStatus } from '@prisma/client'
+import type { ActivityType, AppCallOutcome } from '@prisma/client'
 import {
   APP_CALL_OUTCOME_LABELS,
   APP_INTAKE_STATUS_LABELS,
 } from '@/view-models/app-profile-intake.labels'
+import type { AppIntakeStatus } from '@/view-models/app-profile-intake.enums'
 
 export type IntakeMirrorSnapshot = {
-  intakeStatus: AppIntakeStatus
+  intakeStatus: string
   callOutcome: AppCallOutcome | null
   plannedRdvAt: Date | null
   notes: string | null
@@ -21,6 +22,10 @@ function sameDate(a: Date | null, b: Date | null) {
   return a.getTime() === b.getTime()
 }
 
+function statusLabel(id: string) {
+  return APP_INTAKE_STATUS_LABELS[id as AppIntakeStatus] ?? id
+}
+
 export function buildIntakeMirrorActivities(
   previous: IntakeMirrorSnapshot,
   next: IntakeMirrorSnapshot,
@@ -29,7 +34,7 @@ export function buildIntakeMirrorActivities(
   if (previous.intakeStatus !== next.intakeStatus) {
     logs.push({
       type: 'NOTE',
-      content: `Entrées app — Statut : ${APP_INTAKE_STATUS_LABELS[next.intakeStatus]}`,
+      content: `Entrées app — Statut : ${statusLabel(next.intakeStatus)}`,
     })
   }
   if (previous.callOutcome !== next.callOutcome) {
@@ -44,9 +49,7 @@ export function buildIntakeMirrorActivities(
     logs.push({
       type: 'ENTRETIEN',
       content: `Entrées app — RDV : ${
-        next.plannedRdvAt
-          ? next.plannedRdvAt.toLocaleDateString('fr-FR')
-          : '—'
+        next.plannedRdvAt ? next.plannedRdvAt.toLocaleDateString('fr-FR') : '—'
       }`,
     })
   }
