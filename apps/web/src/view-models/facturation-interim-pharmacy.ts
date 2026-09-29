@@ -1,5 +1,5 @@
 import { roundMoney } from '@/lib/finance/calculate-interim-libre'
-import { PHARMACY_UNLINKED_KEY } from '@/view-models/finance-line-unlinked'
+import { financeLinePharmacyKey } from '@/view-models/finance-line-pharmacy-key'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
 export type InterimPharmacyAggregate = {
@@ -34,15 +34,9 @@ function withRates(row: PharmacyTotals): InterimPharmacyAggregate {
   }
 }
 
-function pharmacyKey(row: FacturationSuiviRow) {
-  if (row.pharmacyId) return row.pharmacyId
-  const label = row.pharmacyName.trim().toLowerCase()
-  return label ? `${PHARMACY_UNLINKED_KEY}:${label}` : PHARMACY_UNLINKED_KEY
-}
-
 function emptyTotals(row: FacturationSuiviRow): PharmacyTotals {
   return {
-    pharmacyId: pharmacyKey(row),
+    pharmacyId: financeLinePharmacyKey(row.pharmacyId, row.pharmacyName),
     pharmacyName: row.pharmacyName,
     count: 0,
     hours: 0,
@@ -57,7 +51,7 @@ export function buildInterimPharmacyAggregates(
 ): InterimPharmacyAggregate[] {
   const byPharmacy = new Map<string, PharmacyTotals>()
   for (const row of rows) {
-    const key = pharmacyKey(row)
+    const key = financeLinePharmacyKey(row.pharmacyId, row.pharmacyName)
     const current = byPharmacy.get(key) ?? emptyTotals(row)
     current.count += 1
     current.hours += row.hours ?? 0

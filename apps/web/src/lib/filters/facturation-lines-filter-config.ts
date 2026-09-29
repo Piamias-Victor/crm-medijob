@@ -30,6 +30,11 @@ export function buildFacturationLinesFilterConfig(
       placeholder: 'Tous',
     },
     {
+      id: 'periode',
+      label: 'Période',
+      type: 'date-range',
+    },
+    {
       id: 'contrat',
       label: 'Type de contrat',
       type: 'multi-select',

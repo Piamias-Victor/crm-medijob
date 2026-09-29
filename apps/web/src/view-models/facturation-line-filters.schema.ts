@@ -10,6 +10,8 @@ export const facturationLineListFiltersSchema = z.object({
   referentIds: z.array(z.string()).optional(),
   cancelled: z.boolean().optional(),
   unlinkedOnly: z.boolean().optional(),
+  acceptedFrom: z.string().optional(),
+  acceptedTo: z.string().optional(),
 })
 
 export type FacturationLineListFiltersInput = z.infer<typeof facturationLineListFiltersSchema>

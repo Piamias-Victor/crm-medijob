@@ -1,6 +1,7 @@
 import { REFERENT_NONE } from '@/lib/constants/referent-none'
 import { facturationMonthKey } from '@/view-models/facturation-month-key'
 import { matchesFinanceLineSearch } from '@/lib/finance/match-finance-line-search'
+import { matchesIsoDateRange } from '@/lib/finance/match-iso-date-range'
 import { PHARMACY_UNLINKED_KEY } from '@/view-models/finance-line-unlinked'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 import type { PlacementContractType } from '@/view-models/finance-line'
@@ -13,6 +14,8 @@ export type FinanceLineMatchFilters = {
   referentIds?: string[]
   cancelled?: boolean
   unlinkedOnly?: boolean
+  acceptedFrom?: string
+  acceptedTo?: string
 }
 
 function matchesReferent(row: FacturationSuiviRow, referentIds: string[]) {
@@ -45,5 +48,5 @@ export function matchesFinanceLineFilters(
   if (filters.cancelled === true && !row.cancelled) return false
   if (filters.cancelled === false && row.cancelled) return false
   if (filters.unlinkedOnly && row.pharmacyId != null && row.candidateId != null) return false
-  return true
+  return matchesIsoDateRange(row.acceptedAt, filters.acceptedFrom, filters.acceptedTo)
 }
