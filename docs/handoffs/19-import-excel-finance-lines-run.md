@@ -14,7 +14,7 @@
 
 | Issue | Titre | PR | Gate | Notes |
 |-------|-------|----|------|-------|
-| #526 | ADR + CONTEXT + gitignore | | | |
+| #526 | ADR + CONTEXT + gitignore | #533 | lint:prompts+lines | merged |
 | #527 | Schema | | | |
 | #528 | Parser | | | |
 | #529 | Matching | | | |
