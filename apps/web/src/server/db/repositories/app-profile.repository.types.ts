@@ -1,10 +1,11 @@
-import type { AppCallOutcome, AppIntakeStatus, Prisma } from '@prisma/client'
+import type { AppCallOutcome, Prisma } from '@prisma/client'
 
 export const appProfileJobTitleInclude = {
   jobTitle: { select: { id: true, name: true } },
   referent: { select: { id: true, name: true } },
   lastCalledBy: { select: { id: true, name: true } },
   candidate: { select: { status: true } },
+  intakeStatus: { select: { id: true, name: true, color: true } },
 } as const
 
 export type AppProfileUpsertInput = {
@@ -26,7 +27,7 @@ export type AppProfileUpsertInput = {
 }
 
 export type AppProfileIntakeUpdate = {
-  intakeStatus: AppIntakeStatus
+  intakeStatus: string
   callOutcome: AppCallOutcome | null
   plannedRdvAt: Date | null
   notes: string | null
@@ -42,4 +43,3 @@ export type ListIntakeFollowUpOpts = {
   population?: 'default' | 'archive'
   currentUserId?: string
 }
-

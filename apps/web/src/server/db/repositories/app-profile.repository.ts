@@ -52,12 +52,14 @@ export function makeAppProfileRepository(db: PrismaClient = defaultDb) {
           inviteLastError: 'syncro_import_muted',
         },
       }),
-    updateIntake: (id: string, data: AppProfileIntakeUpdate) =>
-      db.appProfile.update({
+    updateIntake: (id: string, data: AppProfileIntakeUpdate) => {
+      const { intakeStatus, ...rest } = data
+      return db.appProfile.update({
         where: { id },
-        data,
+        data: { ...rest, intakeStatusId: intakeStatus },
         include: appProfileJobTitleInclude,
-      }),
+      })
+    },
     markStatus: (
       id: string,
       status: Extract<AppProfileStatus, 'ACCEPTE' | 'IGNORE' | 'APP_VALIDATED'>,

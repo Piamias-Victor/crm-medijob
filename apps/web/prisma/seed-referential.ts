@@ -48,9 +48,28 @@ async function seedCompatibility(prisma: PrismaClient) {
   }
 }
 
+async function seedIntakeStatuses(prisma: PrismaClient) {
+  const rows = [
+    { id: 'A_APPELER', name: 'À appeler', color: '#FEF3C7', position: 0 },
+    { id: 'DOSSIER_INCOMPLET', name: 'Dossier incomplet', color: '#FFEDD5', position: 1 },
+    { id: 'A_RELANCER', name: 'À relancer', color: '#DBEAFE', position: 2 },
+    { id: 'HORS_ZONE', name: 'Hors zone', color: '#E5E7EB', position: 3 },
+  ] as const
+  await Promise.all(
+    rows.map((row) =>
+      prisma.intakeStatus.upsert({
+        where: { id: row.id },
+        update: { name: row.name, color: row.color, position: row.position },
+        create: { ...row },
+      }),
+    ),
+  )
+}
+
 /** Référentiel métier CRM (sans users / demo). */
 export async function seedReferential(prisma: PrismaClient) {
   await seedStages(prisma)
+  await seedIntakeStatuses(prisma)
   await seedByName(SOFTWARES, (name) =>
     prisma.software.upsert({ where: { name }, update: {}, create: { name } }),
   )

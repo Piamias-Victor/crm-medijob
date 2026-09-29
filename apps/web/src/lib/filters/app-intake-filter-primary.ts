@@ -1,16 +1,14 @@
 import { buildReferentFilterOptions } from '@/lib/filters/referent-filter-options'
-import {
-  APP_CALL_OUTCOMES,
-  APP_INTAKE_STATUSES,
-} from '@/view-models/app-profile-intake.enums'
-import {
-  APP_CALL_OUTCOME_LABELS,
-  APP_INTAKE_STATUS_LABELS,
-} from '@/view-models/app-profile-intake.labels'
+import { APP_CALL_OUTCOMES } from '@/view-models/app-profile-intake.enums'
+import { APP_CALL_OUTCOME_LABELS } from '@/view-models/app-profile-intake.labels'
+import type { IntakeStatusOption } from '@/view-models/app-intake-combobox-options'
 
 type Ref = { id: string; name: string }
 
-export function appIntakePrimaryFilters(recruiters: readonly Ref[]) {
+export function appIntakePrimaryFilters(
+  recruiters: readonly Ref[],
+  statuses: readonly IntakeStatusOption[],
+) {
   return [
     {
       id: 'q' as const,
@@ -44,9 +42,9 @@ export function appIntakePrimaryFilters(recruiters: readonly Ref[]) {
       label: 'Statut',
       type: 'multi-select' as const,
       unit: 'statuts',
-      options: APP_INTAKE_STATUSES.map((value) => ({
-        value,
-        label: APP_INTAKE_STATUS_LABELS[value],
+      options: statuses.map((status) => ({
+        value: status.id,
+        label: status.name,
       })),
     },
     {

@@ -1,4 +1,4 @@
-import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
+import type { AppCallOutcome, AppProfileStatus } from '@prisma/client'
 
 export type SyncroSheetRow = {
   id: string
@@ -33,7 +33,7 @@ export type SyncroImportMapped = {
   postalCode: string | null
   activityLabel: string | null
   profileStatus: AppProfileStatus
-  intakeStatus: AppIntakeStatus
+  intakeStatus: string
   callOutcome: AppCallOutcome | null
   notes: string | null
   plannedRdvAt: Date | null

@@ -1,5 +1,6 @@
 import type { AppCallOutcome, AppIntakeStatus } from './app-profile-intake.enums'
 
+/** Fallback labels for seeded ids (import / activity log). */
 export const APP_INTAKE_STATUS_LABELS: Record<AppIntakeStatus, string> = {
   A_APPELER: 'À appeler',
   DOSSIER_INCOMPLET: 'Dossier incomplet',

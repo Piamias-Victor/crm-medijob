@@ -32,7 +32,12 @@ export function updateIntakeProcedure(deps: AppProfileDeps) {
             candidateId: row.candidateId,
             authorId: ctx.session.user.id,
             previous: {
-              intakeStatus: current?.intakeStatus ?? 'A_APPELER',
+              intakeStatus:
+                (typeof current?.intakeStatus === 'object' && current.intakeStatus
+                  ? current.intakeStatus.id
+                  : null) ??
+                current?.intakeStatusId ??
+                'A_APPELER',
               callOutcome: current?.callOutcome ?? null,
               plannedRdvAt: current?.plannedRdvAt ?? null,
               notes: current?.notes ?? null,

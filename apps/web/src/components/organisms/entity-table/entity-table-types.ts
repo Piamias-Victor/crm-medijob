@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -27,6 +27,7 @@ export type EntityTableProps<TRow> = {
   emptyDescription: string
   renderActions?: (row: TRow) => ReactNode
   getRowHref?: (row: TRow) => string
+  getRowStyle?: (row: TRow) => CSSProperties | undefined
   onRowClick?: (row: TRow) => void
   pageSize?: number
   pageSizeOptions?: number[]
