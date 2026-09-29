@@ -34,9 +34,15 @@ function withRates(row: PharmacyTotals): InterimPharmacyAggregate {
   }
 }
 
+function pharmacyKey(row: FacturationSuiviRow) {
+  if (row.pharmacyId) return row.pharmacyId
+  const label = row.pharmacyName.trim().toLowerCase()
+  return label ? `${PHARMACY_UNLINKED_KEY}:${label}` : PHARMACY_UNLINKED_KEY
+}
+
 function emptyTotals(row: FacturationSuiviRow): PharmacyTotals {
   return {
-    pharmacyId: row.pharmacyId ?? PHARMACY_UNLINKED_KEY,
+    pharmacyId: pharmacyKey(row),
     pharmacyName: row.pharmacyName,
     count: 0,
     hours: 0,
@@ -51,7 +57,7 @@ export function buildInterimPharmacyAggregates(
 ): InterimPharmacyAggregate[] {
   const byPharmacy = new Map<string, PharmacyTotals>()
   for (const row of rows) {
-    const key = row.pharmacyId ?? PHARMACY_UNLINKED_KEY
+    const key = pharmacyKey(row)
     const current = byPharmacy.get(key) ?? emptyTotals(row)
     current.count += 1
     current.hours += row.hours ?? 0
