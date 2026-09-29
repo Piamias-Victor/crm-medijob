@@ -48,3 +48,7 @@ Parser pur onglets mois ; CHIFFRE gagne le mois entier ; SAISIE/TOTAL ignorés ;
 
 ## Compte rendu
 
+## Compte rendu
+
+- Parser pur + merge CHIFFRE>Suivi + fixtures anon exceljs
+- Tests: sheet month, overlap drop, empty CA→0, SAISIE ignored, interim hours
