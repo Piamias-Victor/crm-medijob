@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { CalendarClock } from 'lucide-react'
 import { EntityListFilterBar } from '@/components/organisms/entity-list-filter-bar/entity-list-filter-bar'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
@@ -16,6 +17,7 @@ import {
   splitFilterConfig,
 } from '@/lib/filters/advanced-filter-utils'
 import { buildDefaultFilterValues } from '@/lib/filters/filter-types'
+import { buildCvthequeReturnPath, cvthequeCandidateHref } from '@/lib/cvtheque-candidate-href'
 import type { DeclaredAvailabilityRow } from '@/view-models/weekly-availability-declared-row'
 
 type Props = {
@@ -27,6 +29,12 @@ type Props = {
 }
 
 export function AvailabilityTable({ filterConfig, values, onChange, onReset, rows }: Props) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const returnPath = useMemo(
+    () => buildCvthequeReturnPath(pathname, searchParams.toString()),
+    [pathname, searchParams],
+  )
   const [sort, setSort] = useState<EntityTableSortState | null>(null)
   const { primary, advanced } = useMemo(
     () => splitFilterConfig(filterConfig, AVAILABILITY_ADVANCED_FILTER_IDS),
@@ -52,7 +60,7 @@ export function AvailabilityTable({ filterConfig, values, onChange, onReset, row
         rows={rows}
         columns={availabilityTableColumns}
         getRowId={(row) => row.id}
-        getRowHref={(row) => row.href}
+        getRowHref={(row) => cvthequeCandidateHref(row.id, returnPath)}
         emptyIcon={CalendarClock}
         emptyTitle="Aucune dispo déclarée"
         emptyDescription="Personne n’a encore renseigné de créneau sur ces critères."

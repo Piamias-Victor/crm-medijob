@@ -25,6 +25,7 @@ type Props = {
   interviews: InterviewListRow[]
   comments: BadakanCommentRow[]
   backHref?: string
+  backLabel?: string
 }
 
 export function CandidateDetailPage({
@@ -35,6 +36,7 @@ export function CandidateDetailPage({
   interviews,
   comments,
   backHref = '/candidats',
+  backLabel = 'CVthèque',
 }: Props) {
   const [tab, setTab] = useState<CandidateDetailTab>('profil')
   const [presentOpen, setPresentOpen] = useState(false)
@@ -47,7 +49,7 @@ export function CandidateDetailPage({
       header={
         <DetailPageHeader
           backHref={backHref}
-          backLabel="CVthèque"
+          backLabel={backLabel}
           name={name}
           jobTitle={profile.jobTitleName}
           city={profile.city ?? undefined}
