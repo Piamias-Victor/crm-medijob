@@ -5,6 +5,7 @@ import {
   cvthequeCandidateHref,
   parseCvthequeBackHref,
   candidateBackLabel,
+  appIntakeCandidateHref,
 } from '@/lib/cvtheque-candidate-href'
 
 describe('cvtheque-candidate-href', () => {
@@ -43,6 +44,15 @@ describe('cvtheque-candidate-href', () => {
     ).toBe('/interim/disponibilites?dispos=yes')
   })
 
+  it('restaure le retour depuis les entrées app', () => {
+    expect(parseCvthequeBackHref(encodeURIComponent('/interim/entrees-app'))).toBe(
+      '/interim/entrees-app',
+    )
+    expect(
+      parseCvthequeBackHref(encodeURIComponent('/interim/entrees-app?q=margo')),
+    ).toBe('/interim/entrees-app?q=margo')
+  })
+
   it('compose return path avec query', () => {
     expect(buildCvthequeReturnPath('/candidats', 'metier=jt1')).toBe('/candidats?metier=jt1')
     expect(buildCvthequeReturnPath('/candidats', '')).toBe('/candidats')
@@ -53,5 +63,14 @@ describe('cvtheque-candidate-href', () => {
     expect(candidateBackLabel('/candidats?metier=jt1')).toBe('CVthèque')
     expect(candidateBackLabel('/interim/candidats')).toBe('Intérim')
     expect(candidateBackLabel('/interim/disponibilites?dispos=yes')).toBe('Disponibilités')
+    expect(candidateBackLabel('/interim/entrees-app')).toBe('Retour')
+    expect(candidateBackLabel('/interim/entrees-app?q=margo')).toBe('Retour')
+  })
+
+  it('lien fiche entrée app ignore les profils sans candidat', () => {
+    expect(appIntakeCandidateHref(null, '/interim/entrees-app')).toBeUndefined()
+    expect(appIntakeCandidateHref('c1', '/interim/entrees-app')).toBe(
+      '/candidats/c1?back=%2Finterim%2Fentrees-app',
+    )
   })
 })

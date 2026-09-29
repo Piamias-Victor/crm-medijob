@@ -1,16 +1,27 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Smartphone } from 'lucide-react'
 import { EntityTable } from '@/components/organisms/entity-table/entity-table'
 import { buildAppIntakeFollowUpColumns } from '@/components/molecules/app-intake-follow-up-columns'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
+import {
+  appIntakeCandidateHref,
+  buildCvthequeReturnPath,
+} from '@/lib/cvtheque-candidate-href'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Ref = { id: string; name: string }
 type Props = { items: AppProfileListItem[]; recruiters?: readonly Ref[] }
 
 export function AppIntakeFollowUpTable({ items, recruiters = [] }: Props) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const returnPath = useMemo(
+    () => buildCvthequeReturnPath(pathname, searchParams.toString()),
+    [pathname, searchParams],
+  )
   const [sort, setSort] = useState<EntityTableSortState | null>({
     columnId: 'relanceAt',
     direction: 'asc',
@@ -22,6 +33,7 @@ export function AppIntakeFollowUpTable({ items, recruiters = [] }: Props) {
       rows={items}
       columns={columns}
       getRowId={(row) => row.id}
+      getRowHref={(row) => appIntakeCandidateHref(row.candidateId, returnPath) ?? ''}
       emptyIcon={Smartphone}
       emptyTitle="Aucune entrée app"
       emptyDescription="Les nouveaux inscrits Badakan apparaissent ici automatiquement."
