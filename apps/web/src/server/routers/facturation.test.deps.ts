@@ -44,6 +44,10 @@ const unusedSetPaid: FacturationDeps['setPaid'] = async () => {
   throw new Error('setPaid unused')
 }
 
+const unusedLinkLine: FacturationDeps['linkLine'] = async () => {
+  throw new Error('linkLine unused')
+}
+
 export function facturationTestDeps(
   listSuivi: FacturationDeps['listSuivi'] = async () => [],
   listLines: FacturationDeps['listLines'] = async () => [],
@@ -64,5 +68,6 @@ export function facturationTestDeps(
     restoreLine: unusedRestoreLine,
     setInvoiced: unusedSetInvoiced,
     setPaid: unusedSetPaid,
+    linkLine: unusedLinkLine,
   }
 }

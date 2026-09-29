@@ -61,4 +61,9 @@ export const facturationRouter = makeFacturationRouter({
   restoreLine: (id) => financeLineRepository.setCancelled(id, false),
   setInvoiced: (id, invoiced) => financeLineRepository.setInvoiced(id, invoiced),
   setPaid: (id, paid) => financeLineRepository.setPaid(id, paid),
+  linkLine: (input) =>
+    financeLineRepository.linkEntities(input.id, {
+      pharmacyId: input.pharmacyId,
+      candidateId: input.candidateId,
+    }),
 })

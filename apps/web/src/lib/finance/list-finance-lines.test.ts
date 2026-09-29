@@ -66,4 +66,21 @@ describe('listFinanceLines', () => {
     )
     expect(rows.map((row) => row.financeLineId)).toEqual(['ok'])
   })
+
+  it('filters unlinked lines when unlinkedOnly is true', () => {
+    const rows = listFinanceLines(
+      [
+        line({ id: 'linked' }),
+        line({
+          id: 'orphan',
+          pharmacyId: null,
+          candidateId: null,
+          pharmacyName: 'Excel Pharma',
+          candidateName: 'Excel Candidat',
+        }),
+      ],
+      { kind: 'PLACEMENT', unlinkedOnly: true },
+    )
+    expect(rows.map((row) => row.financeLineId)).toEqual(['orphan'])
+  })
 })

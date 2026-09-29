@@ -89,5 +89,6 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
     restoreLine: lineStatus.restoreLine,
     setInvoiced: lineStatus.setInvoiced,
     setPaid: lineStatus.setPaid,
+    linkLine: lineStatus.linkLine,
   }
 }
