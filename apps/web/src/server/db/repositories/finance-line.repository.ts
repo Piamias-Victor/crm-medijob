@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
-import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { FINANCE_LINE_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import { financeLineSelect } from './finance-line.repository.select'
@@ -14,7 +14,7 @@ export function makeFinanceLineRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         orderBy: { occurredAt: 'desc' },
         select: financeLineSelect,
-        take: DEFAULT_LIST_LIMIT,
+        take: FINANCE_LINE_LIST_LIMIT,
       })
       return rows.map(toFinanceLineRecord)
     },
@@ -62,7 +62,7 @@ export function makeFinanceLineRepository(db: PrismaClient = defaultDb) {
         where: NOT_DELETED,
         select: { id: true, title: true, pharmacyId: true, contractType: true },
         orderBy: { createdAt: 'desc' },
-        take: DEFAULT_LIST_LIMIT,
+        take: FINANCE_LINE_LIST_LIMIT,
       }),
   }
 }
