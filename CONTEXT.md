@@ -127,8 +127,8 @@ A commercial quote for a Pharmacy (intérim or CDD/CDI), optionally on a Mission
 _Avoid_: quote (as UI label), facture, ActivityLog DEVIS (as the quote itself), estimateur rémunération, tarif Medijob (as a locked pack)
 
 **Ligne de suivi**:
-A financial line entered from Facturation (Direction / RH-Admin). Always a Pharmacy + a Candidate; optional Mission. Kind Placement (one line = one CDD or CDI hire) or Intérim (one line = the whole mission). A Placement line has an explicit CDD or CDI type (prefilled from the Mission when linked). One Referent (User) is chosen on the line. Direction / RH-Admin may cancel the line (reversible status: the line stays visible, excluded from active KPIs, counts as NoGo if Placement). Cancel is not a soft delete. A Placement may book 0 CA (NoGo). Independent **Facturé** and **Encaissé** marks on the line do not change CA or Marge. Books CA and Marge on `occurredAt` without requiring an accepted Devis. A Devis can be generated and sent from the line even without a Mission — that Devis is a draft document, not a second CA booking.
-_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice), recruteur (as free text), Badakan contract
+A financial line entered from Facturation (Direction / RH-Admin), or imported from Excel Exercice month sheets (source of truth for historical CA — ADR 0035). Pharmacy and Candidate FKs are nullable in DB until linked; CRM UI create still requires both. Excel import always stores raw labels (`pharmacyLabel`, `candidateLabel`, optional `referentLabel`) and a unique `importKey`; source is `ui` or `excel-import`. Auto-link on exact normalized name only; else Direction links by hand. Optional Mission. Kind Placement (CDD/CDI) or Intérim. One Excel month-sheet row = one Ligne: the same deal may produce several lines across months. One Referent User on the line (co-credit → first name). Cancel is reversible status, not soft delete. Placement may book 0 CA (NoGo). Facturé and Encaissé marks do not change CA/Marge. Books CA/Marge on `occurredAt` (Excel import: first day of sheet month). Unlinked imported lines still count in Pilotage. Import creates no Devis. Devis-from-line requires Pharmacy + Candidate linked first. Re-import skips existing `importKey` (no upsert).
+_Avoid_: facture, Facture (as entity), invoice, CA candidat (as a follow-up slice), recruteur (as free text), Badakan contract, one hire = one line, stub « À lier » Pharmacy/Candidate
 
 **Encaissé**:
 A mark on a Ligne de suivi that the Pharmacy has paid. Independent of Facturé. Does not book CA. Distinct from Commercial status.
@@ -147,8 +147,8 @@ The Medijob year used in Facturation follow-up: 1 October through 30 September. 
 _Avoid_: année civile, année (unqualified), fiscal year (as UI label)
 
 **Placement**:
-A Ligne de suivi of kind Placement — one CDD or CDI hire booked in Facturation. The line carries CDD vs CDI itself (not only via an optional Mission). Distinct from MissionCandidate (operational positioning on a Mission). May be cancelled on the line or booked with zero CA and zero Marge (NoGo).
-_Avoid_: matching, affectation, positioning, MissionCandidate (as the financial line)
+A Ligne de suivi of kind Placement — a CDD or CDI CA booking in Facturation for a given month (Excel month sheet or CRM create). The same hire may appear as several Placement lines across months when each month books CA. The line carries CDD vs CDI itself (not only via an optional Mission). Distinct from MissionCandidate (operational positioning on a Mission). May be cancelled on the line or booked with zero CA and zero Marge (NoGo).
+_Avoid_: matching, affectation, positioning, MissionCandidate (as the financial line), one hire = one Placement line
 
 **NoGo**:
 A Placement counted as lost in Pilotage: the line is cancelled, or it has no CA and no Marge. Lost CA is projected from the average billed CA of that type (CDI vs CDD), not from the line amount. Intérim lines are never NoGo. Distinct from Mission status ANNULEE.
@@ -273,7 +273,7 @@ Outbound: later write-back to Candidate at close. Never a PipelineStage and neve
 
 **Finance** — commercial quotes and performance follow-up.
 Owns: Devis, Ligne de suivi, Commercial status (derived), CA and Marge on the Mission and on Lignes de suivi, Objectif.
-Inbound: Mission (optional on a Ligne de suivi), Pharmacy, Candidate, Referent.
+Inbound: Mission (optional on a Ligne de suivi), Pharmacy and Candidate (optional until linked — required for Devis-from-line), Referent.
 Outbound: Mission — where Recruteur / Communication create, send, and accept a Devis. Facturation (Vue d'ensemble, Pilotage, Placements, Intérim) is Direction / RH-Admin only. Never a candidate salary estimator.
 
 **AI** — assisted extraction, generation, and matching.
