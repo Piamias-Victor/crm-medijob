@@ -5,6 +5,7 @@ import { pickCurrentDevis } from '@/lib/finance/pick-current-devis'
 import type { FacturationSliceBucket, FacturationSlices } from '@/view-models/facturation-slice-bucket'
 import { facturationMonthKey, facturationMonthLabel } from '@/view-models/facturation-month-key'
 import { limitPharmacySlices } from '@/view-models/limit-pharmacy-slices'
+import { PHARMACY_UNLINKED_KEY } from '@/view-models/finance-line-unlinked'
 import type { FinanceLineRecord } from '@/view-models/finance-line'
 import type { FacturationMissionRecord } from '@/view-models/facturation-suivi'
 
@@ -68,7 +69,13 @@ export function buildFacturationSlices(
       line.amountHt,
       line.marge ?? 0,
     )
-    addBucket(byPharmacy, line.pharmacyId, line.pharmacyName, line.amountHt, line.marge ?? 0)
+    addBucket(
+      byPharmacy,
+      line.pharmacyId ?? PHARMACY_UNLINKED_KEY,
+      line.pharmacyName,
+      line.amountHt,
+      line.marge ?? 0,
+    )
     addBucket(byContract, contractType, CONTRACT_TYPE_LABELS[contractType], line.amountHt, line.marge ?? 0)
     addBucket(
       byMonth,

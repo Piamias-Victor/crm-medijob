@@ -162,6 +162,11 @@ enum FinanceLineKind {
   INTERIM
 }
 
+enum FinanceLineSource {
+  UI
+  EXCEL_IMPORT
+}
+
 enum BadakanProposalStatus {
   PROPOSE
   VALIDE
@@ -586,32 +591,37 @@ model Devis {
 }
 
 model FinanceLine {
-  id                    String          @id @default(cuid())
+  id                    String            @id @default(cuid())
   kind                  FinanceLineKind
-  pharmacyId            String
-  candidateId           String
+  source                FinanceLineSource @default(UI)
+  pharmacyId            String?
+  candidateId           String?
+  pharmacyLabel         String?
+  candidateLabel        String?
+  referentLabel         String?
+  importKey             String?           @unique
   missionId             String?
-  devisId               String?         @unique
+  devisId               String?           @unique
   hours                 Float?
   hourlyRate            Float?
   amountHt              Float
-  htSource              DevisHtSource   @default(TYPED)
+  htSource              DevisHtSource     @default(TYPED)
   marge                 Float?
   occurredAt            DateTime
   referentId            String?
   placementContractType ContractType?
-  cancelled             Boolean         @default(false)
-  invoiced              Boolean         @default(false)
-  paid                  Boolean         @default(false)
+  cancelled             Boolean           @default(false)
+  invoiced              Boolean           @default(false)
+  paid                  Boolean           @default(false)
   deletedAt             DateTime?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
 
-  pharmacy  Pharmacy  @relation(fields: [pharmacyId], references: [id])
-  candidate Candidate @relation(fields: [candidateId], references: [id])
-  mission   Mission?  @relation(fields: [missionId], references: [id], onDelete: SetNull)
-  devis     Devis?    @relation(fields: [devisId], references: [id], onDelete: SetNull)
-  referent  User?     @relation("ReferentFinanceLines", fields: [referentId], references: [id], onDelete: SetNull)
+  pharmacy  Pharmacy?  @relation(fields: [pharmacyId], references: [id], onDelete: SetNull)
+  candidate Candidate? @relation(fields: [candidateId], references: [id], onDelete: SetNull)
+  mission   Mission?   @relation(fields: [missionId], references: [id], onDelete: SetNull)
+  devis     Devis?     @relation(fields: [devisId], references: [id], onDelete: SetNull)
+  referent  User?      @relation("ReferentFinanceLines", fields: [referentId], references: [id], onDelete: SetNull)
 
   @@index([pharmacyId])
   @@index([candidateId])
@@ -619,6 +629,7 @@ model FinanceLine {
   @@index([deletedAt])
   @@index([occurredAt])
   @@index([referentId])
+  @@index([source])
 }
 
 model MissionCandidate {

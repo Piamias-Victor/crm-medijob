@@ -1,4 +1,5 @@
 import { roundMoney } from '@/lib/finance/calculate-interim-libre'
+import { PHARMACY_UNLINKED_KEY } from '@/view-models/finance-line-unlinked'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
 export type InterimPharmacyAggregate = {
@@ -35,7 +36,7 @@ function withRates(row: PharmacyTotals): InterimPharmacyAggregate {
 
 function emptyTotals(row: FacturationSuiviRow): PharmacyTotals {
   return {
-    pharmacyId: row.pharmacyId,
+    pharmacyId: row.pharmacyId ?? PHARMACY_UNLINKED_KEY,
     pharmacyName: row.pharmacyName,
     count: 0,
     hours: 0,
@@ -50,13 +51,14 @@ export function buildInterimPharmacyAggregates(
 ): InterimPharmacyAggregate[] {
   const byPharmacy = new Map<string, PharmacyTotals>()
   for (const row of rows) {
-    const current = byPharmacy.get(row.pharmacyId) ?? emptyTotals(row)
+    const key = row.pharmacyId ?? PHARMACY_UNLINKED_KEY
+    const current = byPharmacy.get(key) ?? emptyTotals(row)
     current.count += 1
     current.hours += row.hours ?? 0
     current.ca += row.amountHt ?? 0
     current.marge += row.marge ?? 0
     current.lastDate = laterDate(current.lastDate, row.acceptedAt)
-    byPharmacy.set(row.pharmacyId, current)
+    byPharmacy.set(key, current)
   }
   return [...byPharmacy.values()].map(withRates).sort((a, b) => b.ca - a.ca)
 }

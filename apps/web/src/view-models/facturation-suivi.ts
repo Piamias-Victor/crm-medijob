@@ -24,7 +24,7 @@ export type FacturationSuiviRow = {
   lineKind?: FinanceLineKind | null
   devisId?: string | null
   devisStatus?: 'DRAFT' | 'SENT' | 'ACCEPTED' | null
-  pharmacyId: string
+  pharmacyId: string | null
   pharmacyName: string
   referentId: string | null
   referentName: string | null

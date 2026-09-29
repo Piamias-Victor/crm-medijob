@@ -1,16 +1,23 @@
 export const FINANCE_LINE_KINDS = ['PLACEMENT', 'INTERIM'] as const
 export const PLACEMENT_CONTRACT_TYPES = ['CDD', 'CDI'] as const
+export const FINANCE_LINE_SOURCES = ['UI', 'EXCEL_IMPORT'] as const
 
 export type FinanceLineKind = (typeof FINANCE_LINE_KINDS)[number]
 export type PlacementContractType = (typeof PLACEMENT_CONTRACT_TYPES)[number]
+export type FinanceLineSource = (typeof FINANCE_LINE_SOURCES)[number]
 
 export type FinanceLineRecord = {
   id: string
   kind: FinanceLineKind
-  pharmacyId: string
+  source: FinanceLineSource
+  pharmacyId: string | null
   pharmacyName: string
-  candidateId: string
+  pharmacyLabel: string | null
+  candidateId: string | null
   candidateName: string
+  candidateLabel: string | null
+  referentLabel: string | null
+  importKey: string | null
   jobTitle: string | null
   missionId: string | null
   devisId: string | null

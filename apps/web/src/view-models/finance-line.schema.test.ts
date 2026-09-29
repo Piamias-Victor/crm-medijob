@@ -48,4 +48,23 @@ describe('createFinanceLineSchema', () => {
     expect(withReferent.referentId).toBe('u-alice')
     expect(without.referentId).toBeUndefined()
   })
+
+  it('rejects create without Pharmacy or Candidate (UI path)', () => {
+    expect(() =>
+      createFinanceLineSchema.parse({
+        candidateId: 'c1',
+        kind: 'INTERIM',
+        amountHt: 100,
+        occurredAt: '2026-08-01',
+      }),
+    ).toThrow()
+    expect(() =>
+      createFinanceLineSchema.parse({
+        pharmacyId: 'p1',
+        kind: 'INTERIM',
+        amountHt: 100,
+        occurredAt: '2026-08-01',
+      }),
+    ).toThrow()
+  })
 })

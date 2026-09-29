@@ -28,6 +28,7 @@ export function makeFinanceLineRepository(db: PrismaClient = defaultDb) {
       const row = await db.financeLine.create({
         data: {
           kind: input.kind,
+          source: 'UI',
           pharmacyId: input.pharmacyId,
           candidateId: input.candidateId,
           missionId: input.missionId ?? null,

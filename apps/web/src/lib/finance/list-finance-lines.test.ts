@@ -1,33 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { listFinanceLines } from '@/lib/finance/list-finance-lines'
-import type { FinanceLineRecord } from '@/view-models/finance-line'
+import { pilotageLine } from '@/view-models/facturation-pilotage.test.fixtures'
 
-function line(overrides: Partial<FinanceLineRecord>): FinanceLineRecord {
-  return {
-    id: 'line-1',
-    kind: 'PLACEMENT',
-    pharmacyId: 'p1',
-    pharmacyName: 'Pharma Nord',
-    candidateId: 'c1',
-    candidateName: 'Ada Lovelace',
-    jobTitle: null,
-    missionId: null,
-    devisId: null,
-    hours: null,
-    hourlyRate: null,
-    amountHt: 5000,
-    htSource: 'TYPED',
-    marge: 1500,
-    occurredAt: new Date('2026-08-01T00:00:00Z'),
-    devisStatus: null,
-    referentId: 'u-alice',
-    referentName: 'Alice',
-    placementContractType: 'CDD',
-    cancelled: false,
-    invoiced: false,
-    paid: false,
-    ...overrides,
-  }
+function line(overrides: Partial<Parameters<typeof pilotageLine>[0]> & { id: string }) {
+  return pilotageLine(overrides)
 }
 
 describe('listFinanceLines', () => {
@@ -44,7 +20,9 @@ describe('listFinanceLines', () => {
   })
 
   it('shows JobTitle from the Candidate', () => {
-    const rows = listFinanceLines([line({ jobTitle: 'Pharmacien' })], { kind: 'PLACEMENT' })
+    const rows = listFinanceLines([line({ id: 'jt', jobTitle: 'Pharmacien' })], {
+      kind: 'PLACEMENT',
+    })
     expect(rows[0]?.jobTitle).toBe('Pharmacien')
   })
 
