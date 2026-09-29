@@ -2,6 +2,7 @@ const ALLOWED_BACK_PATHS = [
   /^\/candidats(?:\?.*)?$/,
   /^\/interim\/candidats(?:\?.*)?$/,
   /^\/interim\/disponibilites(?:\?.*)?$/,
+  /^\/interim\/entrees-app(?:\?.*)?$/,
 ]
 
 export function buildCvthequeReturnPath(pathname: string, search: string): string {
@@ -23,7 +24,15 @@ export function parseCvthequeBackHref(back: string | null | undefined): string {
 }
 
 export function candidateBackLabel(backHref: string): string {
+  if (backHref.startsWith('/interim/entrees-app')) return 'Retour'
   if (backHref.startsWith('/interim/disponibilites')) return 'Disponibilités'
   if (backHref.startsWith('/interim/candidats')) return 'Intérim'
   return 'CVthèque'
+}
+
+export function appIntakeCandidateHref(
+  candidateId: string | null,
+  returnPath: string,
+): string | undefined {
+  return candidateId ? cvthequeCandidateHref(candidateId, returnPath) : undefined
 }
