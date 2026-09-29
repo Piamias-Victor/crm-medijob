@@ -83,4 +83,15 @@ describe('listFinanceLines', () => {
     )
     expect(rows.map((row) => row.financeLineId)).toEqual(['orphan'])
   })
+
+  it('filters by accepted date range', () => {
+    const rows = listFinanceLines(
+      [
+        line({ id: 'jan', occurredAt: new Date('2026-01-15T00:00:00Z') }),
+        line({ id: 'oct', occurredAt: new Date('2026-10-01T00:00:00Z') }),
+      ],
+      { kind: 'PLACEMENT', acceptedFrom: '2026-01-01', acceptedTo: '2026-09-30' },
+    )
+    expect(rows.map((row) => row.financeLineId)).toEqual(['jan'])
+  })
 })

@@ -22,6 +22,7 @@ describe('toFacturationLineListFilters', () => {
         referent: ['u-alice'],
         annulation: 'ACTIVE',
         liaison: 'ALL',
+        periode: { from: '', to: '' },
       }),
     ).toEqual({
       kind: 'PLACEMENT',
@@ -48,5 +49,18 @@ describe('toFacturationLineListFilters', () => {
         liaison: 'UNLINKED',
       }),
     ).toMatchObject({ unlinkedOnly: true })
+  })
+
+  it('maps periode date range onto acceptedFrom/acceptedTo', () => {
+    expect(
+      toFacturationLineListFilters('INTERIM', {
+        ...buildFacturationLinesFilterDefaults(config),
+        periode: { from: '2026-01-01', to: '2026-09-30' },
+      }),
+    ).toMatchObject({
+      kind: 'INTERIM',
+      acceptedFrom: '2026-01-01',
+      acceptedTo: '2026-09-30',
+    })
   })
 })
