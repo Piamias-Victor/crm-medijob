@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server'
 import { toDevisView, type DevisRecord, type DevisView, type DevisWriteFields } from '@/view-models/devis'
 import { generateDevisFromFinanceLine } from '@/lib/finance/generate-devis-from-line'
+import { requireLinkedFinanceLine } from '@/lib/finance/require-linked-finance-line'
 import { mapDevisSendError } from '@/server/devis/map-devis-send-error'
 import { sendDevis, sendDraftDevis, type SendDevisDeps } from '@/server/devis/send-devis'
 import { devisMissionRefFromLine } from '@/view-models/devis-mission-ref-from-line'
@@ -43,17 +44,18 @@ export async function sendDevisFromFinanceLine(
       if (!line?.devisId) throw new TRPCError({ code: 'NOT_FOUND', message: 'Devis introuvable' })
     }
     if (line.missionId) return toSendResult(await sendDevis(line.missionId, authorId, deps))
-    const draft = await deps.findDevis(line.devisId)
+    const linked = requireLinkedFinanceLine(line)
+    const draft = await deps.findDevis(linked.devisId!)
     if (!draft || draft.status !== 'DRAFT') {
       throw new TRPCError({ code: 'BAD_REQUEST', message: 'Aucun brouillon à envoyer' })
     }
     return toSendResult(
       await sendDraftDevis(
         draft,
-        devisMissionRefFromLine(line),
+        devisMissionRefFromLine(linked),
         authorId,
         deps,
-        { entityType: 'PHARMACY', entityId: line.pharmacyId },
+        { entityType: 'PHARMACY', entityId: linked.pharmacyId },
         'PHARMACY',
       ),
     )

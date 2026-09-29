@@ -27,7 +27,7 @@ export function aggregatePilotage(
     }
     ca += item.ca
     marge += item.marge
-    pharmacies.add(item.pharmacyId)
+    pharmacies.add(item.pharmacyId ?? 'unlinked')
     if (item.pole === 'placement') caPlacement += item.ca
     else caInterim += item.ca
     if (item.countsAsPlacement) placementsActifs += 1

@@ -1,6 +1,7 @@
 import { REFERENT_NONE } from '@/lib/constants/referent-none'
 import { facturationMonthKey } from '@/view-models/facturation-month-key'
 import { matchesFinanceLineSearch } from '@/lib/finance/match-finance-line-search'
+import { PHARMACY_UNLINKED_KEY } from '@/view-models/finance-line-unlinked'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 import type { PlacementContractType } from '@/view-models/finance-line'
 
@@ -33,7 +34,12 @@ export function matchesFinanceLineFilters(
     if (type !== 'CDD' && type !== 'CDI') return false
     if (!filters.contractTypes.includes(type)) return false
   }
-  if (filters.pharmacyIds?.length && !filters.pharmacyIds.includes(row.pharmacyId)) return false
+  if (
+    filters.pharmacyIds?.length &&
+    !filters.pharmacyIds.includes(row.pharmacyId ?? PHARMACY_UNLINKED_KEY)
+  ) {
+    return false
+  }
   if (filters.referentIds?.length && !matchesReferent(row, filters.referentIds)) return false
   if (filters.cancelled === true && !row.cancelled) return false
   if (filters.cancelled === false && row.cancelled) return false

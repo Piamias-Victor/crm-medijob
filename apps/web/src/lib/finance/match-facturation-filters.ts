@@ -1,5 +1,6 @@
 import { REFERENT_NONE } from '@/lib/constants/referent-none'
 import { matchesIsoDateRange } from '@/lib/finance/match-iso-date-range'
+import { PHARMACY_UNLINKED_KEY } from '@/view-models/finance-line-unlinked'
 import type { FacturationSuiviFilters } from '@/view-models/facturation-suivi-filters.schema'
 import type { FacturationSuiviRow } from '@/view-models/facturation-suivi'
 
@@ -23,7 +24,10 @@ export function matchesFacturationFilters(
   if (filters.contractTypes?.length && !filters.contractTypes.includes(row.contractType)) {
     return false
   }
-  if (filters.pharmacyIds?.length && !filters.pharmacyIds.includes(row.pharmacyId)) {
+  if (
+    filters.pharmacyIds?.length &&
+    !filters.pharmacyIds.includes(row.pharmacyId ?? PHARMACY_UNLINKED_KEY)
+  ) {
     return false
   }
   if (filters.referentIds?.length && !matchesReferent(row, filters.referentIds)) {

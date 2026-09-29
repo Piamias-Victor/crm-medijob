@@ -50,3 +50,10 @@ Migration : pharmacyId/candidateId nullable ; pharmacyLabel, candidateLabel, ref
 
 ## Compte rendu
 
+## Compte rendu
+
+- Schema FinanceLine: FK nullables, labels, importKey unique, source UI|EXCEL_IMPORT
+- createFinanceLineSchema still requires Pharmacy+Candidate (test)
+- Map/select + Pilotage/slices tolerate null pharmacyId (bucket unlinked)
+- requireLinkedFinanceLine before Devis-from-line
+- Migration `20260929140000_finance_line_excel_import` applied against DATABASE_URL in apps/web/.env (Neon) — Victor: confirm env is local/dev only
