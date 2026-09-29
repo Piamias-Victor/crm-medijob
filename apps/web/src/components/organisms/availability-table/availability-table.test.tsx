@@ -68,7 +68,9 @@ describe('AvailabilityTable', () => {
   it('opens the candidate file from the row', () => {
     renderTable()
     fireEvent.click(screen.getByRole('button', { name: 'Ouvrir la fiche' }))
-    expect(push).toHaveBeenCalledWith('/candidats/c1')
+    expect(push).toHaveBeenCalledWith(
+      '/candidats/c1?back=%2Finterim%2Fdisponibilites',
+    )
   })
 
   it('offers the job title and half-day filters without forcing a search', () => {

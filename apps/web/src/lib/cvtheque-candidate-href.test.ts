@@ -4,6 +4,7 @@ import {
   buildCvthequeReturnPath,
   cvthequeCandidateHref,
   parseCvthequeBackHref,
+  candidateBackLabel,
 } from '@/lib/cvtheque-candidate-href'
 
 describe('cvtheque-candidate-href', () => {
@@ -21,10 +22,36 @@ describe('cvtheque-candidate-href', () => {
     expect(parseCvthequeBackHref('%')).toBe('/candidats')
     expect(parseCvthequeBackHref(encodeURIComponent('/admin'))).toBe('/candidats')
     expect(parseCvthequeBackHref(encodeURIComponent('/candidats-evil'))).toBe('/candidats')
+    expect(parseCvthequeBackHref(encodeURIComponent('/interim/candidats-evil'))).toBe('/candidats')
+  })
+
+  it('restaure le retour depuis la base intérim', () => {
+    expect(parseCvthequeBackHref(encodeURIComponent('/interim/candidats'))).toBe(
+      '/interim/candidats',
+    )
+    expect(
+      parseCvthequeBackHref(encodeURIComponent('/interim/candidats?metier=jt1')),
+    ).toBe('/interim/candidats?metier=jt1')
+  })
+
+  it('restaure le retour depuis les disponibilités', () => {
+    expect(parseCvthequeBackHref(encodeURIComponent('/interim/disponibilites'))).toBe(
+      '/interim/disponibilites',
+    )
+    expect(
+      parseCvthequeBackHref(encodeURIComponent('/interim/disponibilites?dispos=yes')),
+    ).toBe('/interim/disponibilites?dispos=yes')
   })
 
   it('compose return path avec query', () => {
     expect(buildCvthequeReturnPath('/candidats', 'metier=jt1')).toBe('/candidats?metier=jt1')
     expect(buildCvthequeReturnPath('/candidats', '')).toBe('/candidats')
+  })
+
+  it('label retour selon origine', () => {
+    expect(candidateBackLabel('/candidats')).toBe('CVthèque')
+    expect(candidateBackLabel('/candidats?metier=jt1')).toBe('CVthèque')
+    expect(candidateBackLabel('/interim/candidats')).toBe('Intérim')
+    expect(candidateBackLabel('/interim/disponibilites?dispos=yes')).toBe('Disponibilités')
   })
 })

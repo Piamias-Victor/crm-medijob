@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { CandidateDetailPage } from '@/components/organisms/CandidateDetailPage'
-import { parseCvthequeBackHref } from '@/lib/cvtheque-candidate-href'
+import { parseCvthequeBackHref, candidateBackLabel } from '@/lib/cvtheque-candidate-href'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -23,6 +23,8 @@ export default async function Page({ params, searchParams }: Props) {
 
   if (!profile) notFound()
 
+  const backHref = parseCvthequeBackHref(back)
+
   return (
     <CandidateDetailPage
       profile={profile}
@@ -31,7 +33,8 @@ export default async function Page({ params, searchParams }: Props) {
       documents={documents}
       interviews={interviews}
       comments={comments}
-      backHref={parseCvthequeBackHref(back)}
+      backHref={backHref}
+      backLabel={candidateBackLabel(backHref)}
     />
   )
 }
