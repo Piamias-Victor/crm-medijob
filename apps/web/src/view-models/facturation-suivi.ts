@@ -19,6 +19,7 @@ export type FacturationMissionRecord = {
 export type FacturationSuiviRow = {
   missionId: string | null
   financeLineId?: string | null
+  candidateId?: string | null
   candidateName?: string | null
   jobTitle?: string | null
   lineKind?: FinanceLineKind | null

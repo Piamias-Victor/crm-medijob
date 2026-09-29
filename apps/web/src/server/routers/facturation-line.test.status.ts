@@ -29,5 +29,21 @@ export function memoryLineStatus(lines: FinanceLineRecord[]) {
       line.paid = paid
       return line
     },
+    linkLine: async (input: {
+      id: string
+      pharmacyId?: string | null
+      candidateId?: string | null
+    }) => {
+      const line = requireLine(lines, input.id)
+      if (input.pharmacyId !== undefined) {
+        line.pharmacyId = input.pharmacyId
+        if (input.pharmacyId) line.pharmacyName = 'Pharma Nord'
+      }
+      if (input.candidateId !== undefined) {
+        line.candidateId = input.candidateId
+        if (input.candidateId) line.candidateName = 'Ada Lovelace'
+      }
+      return line
+    },
   }
 }

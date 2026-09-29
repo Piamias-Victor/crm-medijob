@@ -32,11 +32,11 @@ Filtre « non liées » + mutation lien Pharmacy/Candidate ; `finance.view` only
 
 ### Acceptance criteria
 
-- [ ] Filtre non liées
-- [ ] Lien manuel garde labels
-- [ ] Recruteur forbidden
-- [ ] Composants existants
-- [ ] < 100 lignes
+- [x] Filtre non liées
+- [x] Lien manuel garde labels
+- [x] Recruteur forbidden
+- [x] Composants existants
+- [x] < 100 lignes
 
 ## Fichiers probables
 
@@ -48,3 +48,8 @@ Filtre « non liées » + mutation lien Pharmacy/Candidate ; `finance.view` only
 
 ## Compte rendu
 
+- Filtre Liaison → `unlinkedOnly` (match + map + config)
+- Mutation `linkLine` (repo patch + deps + router) ; labels Excel inchangés
+- UI `FinanceLineLinkControl` (Combobox + GlassModal) sur lignes non liées
+- Tests : unlinked filter, link+labels, Recruteur FORBIDDEN
+- Gate : typecheck + lint:lines OK ; unit vitest (hors integration docker)

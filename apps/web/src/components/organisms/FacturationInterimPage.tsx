@@ -67,7 +67,12 @@ export function FacturationInterimPage({
       {view === 'client' ? (
         <FacturationInterimPharmacyTable rows={rows} />
       ) : (
-        <FacturationTable rows={rows} renderActions={(row) => <FinanceLineRowActions row={row} />} />
+        <FacturationTable
+          rows={rows}
+          renderActions={(row) => (
+            <FinanceLineRowActions row={row} pharmacies={pharmacies} candidates={candidates} />
+          )}
+        />
       )}
       <FinanceLineCreateModal
         open={open}

@@ -14,6 +14,7 @@ export function toFinanceLineSuiviRow(line: FinanceLineRecord): FacturationSuivi
     financeLineId: line.id,
     pharmacyId: line.pharmacyId,
     pharmacyName: line.pharmacyName,
+    candidateId: line.candidateId,
     candidateName: line.candidateName,
     jobTitle: line.jobTitle,
     lineKind: line.kind,

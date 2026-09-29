@@ -30,6 +30,7 @@ export function toFacturationLineListFilters(
     pharmacyIds: values.pharmacie.length ? values.pharmacie : undefined,
     referentIds: values.referent.length ? values.referent : undefined,
     ...(cancelled === undefined ? {} : { cancelled }),
+    ...(values.liaison === 'UNLINKED' ? { unlinkedOnly: true } : {}),
   }
 }
 

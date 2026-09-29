@@ -12,6 +12,7 @@ export type FinanceLineMatchFilters = {
   pharmacyIds?: string[]
   referentIds?: string[]
   cancelled?: boolean
+  unlinkedOnly?: boolean
 }
 
 function matchesReferent(row: FacturationSuiviRow, referentIds: string[]) {
@@ -43,5 +44,6 @@ export function matchesFinanceLineFilters(
   if (filters.referentIds?.length && !matchesReferent(row, filters.referentIds)) return false
   if (filters.cancelled === true && !row.cancelled) return false
   if (filters.cancelled === false && row.cancelled) return false
+  if (filters.unlinkedOnly && row.pharmacyId != null && row.candidateId != null) return false
   return true
 }

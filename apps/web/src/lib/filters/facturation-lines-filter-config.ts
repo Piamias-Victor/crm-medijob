@@ -60,6 +60,15 @@ export function buildFacturationLinesFilterConfig(
         { value: 'CANCELLED', label: 'Annulés' },
       ],
     },
+    {
+      id: 'liaison',
+      label: 'Liaison',
+      type: 'select',
+      options: [
+        { value: 'ALL', label: 'Toutes' },
+        { value: 'UNLINKED', label: 'Non liées' },
+      ],
+    },
   ] as const satisfies readonly FilterConfig[]
 }
 

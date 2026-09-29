@@ -9,6 +9,7 @@ export const facturationLineListFiltersSchema = z.object({
   pharmacyIds: z.array(z.string()).optional(),
   referentIds: z.array(z.string()).optional(),
   cancelled: z.boolean().optional(),
+  unlinkedOnly: z.boolean().optional(),
 })
 
 export type FacturationLineListFiltersInput = z.infer<typeof facturationLineListFiltersSchema>

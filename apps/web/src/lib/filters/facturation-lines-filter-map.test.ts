@@ -21,6 +21,7 @@ describe('toFacturationLineListFilters', () => {
         pharmacie: ['p-nord'],
         referent: ['u-alice'],
         annulation: 'ACTIVE',
+        liaison: 'ALL',
       }),
     ).toEqual({
       kind: 'PLACEMENT',
@@ -38,5 +39,14 @@ describe('toFacturationLineListFilters', () => {
       kind: 'PLACEMENT',
       cancelled: false,
     })
+  })
+
+  it('maps liaison Non liées to unlinkedOnly', () => {
+    expect(
+      toFacturationLineListFilters('PLACEMENT', {
+        ...buildFacturationLinesFilterDefaults(config),
+        liaison: 'UNLINKED',
+      }),
+    ).toMatchObject({ unlinkedOnly: true })
   })
 })

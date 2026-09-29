@@ -19,6 +19,7 @@ vi.mock('@/lib/trpc/client', () => {
         restoreLine: { useMutation: mutation },
         setInvoiced: { useMutation: mutation },
         setPaid: { useMutation: mutation },
+        linkLine: { useMutation: mutation },
         generateDevisFromLine: { useMutation: mutation },
         sendDevisFromLine: { useMutation: mutation },
       },
@@ -31,6 +32,8 @@ const row: FacturationSuiviRow = {
   financeLineId: 'line-1',
   pharmacyId: 'p1',
   pharmacyName: 'Nord',
+  candidateId: 'c1',
+  candidateName: 'Ada',
   referentId: null,
   referentName: null,
   contractType: 'CDD',
@@ -43,7 +46,13 @@ const row: FacturationSuiviRow = {
 
 describe('FinanceLineRowActions', () => {
   it('opens a popup with the line choices from one Actions button', () => {
-    render(<FinanceLineRowActions row={row} />)
+    render(
+      <FinanceLineRowActions
+        row={row}
+        pharmacies={[{ id: 'p1', name: 'Nord' }]}
+        candidates={[{ id: 'c1', name: 'Ada' }]}
+      />,
+    )
     expect(screen.queryByRole('button', { name: 'Facturé' })).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Actions' }))
     expect(screen.getByRole('button', { name: 'Facturé' })).toBeInTheDocument()

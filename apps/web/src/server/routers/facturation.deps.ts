@@ -34,4 +34,9 @@ export type FacturationDeps = {
   restoreLine: (id: string) => Promise<FinanceLineRecord>
   setInvoiced: (id: string, invoiced: boolean) => Promise<FinanceLineRecord>
   setPaid: (id: string, paid: boolean) => Promise<FinanceLineRecord>
+  linkLine: (input: {
+    id: string
+    pharmacyId?: string | null
+    candidateId?: string | null
+  }) => Promise<FinanceLineRecord>
 }
