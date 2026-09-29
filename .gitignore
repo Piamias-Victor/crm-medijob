@@ -56,3 +56,6 @@ infra/.terraform/
 infra/*.tfstate
 infra/*.tfstate.*
 infra/.vercel-aws-credentials.env
+
+# Local Excel import sources (never commit real workbooks)
+data/import/

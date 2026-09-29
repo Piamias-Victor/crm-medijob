@@ -1,12 +1,14 @@
 import type { FinanceLineRecord } from '@/view-models/finance-line'
 import type { DevisMissionRef } from '@/view-models/devis-mission-ref'
+import { requireLinkedFinanceLine } from '@/lib/finance/require-linked-finance-line'
 
 export function devisMissionRefFromLine(line: FinanceLineRecord): DevisMissionRef {
+  const linked = requireLinkedFinanceLine(line)
   return devisMissionRefFromPharmacy({
-    pharmacyId: line.pharmacyId,
-    pharmacyName: line.pharmacyName,
-    candidateName: line.candidateName,
-    missionId: line.missionId,
+    pharmacyId: linked.pharmacyId,
+    pharmacyName: linked.pharmacyName,
+    candidateName: linked.candidateName,
+    missionId: linked.missionId,
   })
 }
 

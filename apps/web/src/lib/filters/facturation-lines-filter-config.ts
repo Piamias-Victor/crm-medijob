@@ -30,6 +30,11 @@ export function buildFacturationLinesFilterConfig(
       placeholder: 'Tous',
     },
     {
+      id: 'periode',
+      label: 'Période',
+      type: 'date-range',
+    },
+    {
       id: 'contrat',
       label: 'Type de contrat',
       type: 'multi-select',
@@ -58,6 +63,15 @@ export function buildFacturationLinesFilterConfig(
         { value: 'ALL', label: 'Tous' },
         { value: 'ACTIVE', label: 'Actifs' },
         { value: 'CANCELLED', label: 'Annulés' },
+      ],
+    },
+    {
+      id: 'liaison',
+      label: 'Liaison',
+      type: 'select',
+      options: [
+        { value: 'ALL', label: 'Toutes' },
+        { value: 'UNLINKED', label: 'Non liées' },
       ],
     },
   ] as const satisfies readonly FilterConfig[]

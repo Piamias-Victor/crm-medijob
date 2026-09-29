@@ -22,6 +22,8 @@ export function toFacturationLineListFilters(
       (PLACEMENT_CONTRACT_TYPES as readonly string[]).includes(value),
   )
   const cancelled = cancelledOf(values.annulation)
+  const from = values.periode.from.trim()
+  const to = values.periode.to.trim()
   return {
     kind,
     search: search.length ? search : undefined,
@@ -30,6 +32,9 @@ export function toFacturationLineListFilters(
     pharmacyIds: values.pharmacie.length ? values.pharmacie : undefined,
     referentIds: values.referent.length ? values.referent : undefined,
     ...(cancelled === undefined ? {} : { cancelled }),
+    ...(values.liaison === 'UNLINKED' ? { unlinkedOnly: true } : {}),
+    ...(from ? { acceptedFrom: from } : {}),
+    ...(to ? { acceptedTo: to } : {}),
   }
 }
 

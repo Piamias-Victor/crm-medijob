@@ -21,6 +21,8 @@ describe('toFacturationLineListFilters', () => {
         pharmacie: ['p-nord'],
         referent: ['u-alice'],
         annulation: 'ACTIVE',
+        liaison: 'ALL',
+        periode: { from: '', to: '' },
       }),
     ).toEqual({
       kind: 'PLACEMENT',
@@ -37,6 +39,28 @@ describe('toFacturationLineListFilters', () => {
     expect(toFacturationLineListFilters('PLACEMENT', buildFacturationLinesFilterDefaults(config))).toEqual({
       kind: 'PLACEMENT',
       cancelled: false,
+    })
+  })
+
+  it('maps liaison Non liées to unlinkedOnly', () => {
+    expect(
+      toFacturationLineListFilters('PLACEMENT', {
+        ...buildFacturationLinesFilterDefaults(config),
+        liaison: 'UNLINKED',
+      }),
+    ).toMatchObject({ unlinkedOnly: true })
+  })
+
+  it('maps periode date range onto acceptedFrom/acceptedTo', () => {
+    expect(
+      toFacturationLineListFilters('INTERIM', {
+        ...buildFacturationLinesFilterDefaults(config),
+        periode: { from: '2026-01-01', to: '2026-09-30' },
+      }),
+    ).toMatchObject({
+      kind: 'INTERIM',
+      acceptedFrom: '2026-01-01',
+      acceptedTo: '2026-09-30',
     })
   })
 })

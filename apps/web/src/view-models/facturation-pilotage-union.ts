@@ -12,7 +12,7 @@ export type PilotageContribution = {
   placementType: PlacementContractType | null
   ca: number
   marge: number
-  pharmacyId: string
+  pharmacyId: string | null
   pharmacyName: string
   candidateName: string
   occurredAt: Date

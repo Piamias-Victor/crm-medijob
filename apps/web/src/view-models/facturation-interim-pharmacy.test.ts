@@ -77,4 +77,18 @@ describe('buildInterimPharmacyAggregates', () => {
       ]).map((item) => item.pharmacyId),
     ).toEqual(['p-big', 'p-small'])
   })
+
+  it('keeps distinct Excel labels when Pharmacy is not linked', () => {
+    expect(
+      buildInterimPharmacyAggregates([
+        row({ pharmacyId: null, pharmacyName: 'Excel A', amountHt: 100 }),
+        row({
+          financeLineId: 'l2',
+          pharmacyId: null,
+          pharmacyName: 'Excel B',
+          amountHt: 300,
+        }),
+      ]).map((item) => item.pharmacyName),
+    ).toEqual(['Excel B', 'Excel A'])
+  })
 })

@@ -62,7 +62,12 @@ export function FacturationLinesPage({
         onChange={setFilters}
         onReset={reset}
       />
-      <FacturationTable rows={rows} renderActions={(row) => <FinanceLineRowActions row={row} />} />
+      <FacturationTable
+        rows={rows}
+        renderActions={(row) => (
+          <FinanceLineRowActions row={row} pharmacies={pharmacies} candidates={candidates} />
+        )}
+      />
       <FinanceLineCreateModal
         open={open}
         onClose={() => setOpen(false)}
