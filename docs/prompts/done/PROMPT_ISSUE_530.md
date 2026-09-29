@@ -48,3 +48,7 @@ CLI dry-run défaut → rapport `docs/audits/import-excel/<date>-dry-run.md` (co
 
 ## Compte rendu
 
+## Compte rendu
+
+- CLI dry-run/--apply + plan/report/apply pure + DB deps
+- Test: 2e apply = 0 création ; rapport sans noms
