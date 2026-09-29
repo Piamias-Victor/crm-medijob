@@ -39,6 +39,7 @@ export function makeAppProfileRouter(deps: AppProfileDeps) {
         // No live Badakan comments on list — N+1 timed out « Voir tous » (~900 rows).
         return mapIntakeFollowUpRows(rows)
       }),
+    listIntakeStatuses: protectedProcedure.query(() => deps.listIntakeStatuses()),
     getById: protectedProcedure.input(appProfileIdSchema).query(async ({ input }) => {
       const row = await deps.findById(input.id)
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Profil app introuvable' })

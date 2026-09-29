@@ -12,6 +12,7 @@ export function makeAppProfileTestDeps(
   return {
     listPending: vi.fn().mockResolvedValue([]),
     listIntakeFollowUp: vi.fn().mockResolvedValue([]),
+    listIntakeStatuses: vi.fn().mockResolvedValue([]),
     countPending: vi.fn().mockResolvedValue(0),
     findById: vi.fn().mockResolvedValue({
       id: 'p1',

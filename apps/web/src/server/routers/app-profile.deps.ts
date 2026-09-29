@@ -1,3 +1,4 @@
+import { intakeStatusRepository } from '@/server/db/repositories/intake-status.repository'
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
 import { activityLogRepository } from '@/server/db/repositories/activity-log.repository'
@@ -13,6 +14,7 @@ import type { CandidateStatus } from '@prisma/client'
 export type AppProfileDeps = {
   listPending: typeof appProfileRepository.listPending
   listIntakeFollowUp: typeof appProfileRepository.listIntakeFollowUp
+  listIntakeStatuses: typeof intakeStatusRepository.listActive
   countPending: typeof appProfileRepository.countPending
   findById: typeof appProfileRepository.findById
   findByBadakanIds: typeof appProfileRepository.findByBadakanIds
@@ -32,6 +34,7 @@ export type AppProfileDeps = {
 export const defaultAppProfileDeps: AppProfileDeps = {
   listPending: () => appProfileRepository.listPending(),
   listIntakeFollowUp: (opts) => appProfileRepository.listIntakeFollowUp(opts),
+  listIntakeStatuses: () => intakeStatusRepository.listActive(),
   countPending: () => appProfileRepository.countPending(),
   findById: (id) => appProfileRepository.findById(id),
   findByBadakanIds: (ids) => appProfileRepository.findByBadakanIds(ids),

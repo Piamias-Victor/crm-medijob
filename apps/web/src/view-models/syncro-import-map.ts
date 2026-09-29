@@ -1,8 +1,10 @@
-import type { AppCallOutcome, AppIntakeStatus, AppProfileStatus } from '@prisma/client'
+import type { AppCallOutcome, AppProfileStatus } from '@prisma/client'
+import type { AppIntakeStatus } from './app-profile-intake.enums'
 import {
   APP_CALL_OUTCOME_LABELS,
   APP_INTAKE_STATUS_LABELS,
 } from './app-profile-intake.labels'
+import { DEFAULT_APP_INTAKE_STATUS_ID } from './app-profile-intake.enums'
 import type { SyncroImportMapped, SyncroSheetRow } from './syncro-import.types'
 
 export type { SyncroImportMapped, SyncroSheetRow }
@@ -39,9 +41,9 @@ function profileStatus(statut: string | null, valide: string | null): AppProfile
   return 'EN_ATTENTE'
 }
 
-function intakeStatus(statut: string | null): AppIntakeStatus {
-  if (!statut) return 'A_APPELER'
-  return INTAKE_BY_LABEL[statut] ?? 'A_APPELER'
+function intakeStatus(statut: string | null): string {
+  if (!statut) return DEFAULT_APP_INTAKE_STATUS_ID
+  return INTAKE_BY_LABEL[statut] ?? DEFAULT_APP_INTAKE_STATUS_ID
 }
 
 export function mapSyncroRow(row: SyncroSheetRow): SyncroImportMapped {

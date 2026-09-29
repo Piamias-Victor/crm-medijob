@@ -47,6 +47,7 @@ export const adminSubNav: { label: string; href: string }[] = [
   { label: 'Rôles contact', href: '/admin/roles-contacts' },
   { label: 'Utilisateurs', href: '/admin/utilisateurs' },
   { label: 'Objectifs', href: '/admin/objectifs' },
+  { label: 'Statuts entrées', href: '/admin/statuts-entrees' },
 ]
 
 export const facturationSubNav: { label: string; href: string }[] = [

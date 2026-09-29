@@ -5,13 +5,18 @@ import { EntityTableSkeleton } from '@/components/molecules/skeletons/EntityTabl
 
 export default async function Page() {
   const caller = await createServerCaller()
-  const [rows, refs] = await Promise.all([
+  const [rows, refs, statuses] = await Promise.all([
     caller.appProfile.listIntakeFollowUp({ referentScope: 'mine' }),
     caller.candidate.referentials(),
+    caller.appProfile.listIntakeStatuses(),
   ])
   return (
     <Suspense fallback={<EntityTableSkeleton />}>
-      <AppIntakeFollowUpSection initialItems={rows} recruiters={refs.recruiters} />
+      <AppIntakeFollowUpSection
+        initialItems={rows}
+        recruiters={refs.recruiters}
+        statuses={statuses}
+      />
     </Suspense>
   )
 }

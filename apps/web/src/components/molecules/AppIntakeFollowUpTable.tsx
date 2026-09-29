@@ -10,6 +10,7 @@ import {
   appIntakeCandidateHref,
   buildCvthequeReturnPath,
 } from '@/lib/cvtheque-candidate-href'
+import { hexWithAlpha } from '@/lib/hex-with-alpha'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
 type Ref = { id: string; name: string }
@@ -34,6 +35,9 @@ export function AppIntakeFollowUpTable({ items, recruiters = [] }: Props) {
       columns={columns}
       getRowId={(row) => row.id}
       getRowHref={(row) => appIntakeCandidateHref(row.candidateId, returnPath) ?? ''}
+      getRowStyle={(row) => ({
+        backgroundColor: hexWithAlpha(row.intakeStatusColor, 0.28),
+      })}
       emptyIcon={Smartphone}
       emptyTitle="Aucune entrée app"
       emptyDescription="Les nouveaux inscrits Badakan apparaissent ici automatiquement."

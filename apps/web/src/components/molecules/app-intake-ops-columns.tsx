@@ -12,7 +12,6 @@ import { AppRelanceCell } from '@/components/molecules/AppRelanceCell'
 import { AppIntakeActionsCell } from '@/components/molecules/AppIntakeActionsCell'
 import {
   APP_CALL_OUTCOME_LABELS,
-  APP_INTAKE_STATUS_LABELS,
 } from '@/view-models/app-profile-intake.labels'
 import type { AppProfileListItem } from '@/view-models/app-profile-list'
 
@@ -25,7 +24,7 @@ export function buildAppIntakeOpsColumns(
     {
       id: 'intakeStatus',
       header: 'Statut',
-      accessor: (row) => APP_INTAKE_STATUS_LABELS[row.intakeStatus],
+      accessor: (row) => row.intakeStatusName,
       sortable: true,
       cell: (row) => <AppIntakeStatusCell row={row} />,
     },

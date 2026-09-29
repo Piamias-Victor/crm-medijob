@@ -21,6 +21,7 @@ export function EntityTable<TRow>({
   emptyDescription,
   renderActions,
   getRowHref,
+  getRowStyle,
   onRowClick,
   pageSize,
   pageSizeOptions,
@@ -70,6 +71,7 @@ export function EntityTable<TRow>({
                 hasActions={hasActions}
                 renderActions={renderActions}
                 getRowHref={getRowHref}
+                getRowStyle={getRowStyle}
                 onRowClick={onRowClick}
               />
             ))}

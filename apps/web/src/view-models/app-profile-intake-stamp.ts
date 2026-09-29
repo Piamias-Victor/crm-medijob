@@ -1,8 +1,8 @@
-import type { AppCallOutcome, AppIntakeStatus } from '@prisma/client'
+import type { AppCallOutcome } from '@prisma/client'
 import { defaultRelanceAfterCall } from './app-profile-relance'
 
 export type IntakeStampInput = {
-  intakeStatus: AppIntakeStatus
+  intakeStatus: string
   callOutcome: AppCallOutcome | null
   plannedRdvAt: Date | null
   notes: string | null

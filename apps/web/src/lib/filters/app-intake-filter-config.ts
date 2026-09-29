@@ -2,6 +2,7 @@ import type { FilterConfig } from '@/lib/filters/filter-types'
 import { buildReferentFilterOptions } from '@/lib/filters/referent-filter-options'
 import { appIntakePrimaryFilters } from '@/lib/filters/app-intake-filter-primary'
 import { appIntakeAdvancedFilters } from '@/lib/filters/app-intake-filter-advanced'
+import type { IntakeStatusOption } from '@/view-models/app-intake-combobox-options'
 
 type Ref = { id: string; name: string }
 
@@ -17,9 +18,12 @@ export const APP_INTAKE_ADVANCED_FILTER_IDS = [
   'plannedRdvAt',
 ] as const
 
-export function buildAppIntakeFilterConfig(recruiters: readonly Ref[]) {
+export function buildAppIntakeFilterConfig(
+  recruiters: readonly Ref[],
+  statuses: readonly IntakeStatusOption[] = [],
+) {
   return [
-    ...appIntakePrimaryFilters(recruiters),
+    ...appIntakePrimaryFilters(recruiters, statuses),
     ...appIntakeAdvancedFilters(),
   ] as const satisfies readonly FilterConfig[]
 }
