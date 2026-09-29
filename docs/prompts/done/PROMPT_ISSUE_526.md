@@ -52,3 +52,7 @@ Réécrire ADR 0035 (Context / Decision 1–15 / Consequences / Amends 0017). Al
 
 ## Compte rendu
 
+## Compte rendu
+
+- ADR 0035 réécrit ; 0017 amendé ; CONTEXT + PRD + gitignore + prompts 526–532
+- PR https://github.com/Piamias-Victor/crm-medijob/pull/533
