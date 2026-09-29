@@ -44,3 +44,7 @@ Match exact Pharmacy/Candidate/Referent ; co-crédit → 1er nom ; importKey sta
 
 ## Compte rendu
 
+## Compte rendu
+
+- normalize + firstReferentLabel + matchExcelLabels + buildImportKey (sha256)
+- TDD anonymized tokens only
