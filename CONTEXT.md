@@ -138,9 +138,17 @@ _Avoid_: payé, payment, Facturé (that's the invoice-sent mark)
 Monthly CA and Marge targets by pole (Placement vs Intérim) and a monthly rentability threshold, set in Admin by Direction / RH-Admin. Annual figures in Pilotage are twelve times the monthly ones. Distinct from Commercial status and from Accueil KPIs.
 _Avoid_: KPI (that's a count), cap (as entity), cible (unqualified), paramètre (unqualified)
 
+**Accueil**:
+The home operational view for all roles — daily pressure KPIs (missions to fill, urgent, Applications inbox, fill rate) and the alert center. Stock-of-the-day, not period-scoped volumes. No CA/Marge. Distinct from Activité and from Pilotage.
+_Avoid_: dashboard (unqualified), Tableau de bord, Statistiques, Activité, Pilotage
+
+**Activité**:
+The Direction / RH-Admin view of operational **flow** volumes over a civil date range (Europe/Paris): new Candidates by origin (CRM vs App), App-validated, Qualifié transitions, Applications received, CRM Missions created and filled, Badakan missions first-seen and staffed. CRM Mission counts and Badakan mission counts are always shown separately — never summed as one « missions » figure. Soft-deleted rows are excluded. Top-level nav (before Facturation), gated `finance.view`, outside Facturation. No CA/Marge, no vs-previous-period deltas in V1. Distinct from Accueil (daily pressure stock) and from Pilotage (CA/Marge steering).
+_Avoid_: Statistiques, Tableau de bord, dashboard, Pilotage, Accueil KPIs, Vue d'ensemble, missions (unqualified total mixing CRM and Badakan)
+
 **Pilotage**:
-The Facturation steering view for Direction / RH-Admin — exercice KPIs, objectives by pole, cumulative charts, Go/NoGo, monthly table and commercial matrix. Distinct from Vue d'ensemble (commercial-status counts and Devis pipeline), from Placements (CDD/CDI line list), and from Intérim (intérim line list).
-_Avoid_: Tableau de bord (ambiguous with Accueil), dashboard, Vue d'ensemble, Suivi (removed as a tab)
+The Facturation steering view for Direction / RH-Admin — exercice KPIs, objectives by pole, cumulative charts, Go/NoGo, monthly table and commercial matrix. Distinct from Vue d'ensemble (commercial-status counts and Devis pipeline), from Placements (CDD/CDI line list), from Intérim (intérim line list), and from Activité (ops volumes).
+_Avoid_: Tableau de bord (ambiguous with Accueil), dashboard, Vue d'ensemble, Suivi (removed as a tab), Activité
 
 **Exercice**:
 The Medijob year used in Facturation follow-up: 1 October through 30 September. Named by the two calendar years it spans (25/26 = October 2025 – September 2026). Distinct from a calendar year.
