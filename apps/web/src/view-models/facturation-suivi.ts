@@ -19,12 +19,13 @@ export type FacturationMissionRecord = {
 export type FacturationSuiviRow = {
   missionId: string | null
   financeLineId?: string | null
+  candidateId?: string | null
   candidateName?: string | null
   jobTitle?: string | null
   lineKind?: FinanceLineKind | null
   devisId?: string | null
   devisStatus?: 'DRAFT' | 'SENT' | 'ACCEPTED' | null
-  pharmacyId: string
+  pharmacyId: string | null
   pharmacyName: string
   referentId: string | null
   referentName: string | null

@@ -51,10 +51,15 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
       const line: FinanceLineRecord = {
         id: `line-${lines.length + 1}`,
         kind: input.kind,
+        source: 'UI',
         pharmacyId: input.pharmacyId,
         pharmacyName: PHARMACY.name,
+        pharmacyLabel: null,
         candidateId: input.candidateId,
         candidateName: CANDIDATE.name,
+        candidateLabel: null,
+        referentLabel: null,
+        importKey: null,
         jobTitle: 'Pharmacien',
         missionId: input.missionId ?? null,
         devisId: input.devisId ?? null,
@@ -84,5 +89,6 @@ export function makeMemoryFacturationDeps(): FacturationDeps {
     restoreLine: lineStatus.restoreLine,
     setInvoiced: lineStatus.setInvoiced,
     setPaid: lineStatus.setPaid,
+    linkLine: lineStatus.linkLine,
   }
 }

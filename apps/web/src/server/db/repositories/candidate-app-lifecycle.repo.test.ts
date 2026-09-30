@@ -4,9 +4,10 @@ import { makeCandidateAppLifecycleRepository } from './candidate-app-lifecycle.r
 
 describe('candidate app lifecycle repository', () => {
   it('writes Inactif and remembered status, never Blacklisté', async () => {
+    const findFirst = vi.fn().mockResolvedValue({ status: 'QUALIFIE', qualifiedAt: null })
     const update = vi.fn().mockResolvedValue({ id: 'c1' })
     const repo = makeCandidateAppLifecycleRepository({
-      candidate: { update },
+      candidate: { findFirst, update },
     } as unknown as PrismaClient)
     await repo.applyAppLifecycle('c1', {
       status: 'INACTIF',
@@ -14,7 +15,11 @@ describe('candidate app lifecycle repository', () => {
     })
     expect(update).toHaveBeenCalledWith({
       where: { id: 'c1' },
-      data: { status: 'INACTIF', statusBeforeInactive: 'QUALIFIE' },
+      data: {
+        status: 'INACTIF',
+        statusBeforeInactive: 'QUALIFIE',
+        qualifiedAt: null,
+      },
       select: { id: true },
     })
     expect(update.mock.calls[0]?.[0].data.status).not.toBe('BLACKLISTE')

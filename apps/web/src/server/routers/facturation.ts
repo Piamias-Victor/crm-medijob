@@ -7,6 +7,7 @@ import {
   generateDevisFromLineSchema,
 } from '@/view-models/finance-line.schema'
 import { setLineInvoicedSchema, setLinePaidSchema } from '@/view-models/finance-line-marks.schema'
+import { linkFinanceLineSchema } from '@/view-models/finance-line-link.schema'
 import { pilotageFiltersSchema } from '@/view-models/facturation-pilotage-filters.schema'
 import type { FacturationDeps } from '@/server/routers/facturation.deps'
 
@@ -57,5 +58,8 @@ export function makeFacturationRouter(deps: FacturationDeps) {
     setPaid: financeProcedure
       .input(setLinePaidSchema)
       .mutation(({ input }) => deps.setPaid(input.id, input.paid)),
+    linkLine: financeProcedure
+      .input(linkFinanceLineSchema)
+      .mutation(({ input }) => deps.linkLine(input)),
   })
 }

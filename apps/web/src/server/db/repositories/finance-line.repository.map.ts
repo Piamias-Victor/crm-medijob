@@ -1,16 +1,29 @@
 import { isPlacementContractType } from '@/view-models/finance-line-placement'
+import { PHARMACY_UNLINKED_LABEL } from '@/view-models/finance-line-unlinked'
 import type { FinanceLineRecord } from '@/view-models/finance-line'
 import type { FinanceLineQueryRow } from '@/server/db/repositories/finance-line.repository.select'
+
+function candidateDisplay(row: FinanceLineQueryRow): string {
+  if (row.candidate) {
+    return `${row.candidate.firstName} ${row.candidate.lastName}`.trim()
+  }
+  return row.candidateLabel?.trim() || '—'
+}
 
 export function toFinanceLineRecord(row: FinanceLineQueryRow): FinanceLineRecord {
   return {
     id: row.id,
     kind: row.kind,
+    source: row.source,
     pharmacyId: row.pharmacyId,
-    pharmacyName: row.pharmacy.name,
+    pharmacyName: row.pharmacy?.name ?? row.pharmacyLabel?.trim() ?? PHARMACY_UNLINKED_LABEL,
+    pharmacyLabel: row.pharmacyLabel,
     candidateId: row.candidateId,
-    candidateName: `${row.candidate.firstName} ${row.candidate.lastName}`.trim(),
-    jobTitle: row.candidate.jobTitle.name,
+    candidateName: candidateDisplay(row),
+    candidateLabel: row.candidateLabel,
+    referentLabel: row.referentLabel,
+    importKey: row.importKey,
+    jobTitle: row.candidate?.jobTitle.name ?? null,
     missionId: row.missionId,
     devisId: row.devisId,
     hours: row.hours,
