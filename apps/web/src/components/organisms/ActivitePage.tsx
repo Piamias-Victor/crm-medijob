@@ -1,3 +1,5 @@
+'use client'
+
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { PilotageStatTiles } from '@/components/molecules/PilotageStatTiles'
 import { ActivitePeriodForm } from '@/components/molecules/ActivitePeriodForm'
