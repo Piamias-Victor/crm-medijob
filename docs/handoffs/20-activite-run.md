@@ -46,4 +46,5 @@
 - Milestone: https://github.com/Piamias-Victor/crm-medijob/milestone/20
 - PRD: https://github.com/Piamias-Victor/crm-medijob/issues/545
 - ADR: `docs/adr/0036-activite-ops-volumes-not-accueil.md`
-- PRs: #553–#559
+- PRs: #553–#560
+- Staging: comment on existing https://github.com/Piamias-Victor/crm-medijob/pull/540 (dev→staging already open)
