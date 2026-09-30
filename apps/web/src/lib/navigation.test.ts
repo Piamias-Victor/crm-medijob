@@ -21,10 +21,20 @@ describe('navItems', () => {
     expect(navItems.some((item) => item.href === '/facturation/interim')).toBe(false)
   })
 
+  it('places Activité immediately before Facturation', () => {
+    const labels = navItems.map((item) => item.label)
+    expect(labels.indexOf('Activité')).toBe(labels.indexOf('Facturation') - 1)
+  })
+
   it('shows Intérim to a recruteur', () => {
     expect(visibleNavItems('RECRUTEUR').some((item) => item.href === '/interim')).toBe(
       true,
     )
+  })
+
+  it('hides Activité from recruteur and shows it to Direction', () => {
+    expect(visibleNavItems('RECRUTEUR').some((item) => item.href === '/activite')).toBe(false)
+    expect(visibleNavItems('DIRECTION').some((item) => item.href === '/activite')).toBe(true)
   })
 })
 

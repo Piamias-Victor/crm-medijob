@@ -35,4 +35,9 @@ Page `/activite`, nav before Facturation, layout gate like Facturation. Reuse ti
 
 ## Compte rendu
 
-(à remplir)
+- `/activite` layout gate `canViewActivity` (redirect HOME)
+- Nav Activité before Facturation; visible via canViewActivity
+- 9 tiles (PilotageStatTiles), 2 charts (ActiviteMultiLineChart), period form
+- `ACTIVITE_STAMP_TRACKING_SINCE` for « suivi depuis »
+- Accueil unchanged; fixtures +qualifiedAt for typecheck
+- Phase maquette skipped (reuse)
