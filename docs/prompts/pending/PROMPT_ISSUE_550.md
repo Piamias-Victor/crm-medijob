@@ -34,4 +34,8 @@ Activity service: 9 counts + Entrants/Missions series. Soft-delete out. CRM≠Ba
 
 ## Compte rendu
 
-(à remplir)
+- `canViewActivity` → finance.view
+- `loadActiviteOverview` : 9 counts + 9 date finds (18 queries bornées, parallel)
+- `buildActiviteSeries` jour ≤90j sinon semaine ISO Paris
+- Router `activite.overview` FORBIDDEN sans droit
+- Soft-delete exclu ; CRM/Badakan séparés
