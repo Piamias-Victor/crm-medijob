@@ -2,6 +2,7 @@ import type { ContractType, PrismaClient } from '@prisma/client'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
 import type { ManualCandidateStatus } from '@/view-models/candidate-status'
+import { decideEventStamp, QUALIFIE_TARGETS } from '@/view-models/activite-event-stamp'
 
 export type InterviewCandidatePatch = {
   availableFrom?: Date | null
@@ -16,7 +17,22 @@ export type InterviewCandidatePatch = {
 
 export function makeInterviewCandidatePatchRepository(db: PrismaClient) {
   return {
-    applyInterviewPatch: async (id: string, patch: InterviewCandidatePatch) => {
+    applyInterviewPatch: async (id: string, patch: InterviewCandidatePatch, now = new Date()) => {
+      const previous = patch.status
+        ? await db.candidate.findFirst({
+            where: { id, ...NOT_DELETED },
+            select: { status: true, qualifiedAt: true },
+          })
+        : null
+      const qualifiedAt = patch.status
+        ? decideEventStamp({
+            previous: previous?.status,
+            next: patch.status,
+            targets: QUALIFIE_TARGETS,
+            existing: previous?.qualifiedAt,
+            now,
+          })
+        : undefined
       const data = {
         ...(patch.availableFrom !== undefined ? { availableFrom: patch.availableFrom } : {}),
         ...(patch.mobilityRadiusKm !== undefined ? { mobilityRadiusKm: patch.mobilityRadiusKm } : {}),
@@ -26,6 +42,7 @@ export function makeInterviewCandidatePatchRepository(db: PrismaClient) {
         ...(patch.notes !== undefined ? { notes: patch.notes } : {}),
         ...(patch.cvSummary !== undefined ? { cvSummary: patch.cvSummary } : {}),
         ...(patch.status ? { status: patch.status } : {}),
+        ...(qualifiedAt !== undefined ? { qualifiedAt } : {}),
       }
       await db.$transaction(async (tx) => {
         if (Object.keys(data).length) await tx.candidate.update({ where: { id }, data })

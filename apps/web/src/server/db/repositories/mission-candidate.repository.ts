@@ -1,10 +1,10 @@
-import type { MissionStatus, PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@prisma/client'
 import { DEFAULT_PIPELINE_STAGE_NAME } from '@/lib/pipeline-constants'
 import { NOT_DELETED } from './soft-delete'
 import { prisma as defaultDb } from './client'
+import { applyMissionTerminalTransition } from './mission-terminal-transition'
 
 type MissionCandidateKey = { missionId: string; candidateId: string }
-
 type UpdateStageInput = MissionCandidateKey & { stageId: string }
 type TerminalStageUpdate = { candidateId: string; stageId: string }
 
@@ -18,15 +18,15 @@ export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
           stageId: true,
           stage: { select: { id: true, name: true, position: true } },
           candidate: {
-        select: {
-          firstName: true,
-          lastName: true,
-          city: true,
-          postalCode: true,
-          jobTitle: { select: { name: true } },
-          referent: { select: { name: true } },
-        },
-      },
+            select: {
+              firstName: true,
+              lastName: true,
+              city: true,
+              postalCode: true,
+              jobTitle: { select: { name: true } },
+              referent: { select: { name: true } },
+            },
+          },
         },
       }),
     updateStage: ({ missionId, candidateId, stageId }: UpdateStageInput) =>
@@ -40,19 +40,16 @@ export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
         select: { id: true },
       })
       if (!candidate) return null
-
       const stage = await db.pipelineStage.findFirst({
         where: { name: DEFAULT_PIPELINE_STAGE_NAME },
         select: { id: true },
       })
       if (!stage) return null
-
       const existing = await db.missionCandidate.findUnique({
         where: { missionId_candidateId: { missionId, candidateId } },
         select: { candidateId: true },
       })
       if (existing) return 'duplicate' as const
-
       return db.missionCandidate.create({
         data: { missionId, candidateId, stageId: stage.id },
       })
@@ -63,25 +60,9 @@ export function makeMissionCandidateRepository(db: PrismaClient = defaultDb) {
       }),
     applyTerminalTransition: (
       missionId: string,
-      status: MissionStatus,
+      status: Parameters<typeof applyMissionTerminalTransition>[2],
       stageUpdates: TerminalStageUpdate[],
-    ) =>
-      db.$transaction(async (tx) => {
-        const result = await tx.mission.update({
-          where: { id: missionId },
-          data: { status },
-          select: { id: true, status: true },
-        })
-        for (const update of stageUpdates) {
-          await tx.missionCandidate.update({
-            where: {
-              missionId_candidateId: { missionId, candidateId: update.candidateId },
-            },
-            data: { stageId: update.stageId },
-          })
-        }
-        return result
-      }),
+    ) => applyMissionTerminalTransition(db, missionId, status, stageUpdates),
   }
 }
 
