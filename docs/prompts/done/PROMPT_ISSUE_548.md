@@ -41,4 +41,16 @@ Rules: previous≠target; never stamp if create/first-seen already target; never
 
 ## Compte rendu
 
-(à remplir)
+### Inventaire chemins stamping
+
+1. Entrées ✓ Qualifié → `setCandidateQualifieWithStamp` (app-profile.deps)
+2. Interview close → `applyInterviewPatch` (+ qualifiedAt)
+3. Candidate update profil → `updateProfile` (+ qualifiedAt)
+4. Restore Badakan INACTIF→QUALIFIE → `applyAppLifecycle` (+ qualifiedAt)
+5. Mission POURVU → `applyMissionTerminalTransition` (+ pourvuAt)
+6. Badakan sync upsert → `upsertBadakanMissionWithStaffedStamp` (+ staffedAt)
+
+Create/import déjà QUALIFIE : pas de stamp (createProfile sans qualifiedAt).
+1ʳᵉ sync déjà STAFFED : staffedAt NULL.
+
+Tests: decideEventStamp, qualify stamp, pourvu transition, badakan staffed (first-seen NULL + rollback keep).

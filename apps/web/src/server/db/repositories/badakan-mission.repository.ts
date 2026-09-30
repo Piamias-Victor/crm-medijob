@@ -3,11 +3,8 @@ import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import type { BadakanMissionToPersist } from '@/server/badakan-mission/sync'
 import { isOpenNeed } from '@/view-models/badakan-need'
-import {
-  includeApplied,
-  includeReferentials,
-  persistFields,
-} from './badakan-mission-persist'
+import { includeApplied, includeReferentials } from './badakan-mission-persist'
+import { upsertBadakanMissionWithStaffedStamp } from './badakan-mission-staffed-stamp'
 
 export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
   return {
@@ -53,19 +50,7 @@ export function makeBadakanMissionRepository(db: PrismaClient = defaultDb) {
       return rows.flatMap((row) => (row.enterpriseId ? [row.enterpriseId] : []))
     },
     upsertFromRead: (data: BadakanMissionToPersist) =>
-      db.badakanMission.upsert({
-        where: { badakanId: data.badakanId },
-        create: {
-          ...persistFields(data),
-          jobTitleId: data.jobTitleId,
-          searchApplied: { create: data.searchApplied },
-        },
-        update: {
-          ...persistFields(data),
-          ...(data.jobTitleId ? { jobTitleId: data.jobTitleId } : {}),
-          searchApplied: { deleteMany: {}, create: data.searchApplied },
-        },
-      }),
+      upsertBadakanMissionWithStaffedStamp(db, data),
   }
 }
 

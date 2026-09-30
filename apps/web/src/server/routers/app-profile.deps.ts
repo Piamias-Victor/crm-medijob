@@ -2,6 +2,7 @@ import { intakeStatusRepository } from '@/server/db/repositories/intake-status.r
 import { appProfileRepository } from '@/server/db/repositories/app-profile.repository'
 import { jobTitleRepository } from '@/server/db/repositories/job-title.repository'
 import { activityLogRepository } from '@/server/db/repositories/activity-log.repository'
+import { setCandidateQualifieWithStamp } from '@/server/db/repositories/candidate-qualify-stamp'
 import { prisma } from '@/server/db/repositories/client'
 import { badakanClientFromEnv, type BadakanClient } from '@/server/badakan/client'
 import { runAppValidatedTest, type TestOneReport } from '@/server/app-profile/test-one'
@@ -53,9 +54,5 @@ export const defaultAppProfileDeps: AppProfileDeps = {
       where: { id: candidateId },
       data: { status: 'INACTIF', statusBeforeInactive: previous },
     }),
-  setCandidateQualifie: (candidateId) =>
-    prisma.candidate.update({
-      where: { id: candidateId },
-      data: { status: 'QUALIFIE', statusBeforeInactive: null },
-    }),
+  setCandidateQualifie: (candidateId) => setCandidateQualifieWithStamp(prisma, candidateId),
 }
