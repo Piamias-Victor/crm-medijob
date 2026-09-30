@@ -29,4 +29,7 @@ Pure from/to helpers. Default last 30 civil days Europe/Paris. Inclusive from 00
 
 ## Compte rendu
 
-(à remplir)
+- `resolveActivitePeriod` + `parisDayStartFromYmd`
+- Default 30 civil days; from>to / invalid → default
+- Inclusive via `[fromInclusive, toExclusive)` (= end-of-day Paris)
+- DST spring 2026-03-29 + autumn 2026-10-25 covered
