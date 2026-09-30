@@ -24,11 +24,13 @@ import { badakanEnterpriseRouter } from '@/server/routers/badakan-enterprise'
 import { weeklyAvailabilityRouter } from '@/server/routers/weekly-availability'
 import { badakanContractRouter } from '@/server/routers/badakan-contract'
 import { badakanProposalRouter } from '@/server/routers/badakan-proposal'
+import { activiteRouter } from '@/server/routers/activite'
 
 export const appRouter = router({
   health: healthRouter,
   auth: authResetRouter,
   dashboard: dashboardRouter,
+  activite: activiteRouter,
   search: searchRouter,
   admin: adminRouter,
   pharmacy: pharmacyRouter,
