@@ -32,4 +32,6 @@ Add nullable `qualifiedAt`, `pourvuAt`, `staffedAt` + indexes on filtered date c
 
 ## Compte rendu
 
-(à remplir)
+- Schema: `qualifiedAt`, `pourvuAt`, `staffedAt` nullable + indexes createdAt/stamps
+- Migration `20260930160000_activite_event_stamps` — no backfill
+- `prisma generate` + `validate` OK ; migrate deploy local
