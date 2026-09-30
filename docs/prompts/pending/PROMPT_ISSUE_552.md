@@ -29,4 +29,7 @@ No Playwright in repo → vitest integration: nav order, canViewActivity, period
 
 ## Compte rendu
 
-(à remplir)
+- Pas de Playwright : couverture vitest `activite-e2e.test.ts`
+- Deny Recruteur/Communication nav ; Activité before Facturation
+- Period change yields distinct bounds ; Accueil KPI labels inchangés
+- Integration testcontainers failures = Docker absent (préexistant)
