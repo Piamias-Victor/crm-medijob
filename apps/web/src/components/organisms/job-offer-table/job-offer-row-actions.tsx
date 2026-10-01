@@ -39,7 +39,7 @@ export function JobOfferRowActions({ row }: Props) {
     <>
       <div className="flex items-center gap-1">
         <Link
-          href={missionOffreHref(row.missionId)}
+          href={row.missionId ? missionOffreHref(row.missionId) : '/offres'}
           aria-label="Éditer"
           className="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-surface"
         >
