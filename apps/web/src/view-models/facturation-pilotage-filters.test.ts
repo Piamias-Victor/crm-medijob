@@ -11,6 +11,8 @@ describe('buildPilotage filters', () => {
     const result = buildPilotage(
       [pilotageLine({ id: 'int', kind: 'INTERIM', amountHt: 3000, marge: 900 })],
       [],
+      { exercice: 'all' },
+      now,
     )
     expect(result.kpis).toMatchObject({
       ca: 3000,
