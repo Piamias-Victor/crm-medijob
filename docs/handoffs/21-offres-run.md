@@ -23,7 +23,7 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 | #568 create standalone | #576 | unit | Merged; needs migrate |
 | #569 Liste\|Carte | #577 | unit | Merged |
 | #570 republish dry-run | #578 | unit | Merged; `--apply` never run |
-| #571 e2e mocked | (this) | vitest offres-e2e | No live board write (env can publish — e2e mocked only) |
+| #571 e2e mocked | #579 | vitest offres-e2e | Merged; mocked only |
 
 ## Bloqué
 
@@ -44,4 +44,5 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 - Milestone : https://github.com/Piamias-Victor/crm-medijob/milestone/21
 - ADR : docs/adr/0037-job-offer-without-mission.md
 - PRD : docs/prd/21-offres-standalone-carte.md
-- PRs : #572 #573 #574 #575 #576 #577 #578
+- PRs : #572–#579
+- Staging (non mergée) : https://github.com/Piamias-Victor/crm-medijob/pull/580
