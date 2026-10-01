@@ -23,8 +23,10 @@ export const emailResponseSchema = z.object({
   body: z.string().min(1),
 })
 export const offerResponseSchema = z.object({
-  title: z.string().min(1),
-  content: z.string().min(100),
+  resume: z.string().min(1),
+  missions: z.array(z.string().min(1)).min(1),
+  profil: z.array(z.string().min(1)).min(1),
+  infos: z.array(z.string().min(1)).min(1),
 })
 export const reportResponseSchema = z.object({ report: z.string().min(1) })
 export const anonymizedProfileResponseSchema = anonymizedDossierSchema
@@ -46,5 +48,6 @@ export type ChatResponse = z.infer<typeof chatResponseSchema>
 export type SummaryResponse = z.infer<typeof summaryResponseSchema>
 export type EmailResponse = z.infer<typeof emailResponseSchema>
 export type OfferResponse = z.infer<typeof offerResponseSchema>
+export type OfferDraft = { title: string; content: string }
 export type ReportResponse = z.infer<typeof reportResponseSchema>
 export type AnonymizedProfileResponse = z.infer<typeof anonymizedProfileResponseSchema>

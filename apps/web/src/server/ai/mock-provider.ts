@@ -2,9 +2,6 @@ import type { AssistantProvider, AssistantRequest } from './provider.types'
 import type { ResponseKind } from './schemas'
 import { buildMockSummary } from './mock-summary'
 
-const FILLER =
-  'Contenu généré en mode simulation pour permettre les tests sans clé API Gemini. '
-
 function buildMatchingMock(prompt: string) {
   const ids = [...prompt.matchAll(/id=([^\s\n]+)/g)].map((match) => match[1]!)
   return ids.map((candidateId, index) => ({
@@ -18,7 +15,12 @@ const builders: Record<ResponseKind, (prompt: string) => object> = {
   chat: (prompt) => ({ reply: `Réponse simulée. ${prompt}` }),
   summary: (prompt) => ({ summary: buildMockSummary(prompt) }),
   email: (prompt) => ({ subject: 'Brouillon (simulation)', body: `Bonjour,\n\n${prompt}` }),
-  offer: (prompt) => ({ title: 'Offre (simulation)', content: `${prompt}\n\n${FILLER.repeat(2)}` }),
+  offer: () => ({
+    resume: 'Officine dynamique recherchant un profil motivé.',
+    missions: ['Accueillir et conseiller les patients', 'Assurer la délivrance'],
+    profil: ['Diplôme requis', 'Aisance relationnelle'],
+    infos: ['CDI temps plein', 'Rémunération selon profil'],
+  }),
   report: (prompt) => ({ report: `Rapport simulé.\n\n${prompt}` }),
   anonymized: () => ({
     accroche: 'Professionnel de santé expérimenté en officine.',
