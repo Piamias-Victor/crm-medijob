@@ -47,7 +47,7 @@ export function makeLiveJobOfferLifecycleDeps(): LifecycleDeps {
 const lifecycle = makeLiveJobOfferLifecycleDeps()
 
 export const jobOfferRouter = makeJobOfferRouter({
-  list: () => jobOfferRepository.listForTable(),
+  list: (filters) => jobOfferRepository.listForTable(filters),
   getById: (id) => jobOfferRepository.findById(id),
   findByMissionId: (missionId) => jobOfferRepository.findByMissionId(missionId),
   findMissionForOffer: (missionId) => jobOfferRepository.findMissionForOffer(missionId),

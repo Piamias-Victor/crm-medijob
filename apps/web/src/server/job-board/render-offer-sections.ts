@@ -13,6 +13,7 @@ function paragraphHtml(text: string) {
 }
 
 function listHtml(items: string[]) {
+  if (items.length === 0) return '<p></p>'
   const lis = items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')
   return `<ul>${lis}</ul>`
 }
@@ -21,7 +22,7 @@ export function renderOfferSectionsHtml(sections: OfferSections): string {
   const [resumeT, missionsT, profilT, infosT] = OFFER_SECTION_TITLES
   return [
     titleHtml(resumeT),
-    paragraphHtml(sections.resume),
+    sections.resume.trim() ? paragraphHtml(sections.resume) : '<p></p>',
     titleHtml(missionsT),
     listHtml(sections.missions),
     titleHtml(profilT),
