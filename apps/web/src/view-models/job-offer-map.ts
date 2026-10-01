@@ -5,7 +5,7 @@ export function toJobOfferMapPins(rows: JobOfferListRow[]): MapPin[] {
   return toMapPins(
     rows.map((row) => ({
       entityId: row.id,
-      entityType: 'mission' as const,
+      entityType: 'jobOffer' as const,
       label: `${row.title} (${row.source === 'mission' ? 'Mission' : 'Sans mission'})`,
       latitude: row.latitude,
       longitude: row.longitude,
