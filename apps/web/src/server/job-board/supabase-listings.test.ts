@@ -7,7 +7,7 @@ const listing: BoardListing = {
   titre: 'Pharmacien',
   metier: 'Pharmacien',
   description: 'Poste',
-  entreprise: 'Pharmacie du Parc',
+  entreprise: 'MEDIJOB',
   ville: 'Lyon',
   type_contrat: 'CDI',
   temps_travail: 'Temps plein',

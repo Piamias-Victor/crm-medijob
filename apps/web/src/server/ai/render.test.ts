@@ -13,8 +13,14 @@ describe('renderResponse', () => {
     expect(text).toContain('Bonjour…')
   })
 
-  it('renders an offer with its title', () => {
-    const text = renderResponse('offer', { title: 'Préparateur CDI', content: 'x'.repeat(120) })
-    expect(text).toContain('Préparateur CDI')
+  it('renders an offer as sectioned HTML', () => {
+    const text = renderResponse('offer', {
+      resume: 'Résumé',
+      missions: ['Mission A'],
+      profil: ['Profil A'],
+      infos: ['CDI'],
+    })
+    expect(text).toContain('RÉSUMÉ DU POSTE')
+    expect(text).toContain('Mission A')
   })
 })

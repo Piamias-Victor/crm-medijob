@@ -2,8 +2,9 @@ import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import { jobOfferRepository } from '@/server/db/repositories/job-offer.repository'
 import { toJobOfferListRow, type JobOfferListEntity } from '@/view-models/job-offer-list'
 import { idSchema } from '@/lib/schemas/entity-id'
-import { jobOfferMissionIdSchema, jobOfferUpdateSchema } from '@/lib/schemas/job-offer'
+import { jobOfferMissionIdSchema, jobOfferUpdateSchema, jobOfferStandaloneCreateSchema } from '@/lib/schemas/job-offer'
 import { handleGenerateJobOffer } from '@/server/routers/job-offer-generate'
+import { handleCreateStandaloneOffer } from '@/server/routers/job-offer-standalone'
 import {
   handlePublishJobOffer,
   handleUnpublishJobOffer,
@@ -12,6 +13,7 @@ import type { AssistantProvider } from '@/server/ai/provider'
 import type { JobOfferStatus, Prisma } from '@prisma/client'
 import type { BoardListing, JobBoardListingsPort } from '@/server/job-board/port'
 import type { OfferLifecycleRow } from '@/server/routers/job-offer-lifecycle'
+import type { GeoQueryLookup } from '@/lib/geo/geocode-address-fields'
 
 export type JobOfferDeps = {
   list: () => Promise<JobOfferListEntity[]>
@@ -35,6 +37,7 @@ export type JobOfferDeps = {
   provider: AssistantProvider
   board: JobBoardListingsPort
   buildListing: (offer: OfferLifecycleRow) => Promise<BoardListing>
+  lookupGeo: GeoQueryLookup
 }
 
 export function makeJobOfferRouter(deps: JobOfferDeps) {
@@ -47,6 +50,14 @@ export function makeJobOfferRouter(deps: JobOfferDeps) {
     generate: protectedProcedure
       .input(jobOfferMissionIdSchema)
       .mutation(({ input }) => handleGenerateJobOffer(deps, input.missionId)),
+    createStandalone: protectedProcedure
+      .input(jobOfferStandaloneCreateSchema)
+      .mutation(({ input }) =>
+        handleCreateStandaloneOffer(
+          { create: deps.create, lookupGeo: deps.lookupGeo },
+          input,
+        ),
+      ),
     update: protectedProcedure.input(jobOfferUpdateSchema).mutation(async ({ input }) => {
       const { id, ...data } = input
       return deps.update(id, data)

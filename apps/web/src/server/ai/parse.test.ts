@@ -24,7 +24,7 @@ describe('parseAssistantResponse', () => {
     expect(() => parseAssistantResponse('chat', '{"foo":"bar"}')).toThrow()
   })
 
-  it('throws when an offer is too short to be usable', () => {
+  it('throws when an offer payload misses sections', () => {
     expect(() => parseAssistantResponse('offer', '{"title":"X","content":"trop court"}')).toThrow()
   })
 })

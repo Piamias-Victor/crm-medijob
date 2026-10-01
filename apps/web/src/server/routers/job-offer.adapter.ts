@@ -29,9 +29,17 @@ export function makeLiveJobOfferLifecycleDeps(): LifecycleDeps {
       if (!config.contactEmail) {
         throw new TRPCError({ code: 'PRECONDITION_FAILED', message: UNCONFIGURED })
       }
+      if (!offer.missionId) {
+        return buildListingForOffer(offer, null, config.contactEmail, lookupGeo)
+      }
       const mission = await jobOfferRepository.findMissionForOffer(offer.missionId)
       if (!mission) throw new TRPCError({ code: 'NOT_FOUND', message: 'Mission introuvable.' })
-      return buildListingForOffer(offer, mission, config.contactEmail, lookupGeo)
+      return buildListingForOffer(
+        offer,
+        { ...mission, jobTitleName: mission.jobTitle.name },
+        config.contactEmail,
+        lookupGeo,
+      )
     },
   }
 }
@@ -49,4 +57,5 @@ export const jobOfferRouter = makeJobOfferRouter({
   provider: createAssistantProvider(),
   board: lifecycle.board,
   buildListing: lifecycle.buildListing,
+  lookupGeo: createGeoQueryLookup(),
 })

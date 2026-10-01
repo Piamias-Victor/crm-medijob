@@ -40,9 +40,15 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
     createFromIngest: async (data: IngestApplication) => {
       const offer = await db.jobOffer.findFirst({
         where: { boardListingId: data.boardListingId, ...NOT_DELETED },
-        select: { id: true, mission: { select: { jobTitleId: true } } },
+        select: {
+          id: true,
+          jobTitleId: true,
+          mission: { select: { jobTitleId: true } },
+        },
       })
       if (!offer) return null
+      const jobTitleId = offer.mission?.jobTitleId ?? offer.jobTitleId
+      if (!jobTitleId) return null
       return db.application.create({
         data: {
           boardSubmissionId: data.boardSubmissionId,
@@ -54,7 +60,7 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
           cvUrl: data.cvUrl,
           message: data.message,
           jobOfferId: offer.id,
-          jobTitleId: offer.mission.jobTitleId,
+          jobTitleId,
           createdAt: data.submittedAt ?? undefined,
         },
       })
