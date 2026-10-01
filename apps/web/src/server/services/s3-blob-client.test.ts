@@ -51,6 +51,24 @@ describe('s3BlobClient', () => {
     expect(await readAll(got!.stream)).toEqual(body)
   })
 
+  it('reads object when filename has spaces', async () => {
+    const bucket = 'medijob-prod-docs'
+    const client = s3BlobClient({
+      bucket,
+      region: 'eu-west-3',
+      ops: memoryOps(bucket),
+    })
+    const body = Buffer.from('cv-spaced')
+    const { url } = await client.put({
+      pathname: 'candidate/c1/cv/123-CALIXTE Karleinda_CV (1).pdf',
+      body,
+      contentType: 'application/pdf',
+    })
+    const got = await client.getStream(url)
+    expect(got).not.toBeNull()
+    expect(await readAll(got!.stream)).toEqual(body)
+  })
+
   it('deletes object so getStream returns null', async () => {
     const bucket = 'medijob-prod-docs'
     const client = s3BlobClient({ bucket, region: 'eu-west-3', ops: memoryOps(bucket) })
