@@ -1,4 +1,5 @@
 import type { BoardListing, JobBoardListingsPort } from '@/server/job-board/port'
+import { BOARD_ENTREPRISE } from '@/server/job-board/format-board-offer'
 import {
   boardRestHeaders,
   boardRestUrl,
@@ -15,7 +16,7 @@ function offresBody(listing: BoardListing) {
     titre: listing.titre,
     metier: listing.metier,
     description: listing.description,
-    entreprise: listing.entreprise,
+    entreprise: BOARD_ENTREPRISE,
     ville: listing.ville,
     code_postal: listing.code_postal ?? null,
     departement: listing.departement ?? null,

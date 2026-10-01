@@ -10,7 +10,7 @@ import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { Button } from '@/components/atoms/Button'
 import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import type { JobOfferListRow } from '@/view-models/job-offer-list'
-import { missionOffreHref } from '@/view-models/mission-offer-picker'
+import { jobOfferDetailHref } from '@/view-models/job-offer-href'
 
 type Props = { row: JobOfferListRow }
 
@@ -39,7 +39,7 @@ export function JobOfferRowActions({ row }: Props) {
     <>
       <div className="flex items-center gap-1">
         <Link
-          href={row.missionId ? missionOffreHref(row.missionId) : '/offres'}
+          href={jobOfferDetailHref(row.id)}
           aria-label="Éditer"
           className="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-surface"
         >
