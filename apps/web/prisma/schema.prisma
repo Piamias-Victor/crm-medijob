@@ -292,6 +292,7 @@ model JobTitle {
 
   candidates                Candidate[]
   missions                  Mission[]
+  jobOffers                 JobOffer[]
   applications              Application[]
   appProfiles               AppProfile[]
   missionCompatibilities    JobTitleCompatibility[] @relation("MissionJobTitle")
@@ -657,17 +658,31 @@ model MissionCandidate {
 
 model JobOffer {
   id             String         @id @default(cuid())
-  missionId      String         @unique
+  missionId      String?        @unique
   title          String
   content        String
   status         JobOfferStatus @default(BROUILLON)
   boardListingId String?
   publishedAt    DateTime?
+  /// Standalone (sans mission)
+  jobTitleId     String?
+  jobTitleName   String?
+  city           String?
+  postalCode     String?
+  latitude       Float?
+  longitude      Float?
+  contractType   ContractType?
+  tempsPlein     Boolean?
+  salaireMin     Int?
+  salaireMax     Int?
+  startDate      DateTime?
+  profilRecherche String?
   deletedAt      DateTime?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
-  mission      Mission       @relation(fields: [missionId], references: [id])
+  mission      Mission?      @relation(fields: [missionId], references: [id])
+  jobTitle     JobTitle?     @relation(fields: [jobTitleId], references: [id])
   applications Application[]
 
   @@index([deletedAt])

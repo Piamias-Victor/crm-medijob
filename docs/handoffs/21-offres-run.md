@@ -18,11 +18,12 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 |-------|-----|------|------|
 | #564 ADR+CONTEXT | #572 | lint:prompts OK | Merged |
 | #565 mapping MEDIJOB | #573 | unit job-board | Merged |
-| #566 sections HTML | (pending) | ai+renderer | in PR |
+| #566 sections HTML | #574 | ai+renderer | Merged |
+| #567 schema+resolver | (pending) | unit+typecheck | migrate NOT run (Neon) |
 
 ## Bloqué
 
-_(aucun)_
+- Migration #567 non appliquée : `DATABASE_URL` = Neon (garde-fou base locale uniquement). Victor doit migrer en local puis staging.
 
 ## À vérifier par Victor
 

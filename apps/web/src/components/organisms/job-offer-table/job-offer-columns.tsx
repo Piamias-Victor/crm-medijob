@@ -12,6 +12,17 @@ export const jobOfferColumns: ColumnDef<JobOfferListRow>[] = [
     sortable: true,
   },
   {
+    id: 'source',
+    header: 'Source',
+    accessor: (row) => row.source,
+    sortable: true,
+    cell: (row) => (
+      <span className="text-sm text-fg-muted">
+        {row.source === 'mission' ? 'Mission' : 'Sans mission'}
+      </span>
+    ),
+  },
+  {
     id: 'status',
     header: 'Statut',
     accessor: (row) => jobOfferStatusLabel(row.status),
@@ -23,17 +34,20 @@ export const jobOfferColumns: ColumnDef<JobOfferListRow>[] = [
   {
     id: 'mission',
     header: 'Mission',
-    accessor: (row) => row.missionTitle,
+    accessor: (row) => row.missionTitle ?? '',
     sortable: true,
-    cell: (row) => (
-      <Link
-        href={missionOffreHref(row.missionId)}
-        className="text-sm text-accent hover:underline"
-        onClick={(event) => event.stopPropagation()}
-      >
-        {row.missionTitle}
-      </Link>
-    ),
+    cell: (row) =>
+      row.missionId && row.missionTitle ? (
+        <Link
+          href={missionOffreHref(row.missionId)}
+          className="text-sm text-accent hover:underline"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {row.missionTitle}
+        </Link>
+      ) : (
+        <span className="text-sm text-fg-muted">—</span>
+      ),
   },
   {
     id: 'applications',
