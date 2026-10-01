@@ -5,7 +5,14 @@ export type JobOfferListEntity = {
   title: string
   status: JobOfferStatus
   publishedAt: Date | null
-  mission: { id: string; title: string } | null
+  latitude: number | null
+  longitude: number | null
+  city: string | null
+  mission: {
+    id: string
+    title: string
+    pharmacy: { latitude: number | null; longitude: number | null; city: string | null }
+  } | null
   _count: { applications: number }
 }
 
@@ -18,9 +25,13 @@ export type JobOfferListRow = {
   missionTitle: string | null
   source: 'mission' | 'standalone'
   applicationCount: number
+  latitude: number | null
+  longitude: number | null
+  city: string | null
 }
 
 export function toJobOfferListRow(entity: JobOfferListEntity): JobOfferListRow {
+  const pharmacy = entity.mission?.pharmacy
   return {
     id: entity.id,
     title: entity.title,
@@ -30,5 +41,8 @@ export function toJobOfferListRow(entity: JobOfferListEntity): JobOfferListRow {
     missionTitle: entity.mission?.title ?? null,
     source: entity.mission ? 'mission' : 'standalone',
     applicationCount: entity._count.applications,
+    latitude: entity.latitude ?? pharmacy?.latitude ?? null,
+    longitude: entity.longitude ?? pharmacy?.longitude ?? null,
+    city: entity.city ?? pharmacy?.city ?? null,
   }
 }
