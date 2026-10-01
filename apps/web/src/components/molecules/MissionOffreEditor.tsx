@@ -37,7 +37,7 @@ export function MissionOffreEditor({ title, content, submitting, onSubmit }: Pro
           <span className="text-xs text-error">{formState.errors.title.message}</span>
         ) : null}
       </label>
-      <label className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-fg">Contenu</span>
         <Controller
           name="content"
@@ -49,7 +49,7 @@ export function MissionOffreEditor({ title, content, submitting, onSubmit }: Pro
         {formState.errors.content ? (
           <span className="text-xs text-error">{formState.errors.content.message}</span>
         ) : null}
-      </label>
+      </div>
       <div>
         <Button type="submit" variant="accent" disabled={submitting}>
           {submitting ? 'Enregistrement…' : 'Enregistrer'}
