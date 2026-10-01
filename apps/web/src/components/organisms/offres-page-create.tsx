@@ -13,6 +13,7 @@ import {
   missionOffreHref,
   toMissionOfferPickerOptions,
 } from '@/view-models/mission-offer-picker'
+import { jobOfferDetailHref } from '@/view-models/job-offer-href'
 
 type Props = { open: boolean; onOpenChange: (open: boolean) => void }
 type Mode = 'pick' | 'mission' | 'standalone'
@@ -40,11 +41,12 @@ export function OffresPageCreate({ open, onOpenChange }: Props) {
     onOpenChange(false)
   }
 
-  const createOpts = useEntityMutation({
+  const createOpts = useEntityMutation<{ id: string }>({
     successMessage: 'Offre créée',
-    onSuccess: () => {
+    onSuccess: (data) => {
       close()
-      router.refresh()
+      if (data?.id) router.push(jobOfferDetailHref(data.id))
+      else router.refresh()
     },
   })
   const create = trpc.jobOffer.createStandalone.useMutation(createOpts)

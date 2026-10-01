@@ -14,6 +14,7 @@ const DOT_CLASS: Record<MapEntityType, string> = {
   pharmacy: 'bg-[var(--color-accent)]',
   candidate: 'bg-[var(--color-sky)]',
   mission: 'bg-[var(--color-rose)]',
+  jobOffer: 'bg-[var(--color-primary)]',
 }
 
 export function EntityMapLayerToggles({ layers, onToggle }: Props) {

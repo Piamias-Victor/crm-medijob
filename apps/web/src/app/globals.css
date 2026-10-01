@@ -112,3 +112,7 @@
 .medijob-map-pin--mission .medijob-map-pin__dot {
   background: var(--color-rose);
 }
+
+.medijob-map-pin--jobOffer .medijob-map-pin__dot {
+  background: var(--color-primary);
+}

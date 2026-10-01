@@ -19,4 +19,8 @@ describe('mapPinDetailHref', () => {
       '/missions/m1?back=%2Fmissions',
     )
   })
+
+  it('routes jobOffer pin to offre detail', () => {
+    expect(mapPinDetailHref('jobOffer', 'o1', '/offres')).toBe('/offres/o1')
+  })
 })
