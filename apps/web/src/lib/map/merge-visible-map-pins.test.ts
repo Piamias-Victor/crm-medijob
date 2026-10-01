@@ -23,7 +23,7 @@ describe('mergeVisibleMapPins', () => {
   it('merges primary filtered pins with enabled extras', () => {
     expect(
       mergeVisibleMapPins({
-        layers: { pharmacy: true, candidate: true, mission: false },
+        layers: { pharmacy: true, candidate: true, mission: false, jobOffer: false },
         primaryType: 'pharmacy',
         primaryPins: [pharmacyPin],
         extras: { candidate: [candidatePin] },

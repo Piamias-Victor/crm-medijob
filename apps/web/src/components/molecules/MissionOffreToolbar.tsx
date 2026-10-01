@@ -7,16 +7,16 @@ import { jobOfferStatusLabel } from '@/view-models/job-offer-status'
 
 type Props = {
   status: JobOfferStatus | null
-  generating: boolean
+  generating?: boolean
   publishing: boolean
-  onGenerate: () => void
+  onGenerate?: () => void
   onPublish: () => void
   onUnpublish: () => void
 }
 
 export function MissionOffreToolbar({
   status,
-  generating,
+  generating = false,
   publishing,
   onGenerate,
   onPublish,
@@ -25,13 +25,20 @@ export function MissionOffreToolbar({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <p className="text-sm text-fg-muted">
-        {status ? `Statut : ${jobOfferStatusLabel(status)}` : 'Aucune offre pour cette mission.'}
+        {status ? `Statut : ${jobOfferStatusLabel(status)}` : 'Aucune offre.'}
       </p>
       <div className="flex flex-wrap gap-2">
-        <Button variant="accent" className="gap-2" disabled={generating || status === 'PUBLIEE'} onClick={onGenerate}>
-          <Sparkles className="size-4" />
-          {generating ? 'Génération…' : status ? 'Régénérer IA' : 'Générer offre IA'}
-        </Button>
+        {onGenerate ? (
+          <Button
+            variant="accent"
+            className="gap-2"
+            disabled={generating || status === 'PUBLIEE'}
+            onClick={onGenerate}
+          >
+            <Sparkles className="size-4" />
+            {generating ? 'Génération…' : status ? 'Régénérer IA' : 'Générer offre IA'}
+          </Button>
+        ) : null}
         {status && status !== 'PUBLIEE' ? (
           <Button variant="outline" className="gap-2" disabled={publishing} onClick={onPublish}>
             <Globe className="size-4" />

@@ -4,11 +4,9 @@ import { MAP_ENTITY_TYPES } from '@/lib/map/map-entity-type'
 export type MapLayerState = Record<MapEntityType, boolean>
 
 export function defaultLayerState(primary: MapEntityType): MapLayerState {
-  return {
-    pharmacy: primary === 'pharmacy',
-    candidate: primary === 'candidate',
-    mission: primary === 'mission',
-  }
+  return Object.fromEntries(
+    MAP_ENTITY_TYPES.map((type) => [type, type === primary]),
+  ) as MapLayerState
 }
 
 /** Toggle a layer; keep at least one active. */

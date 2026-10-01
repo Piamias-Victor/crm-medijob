@@ -6,7 +6,7 @@ import type { EntityTableSortState } from '@/components/organisms/entity-table/e
 import { jobOfferColumns } from '@/components/organisms/job-offer-table/job-offer-columns'
 import { JobOfferRowActions } from '@/components/organisms/job-offer-table/job-offer-row-actions'
 import type { JobOfferListRow } from '@/view-models/job-offer-list'
-import { missionOffreHref } from '@/view-models/mission-offer-picker'
+import { jobOfferDetailHref } from '@/view-models/job-offer-href'
 
 type Props = {
   rows: JobOfferListRow[]
@@ -25,8 +25,9 @@ export function JobOfferTable({ rows, sort, onSortChange }: Props) {
       emptyDescription="Créez une offre depuis une mission ou sans mission."
       sort={sort}
       onSortChange={onSortChange}
-      getRowHref={(row) => (row.missionId ? missionOffreHref(row.missionId) : '/offres')}
+      getRowHref={(row) => jobOfferDetailHref(row.id)}
       renderActions={(row) => <JobOfferRowActions row={row} />}
     />
   )
 }
+
