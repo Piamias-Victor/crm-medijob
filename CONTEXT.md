@@ -111,8 +111,20 @@ An INTERIM (or extra/permanent) contract that lives in Badakan (PDF, DPAE, statu
 _Avoid_: Ligne de suivi Intérim, contrat CRM, Devis
 
 **JobOffer**:
-The optional public-facing job posting derived from a Mission, published on the Medijob public job board. Every JobOffer belongs to exactly one Mission; a Mission may exist without a JobOffer. The board assigns its own listing identity; the CRM stores that identity on the JobOffer and never stamps the CRM id onto the public listing. Filling or cancelling the Mission unpublishes the JobOffer.
-_Avoid_: Annonce (as entity name), offre (without qualifier), posting, publication, Webflow item
+The optional public-facing job posting published on the Medijob public job board. A JobOffer may be **liée** (derived from one Mission — `missionId` set) or **sans mission** (standalone fields on the JobOffer). A Mission may exist without a JobOffer; at most one JobOffer per Mission. The board assigns its own listing identity; the CRM stores that identity on the JobOffer and never stamps the CRM id onto the public listing. Filling or cancelling the linked Mission unpublishes that JobOffer. Public `entreprise` is always `MEDIJOB`. Description HTML uses four fixed sections (RÉSUMÉ DU POSTE, MISSIONS DU POSTE, PROFIL RECHERCHÉ, INFORMATIONS COMPLÉMENTAIRES).
+_Avoid_: Annonce (as entity name), offre (without qualifier), posting, publication, Webflow item, pharmacy name as entreprise
+
+**Offre liée**:
+A JobOffer whose `missionId` points to a Mission. Publish payload resolves métier, contrat, salaires, ville and geo from that Mission (and its Pharmacy).
+_Avoid_: standalone offer, offre libre
+
+**Offre sans mission**:
+A JobOffer with no Mission. Métier, ville, geo, contrat, salaires and content live on the JobOffer itself. City must geocode via BAN before save.
+_Avoid_: orphan offer, freeform posting
+
+**Sections d'offre**:
+The four fixed HTML section titles of a JobOffer description, in order: RÉSUMÉ DU POSTE, MISSIONS DU POSTE, PROFIL RECHERCHÉ, INFORMATIONS COMPLÉMENTAIRES. Produced by a pure renderer from structured AI JSON — never free-form HTML from the model.
+_Avoid_: free HTML offer body, Webflow rich text
 
 **PipelineStage**:
 An administrable step in the candidate progression on a Mission (e.g. Nouveau → Contacté → Entretien → Proposition → Placé → Pas retenu). Distinct from the Mission's own lifecycle status. « Pas retenu » is the terminal stage for candidates not selected when a Mission is filled.
