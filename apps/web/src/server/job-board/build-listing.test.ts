@@ -35,7 +35,9 @@ describe('buildListingForOffer', () => {
     const listing = await buildListingForOffer(offer, mission, 'offres@medijob.fr', lookup)
     expect(lookup).not.toHaveBeenCalled()
     expect(listing.latitude).toBe(45.76)
-    expect(listing.entreprise).toBe('Pharmacie du Parc')
+    expect(listing.entreprise).toBe('MEDIJOB')
+    expect(listing.titre).toBe('Pharmacien')
+    expect(listing.ville).toBe('Lyon')
   })
 
   it('publishes without pin when BAN returns nothing', async () => {
