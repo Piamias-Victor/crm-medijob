@@ -20,6 +20,9 @@ export function useExtraMapPins(
   const mission = trpc.mission.mapPins.useQuery(undefined, {
     enabled: layers.mission && primaryType !== 'mission',
   })
+  const jobOffer = trpc.jobOffer.mapPins.useQuery(undefined, {
+    enabled: layers.jobOffer && primaryType !== 'jobOffer',
+  })
 
   return useMemo(
     () => ({
@@ -32,7 +35,10 @@ export function useExtraMapPins(
       mission: mission.data
         ? toLeanMapPins('mission', mission.data)
         : undefined,
+      jobOffer: jobOffer.data
+        ? toLeanMapPins('jobOffer', jobOffer.data)
+        : undefined,
     }),
-    [pharmacy.data, candidate.data, mission.data],
+    [pharmacy.data, candidate.data, mission.data, jobOffer.data],
   )
 }
