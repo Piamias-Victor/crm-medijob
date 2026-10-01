@@ -6,6 +6,7 @@ import {
 } from '@/lib/geo/geocode-address-fields'
 import { formatBoardOfferTitle } from '@/server/job-board/format-board-offer'
 import { renderOfferSectionsHtml } from '@/server/job-board/render-offer-sections'
+import { buildStandaloneOfferSections } from '@/server/job-board/standalone-offer-sections'
 
 export type StandaloneCreateInput = {
   jobTitleId: string
@@ -23,13 +24,14 @@ export type CreateStandaloneDeps = {
   lookupGeo: GeoQueryLookup
 }
 
-export function stubStandaloneContent(_contractType: string, _tempsPlein: boolean) {
-  return renderOfferSectionsHtml({
-    resume: '',
-    missions: [],
-    profil: [],
-    infos: [],
-  })
+export function stubStandaloneContent(input: {
+  jobTitleName: string
+  city: string
+  postalCode?: string | null
+  contractType: string
+  tempsPlein: boolean
+}) {
+  return renderOfferSectionsHtml(buildStandaloneOfferSections(input))
 }
 
 export async function handleCreateStandaloneOffer(
@@ -49,7 +51,13 @@ export async function handleCreateStandaloneOffer(
   const title = formatBoardOfferTitle(input.jobTitleName)
   return deps.create({
     title,
-    content: stubStandaloneContent(input.contractType, input.tempsPlein),
+    content: stubStandaloneContent({
+      jobTitleName: input.jobTitleName,
+      city: input.city,
+      postalCode: input.postalCode,
+      contractType: input.contractType,
+      tempsPlein: input.tempsPlein,
+    }),
     status: 'BROUILLON',
     jobTitle: { connect: { id: input.jobTitleId } },
     jobTitleName: input.jobTitleName,
