@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Pencil, Globe, EyeOff, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
-import { useCan } from '@/lib/hooks/use-can'
 import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { Button } from '@/components/atoms/Button'
 import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
@@ -16,10 +15,8 @@ type Props = { row: JobOfferListRow }
 
 export function JobOfferRowActions({ row }: Props) {
   const router = useRouter()
-  const canDelete = useCan('softDelete')
   const [open, setOpen] = useState(false)
   const refresh = () => router.refresh()
-
   const publishOpts = useEntityMutation({ successMessage: 'Offre publiée', onSuccess: refresh })
   const unpublishOpts = useEntityMutation({ successMessage: 'Offre dépubliée', onSuccess: refresh })
   const deleteOpts = useEntityMutation({
@@ -29,7 +26,6 @@ export function JobOfferRowActions({ row }: Props) {
       refresh()
     },
   })
-
   const publish = trpc.jobOffer.publish.useMutation(publishOpts)
   const unpublish = trpc.jobOffer.unpublish.useMutation(unpublishOpts)
   const softDelete = trpc.jobOffer.softDelete.useMutation(deleteOpts)
@@ -37,46 +33,44 @@ export function JobOfferRowActions({ row }: Props) {
 
   return (
     <>
-      <div className="flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-1">
         <Link
           href={jobOfferDetailHref(row.id)}
-          aria-label="Éditer"
-          className="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-surface"
+          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-fg hover:bg-surface"
         >
-          <Pencil className="size-4" />
+          <Pencil className="size-3.5" />
+          Modifier
         </Link>
         {row.status !== 'PUBLIEE' ? (
           <Button
             variant="ghost"
-            className="size-8 p-0"
+            className="h-auto gap-1 px-2 py-1 text-xs"
             disabled={busy}
-            aria-label="Publier"
             onClick={() => publish.mutate({ id: row.id })}
           >
-            <Globe className="size-4" />
+            <Globe className="size-3.5" />
+            Publier
           </Button>
         ) : (
           <Button
             variant="ghost"
-            className="size-8 p-0"
+            className="h-auto gap-1 px-2 py-1 text-xs"
             disabled={busy}
-            aria-label="Dépublier"
             onClick={() => unpublish.mutate({ id: row.id })}
           >
-            <EyeOff className="size-4" />
+            <EyeOff className="size-3.5" />
+            Dépublier
           </Button>
         )}
-        {canDelete ? (
-          <Button
-            variant="ghost"
-            className="size-8 p-0 text-error"
-            disabled={busy}
-            aria-label="Supprimer"
-            onClick={() => setOpen(true)}
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        ) : null}
+        <Button
+          variant="ghost"
+          className="h-auto gap-1 px-2 py-1 text-xs text-error"
+          disabled={busy}
+          onClick={() => setOpen(true)}
+        >
+          <Trash2 className="size-3.5" />
+          Supprimer
+        </Button>
       </div>
       <SoftDeleteModal
         entityName={row.title}

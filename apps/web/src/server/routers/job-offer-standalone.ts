@@ -23,15 +23,12 @@ export type CreateStandaloneDeps = {
   lookupGeo: GeoQueryLookup
 }
 
-export function stubStandaloneContent(contractType: string, tempsPlein: boolean) {
+export function stubStandaloneContent(_contractType: string, _tempsPlein: boolean) {
   return renderOfferSectionsHtml({
-    resume: 'Description à compléter ou à générer.',
-    missions: ['À préciser'],
-    profil: ['À préciser'],
-    infos: [
-      `Contrat : ${contractType}`,
-      tempsPlein ? 'Temps plein' : 'Temps partiel',
-    ],
+    resume: '',
+    missions: [],
+    profil: [],
+    infos: [],
   })
 }
 

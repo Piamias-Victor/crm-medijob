@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
-import { Textarea } from '@/components/atoms/Textarea'
+import { RichTextEditor } from '@/components/molecules/RichTextEditor'
 import {
   jobOfferFormSchema,
   type JobOfferFormValues,
@@ -19,7 +19,7 @@ type Props = {
 }
 
 export function MissionOffreEditor({ title, content, submitting, onSubmit }: Props) {
-  const { register, handleSubmit, reset, formState } = useForm<JobOfferFormValues>({
+  const { register, handleSubmit, control, reset, formState } = useForm<JobOfferFormValues>({
     resolver: zodResolver(jobOfferFormSchema),
     defaultValues: { title, content },
   })
@@ -39,7 +39,13 @@ export function MissionOffreEditor({ title, content, submitting, onSubmit }: Pro
       </label>
       <label className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-fg">Contenu</span>
-        <Textarea rows={12} {...register('content')} />
+        <Controller
+          name="content"
+          control={control}
+          render={({ field }) => (
+            <RichTextEditor value={field.value} onChange={field.onChange} />
+          )}
+        />
         {formState.errors.content ? (
           <span className="text-xs text-error">{formState.errors.content.message}</span>
         ) : null}
