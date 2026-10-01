@@ -17,7 +17,7 @@ const listing: BoardListing = {
 }
 
 describe('createSupabaseListingsPort', () => {
-  it('inserts offres without source_crm_id', async () => {
+  it('inserts offres without source_crm_id and forces MEDIJOB', async () => {
     const fetchFn = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => [{ id: 'new-uuid' }],
@@ -26,11 +26,16 @@ describe('createSupabaseListingsPort', () => {
       { url: 'https://board.supabase.co', secret: 's' },
       fetchFn,
     )
-    await expect(port.upsert(listing)).resolves.toEqual({ id: 'new-uuid' })
+    await expect(
+      port.upsert({ ...listing, entreprise: 'Pharmacie Mouysset' }),
+    ).resolves.toEqual({ id: 'new-uuid' })
     const [url, init] = fetchFn.mock.calls[0] as [string, RequestInit]
     expect(url).toBe('https://board.supabase.co/rest/v1/offres')
     expect(init.method).toBe('POST')
-    expect(JSON.parse(String(init.body))).not.toHaveProperty('source_crm_id')
+    const body = JSON.parse(String(init.body)) as Record<string, unknown>
+    expect(body).not.toHaveProperty('source_crm_id')
+    expect(body.entreprise).toBe('MEDIJOB')
+    expect(body.description).toBe(listing.description)
   })
 
   it('hides a listing with PATCH and never DELETE', async () => {

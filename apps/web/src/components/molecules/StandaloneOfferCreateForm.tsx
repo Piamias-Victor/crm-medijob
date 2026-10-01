@@ -5,7 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Combobox } from '@/components/molecules/Combobox'
+import { CheckboxChip } from '@/components/molecules/CheckboxChip'
 import type { ComboboxOption } from '@/components/molecules/ComboboxDropdown.types'
+import { contractOptions } from '@/lib/contract-options'
 import {
   standaloneOfferFormSchema,
   type StandaloneOfferFormValues,
@@ -51,16 +53,20 @@ export function StandaloneOfferCreateForm({
       />
       <Input placeholder="Ville" {...register('city')} />
       <Input placeholder="Code postal (optionnel)" {...register('postalCode')} />
-      <select className="rounded-md border px-3 py-2 text-sm" {...register('contractType')}>
-        <option value="CDI">CDI</option>
-        <option value="CDD">CDD</option>
-        <option value="INTERIM">Intérim</option>
-        <option value="VACATION">Vacation</option>
-      </select>
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" {...register('tempsPlein')} />
-        Temps plein
-      </label>
+      <Combobox
+        value={watch('contractType')}
+        onChange={(value) =>
+          setValue('contractType', value as StandaloneOfferFormValues['contractType'])
+        }
+        options={contractOptions}
+        placeholder="Type de contrat"
+        aria-label="Type de contrat"
+      />
+      <CheckboxChip
+        label="Temps plein"
+        checked={watch('tempsPlein')}
+        onChange={(checked) => setValue('tempsPlein', checked)}
+      />
       {formState.errors.city ? (
         <p className="text-xs text-error">{formState.errors.city.message}</p>
       ) : null}

@@ -7,6 +7,7 @@ describe('map-layer-state', () => {
       pharmacy: false,
       candidate: true,
       mission: false,
+      jobOffer: false,
     })
   })
 

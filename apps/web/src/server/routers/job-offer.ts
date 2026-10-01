@@ -43,6 +43,21 @@ export type JobOfferDeps = {
 export function makeJobOfferRouter(deps: JobOfferDeps) {
   return router({
     list: protectedProcedure.query(async () => (await deps.list()).map(toJobOfferListRow)),
+    mapPins: protectedProcedure.query(async () => {
+      const rows = (await deps.list()).map(toJobOfferListRow)
+      return rows.flatMap((row) =>
+        row.latitude != null && row.longitude != null
+          ? [
+              {
+                id: row.id,
+                label: row.title,
+                latitude: row.latitude,
+                longitude: row.longitude,
+              },
+            ]
+          : [],
+      )
+    }),
     getById: protectedProcedure.input(idSchema).query(({ input }) => deps.getById(input.id)),
     getByMissionId: protectedProcedure
       .input(jobOfferMissionIdSchema)
