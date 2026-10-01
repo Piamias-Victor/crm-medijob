@@ -19,7 +19,8 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 | #564 ADR+CONTEXT | #572 | lint:prompts OK | Merged |
 | #565 mapping MEDIJOB | #573 | unit job-board | Merged |
 | #566 sections HTML | #574 | ai+renderer | Merged |
-| #567 schema+resolver | (pending) | unit+typecheck | migrate NOT run (Neon) |
+| #567 schema+resolver | #575 | unit+typecheck | Merged; migrate NOT run (Neon) |
+| #568 create standalone | (pending) | unit | needs migrate |
 
 ## Bloqué
 
