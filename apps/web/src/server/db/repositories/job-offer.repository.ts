@@ -2,6 +2,8 @@ import type { JobOfferStatus, PrismaClient, Prisma } from '@prisma/client'
 import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
 import { prisma as defaultDb } from './client'
 import { NOT_DELETED } from './soft-delete'
+import { buildJobOfferListQueryWhere } from '@/server/db/repositories/job-offer-list-where'
+import type { JobOfferListFilters } from '@/view-models/job-offer-list-filters.schema'
 
 const missionOfferSelect = {
   id: true,
@@ -32,6 +34,24 @@ const missionOfferSelect = {
   },
 } as const
 
+const listSelect = {
+  id: true,
+  title: true,
+  status: true,
+  publishedAt: true,
+  latitude: true,
+  longitude: true,
+  city: true,
+  mission: {
+    select: {
+      id: true,
+      title: true,
+      pharmacy: { select: { latitude: true, longitude: true, city: true } },
+    },
+  },
+  _count: { select: { applications: true } },
+} as const
+
 export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
   return {
     create: (data: Prisma.JobOfferCreateInput) => db.jobOffer.create({ data }),
@@ -53,28 +73,12 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
         boardListingId?: string | null
       },
     ) => db.jobOffer.update({ where: { id }, data }),
-    listForTable: (limit = DEFAULT_LIST_LIMIT) =>
+    listForTable: (filters?: JobOfferListFilters, limit = DEFAULT_LIST_LIMIT) =>
       db.jobOffer.findMany({
-        where: NOT_DELETED,
+        where: buildJobOfferListQueryWhere(filters),
         orderBy: { createdAt: 'desc' },
         take: limit,
-        select: {
-          id: true,
-          title: true,
-          status: true,
-          publishedAt: true,
-          latitude: true,
-          longitude: true,
-          city: true,
-          mission: {
-            select: {
-              id: true,
-              title: true,
-              pharmacy: { select: { latitude: true, longitude: true, city: true } },
-            },
-          },
-          _count: { select: { applications: true } },
-        },
+        select: listSelect,
       }),
     listBoardListingIds: async () => {
       const rows = await db.jobOffer.findMany({

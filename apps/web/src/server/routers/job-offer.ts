@@ -2,7 +2,15 @@ import { router, protectedProcedure, permissionProcedure } from '@/server/trpc'
 import { jobOfferRepository } from '@/server/db/repositories/job-offer.repository'
 import { toJobOfferListRow, type JobOfferListEntity } from '@/view-models/job-offer-list'
 import { idSchema } from '@/lib/schemas/entity-id'
-import { jobOfferMissionIdSchema, jobOfferUpdateSchema, jobOfferStandaloneCreateSchema } from '@/lib/schemas/job-offer'
+import {
+  jobOfferMissionIdSchema,
+  jobOfferUpdateSchema,
+  jobOfferStandaloneCreateSchema,
+} from '@/lib/schemas/job-offer'
+import {
+  jobOfferListFiltersSchema,
+  type JobOfferListFilters,
+} from '@/view-models/job-offer-list-filters.schema'
 import { handleGenerateJobOffer } from '@/server/routers/job-offer-generate'
 import { handleCreateStandaloneOffer } from '@/server/routers/job-offer-standalone'
 import {
@@ -16,7 +24,7 @@ import type { OfferLifecycleRow } from '@/server/routers/job-offer-lifecycle'
 import type { GeoQueryLookup } from '@/lib/geo/geocode-address-fields'
 
 export type JobOfferDeps = {
-  list: () => Promise<JobOfferListEntity[]>
+  list: (filters?: JobOfferListFilters) => Promise<JobOfferListEntity[]>
   getById: (id: string) => ReturnType<typeof jobOfferRepository.findById>
   findByMissionId: (missionId: string) => ReturnType<typeof jobOfferRepository.findByMissionId>
   findMissionForOffer: (
@@ -42,19 +50,14 @@ export type JobOfferDeps = {
 
 export function makeJobOfferRouter(deps: JobOfferDeps) {
   return router({
-    list: protectedProcedure.query(async () => (await deps.list()).map(toJobOfferListRow)),
+    list: protectedProcedure
+      .input(jobOfferListFiltersSchema.optional())
+      .query(async ({ input }) => (await deps.list(input)).map(toJobOfferListRow)),
     mapPins: protectedProcedure.query(async () => {
       const rows = (await deps.list()).map(toJobOfferListRow)
       return rows.flatMap((row) =>
         row.latitude != null && row.longitude != null
-          ? [
-              {
-                id: row.id,
-                label: row.title,
-                latitude: row.latitude,
-                longitude: row.longitude,
-              },
-            ]
+          ? [{ id: row.id, label: row.title, latitude: row.latitude, longitude: row.longitude }]
           : [],
       )
     }),
