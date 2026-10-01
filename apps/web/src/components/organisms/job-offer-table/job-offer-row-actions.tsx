@@ -10,20 +10,26 @@ import { Button } from '@/components/atoms/Button'
 import { SoftDeleteModal } from '@/components/molecules/soft-delete-modal/soft-delete-modal'
 import type { JobOfferListRow } from '@/view-models/job-offer-list'
 import { jobOfferDetailHref } from '@/view-models/job-offer-href'
+import { refreshJobOfferList } from '@/view-models/job-offer-list-refresh'
 
 type Props = { row: JobOfferListRow }
 
 export function JobOfferRowActions({ row }: Props) {
   const router = useRouter()
+  const utils = trpc.useUtils()
   const [open, setOpen] = useState(false)
-  const refresh = () => router.refresh()
+  const refresh = () =>
+    refreshJobOfferList({
+      invalidateList: () => utils.jobOffer.list.invalidate(),
+      refresh: () => router.refresh(),
+    })
   const publishOpts = useEntityMutation({ successMessage: 'Offre publiée', onSuccess: refresh })
   const unpublishOpts = useEntityMutation({ successMessage: 'Offre dépubliée', onSuccess: refresh })
   const deleteOpts = useEntityMutation({
     successMessage: 'Offre supprimée',
-    onSuccess: () => {
+    onSuccess: async () => {
       setOpen(false)
-      refresh()
+      await refresh()
     },
   })
   const publish = trpc.jobOffer.publish.useMutation(publishOpts)
