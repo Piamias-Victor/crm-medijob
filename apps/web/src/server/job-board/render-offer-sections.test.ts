@@ -13,7 +13,9 @@ describe('renderOfferSectionsHtml', () => {
   it('emits exactly four titled sections in order', () => {
     const html = renderOfferSectionsHtml(sections)
     for (const title of OFFER_SECTION_TITLES) {
-      expect(html).toContain(`<p><strong>${title}</strong></p>`)
+      expect(html).toContain(
+        `<p contenteditable="false"><strong>${title}</strong></p>`,
+      )
     }
     const indexes = OFFER_SECTION_TITLES.map((t) => html.indexOf(t))
     expect(indexes).toEqual([...indexes].sort((a, b) => a - b))
@@ -26,7 +28,7 @@ describe('renderOfferSectionsHtml', () => {
     })
     expect(html).toContain('&lt;script&gt;')
     expect(html).not.toContain('<script>')
-    expect(html.replaceAll(/<\/?(p|strong|ul|li)>/g, '').includes('<')).toBe(false)
+    expect(html.replaceAll(/<\/?(p|strong|ul|li)(\s[^>]*)?>/g, '').includes('<')).toBe(false)
   })
 
   it('matches snapshot of happy-path HTML', () => {
