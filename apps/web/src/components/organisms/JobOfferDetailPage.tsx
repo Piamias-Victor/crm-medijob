@@ -10,6 +10,7 @@ import { SectionCard } from '@/components/molecules/SectionCard'
 import { MissionOffreEditor } from '@/components/molecules/MissionOffreEditor'
 import { MissionOffreToolbar } from '@/components/molecules/MissionOffreToolbar'
 import { missionOffreHref } from '@/view-models/mission-offer-picker'
+import { refreshJobOfferList } from '@/view-models/job-offer-list-refresh'
 import type { JobOfferFormValues } from '@/view-models/job-offer-form.schema'
 import type { JobOfferStatus } from '@prisma/client'
 
@@ -29,7 +30,10 @@ export function JobOfferDetailPage({ offer }: Props) {
   const utils = trpc.useUtils()
   const refresh = async () => {
     await utils.jobOffer.getById.invalidate({ id: offer.id })
-    router.refresh()
+    await refreshJobOfferList({
+      invalidateList: () => utils.jobOffer.list.invalidate(),
+      refresh: () => router.refresh(),
+    })
   }
   const updateOpts = useEntityMutation({ successMessage: 'Offre enregistrée', onSuccess: refresh })
   const publishOpts = useEntityMutation({ successMessage: 'Offre publiée', onSuccess: refresh })
