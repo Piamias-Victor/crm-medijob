@@ -21,7 +21,8 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 | #566 sections HTML | #574 | ai+renderer | Merged |
 | #567 schema+resolver | #575 | unit+typecheck | Merged; migrate NOT run (Neon) |
 | #568 create standalone | #576 | unit | Merged; needs migrate |
-| #569 Liste|Carte | (pending) | unit | in PR |
+| #569 Liste|Carte | #577 | unit | Merged |
+| #570 republish dry-run | (pending) | unit | in PR |
 
 ## Bloqué
 
