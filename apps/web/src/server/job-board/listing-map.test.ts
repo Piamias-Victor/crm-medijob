@@ -26,17 +26,19 @@ const source = {
 }
 
 describe('toBoardListing', () => {
-  it('uses pharmacy name and env email, never source_crm_id', () => {
+  it('uses MEDIJOB entreprise and env email, never source_crm_id', () => {
     const listing = toBoardListing(source)
-    expect(listing.entreprise).toBe('Pharmacie du Parc')
+    expect(listing.entreprise).toBe('MEDIJOB')
+    expect(listing.entreprise).not.toBe(source.pharmacy.name)
     expect(listing.contact_email).toBe('offres@medijob.fr')
     expect(listing.mise_en_avant).toBe(false)
     expect(listing).not.toHaveProperty('source_crm_id')
   })
 
-  it('maps title, JobTitle, contract, pay and start from CRM', () => {
+  it('maps titre from job title only, contract, pay and start from CRM', () => {
     const listing = toBoardListing(source)
-    expect(listing.titre).toBe('Pharmacien CDI Lyon')
+    expect(listing.titre).toBe('Pharmacien')
+    expect(listing.ville).toBe('Lyon')
     expect(listing.metier).toBe('Pharmacien')
     expect(listing.description).toBe('<p>Poste en officine</p>')
     expect(listing.type_contrat).toBe('CDI')
@@ -70,7 +72,7 @@ describe('toBoardListing', () => {
 
   it('sets slug on insert and reuses listing id on republish', () => {
     const first = toBoardListing(source)
-    expect(first.slug).toBe('pharmacien-cdi-lyon-lyon')
+    expect(first.slug).toBe('pharmacien-lyon')
     expect(first.id).toBeUndefined()
     const again = toBoardListing({ ...source, boardListingId: 'board-uuid' })
     expect(again.id).toBe('board-uuid')

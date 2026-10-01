@@ -82,7 +82,7 @@ export function makeDeps(overrides: Partial<JobOfferDeps> = {}): JobOfferDeps {
       titre: 'Offre',
       metier: 'Pharmacien',
       description: 'x'.repeat(120),
-      entreprise: 'Pharmacie du Parc',
+      entreprise: 'MEDIJOB',
       ville: 'Lyon',
       type_contrat: 'CDI',
       temps_travail: 'Temps plein',

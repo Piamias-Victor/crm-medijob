@@ -16,7 +16,8 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 
 | Issue | PR | Gate | Note |
 |-------|-----|------|------|
-| (pending) | | | |
+| #564 ADR+CONTEXT | #572 | lint:prompts OK | Merged |
+| #565 mapping MEDIJOB | (pending) | unit job-board | in PR |
 
 ## Bloqué
 
