@@ -57,4 +57,5 @@ export const jobOfferRouter = makeJobOfferRouter({
   provider: createAssistantProvider(),
   board: lifecycle.board,
   buildListing: lifecycle.buildListing,
+  lookupGeo: createGeoQueryLookup(),
 })

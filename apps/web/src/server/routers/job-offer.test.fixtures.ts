@@ -14,7 +14,6 @@ export const directionSession: TestSession = {
   user: { id: 'u2', role: 'DIRECTION' },
   expires: '2999-01-01',
 }
-
 export const missionContext = {
   id: 'm1',
   title: 'CDI Pharmacien Lyon',
@@ -90,6 +89,7 @@ export function makeDeps(overrides: Partial<JobOfferDeps> = {}): JobOfferDeps {
       publiee: true,
       mise_en_avant: false,
     }),
+    lookupGeo: vi.fn().mockResolvedValue({ lat: 45.7, lon: 4.8 }),
     ...overrides,
   }
 }
