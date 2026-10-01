@@ -5,7 +5,7 @@ import {
 } from '@/server/job-board/offer-section-titles'
 
 function titleHtml(title: string) {
-  return `<p><strong>${escapeHtml(title)}</strong></p>`
+  return `<p contenteditable="false"><strong>${escapeHtml(title)}</strong></p>`
 }
 
 function paragraphHtml(text: string) {
