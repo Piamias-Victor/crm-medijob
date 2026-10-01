@@ -21,21 +21,27 @@ Poste seul **61 %** (58/95) ; ville jamais dans le titre ; `entreprise=MEDIJOB` 
 | #566 sections HTML | #574 | ai+renderer | Merged |
 | #567 schema+resolver | #575 | unit+typecheck | Merged; migrate NOT run (Neon) |
 | #568 create standalone | #576 | unit | Merged; needs migrate |
-| #569 Liste|Carte | #577 | unit | Merged |
-| #570 republish dry-run | (pending) | unit | in PR |
+| #569 Liste\|Carte | #577 | unit | Merged |
+| #570 republish dry-run | #578 | unit | Merged; `--apply` never run |
+| #571 e2e mocked | (this) | vitest offres-e2e | No live board write (env can publish — e2e mocked only) |
 
 ## Bloqué
 
 - Migration #567 non appliquée : `DATABASE_URL` = Neon (garde-fou base locale uniquement). Victor doit migrer en local puis staging.
+- Captures 390/1440 non produites (pas de session UI browser dans ce run).
+- e2e réel publication skippé : env locale a des credentials board → mock only.
 
 ## À vérifier par Victor
 
 - [ ] Format titre retenu (poste seul) OK vs attente métier
+- [ ] `pnpm --filter web db:migrate` sur DB **locale** puis staging
 - [ ] Rendu sections HTML sur 1re offre publiée (site)
-- [ ] Sortie `--dry-run` republication avant `--apply`
+- [ ] `pnpm --filter web exec tsx scripts/republish-job-offers.ts` (dry-run) puis `--apply` si OK
+- [ ] Captures manuelles `/offres` Liste + Carte + formulaire sans mission
 
 ## Liens
 
 - Milestone : https://github.com/Piamias-Victor/crm-medijob/milestone/21
 - ADR : docs/adr/0037-job-offer-without-mission.md
 - PRD : docs/prd/21-offres-standalone-carte.md
+- PRs : #572 #573 #574 #575 #576 #577 #578
