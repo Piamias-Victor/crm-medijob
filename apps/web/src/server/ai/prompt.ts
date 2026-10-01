@@ -5,7 +5,7 @@ const FORMAT_HINTS: Record<ResponseKind, string> = {
   chat: '{"reply": string}',
   summary: '{"summary": string}',
   email: '{"subject": string, "body": string}',
-  offer: '{"title": string, "content": string (au moins 100 caractères)}',
+  offer: '{"resume": string, "missions": string[], "profil": string[], "infos": string[]}',
   report: '{"report": string}',
   anonymized:
     '{"accroche","metierExperience","competencesLogiciels","mobilite","disponibiliteContrat","pointsForts": strings sans PII}',

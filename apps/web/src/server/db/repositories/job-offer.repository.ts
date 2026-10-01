@@ -63,7 +63,16 @@ export function makeJobOfferRepository(db: PrismaClient = defaultDb) {
           title: true,
           status: true,
           publishedAt: true,
-          mission: { select: { id: true, title: true } },
+          latitude: true,
+          longitude: true,
+          city: true,
+          mission: {
+            select: {
+              id: true,
+              title: true,
+              pharmacy: { select: { latitude: true, longitude: true, city: true } },
+            },
+          },
           _count: { select: { applications: true } },
         },
       }),

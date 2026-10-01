@@ -1,5 +1,10 @@
 import type { BoardListing } from '@/server/job-board/port'
 import {
+  BOARD_ENTREPRISE,
+  formatBoardOfferCity,
+  formatBoardOfferTitle,
+} from '@/server/job-board/format-board-offer'
+import {
   boardContractLabel,
   boardDepartement,
   boardHoursLabel,
@@ -10,12 +15,13 @@ import type { ListingSource } from '@/server/job-board/listing-source'
 export type { ListingSource } from '@/server/job-board/listing-source'
 
 export function toBoardListing(source: ListingSource): BoardListing {
-  const ville = source.pharmacy.city?.trim() || 'Non précisée'
+  const titre = formatBoardOfferTitle(source.mission.jobTitleName)
+  const ville = formatBoardOfferCity(source.pharmacy.city)
   const listing: BoardListing = {
-    titre: source.title,
+    titre,
     metier: source.mission.jobTitleName,
     description: source.content,
-    entreprise: source.pharmacy.name,
+    entreprise: BOARD_ENTREPRISE,
     ville,
     code_postal: source.pharmacy.postalCode,
     departement: boardDepartement(source.pharmacy.postalCode),
@@ -35,6 +41,6 @@ export function toBoardListing(source: ListingSource): BoardListing {
     listing.id = source.boardListingId
     return listing
   }
-  listing.slug = boardListingSlug(source.title, ville)
+  listing.slug = boardListingSlug(titre, ville)
   return listing
 }

@@ -1,4 +1,5 @@
 import { formatAnonymizedDossierExport } from '@/view-models/anonymized-dossier'
+import { renderOfferSectionsHtml } from '@/server/job-board/render-offer-sections'
 import type {
   ResponseKind,
   ChatResponse,
@@ -19,10 +20,8 @@ export function renderResponse(kind: ResponseKind, data: unknown): string {
       const email = data as EmailResponse
       return `Objet : ${email.subject}\n\n${email.body}`
     }
-    case 'offer': {
-      const offer = data as OfferResponse
-      return `# ${offer.title}\n\n${offer.content}`
-    }
+    case 'offer':
+      return renderOfferSectionsHtml(data as OfferResponse)
     case 'report':
       return (data as ReportResponse).report
     case 'anonymized':

@@ -1,16 +1,12 @@
 import { TRPCError } from '@trpc/server'
 import type { JobOfferStatus } from '@prisma/client'
-import { offerResponseSchema } from '@/server/ai/schemas'
 import type { BoardListing, JobBoardListingsPort } from '@/server/job-board/port'
+import {
+  assertOfferReadyToPublish,
+  type OfferLifecycleRow,
+} from '@/server/routers/job-offer-lifecycle.types'
 
-export type OfferLifecycleRow = {
-  id: string
-  missionId: string
-  status: JobOfferStatus
-  title: string
-  content: string
-  boardListingId: string | null
-}
+export type { OfferLifecycleRow } from '@/server/routers/job-offer-lifecycle.types'
 
 export type LifecycleDeps = {
   getById: (id: string) => Promise<OfferLifecycleRow | null>
@@ -42,7 +38,12 @@ async function writeBoard<T>(op: () => Promise<T>, message: string): Promise<T> 
 
 export async function handlePublishJobOffer(deps: LifecycleDeps, id: string) {
   const offer = await loadOffer(deps, id)
-  offerResponseSchema.parse({ title: offer.title, content: offer.content })
+  if (!assertOfferReadyToPublish(offer.title, offer.content)) {
+    throw new TRPCError({
+      code: 'BAD_REQUEST',
+      message: 'Description incomplète : régénérez l’offre avant publication.',
+    })
+  }
   if (offer.status === 'PUBLIEE') {
     throw new TRPCError({ code: 'BAD_REQUEST', message: 'Offre déjà publiée.' })
   }

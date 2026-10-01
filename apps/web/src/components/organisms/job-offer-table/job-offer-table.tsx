@@ -22,10 +22,10 @@ export function JobOfferTable({ rows, sort, onSortChange }: Props) {
       getRowId={(row) => row.id}
       emptyIcon={Megaphone}
       emptyTitle="Aucune offre"
-      emptyDescription="Créez une offre depuis une mission ouverte."
+      emptyDescription="Créez une offre depuis une mission ou sans mission."
       sort={sort}
       onSortChange={onSortChange}
-      getRowHref={(row) => missionOffreHref(row.missionId)}
+      getRowHref={(row) => (row.missionId ? missionOffreHref(row.missionId) : '/offres')}
       renderActions={(row) => <JobOfferRowActions row={row} />}
     />
   )

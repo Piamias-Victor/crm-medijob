@@ -1,20 +1,22 @@
 import { geocodeAddressFields, type GeoQueryLookup } from '@/lib/geo/geocode-address-fields'
 import { toBoardListing } from '@/server/job-board/listing-map'
-import type { ListingSource } from '@/server/job-board/listing-source'
-import type { OfferLifecycleRow } from '@/server/routers/job-offer-lifecycle'
+import {
+  resolveListingSource,
+  type MissionPublishFields,
+  type OfferPublishFields,
+} from '@/server/job-board/resolve-listing-source'
 
-export type MissionForListing = {
-  contractType: ListingSource['mission']['contractType']
-  tempsPlein: boolean
-  salaireMin: number | null
-  salaireMax: number | null
-  startDate: Date
-  profilRecherche: string | null
+export type MissionForListing = MissionPublishFields & {
   jobTitle: { name: string }
-  pharmacy: ListingSource['pharmacy'] & { address: string | null }
+  pharmacy: MissionPublishFields['pharmacy'] & { address: string | null }
 }
 
-async function resolveCoords(pharmacy: MissionForListing['pharmacy'], lookup: GeoQueryLookup) {
+export type OfferForListing = OfferPublishFields & { id: string; missionId: string | null }
+
+async function resolveCoords(
+  pharmacy: { address: string | null; city: string | null; postalCode: string | null; latitude: number | null; longitude: number | null },
+  lookup: GeoQueryLookup,
+) {
   if (pharmacy.latitude != null && pharmacy.longitude != null) {
     return { latitude: pharmacy.latitude, longitude: pharmacy.longitude }
   }
@@ -26,32 +28,36 @@ async function resolveCoords(pharmacy: MissionForListing['pharmacy'], lookup: Ge
 }
 
 export async function buildListingForOffer(
-  offer: OfferLifecycleRow,
-  mission: MissionForListing,
+  offer: OfferForListing,
+  mission: MissionForListing | null,
   contactEmail: string,
   lookup: GeoQueryLookup,
 ) {
-  const coords = await resolveCoords(mission.pharmacy, lookup)
-  return toBoardListing({
-    title: offer.title,
-    content: offer.content,
-    boardListingId: offer.boardListingId,
+  if (mission) {
+    const coords = await resolveCoords(mission.pharmacy, lookup)
+    const source = resolveListingSource(
+      offer,
+      {
+        ...mission,
+        jobTitleName: mission.jobTitle.name,
+        pharmacy: { ...mission.pharmacy, ...coords },
+      },
+      contactEmail,
+    )
+    return toBoardListing(source)
+  }
+  const pharmacy = {
+    address: null,
+    city: offer.city,
+    postalCode: offer.postalCode,
+    latitude: offer.latitude,
+    longitude: offer.longitude,
+  }
+  const coords = await resolveCoords(pharmacy, lookup)
+  const source = resolveListingSource(
+    { ...offer, ...coords },
+    null,
     contactEmail,
-    mission: {
-      contractType: mission.contractType,
-      tempsPlein: mission.tempsPlein,
-      salaireMin: mission.salaireMin,
-      salaireMax: mission.salaireMax,
-      startDate: mission.startDate,
-      profilRecherche: mission.profilRecherche,
-      jobTitleName: mission.jobTitle.name,
-    },
-    pharmacy: {
-      name: mission.pharmacy.name,
-      city: mission.pharmacy.city,
-      postalCode: mission.pharmacy.postalCode,
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-    },
-  })
+  )
+  return toBoardListing(source)
 }
