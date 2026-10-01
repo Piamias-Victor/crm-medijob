@@ -29,7 +29,7 @@ describe('pilotage unlinked excel lines', () => {
       marge: 10,
       source: 'EXCEL_IMPORT',
     })
-    const pilotage = buildPilotage([line], [], {})
+    const pilotage = buildPilotage([line], [], { exercice: 'all' })
     expect(pilotage.kpis.ca).toBe(1234)
     expect(pilotage.kpis.marge).toBe(100)
     const slices = buildFacturationSlices([], [line, other])
