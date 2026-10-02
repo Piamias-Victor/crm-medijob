@@ -1,3 +1,5 @@
+import { assertPublicApplyPrivacyEnv } from '@/server/public-apply/privacy-env'
+
 export function getAuthSecret() {
   return process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET
 }
@@ -9,4 +11,5 @@ export function validateServerEnv() {
   if (!secret?.trim()) {
     throw new Error('AUTH_SECRET or NEXTAUTH_SECRET is required in production')
   }
+  assertPublicApplyPrivacyEnv()
 }
