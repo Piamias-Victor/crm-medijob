@@ -729,6 +729,17 @@ model Application {
   @@index([source])
 }
 
+model PublicApplyRateLimit {
+  id              String   @id @default(cuid())
+  ipHash          String
+  windowStartedAt DateTime
+  count           Int      @default(0)
+  updatedAt       DateTime @updatedAt
+
+  @@unique([ipHash])
+  @@index([windowStartedAt])
+}
+
 model AppProfile {
   id                  String           @id @default(cuid())
   badakanId           String           @unique
