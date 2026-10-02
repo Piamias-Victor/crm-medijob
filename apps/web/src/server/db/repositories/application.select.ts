@@ -5,6 +5,8 @@ export const applicationInboxSelect = {
   email: true,
   phone: true,
   city: true,
+  postalCode: true,
+  source: true,
   cvUrl: true,
   message: true,
   createdAt: true,
