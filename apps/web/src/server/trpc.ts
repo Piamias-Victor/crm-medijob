@@ -13,7 +13,15 @@ async function getSession(): Promise<Session | null> {
   }
 }
 
-export const createTRPCContext = async () => ({ session: await getSession() })
+export const createTRPCContext = async (opts?: { req?: Request }) => {
+  const session = await getSession()
+  const forwarded = opts?.req?.headers.get('x-forwarded-for')
+  const clientIp = forwarded?.split(',')[0]?.trim()
+  return { session, clientIp } as {
+    session: Session | null
+    clientIp?: string
+  }
+}
 
 type Context = Awaited<ReturnType<typeof createTRPCContext>>
 
