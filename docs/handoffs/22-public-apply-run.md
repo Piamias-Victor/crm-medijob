@@ -10,36 +10,35 @@
 
 - **Page** : `/dispo/[token]` → `apps/web/src/app/dispo/[token]/page.tsx` + `MonthlyAvailabilityPage`
 - **Pourquoi** : seule page publique candidat sans auth (hors login/reset) ; shell `min-h-dvh bg-surface`, colonne `max-w-2xl`, header sticky blanc/blur, typo Inter + tokens `--color-*`, thank-you plein écran `AvailabilityThankYou`
-- **RGPD dispo** : **aucun** — mécanisme privacy à créer (env + fail-closed prod)
+- **RGPD dispo** : **aucun** — mécanisme privacy créé (env + fail-closed prod)
 
 ## Numérotation (lue)
 
-- Dernier ADR : **0037** → prochain **0038**
-- Prochain PRD file : **22-public-apply-page.md**
-- Milestone GitHub : à créer « Public apply page V1 »
+- ADR **0038** · PRD **22** · Milestone **22**
 
 ## Fait
 
 - Milestone 22 + PRD #606 + issues #607–#614
-- #607 ADR/CONTEXT/prompts → PR #615 merged
-- #608 schema postalCode + source → PR #616 merged
-- #609–#611 Zod/CV/rate-limit → PR #617–#619 merged
-- #612 submit endpoint → PR #620 (en CI)
-- UI #613 en cours local (page `/postuler/[boardListingId]` + form dispo-shell)
+- #607–#613 mergés sur `dev` (PRs #615–#621)
+- Route live : `/postuler/[boardListingId]`
+- Staging PR ouverte **non mergée** : #622
 
-## Bloqué
+## Bloqué / restant
 
-- Captures e2e #614 + PR staging non terminés dans ce run (CI #612 + UI à merger d’abord)
+- **#614** e2e 390 + captures `docs/audits/captures/public-apply/` (pas livré dans ce run)
+- Staging PR #622 : conflits possibles staging↔dev (15/14) — review humaine avant merge
 
 ## À vérifier par Victor
 
-- URL politique de confidentialité + durée de conservation (env `PUBLIC_APPLY_PRIVACY_URL`, `PUBLIC_APPLY_RETENTION_LABEL`)
-- URL offre test (`boardListingId`) pour Matthieu après deploy staging
-- Cutover boutons site + arrêt ops ingest (hors code V1 : ingest inchangé)
-- Rate limit : table Prisma `PublicApplyRateLimit` (pas Redis)
+- `PUBLIC_APPLY_PRIVACY_URL` + `PUBLIC_APPLY_RETENTION_LABEL` sur staging/prod
+- Migrations staging : `…postal_source` + `…public_apply_rate_limit`
+- URL test Matthieu : `/postuler/{boardListingId}` d’une offre `PUBLIEE`
+- Rate limit = table Prisma `PublicApplyRateLimit` (pas Redis)
+- Couper ingest board **ops** après switch boutons (code ingest inchangé)
 
 ## Liens
 
 - Milestone: https://github.com/Piamias-Victor/crm-medijob/milestone/22
-- PRD: #606 · ADR: `docs/adr/0038-public-apply-page.md`
-- PRs: #615–#620
+- Staging PR: https://github.com/Piamias-Victor/crm-medijob/pull/622
+- ADR: `docs/adr/0038-public-apply-page.md`
+- Journal: `docs/handoffs/22-public-apply-run.md`
