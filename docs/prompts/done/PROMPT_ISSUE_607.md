@@ -32,4 +32,7 @@ Commit ADR `docs/adr/0038-public-apply-page.md`, update root `CONTEXT.md` terms,
 
 ## Compte rendu
 
+- ADR 0038 + CONTEXT + PRD 22 + prompts #607-614 merged via PR #615
+
+
 -
