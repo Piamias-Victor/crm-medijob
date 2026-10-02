@@ -50,16 +50,21 @@ describe('jobOfferRouter lifecycle', () => {
     expect(deps.update).not.toHaveBeenCalled()
   })
 
-  it('rejects publish when description misses sections', async () => {
+  it('publishes when description misses section titles', async () => {
+    const upsert = vi.fn().mockResolvedValue({ id: 'board-uuid' })
     const deps = makeDeps({
       getById: vi.fn().mockResolvedValue({
         ...draftOffer,
         content: 'x'.repeat(120),
       }),
+      board: { upsert, setPubliee: vi.fn() },
     })
-    await expect(caller(deps).publish({ id: 'o1' })).rejects.toMatchObject({
-      code: 'BAD_REQUEST',
-    })
+    await caller(deps).publish({ id: 'o1' })
+    expect(upsert).toHaveBeenCalled()
+    expect(deps.update).toHaveBeenCalledWith(
+      'o1',
+      expect.objectContaining({ status: 'PUBLIEE', boardListingId: 'board-uuid' }),
+    )
   })
 
   it('unpublish hides listing without deleting', async () => {
