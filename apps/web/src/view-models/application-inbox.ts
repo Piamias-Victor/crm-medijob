@@ -5,6 +5,8 @@ export type InboxItem = {
   email: string
   phone: string | null
   city: string | null
+  postalCode: string | null
+  source: 'BOARD_INGEST' | 'PUBLIC_APPLY'
   cvUrl: string | null
   message: string | null
   createdAt: Date

@@ -102,6 +102,11 @@ enum ApplicationStatus {
   REFUSEE
 }
 
+enum ApplicationSource {
+  BOARD_INGEST
+  PUBLIC_APPLY
+}
+
 enum AppProfileStatus {
   EN_ATTENTE
   ACCEPTE
@@ -692,24 +697,26 @@ model JobOffer {
 // ─── Candidatures site internet ───────────────────────────────
 
 model Application {
-  id                String            @id @default(cuid())
+  id                String             @id @default(cuid())
   jobOfferId        String
-  boardSubmissionId String?           @unique
+  boardSubmissionId String?            @unique
   firstName         String
   lastName          String
   email             String
   phone             String?
   city              String?
+  postalCode        String?
   jobTitleId        String?
   cvUrl             String?
   message           String?
-  status            ApplicationStatus @default(EN_ATTENTE)
+  status            ApplicationStatus  @default(EN_ATTENTE)
+  source            ApplicationSource  @default(BOARD_INGEST)
   candidateId       String?
   consentGivenAt    DateTime?
   consentSource     ConsentSource?
   deletedAt         DateTime?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   jobOffer  JobOffer   @relation(fields: [jobOfferId], references: [id])
   jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
@@ -719,6 +726,18 @@ model Application {
   @@index([jobOfferId])
   @@index([status])
   @@index([createdAt])
+  @@index([source])
+}
+
+model PublicApplyRateLimit {
+  id              String   @id @default(cuid())
+  ipHash          String
+  windowStartedAt DateTime
+  count           Int      @default(0)
+  updatedAt       DateTime @updatedAt
+
+  @@unique([ipHash])
+  @@index([windowStartedAt])
 }
 
 model AppProfile {

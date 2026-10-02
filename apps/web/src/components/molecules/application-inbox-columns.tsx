@@ -1,6 +1,7 @@
 import type { ColumnDef } from '@/components/organisms/entity-table/entity-table-types'
 import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
 import { formatInboxDate, type InboxItem } from '@/view-models/application-inbox'
+import { applicationSourceLabel } from '@/view-models/application-source.labels'
 
 export function buildApplicationInboxColumns(): ColumnDef<InboxItem>[] {
   return [
@@ -15,6 +16,18 @@ export function buildApplicationInboxColumns(): ColumnDef<InboxItem>[] {
     { id: 'phone', header: 'Téléphone', accessor: (row) => row.phone ?? TABLE_EMPTY_CELL },
     { id: 'email', header: 'Email', accessor: (row) => row.email, sortable: true },
     { id: 'city', header: 'Ville', accessor: (row) => row.city ?? TABLE_EMPTY_CELL, sortable: true },
+    {
+      id: 'postalCode',
+      header: 'CP',
+      accessor: (row) => row.postalCode ?? TABLE_EMPTY_CELL,
+      sortable: true,
+    },
+    {
+      id: 'source',
+      header: 'Source',
+      accessor: (row) => applicationSourceLabel(row.source),
+      sortable: true,
+    },
     {
       id: 'cv',
       header: 'CV',

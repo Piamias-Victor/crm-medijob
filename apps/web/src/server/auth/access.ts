@@ -23,6 +23,10 @@ export function isDispoPath(pathname: string): boolean {
   return pathname === '/dispo' || pathname.startsWith('/dispo/')
 }
 
+export function isPostulerPath(pathname: string): boolean {
+  return pathname === '/postuler' || pathname.startsWith('/postuler/')
+}
+
 export function evaluateAccess(input: {
   loggedIn: boolean
   role: AccessRole
@@ -34,6 +38,9 @@ export function evaluateAccess(input: {
     return loggedIn ? 'redirect-home' : 'allow'
   }
   if (isDispoPath(pathname)) {
+    return 'allow'
+  }
+  if (isPostulerPath(pathname)) {
     return 'allow'
   }
   if (!loggedIn) {

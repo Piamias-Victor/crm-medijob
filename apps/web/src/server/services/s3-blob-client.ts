@@ -34,7 +34,7 @@ export function parseS3ObjectUrl(
     const parsed = new URL(url)
     const host = `${bucket}.s3.${region}.amazonaws.com`
     if (parsed.hostname !== host) return null
-    const key = parsed.pathname.replace(/^\/+/, '')
+    const key = decodeURIComponent(parsed.pathname.replace(/^\/+/, ''))
     return key ? { key } : null
   } catch {
     return null

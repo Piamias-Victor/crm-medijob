@@ -37,8 +37,20 @@ The declared AM/PM slots of an App-origin Candidate who is App-validated, on rea
 _Avoid_: Disponibilité (unqualified), planning (unqualified), Availability, planning Badakan, semaine type, heures précises, Calendly (as booking), 4 semaines à l’écran
 
 **Application**:
-An inbound candidacy received via the public job board, tied to a specific JobOffer. Each Application is one board submission, identified by that board’s submission id — ingest never creates a second Application for the same submission, and never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters. Distinct from a recipient applying to a Badakan mission (`SEARCH_APPLIED`).
+An inbound candidacy tied to a specific JobOffer. Entry via board ingest (`ApplicationSource` board) or the CRM **Public apply page** (`public-apply`). Carries optional applicant `postalCode` (required on the public apply page; may be absent on board-ingested rows). Identified for board rows by `boardSubmissionId` (unique). Never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters. Distinct from a recipient applying to a Badakan mission (`SEARCH_APPLIED`).
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead, SEARCH_APPLIED
+
+**Application source**:
+How an Application entered the CRM: board ingest vs public-apply (CRM public apply page). Visible and filterable in the Applications inbox.
+_Avoid_: origin (unqualified), canal (unqualified), ConsentSource (that's GDPR provenance)
+
+**Applicant postal code**:
+The postal code declared by the applicant on an Application (`postalCode`). Required on the Public apply page (5 digits); nullable for legacy / board-ingested rows. Distinct from Pharmacy or Candidate profile postal code until accept/convert.
+_Avoid_: Code postal (unqualified), Candidate postalCode (that's the CVthèque profile)
+
+**Public apply page**:
+A public CRM page at `/postuler/[boardListingId]` (no login, `noindex`), opened from the job board « Postuler » button with the board listing id. Offer-linked only in V1. Shows JobOffer context read-only: title, métier, city, contract — only when **PUBLIEE**; otherwise unavailable (unknown id → 404). Applicant must submit first/last name, email, phone (FR), city, postal code, CV (PDF/DOC/DOCX · max 5 Mo · magic-byte check), mandatory unchecked consent (`ConsentSource` SITE + timestamp), optional message. Honeypot + IP rate limit (5/hour). Success → on-page thank-you (no email). Downstream inbox accept/refuse unchanged. Design matches the Weekly availability public page shell. Does not modify the Medijob job-board site or stop board ingest in code (ops cutover after Matthieu redirects buttons).
+_Avoid_: T4S apply, tzportal, formulaire site Supabase, page dispo (that's Weekly availability)
 
 **Interview**:
 A first-class qualification conversation on a Candidate (status DRAFT or CLOSED, mode INTERIM or CDD_CDI, answers/scores, eligibility decision, Referent). Distinct from the PipelineStage named « Entretien » (mission progression) and from Application (website inbound). The métier and mode at Interview start pin a **published** InterviewTemplate version; the DRAFT stays on that version. New Interviews use the latest published version.
