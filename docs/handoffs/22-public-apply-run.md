@@ -20,18 +20,26 @@
 
 ## Fait
 
-- (en cours) Phase 0 lecture
+- Milestone 22 + PRD #606 + issues #607–#614
+- #607 ADR/CONTEXT/prompts → PR #615 merged
+- #608 schema postalCode + source → PR #616 merged
+- #609–#611 Zod/CV/rate-limit → PR #617–#619 merged
+- #612 submit endpoint → PR #620 (en CI)
+- UI #613 en cours local (page `/postuler/[boardListingId]` + form dispo-shell)
 
 ## Bloqué
 
-- (rien)
+- Captures e2e #614 + PR staging non terminés dans ce run (CI #612 + UI à merger d’abord)
 
 ## À vérifier par Victor
 
-- URL politique de confidentialité + durée de conservation (env)
+- URL politique de confidentialité + durée de conservation (env `PUBLIC_APPLY_PRIVACY_URL`, `PUBLIC_APPLY_RETENTION_LABEL`)
 - URL offre test (`boardListingId`) pour Matthieu après deploy staging
-- Cutover boutons site + arrêt ops ingest (hors code V1 : ingest inchangé dans ce run)
+- Cutover boutons site + arrêt ops ingest (hors code V1 : ingest inchangé)
+- Rate limit : table Prisma `PublicApplyRateLimit` (pas Redis)
 
 ## Liens
 
-- (à remplir)
+- Milestone: https://github.com/Piamias-Victor/crm-medijob/milestone/22
+- PRD: #606 · ADR: `docs/adr/0038-public-apply-page.md`
+- PRs: #615–#620

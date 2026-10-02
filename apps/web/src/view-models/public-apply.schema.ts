@@ -31,7 +31,7 @@ export const publicApplyFormSchema = z.object({
     message: 'Le consentement est obligatoire',
   }),
   /** Honeypot — must stay empty; checked outside Zod for fake-success path. */
-  website: z.string().optional().default(''),
+  website: z.string(),
 })
 
 export type PublicApplyFormValues = z.infer<typeof publicApplyFormSchema>
