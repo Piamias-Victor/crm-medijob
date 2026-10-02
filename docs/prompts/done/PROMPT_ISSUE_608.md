@@ -19,3 +19,5 @@ Prisma: `Application.postalCode String?`; enum `ApplicationSource` (`BOARD_INGES
 
 ## Compte rendu
 -
+
+- Schema postalCode + ApplicationSource via PR #616
