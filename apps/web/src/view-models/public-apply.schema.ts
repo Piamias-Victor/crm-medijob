@@ -27,8 +27,8 @@ export const publicApplyFormSchema = z.object({
   city: z.string().trim().min(1, 'La ville est obligatoire'),
   postalCode: postalCodeSchema,
   message: z.string().trim().max(2000).optional().or(z.literal('')),
-  consentGiven: z.literal(true, {
-    errorMap: () => ({ message: 'Le consentement est obligatoire' }),
+  consentGiven: z.boolean().refine((value) => value === true, {
+    message: 'Le consentement est obligatoire',
   }),
   /** Honeypot — must stay empty; checked outside Zod for fake-success path. */
   website: z.string().optional().default(''),

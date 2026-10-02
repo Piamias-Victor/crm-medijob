@@ -25,6 +25,7 @@ import { weeklyAvailabilityRouter } from '@/server/routers/weekly-availability'
 import { badakanContractRouter } from '@/server/routers/badakan-contract'
 import { badakanProposalRouter } from '@/server/routers/badakan-proposal'
 import { activiteRouter } from '@/server/routers/activite'
+import { publicApplyRouter } from '@/server/routers/public-apply'
 
 export const appRouter = router({
   health: healthRouter,
@@ -53,6 +54,7 @@ export const appRouter = router({
   badakanContract: badakanContractRouter,
   badakanProposal: badakanProposalRouter,
   weeklyAvailability: weeklyAvailabilityRouter,
+  publicApply: publicApplyRouter,
 })
 
 export type AppRouter = typeof appRouter
