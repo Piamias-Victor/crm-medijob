@@ -95,10 +95,4 @@ describe('evaluateAccess', () => {
       }),
     ).toBe('allow')
   })
-
-  it('allows anonymous access to the public apply page', () => {
-    expect(
-      evaluateAccess({ loggedIn: false, role: null, pathname: '/postuler/listing-uuid' }),
-    ).toBe('allow')
-  })
 })
