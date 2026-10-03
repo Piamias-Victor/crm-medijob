@@ -23,7 +23,6 @@ export type OfferLookupRow = {
   contractType: ContractType | null
   jobTitle: { id: string; name: string } | null
   mission: {
-    city: string | null
     contractType: ContractType
     jobTitle: { id: string; name: string }
     pharmacy: { city: string | null }
@@ -36,8 +35,7 @@ export function toPublicOfferCard(row: OfferLookupRow): PublicOfferCard | null {
   const jobTitleName =
     row.mission?.jobTitle.name ?? row.jobTitleName ?? row.jobTitle?.name
   if (!jobTitleId || !jobTitleName) return null
-  const city =
-    row.mission?.pharmacy.city ?? row.mission?.city ?? row.city ?? 'Non précisée'
+  const city = row.mission?.pharmacy.city ?? row.city ?? 'Non précisée'
   const contract = row.mission?.contractType ?? row.contractType
   if (!contract) return null
   return {

@@ -14,7 +14,6 @@ const offerSelect = {
   jobTitle: { select: { id: true, name: true } },
   mission: {
     select: {
-      city: true,
       contractType: true,
       jobTitle: { select: { id: true, name: true } },
       pharmacy: { select: { city: true } },
