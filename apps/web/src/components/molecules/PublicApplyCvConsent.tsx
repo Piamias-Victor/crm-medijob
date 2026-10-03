@@ -2,10 +2,9 @@
 
 import type { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/atoms/Button'
-import { Input } from '@/components/atoms/Input'
 import { PublicApplyField } from '@/components/molecules/PublicApplyField'
+import { PublicApplyCvDropzone } from '@/components/molecules/PublicApplyCvDropzone'
 import type { usePublicApplyCv } from '@/components/molecules/use-public-apply-cv'
-import { PUBLIC_APPLY_CV_ACCEPT, PUBLIC_APPLY_CV_HINT } from '@/lib/public-apply-cv'
 import { PUBLIC_APPLY_COPY } from '@/view-models/public-apply-copy'
 import type { PublicApplyFormValues } from '@/view-models/public-apply.schema'
 
@@ -24,40 +23,40 @@ export function PublicApplyCvConsent({
   retentionLabel,
   submitting,
 }: Props) {
+  const consentError = form.formState.errors.consentGiven?.message
   return (
     <>
-      <PublicApplyField label={PUBLIC_APPLY_COPY.fields.cv} error={cv.error ?? undefined}>
-        <Input
-          className="min-h-11"
-          type="file"
-          accept={PUBLIC_APPLY_CV_ACCEPT}
-          onChange={(event) => void cv.onFileChange(event.target.files)}
-        />
-        <p className="text-xs text-fg-muted">{PUBLIC_APPLY_CV_HINT}</p>
-      </PublicApplyField>
+      <PublicApplyCvDropzone cv={cv} />
       <PublicApplyField label={PUBLIC_APPLY_COPY.fields.message}>
         <textarea
-          className="min-h-24 w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-fg"
+          className="min-h-24 w-full rounded-xl border border-border bg-white px-3 py-2 text-sm text-fg"
           {...form.register('message')}
         />
       </PublicApplyField>
-      <label className="flex min-h-11 items-start gap-3 text-sm text-fg">
-        <input type="checkbox" className="mt-1 h-5 w-5" {...form.register('consentGiven')} />
+      <label className="flex min-h-14 cursor-pointer items-start gap-3 rounded-2xl border-2 border-[var(--color-primary)] bg-white p-4 text-sm text-fg">
+        <input
+          type="checkbox"
+          className="mt-0.5 size-6 shrink-0 rounded accent-[var(--color-accent)]"
+          {...form.register('consentGiven')}
+        />
         <span>
-          {PUBLIC_APPLY_COPY.consentPrefix}{' '}
-          <a href={privacyUrl} className="underline" target="_blank" rel="noreferrer">
+          {PUBLIC_APPLY_COPY.consentPrefix}
+          <a href={privacyUrl} className="font-semibold underline" target="_blank" rel="noreferrer">
             {PUBLIC_APPLY_COPY.consentLink}
           </a>
-          . {PUBLIC_APPLY_COPY.consentRetention} : {retentionLabel}.
+          {PUBLIC_APPLY_COPY.consentRetention} {retentionLabel}.
         </span>
       </label>
-      {form.formState.errors.consentGiven ? (
-        <p className="text-xs text-error">{form.formState.errors.consentGiven.message}</p>
-      ) : null}
+      {consentError ? <p className="text-xs text-error">{consentError}</p> : null}
       {form.formState.errors.root ? (
         <p className="text-xs text-error">{form.formState.errors.root.message}</p>
       ) : null}
-      <Button type="submit" variant="accent" className="min-h-11" disabled={submitting}>
+      <Button
+        type="submit"
+        variant="accent"
+        className="min-h-12 rounded-xl text-base font-semibold shadow-md"
+        disabled={submitting}
+      >
         {submitting ? PUBLIC_APPLY_COPY.submitting : PUBLIC_APPLY_COPY.submit}
       </Button>
     </>

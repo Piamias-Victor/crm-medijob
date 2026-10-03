@@ -32,7 +32,7 @@ export function PublicApplyForm(props: Props) {
       postalCode: '',
       message: '',
       consentGiven: false,
-      website: '',
+      hpConfirm: '',
     },
   })
 
@@ -60,7 +60,7 @@ export function PublicApplyForm(props: Props) {
         autoComplete="off"
         aria-hidden
         className="absolute -left-[9999px] h-0 w-0 opacity-0"
-        {...form.register('website')}
+        {...form.register('hpConfirm')}
       />
       <PublicApplyIdentityFields form={form} />
       <PublicApplyCvConsent form={form} cv={cv} {...props} submitting={submit.isPending} />

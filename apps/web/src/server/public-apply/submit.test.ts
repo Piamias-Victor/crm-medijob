@@ -23,7 +23,7 @@ const baseInput = {
   postalCode: '69001',
   message: '',
   consentGiven: true as const,
-  website: '',
+  hpConfirm: '',
   cvFilename: 'cv.pdf',
   cvBase64: Buffer.from('%PDF-1.4').toString('base64'),
   clientIp: '1.2.3.4',
@@ -50,7 +50,7 @@ describe('submitPublicApply', () => {
 
   it('fakes success on honeypot without write', async () => {
     const d = deps()
-    const result = await submitPublicApply(d, { ...baseInput, website: 'bot' })
+    const result = await submitPublicApply(d, { ...baseInput, hpConfirm: 'bot' })
     expect(result).toMatchObject({ ok: true, fake: true })
     expect(d.createApplication).not.toHaveBeenCalled()
     expect(d.logHoneypot).toHaveBeenCalled()
