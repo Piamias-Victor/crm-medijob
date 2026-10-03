@@ -10,16 +10,19 @@ type Offer = {
   contractLabel?: string
 }
 
+type Chip = { label: string; value: string }
+
+function offerChips(offer: Offer): Chip[] {
+  const chips: Chip[] = []
+  if (offer.jobTitleName) chips.push({ label: PUBLIC_APPLY_COPY.offerJob, value: offer.jobTitleName })
+  if (offer.city) chips.push({ label: PUBLIC_APPLY_COPY.offerCity, value: offer.city })
+  if (offer.contractLabel)
+    chips.push({ label: PUBLIC_APPLY_COPY.offerContract, value: offer.contractLabel })
+  return chips
+}
+
 export function PublicApplyOfferSummary({ offer }: { offer: Offer }) {
-  const chips = [
-    offer.jobTitleName
-      ? { label: PUBLIC_APPLY_COPY.offerJob, value: offer.jobTitleName }
-      : null,
-    offer.city ? { label: PUBLIC_APPLY_COPY.offerCity, value: offer.city } : null,
-    offer.contractLabel
-      ? { label: PUBLIC_APPLY_COPY.offerContract, value: offer.contractLabel }
-      : null,
-  ].filter((chip): chip is { label: string; value: string } => Boolean(chip))
+  const chips = offerChips(offer)
   return (
     <section className="rounded-3xl bg-[var(--color-primary)] px-5 py-6 text-white shadow-lg">
       <p className="text-xs font-semibold tracking-[0.2em] uppercase text-[var(--color-accent)]">
