@@ -22,7 +22,6 @@ const form = {
   postalCode: '69001',
   message: '',
   consentGiven: true as const,
-  hpConfirm: '',
 }
 
 const raw = {
@@ -42,5 +41,17 @@ describe('persistPublicApply', () => {
     const result = await persistPublicApply(deps, offer, form, raw)
     expect(result).toMatchObject({ ok: false, code: 'VALIDATION' })
     expect(deps.createApplication).not.toHaveBeenCalled()
+  })
+
+  it('creates the application with the offer id', async () => {
+    const deps = {
+      uploadCv: vi.fn().mockResolvedValue({ url: 'https://blob.example/cv.pdf' }),
+      createApplication: vi.fn().mockResolvedValue({ id: 'app-1' }),
+    } as unknown as PublicApplySubmitDeps
+    const result = await persistPublicApply(deps, offer, form, raw)
+    expect(result).toEqual({ ok: true, applicationId: 'app-1' })
+    expect(deps.createApplication).toHaveBeenCalledWith(
+      expect.objectContaining({ jobOfferId: 'offer-1', email: 'alice@example.com' }),
+    )
   })
 })
