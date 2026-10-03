@@ -1,5 +1,8 @@
-import type { InboxItem } from '@/view-models/application-inbox'
-import { formatInboxDate } from '@/view-models/application-inbox'
+import {
+  applicationOfferLabel,
+  formatInboxDate,
+  type InboxItem,
+} from '@/view-models/application-inbox'
 import { applicationSourceLabel } from '@/view-models/application-source.labels'
 import type { DetailField } from '@/components/molecules/DetailFieldList'
 
@@ -13,7 +16,7 @@ export function applicationDetailFields(item: InboxItem): DetailField[] {
     { label: 'Ville', value: item.city },
     { label: 'Code postal', value: item.postalCode },
     { label: 'Source', value: applicationSourceLabel(item.source) },
-    { label: 'Offre', value: item.jobOffer.title },
+    { label: 'Offre', value: applicationOfferLabel(item) },
     { label: 'Reçue le', value: formatInboxDate(item.createdAt) },
     { label: 'Message', value: item.message },
   ]

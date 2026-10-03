@@ -9,8 +9,8 @@ export type PublicApplySubmitDeps = {
     contentType: string
   }) => Promise<{ url: string }>
   createApplication: (data: {
-    jobOfferId: string
-    jobTitleId: string
+    jobOfferId: string | null
+    jobTitleId: string | null
     firstName: string
     lastName: string
     email: string

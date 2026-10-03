@@ -18,6 +18,8 @@ export const PUBLIC_APPLY_COPY = {
   cvIdle: 'Déposer mon CV',
   cvChosen: 'CV sélectionné',
   cvHint: 'PDF, DOC ou DOCX · 5 Mo max · un clic ou glisser-déposer',
+  spontaneousTitle: 'Candidature spontanée',
+  spontaneousIntro: 'Pas d’offre en vue ? Déposez votre CV, on vous recontacte.',
   fields: {
     firstName: 'Prénom',
     lastName: 'Nom',

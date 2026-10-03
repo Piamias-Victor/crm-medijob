@@ -2,6 +2,8 @@ import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { createServerCaller } from '@/lib/trpc/server'
 import { CandidatsPage } from '@/components/organisms/CandidatsPage'
+import { getAppBaseUrl } from '@/server/auth/app-base-url'
+import { spontaneousApplyUrl } from '@/view-models/public-apply-href'
 import { legacyProfilsAppRedirect, parseCandidatsTab } from '@/view-models/candidats-tab'
 import { buildCvthequeFilterConfig } from '@/lib/filters/cvtheque-filter-config'
 import {
@@ -39,6 +41,7 @@ export default async function Page({ searchParams }: Props) {
         serverFilters={listFilters}
         filterConfig={filterConfig}
         initialTab={parseCandidatsTab(tabParam)}
+        spontaneousApplyUrl={spontaneousApplyUrl(getAppBaseUrl())}
       />
     </Suspense>
   )

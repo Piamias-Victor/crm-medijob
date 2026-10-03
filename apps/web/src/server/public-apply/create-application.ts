@@ -16,10 +16,10 @@ export function createPublicApplyApplication(db: PrismaClient, data: Payload) {
       cvUrl: data.cvUrl,
       consentGivenAt: data.consentGivenAt,
       consentSource: data.consentSource,
-      source: 'PUBLIC_APPLY',
+      source: data.jobOfferId ? 'PUBLIC_APPLY' : 'SPONTANEOUS',
       status: 'EN_ATTENTE',
-      jobOffer: { connect: { id: data.jobOfferId } },
-      jobTitle: { connect: { id: data.jobTitleId } },
+      jobOffer: data.jobOfferId ? { connect: { id: data.jobOfferId } } : undefined,
+      jobTitle: data.jobTitleId ? { connect: { id: data.jobTitleId } } : undefined,
     },
     select: { id: true },
   })

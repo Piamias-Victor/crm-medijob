@@ -25,6 +25,10 @@ function mapSubmitError(code: string, message: string): never {
 }
 
 export const publicApplyRouter = router({
+  privacy: publicProcedure.query(() => ({
+    privacyUrl: getPublicApplyPrivacyUrl(),
+    retentionLabel: getPublicApplyRetentionLabel(),
+  })),
   getOffer: publicProcedure
     .input(z.object({ boardListingId: z.string().min(1) }))
     .query(async ({ input }) => {
