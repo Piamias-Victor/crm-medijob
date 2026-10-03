@@ -1,5 +1,4 @@
 import {
-  isPublicApplyHoneypotFilled,
   publicApplyFormSchema,
 } from '@/view-models/public-apply.schema'
 import { persistPublicApply } from '@/server/public-apply/submit-persist'
@@ -12,10 +11,6 @@ export async function submitPublicApply(
   deps: PublicApplySubmitDeps,
   raw: PublicApplySubmitInput,
 ): Promise<SubmitResult> {
-  if (isPublicApplyHoneypotFilled(raw.hpConfirm)) {
-    deps.logHoneypot()
-    return { ok: true, applicationId: null, fake: true }
-  }
   const parsed = publicApplyFormSchema.safeParse(raw)
   if (!parsed.success) {
     return {
