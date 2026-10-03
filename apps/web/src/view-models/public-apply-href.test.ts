@@ -3,11 +3,20 @@ import {
   canShowPublicApplyLink,
   publicApplyPath,
   publicApplyUrl,
+  spontaneousApplyPath,
+  spontaneousApplyUrl,
 } from '@/view-models/public-apply-href'
 
 describe('publicApplyPath', () => {
   it('builds the public apply path from board listing id', () => {
     expect(publicApplyPath('listing-uuid')).toBe('/postuler/listing-uuid')
+  })
+
+  it('builds the spontaneous apply path without a listing id', () => {
+    expect(spontaneousApplyPath()).toBe('/postuler')
+    expect(spontaneousApplyUrl('https://mdj.crm.medijob.fr/')).toBe(
+      'https://mdj.crm.medijob.fr/postuler',
+    )
   })
 })
 
