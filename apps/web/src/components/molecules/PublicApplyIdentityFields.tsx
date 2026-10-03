@@ -12,7 +12,7 @@ export function PublicApplyIdentityFields({
 }) {
   const err = form.formState.errors
   return (
-    <>
+    <div className="grid gap-4 sm:grid-cols-2">
       <PublicApplyTextInput
         label={PUBLIC_APPLY_COPY.fields.firstName}
         error={err.firstName?.message}
@@ -53,6 +53,6 @@ export function PublicApplyIdentityFields({
         {...form.register('postalCode')}
         autoComplete="postal-code"
       />
-    </>
+    </div>
   )
 }

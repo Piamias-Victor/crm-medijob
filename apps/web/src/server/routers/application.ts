@@ -13,6 +13,9 @@ export type { ApplicationDeps }
 export function makeApplicationRouter(deps: ApplicationDeps) {
   return router({
     listInbox: protectedProcedure.query(() => deps.listInbox()),
+    listByJobOffer: protectedProcedure
+      .input(idSchema)
+      .query(({ input }) => deps.listByJobOffer(input.id)),
     getById: protectedProcedure.input(idSchema).query(async ({ input }) => {
       const row = await deps.getById(input.id)
       if (!row) throw new TRPCError({ code: 'NOT_FOUND', message: 'Application not found' })

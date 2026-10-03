@@ -12,7 +12,7 @@ export async function submitPublicApply(
   deps: PublicApplySubmitDeps,
   raw: PublicApplySubmitInput,
 ): Promise<SubmitResult> {
-  if (isPublicApplyHoneypotFilled(raw.website)) {
+  if (isPublicApplyHoneypotFilled(raw.hpConfirm)) {
     deps.logHoneypot()
     return { ok: true, applicationId: null, fake: true }
   }
