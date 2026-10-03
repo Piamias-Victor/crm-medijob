@@ -4,29 +4,21 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Megaphone } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
-import { useEntityMutation } from '@/lib/hooks/use-entity-mutation'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
-import { SectionCard } from '@/components/molecules/SectionCard'
-import { MissionOffreEditor } from '@/components/molecules/MissionOffreEditor'
-import { MissionOffreToolbar } from '@/components/molecules/MissionOffreToolbar'
-import { JobOfferPublicApplyLink } from '@/components/molecules/JobOfferPublicApplyLink'
-import { missionOffreHref } from '@/view-models/mission-offer-picker'
+import { JobOfferAnnonceCard, type JobOfferDetailProps } from '@/components/organisms/JobOfferAnnonceCard'
+import { JobOfferApplications } from '@/components/organisms/JobOfferApplications'
 import { refreshJobOfferList } from '@/view-models/job-offer-list-refresh'
-import type { JobOfferFormValues } from '@/view-models/job-offer-form.schema'
-import type { JobOfferStatus } from '@prisma/client'
+import type { InboxItem } from '@/view-models/application-inbox'
 
-export type JobOfferDetailProps = {
-  id: string
-  title: string
-  content: string
-  status: JobOfferStatus
-  missionId: string | null
-  city: string | null
+export type { JobOfferDetailProps }
+
+type Props = {
+  offer: JobOfferDetailProps
+  publicApplyUrl?: string | null
+  applications: InboxItem[]
 }
 
-type Props = { offer: JobOfferDetailProps; publicApplyUrl?: string | null }
-
-export function JobOfferDetailPage({ offer, publicApplyUrl = null }: Props) {
+export function JobOfferDetailPage({ offer, publicApplyUrl = null, applications }: Props) {
   const router = useRouter()
   const utils = trpc.useUtils()
   const refresh = async () => {
@@ -36,16 +28,6 @@ export function JobOfferDetailPage({ offer, publicApplyUrl = null }: Props) {
       refresh: () => router.refresh(),
     })
   }
-  const updateOpts = useEntityMutation({ successMessage: 'Offre enregistrée', onSuccess: refresh })
-  const publishOpts = useEntityMutation({ successMessage: 'Offre publiée', onSuccess: refresh })
-  const unpublishOpts = useEntityMutation({ successMessage: 'Offre dépubliée', onSuccess: refresh })
-  const generateOpts = useEntityMutation({ successMessage: 'Brouillon généré', onSuccess: refresh })
-  const update = trpc.jobOffer.update.useMutation(updateOpts)
-  const publish = trpc.jobOffer.publish.useMutation(publishOpts)
-  const unpublish = trpc.jobOffer.unpublish.useMutation(unpublishOpts)
-  const generate = trpc.jobOffer.generate.useMutation(generateOpts)
-
-  const onSave = (values: JobOfferFormValues) => update.mutate({ id: offer.id, ...values })
   const city = offer.city ? ` · ${offer.city}` : ''
 
   return (
@@ -59,37 +41,10 @@ export function JobOfferDetailPage({ offer, publicApplyUrl = null }: Props) {
         </Link>
       }
     >
-      <SectionCard variant="glass" title="Annonce" description="Édition, publication site.">
-        <div className="flex flex-col gap-5">
-          <MissionOffreToolbar
-            status={offer.status}
-            generating={generate.isPending}
-            publishing={publish.isPending || unpublish.isPending}
-            onGenerate={
-              offer.missionId
-                ? () => generate.mutate({ missionId: offer.missionId! })
-                : undefined
-            }
-            onPublish={() => publish.mutate({ id: offer.id })}
-            onUnpublish={() => unpublish.mutate({ id: offer.id })}
-          />
-          {publicApplyUrl ? <JobOfferPublicApplyLink url={publicApplyUrl} /> : null}
-          {offer.missionId ? (
-            <Link
-              href={missionOffreHref(offer.missionId)}
-              className="text-sm text-accent hover:underline"
-            >
-              Voir la mission liée
-            </Link>
-          ) : null}
-          <MissionOffreEditor
-            title={offer.title}
-            content={offer.content}
-            submitting={update.isPending}
-            onSubmit={onSave}
-          />
-        </div>
-      </SectionCard>
+      <div className="flex flex-col gap-6">
+        <JobOfferAnnonceCard offer={offer} publicApplyUrl={publicApplyUrl} onRefresh={refresh} />
+        <JobOfferApplications items={applications} />
+      </div>
     </DashboardPage>
   )
 }

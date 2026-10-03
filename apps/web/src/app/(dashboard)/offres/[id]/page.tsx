@@ -19,6 +19,7 @@ export default async function Page({ params }: Props) {
     status: offer.status,
     boardListingId: offer.boardListingId,
   })
+  const applications = await caller.application.listByJobOffer({ id })
 
   return (
     <JobOfferDetailPage
@@ -35,6 +36,7 @@ export default async function Page({ params }: Props) {
           ? publicApplyUrl(getAppBaseUrl(), offer.boardListingId)
           : null
       }
+      applications={applications}
     />
   )
 }

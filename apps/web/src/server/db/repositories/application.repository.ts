@@ -28,6 +28,12 @@ export function makeApplicationRepository(db: PrismaClient = defaultDb) {
         take: limit,
         select: applicationInboxSelect,
       }),
+    listByJobOfferId: (jobOfferId: string) =>
+      db.application.findMany({
+        where: { jobOfferId, ...NOT_DELETED },
+        orderBy: { createdAt: 'desc' },
+        select: applicationInboxSelect,
+      }),
     findByBoardSubmissionIds: async (ids: string[]) => {
       const rows = await db.application.findMany({
         where: { boardSubmissionId: { in: ids } },
