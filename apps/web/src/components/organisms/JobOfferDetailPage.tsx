@@ -9,6 +9,7 @@ import { DashboardPage } from '@/components/molecules/DashboardPage'
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { MissionOffreEditor } from '@/components/molecules/MissionOffreEditor'
 import { MissionOffreToolbar } from '@/components/molecules/MissionOffreToolbar'
+import { JobOfferPublicApplyLink } from '@/components/molecules/JobOfferPublicApplyLink'
 import { missionOffreHref } from '@/view-models/mission-offer-picker'
 import { refreshJobOfferList } from '@/view-models/job-offer-list-refresh'
 import type { JobOfferFormValues } from '@/view-models/job-offer-form.schema'
@@ -23,9 +24,9 @@ export type JobOfferDetailProps = {
   city: string | null
 }
 
-type Props = { offer: JobOfferDetailProps }
+type Props = { offer: JobOfferDetailProps; publicApplyUrl?: string | null }
 
-export function JobOfferDetailPage({ offer }: Props) {
+export function JobOfferDetailPage({ offer, publicApplyUrl = null }: Props) {
   const router = useRouter()
   const utils = trpc.useUtils()
   const refresh = async () => {
@@ -72,6 +73,7 @@ export function JobOfferDetailPage({ offer }: Props) {
             onPublish={() => publish.mutate({ id: offer.id })}
             onUnpublish={() => unpublish.mutate({ id: offer.id })}
           />
+          {publicApplyUrl ? <JobOfferPublicApplyLink url={publicApplyUrl} /> : null}
           {offer.missionId ? (
             <Link
               href={missionOffreHref(offer.missionId)}
