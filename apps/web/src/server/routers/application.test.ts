@@ -28,7 +28,7 @@ describe('applicationRouter', () => {
 
   it('returns Application detail', async () => {
     const row = await caller(makeApplicationRouterDeps()).getById({ id: 'a1' })
-    expect(row.jobOffer.title).toBe('Offre')
+    expect(row.jobOffer?.title).toBe('Offre')
   })
 
   it('delegates duplicate detection to intake module', async () => {
