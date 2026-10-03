@@ -10,7 +10,7 @@ const valid = {
   postalCode: '69001',
   message: '',
   consentGiven: true as const,
-  website: '',
+  hpConfirm: '',
 }
 
 describe('publicApplyFormSchema', () => {

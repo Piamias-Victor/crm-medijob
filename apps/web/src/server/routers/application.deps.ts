@@ -9,6 +9,7 @@ import type { InboxItem } from '@/view-models/application-inbox'
 
 export type ApplicationDeps = {
   listInbox: () => Promise<InboxItem[]>
+  listByJobOffer: (jobOfferId: string) => Promise<InboxItem[]>
   getById: typeof applicationRepository.findDetailById
   detectDuplicate: (applicationId: string) => ReturnType<typeof detectApplicationDuplicate>
   refuse: (id: string) => ReturnType<typeof refuseApplication>
@@ -23,6 +24,7 @@ export type ApplicationDeps = {
 
 export const defaultApplicationDeps: ApplicationDeps = {
   listInbox: () => applicationRepository.listInbox(),
+  listByJobOffer: (jobOfferId) => applicationRepository.listByJobOfferId(jobOfferId),
   getById: (id) => applicationRepository.findDetailById(id),
   detectDuplicate: detectApplicationDuplicate,
   refuse: (id) =>
