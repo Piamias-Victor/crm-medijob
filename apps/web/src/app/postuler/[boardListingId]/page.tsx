@@ -15,7 +15,14 @@ export default async function Page({ params }: Props) {
   const caller = await createServerCaller()
   try {
     const offer = await caller.publicApply.getOffer({ boardListingId })
-    return <PublicApplyPage boardListingId={boardListingId} offer={offer} />
+    return (
+      <PublicApplyPage
+        boardListingId={boardListingId}
+        offer={offer}
+        privacyUrl={offer.privacyUrl}
+        retentionLabel={offer.retentionLabel}
+      />
+    )
   } catch {
     notFound()
   }

@@ -6,12 +6,12 @@ export type InboxItem = {
   phone: string | null
   city: string | null
   postalCode: string | null
-  source: 'BOARD_INGEST' | 'PUBLIC_APPLY'
+  source: 'BOARD_INGEST' | 'PUBLIC_APPLY' | 'SPONTANEOUS'
   cvUrl: string | null
   message: string | null
   createdAt: Date
   jobTitle: { name: string } | null
-  jobOffer: { title: string }
+  jobOffer: { title: string } | null
 }
 
 export function formatInboxDate(date: Date): string {
@@ -20,4 +20,8 @@ export function formatInboxDate(date: Date): string {
 
 export function inboxFullName(item: Pick<InboxItem, 'firstName' | 'lastName'>) {
   return `${item.firstName} ${item.lastName}`.trim()
+}
+
+export function applicationOfferLabel(item: Pick<InboxItem, 'jobOffer'>) {
+  return item.jobOffer?.title ?? 'Candidature spontanée'
 }

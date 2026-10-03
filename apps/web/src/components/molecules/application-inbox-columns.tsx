@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@/components/organisms/entity-table/entity-table-types'
 import { TABLE_EMPTY_CELL } from '@/lib/constants/table-empty-cell'
-import { formatInboxDate, type InboxItem } from '@/view-models/application-inbox'
+import { applicationOfferLabel, formatInboxDate, type InboxItem } from '@/view-models/application-inbox'
 import { applicationSourceLabel } from '@/view-models/application-source.labels'
 
 export function buildApplicationInboxColumns(): ColumnDef<InboxItem>[] {
@@ -36,7 +36,7 @@ export function buildApplicationInboxColumns(): ColumnDef<InboxItem>[] {
     {
       id: 'jobOffer',
       header: 'Offre',
-      accessor: (row) => row.jobOffer.title,
+      accessor: (row) => applicationOfferLabel(row),
       sortable: true,
     },
     {

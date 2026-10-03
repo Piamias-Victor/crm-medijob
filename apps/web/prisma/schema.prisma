@@ -105,6 +105,7 @@ enum ApplicationStatus {
 enum ApplicationSource {
   BOARD_INGEST
   PUBLIC_APPLY
+  SPONTANEOUS
 }
 
 enum AppProfileStatus {
@@ -698,7 +699,7 @@ model JobOffer {
 
 model Application {
   id                String             @id @default(cuid())
-  jobOfferId        String
+  jobOfferId        String?
   boardSubmissionId String?            @unique
   firstName         String
   lastName          String
@@ -718,7 +719,7 @@ model Application {
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
-  jobOffer  JobOffer   @relation(fields: [jobOfferId], references: [id])
+  jobOffer  JobOffer?  @relation(fields: [jobOfferId], references: [id])
   jobTitle  JobTitle?  @relation(fields: [jobTitleId], references: [id])
   candidate Candidate? @relation(fields: [candidateId], references: [id])
 

@@ -12,7 +12,7 @@ import { PublicApplyCvConsent } from '@/components/molecules/PublicApplyCvConsen
 import { usePublicApplyCv } from '@/components/molecules/use-public-apply-cv'
 
 type Props = {
-  boardListingId: string
+  boardListingId?: string
   privacyUrl: string
   retentionLabel: string
   onSuccess: () => void
@@ -40,7 +40,7 @@ export function PublicApplyForm(props: Props) {
     try {
       const result = await submit.mutateAsync({
         ...values,
-        boardListingId: props.boardListingId,
+        ...(props.boardListingId ? { boardListingId: props.boardListingId } : {}),
         cvFilename: cv.file!.name,
         cvBase64: cv.file!.base64,
       })

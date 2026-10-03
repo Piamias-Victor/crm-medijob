@@ -46,6 +46,17 @@ describe('submitPublicApply', () => {
     expect(d.createApplication).toHaveBeenCalled()
   })
 
+  it('creates a spontaneous application without a listing id', async () => {
+    const d = deps()
+    const { boardListingId: _listing, ...spontaneous } = baseInput
+    const result = await submitPublicApply(d, spontaneous)
+    expect(result).toEqual({ ok: true, applicationId: 'app-1' })
+    expect(d.findOfferByListingId).not.toHaveBeenCalled()
+    expect(d.createApplication).toHaveBeenCalledWith(
+      expect.objectContaining({ jobOfferId: null, jobTitleId: null }),
+    )
+  })
+
   it('rejects closed offer', async () => {
     const d = deps({
       findOfferByListingId: vi.fn().mockResolvedValue({ ...offer, status: 'DEPUBLIEE' }),
