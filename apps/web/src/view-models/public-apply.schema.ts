@@ -30,12 +30,7 @@ export const publicApplyFormSchema = z.object({
   consentGiven: z.boolean().refine((value) => value === true, {
     message: 'Le consentement est obligatoire',
   }),
-  /** Honeypot — never name this `website` (browsers autofill it). */
-  hpConfirm: z.string(),
 })
 
 export type PublicApplyFormValues = z.infer<typeof publicApplyFormSchema>
 
-export function isPublicApplyHoneypotFilled(value: string | undefined): boolean {
-  return Boolean(value?.trim())
-}

@@ -32,19 +32,22 @@ export function PublicApplyForm(props: Props) {
       postalCode: '',
       message: '',
       consentGiven: false,
-      hpConfirm: '',
     },
   })
 
   const onSubmit = form.handleSubmit(async (values) => {
     if (!cv.ensureReady()) return
     try {
-      await submit.mutateAsync({
+      const result = await submit.mutateAsync({
         ...values,
         boardListingId: props.boardListingId,
         cvFilename: cv.file!.name,
         cvBase64: cv.file!.base64,
       })
+      if (!result.applicationId) {
+        form.setError('root', { message: 'Envoi impossible. Réessayez.' })
+        return
+      }
       props.onSuccess()
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Envoi impossible'
@@ -54,14 +57,6 @@ export function PublicApplyForm(props: Props) {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={onSubmit} noValidate>
-      <input
-        type="text"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden
-        className="absolute -left-[9999px] h-0 w-0 opacity-0"
-        {...form.register('hpConfirm')}
-      />
       <PublicApplyIdentityFields form={form} />
       <PublicApplyCvConsent form={form} cv={cv} {...props} submitting={submit.isPending} />
     </form>
