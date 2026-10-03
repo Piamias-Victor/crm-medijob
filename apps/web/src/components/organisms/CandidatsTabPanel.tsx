@@ -2,6 +2,7 @@
 
 import { SectionCard } from '@/components/molecules/SectionCard'
 import { ApplicationInbox } from '@/components/molecules/ApplicationInbox'
+import { JobOfferPublicApplyLink } from '@/components/molecules/JobOfferPublicApplyLink'
 import { CvthequeSection } from '@/components/organisms/CvthequeSection'
 import type { CandidatsTab } from '@/view-models/candidats-tab'
 import type { InboxItem } from '@/view-models/application-inbox'
@@ -16,6 +17,7 @@ type Props = {
   serverFilters: CandidateListFilters
   filterConfig: CvthequeFilterConfig
   onCountChange: (n: number) => void
+  spontaneousApplyUrl?: string
 }
 
 export function CandidatsTabPanel({
@@ -25,6 +27,7 @@ export function CandidatsTabPanel({
   serverFilters,
   filterConfig,
   onCountChange,
+  spontaneousApplyUrl,
 }: Props) {
   if (tab === 'cvtheque') {
     return (
@@ -41,8 +44,9 @@ export function CandidatsTabPanel({
       variant="glass"
       title="Candidatures reçues"
       description="Candidatures du site — ouvrez une fiche pour convertir, refuser ou lancer un entretien."
-      bodyClassName="p-4 sm:p-5"
+      bodyClassName="space-y-4 p-4 sm:p-5"
     >
+      {spontaneousApplyUrl ? <JobOfferPublicApplyLink url={spontaneousApplyUrl} /> : null}
       <ApplicationInbox items={inbox} />
     </SectionCard>
   )

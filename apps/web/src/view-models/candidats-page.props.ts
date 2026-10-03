@@ -10,4 +10,5 @@ export type CandidatsPageProps = {
   serverFilters: CandidateListFilters
   filterConfig: CvthequeFilterConfig
   initialTab?: CandidatsTab
+  spontaneousApplyUrl?: string
 }
