@@ -42,6 +42,13 @@ describe('makeCandidateRepository listForKanban', () => {
     )
   })
 
+  it('lists CVthèque beyond the 500 default list cap', async () => {
+    const findMany = vi.fn().mockResolvedValue([])
+    const repo = makeCandidateRepository({ candidate: { findMany } } as unknown as PrismaClient)
+    await repo.listForKanban()
+    expect(findMany).toHaveBeenCalledWith(expect.objectContaining({ take: 10_000 }))
+  })
+
   it('searches every candidate by name, not the first 500 last names', async () => {
     const findMany = vi.fn().mockResolvedValue([])
     const repo = makeCandidateRepository({ candidate: { findMany } } as unknown as PrismaClient)
