@@ -12,10 +12,11 @@ const config = buildPharmacyFilterConfig({
 const defaults = buildDefaultFilterValues(config)
 
 describe('toPharmacyListFilters', () => {
-  it('mappe statut, ville, région, département, mission, groupement, LGO et référent', () => {
+  it('mappe nom, statut, ville, région, département, mission, groupement, LGO et référent', () => {
     expect(
       toPharmacyListFilters({
         ...defaults,
+        nom: '  Pharmacie Centrale  ',
         statut: ['ACTIF'],
         ville: '  Lyon  ',
         region: ['ARA'],
@@ -26,6 +27,7 @@ describe('toPharmacyListFilters', () => {
         referent: ['u1'],
       }),
     ).toEqual({
+      name: 'Pharmacie Centrale',
       statuses: ['ACTIF'],
       city: 'Lyon',
       regionIds: ['ARA'],
@@ -37,7 +39,7 @@ describe('toPharmacyListFilters', () => {
     })
   })
 
-  it('omet les tableaux vides, ville blanche et booléens null', () => {
-    expect(toPharmacyListFilters({ ...defaults, ville: '   ' })).toEqual({})
+  it('omet les tableaux vides, nom/ville blancs et booléens null', () => {
+    expect(toPharmacyListFilters({ ...defaults, nom: '   ', ville: '   ' })).toEqual({})
   })
 })
