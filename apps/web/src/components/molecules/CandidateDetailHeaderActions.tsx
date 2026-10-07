@@ -9,8 +9,9 @@ import { canCopyWeeklyAvailabilityLink } from '@/view-models/weekly-availability
 import { accentButtonClassName } from '@/lib/button-styles'
 import { INTERVIEW_CTA } from '@/view-models/interview-copy'
 import { interviewStartPath } from '@/view-models/interview-href'
+import type { CandidateOriginValue } from '@/lib/candidate-origin-options'
 
-type Props = { candidateId: string; candidateName: string; origin: 'APP' | 'CRM' }
+type Props = { candidateId: string; candidateName: string; origin: CandidateOriginValue }
 
 export function CandidateDetailHeaderActions({ candidateId, candidateName, origin }: Props) {
   return (

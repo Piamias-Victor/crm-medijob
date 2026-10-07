@@ -30,6 +30,8 @@ const baseProfile = {
   notes: null,
   referentId: 'u1',
   cvUrl: null,
+  photoUrl: null,
+  t4sId: null,
   nir: null,
   iban: null,
   cvSummary: null,

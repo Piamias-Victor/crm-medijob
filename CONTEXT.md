@@ -82,8 +82,8 @@ _Avoid_: RESULTAT, résultat d'appel (as entity), ActivityLog (that's the CRM no
 
 
 **Candidate origin**:
-How the Candidate entered the CVthèque. Origin App means created or linked from an App-validated Badakan recipient. Distinct from Candidate status and from AppProfile ACCEPTE.
-_Avoid_: vient de l'app (as a status), source (unqualified), InterimProfile (not a person entity)
+How the Candidate entered the CVthèque: CRM, App (from an App-validated Badakan recipient), or T4S (Tool4Staffing import). Distinct from Candidate status; matching a T4S row to an existing App Candidate does not change origin App.
+_Avoid_: vient de l'app (as a status), source (unqualified), import (as a status), InterimProfile
 
 
 **Hireflix invitation**:

@@ -22,6 +22,8 @@ export const profileFixture = {
   origin: 'CRM' as const,
   badakanId: null,
   cvUrl: null,
+  photoUrl: null,
+  t4sId: null,
   nir: null,
   iban: null,
   cvSummary: null,
