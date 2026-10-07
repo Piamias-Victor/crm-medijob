@@ -1,5 +1,7 @@
 // Données référentielles seedées (SPEC_V2 §10).
 
+import { T4S_CONTACT_ROLES, T4S_GROUPEMENTS, T4S_SOFTWARES } from './seed-t4s-data'
+
 export const PIPELINE_STAGES = [
   'Nouveau',
   'Contacté',
@@ -18,6 +20,7 @@ export const SOFTWARES = [
   'Crystal',
   'Pharmavitale',
   'Esope',
+  ...T4S_SOFTWARES,
 ] as const
 
 export const GROUPEMENTS = [
@@ -29,6 +32,7 @@ export const GROUPEMENTS = [
   'Pharmavie',
   'Welcoop',
   'Elsie Santé',
+  ...T4S_GROUPEMENTS,
 ] as const
 
 export const JOB_TITLES = [
@@ -37,6 +41,7 @@ export const JOB_TITLES = [
   'Étudiant en pharmacie',
   'Conseiller parapharmacie',
   'Rayonniste',
+  'Apprenti préparateur',
   'Autre',
 ] as const
 
@@ -51,6 +56,7 @@ export const JOB_TITLE_PROFILE_KEYS: Record<(typeof JOB_TITLES)[number], string 
   'Étudiant en pharmacie': 'etudiant',
   'Conseiller parapharmacie': 'conseiller_para',
   Rayonniste: 'rayonniste',
+  'Apprenti préparateur': null,
   Autre: null,
 }
 
@@ -68,22 +74,25 @@ export const CONTACT_ROLES = [
   'Préparateur référent',
   'Responsable RH',
   'Comptabilité',
+  ...T4S_CONTACT_ROLES,
   'Autre',
 ] as const
 
 // Matrice compatibilité : métier mission → métiers candidats acceptés.
 export const COMPATIBILITY: Record<string, readonly string[]> = {
   Pharmacien: ['Pharmacien'],
-  Préparateur: ['Préparateur', 'Étudiant en pharmacie'],
+  Préparateur: ['Préparateur', 'Étudiant en pharmacie', 'Apprenti préparateur'],
   'Étudiant en pharmacie': ['Étudiant en pharmacie'],
   'Conseiller parapharmacie': ['Conseiller parapharmacie'],
   Rayonniste: ['Rayonniste'],
+  'Apprenti préparateur': ['Apprenti préparateur'],
   Autre: [
     'Pharmacien',
     'Préparateur',
     'Étudiant en pharmacie',
     'Conseiller parapharmacie',
     'Rayonniste',
+    'Apprenti préparateur',
     'Autre',
   ],
 }

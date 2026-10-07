@@ -49,7 +49,7 @@ const listSelect = {
       pharmacy: { select: { latitude: true, longitude: true, city: true } },
     },
   },
-  _count: { select: { applications: true } },
+  _count: { select: { applications: { where: { deletedAt: null } } } },
 } as const
 
 export function makeJobOfferRepository(db: PrismaClient = defaultDb) {

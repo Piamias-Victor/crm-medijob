@@ -22,6 +22,7 @@ export function makeApplicationRouterDeps(
         jobOffer: { title: 'Offre' },
       },
     ]),
+    listByJobOffer: vi.fn().mockResolvedValue([]),
     getById: vi.fn().mockResolvedValue({
       id: 'a1',
       firstName: 'Paul',

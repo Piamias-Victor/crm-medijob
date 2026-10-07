@@ -9,6 +9,7 @@ import { makePublicApplyRateLimitRepo } from '@/server/public-apply/rate-limit-r
 import { publicOfferView } from '@/server/public-apply/offer-card'
 import { submitPublicApply } from '@/server/public-apply/submit'
 import { publicApplyClientInputSchema } from '@/server/public-apply/submit-input'
+import { createPublicApplyApplication } from '@/server/public-apply/create-application'
 import {
   getPublicApplyPrivacyUrl,
   getPublicApplyRetentionLabel,
@@ -24,6 +25,10 @@ function mapSubmitError(code: string, message: string): never {
 }
 
 export const publicApplyRouter = router({
+  privacy: publicProcedure.query(() => ({
+    privacyUrl: getPublicApplyPrivacyUrl(),
+    retentionLabel: getPublicApplyRetentionLabel(),
+  })),
   getOffer: publicProcedure
     .input(z.object({ boardListingId: z.string().min(1) }))
     .query(async ({ input }) => {
@@ -41,16 +46,12 @@ export const publicApplyRouter = router({
         findOfferByListingId: (id) => offers.findByBoardListingId(id),
         consumeRateLimit: (ip) => rate.consume(ip),
         uploadCv: (payload) => uploadBlob(resolveBlobClient(), payload),
-        createApplication: (data) =>
-          prisma.application.create({
-            data: { ...data, source: 'PUBLIC_APPLY', status: 'EN_ATTENTE' },
-            select: { id: true },
-          }),
-        logHoneypot: () => console.info('[public-apply] honeypot blocked'),
+        createApplication: (data) => createPublicApplyApplication(prisma, data),
       },
       { ...input, clientIp: ctx.clientIp ?? '0.0.0.0' },
     )
     if (!result.ok) mapSubmitError(result.code, result.message)
-    return { ok: true as const }
+    if (!result.applicationId) mapSubmitError('VALIDATION', 'Envoi impossible. Réessayez.')
+    return { ok: true as const, applicationId: result.applicationId }
   }),
 })

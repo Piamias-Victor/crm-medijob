@@ -3,6 +3,7 @@ import type { ApplicationSource } from '@prisma/client'
 export const APPLICATION_SOURCE_LABELS: Record<ApplicationSource, string> = {
   BOARD_INGEST: 'Site (board)',
   PUBLIC_APPLY: 'Page postuler',
+  SPONTANEOUS: 'Spontanée',
 }
 
 export function applicationSourceLabel(source: ApplicationSource): string {

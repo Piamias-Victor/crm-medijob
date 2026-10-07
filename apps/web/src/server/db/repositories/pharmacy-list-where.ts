@@ -12,6 +12,9 @@ function postalDepartments(filters: PharmacyListFilters): string[] {
 export function buildPharmacyListWhere(filters: PharmacyListFilters = {}): Prisma.PharmacyWhereInput {
   const clauses: Prisma.PharmacyWhereInput[] = []
 
+  if (filters.name) {
+    clauses.push({ name: { contains: filters.name, mode: 'insensitive' } })
+  }
   if (filters.statuses?.length) clauses.push({ status: { in: filters.statuses } })
   if (filters.groupementIds?.length) clauses.push({ groupementId: { in: filters.groupementIds } })
   if (filters.softwareIds?.length) clauses.push({ softwareId: { in: filters.softwareIds } })

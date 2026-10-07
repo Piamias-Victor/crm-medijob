@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client'
-import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { CANDIDATE_LIST_LIMIT } from '@/lib/list-limits'
 import { NOT_DELETED } from './soft-delete'
 import { buildCandidateListWhere } from './candidate-list-where'
 import type { CandidateListFilters } from '@/view-models/candidate-list-filters.schema'
@@ -26,4 +26,4 @@ export function buildCandidateListQuery<S extends Prisma.CandidateSelect>(
   })
 }
 
-export const DEFAULT_CANDIDATE_LIST_LIMIT = DEFAULT_LIST_LIMIT
+export const DEFAULT_CANDIDATE_LIST_LIMIT = CANDIDATE_LIST_LIMIT

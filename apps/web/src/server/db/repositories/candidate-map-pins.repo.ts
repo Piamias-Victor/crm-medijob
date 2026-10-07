@@ -1,11 +1,11 @@
-import { DEFAULT_LIST_LIMIT } from '@/lib/list-limits'
+import { CANDIDATE_LIST_LIMIT } from '@/lib/list-limits'
 import { NOT_DELETED } from '@/server/db/repositories/soft-delete'
 import type { LeanMapPinRow } from '@/view-models/lean-map-pin-row'
 import type { MapPinsDb } from '@/server/db/repositories/map-pins.db'
 
 export async function listCandidateMapPins(
   db: MapPinsDb,
-  take = DEFAULT_LIST_LIMIT,
+  take = CANDIDATE_LIST_LIMIT,
 ): Promise<LeanMapPinRow[]> {
   const rows = (await db.candidate.findMany({
     where: {

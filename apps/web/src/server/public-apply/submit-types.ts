@@ -9,8 +9,8 @@ export type PublicApplySubmitDeps = {
     contentType: string
   }) => Promise<{ url: string }>
   createApplication: (data: {
-    jobOfferId: string
-    jobTitleId: string
+    jobOfferId: string | null
+    jobTitleId: string | null
     firstName: string
     lastName: string
     email: string
@@ -22,9 +22,8 @@ export type PublicApplySubmitDeps = {
     consentGivenAt: Date
     consentSource: 'SITE'
   }) => Promise<{ id: string }>
-  logHoneypot: () => void
 }
 
 export type SubmitResult =
-  | { ok: true; applicationId: string | null; fake?: true }
+  | { ok: true; applicationId: string }
   | { ok: false; code: 'NOT_FOUND' | 'UNAVAILABLE' | 'RATE_LIMIT' | 'VALIDATION'; message: string }

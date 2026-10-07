@@ -23,7 +23,6 @@ const baseInput = {
   postalCode: '69001',
   message: '',
   consentGiven: true as const,
-  website: '',
   cvFilename: 'cv.pdf',
   cvBase64: Buffer.from('%PDF-1.4').toString('base64'),
   clientIp: '1.2.3.4',
@@ -35,7 +34,6 @@ function deps(overrides: Partial<PublicApplySubmitDeps> = {}): PublicApplySubmit
     consumeRateLimit: vi.fn().mockResolvedValue({ allowed: true }),
     uploadCv: vi.fn().mockResolvedValue({ url: 'https://blob.example/cv.pdf' }),
     createApplication: vi.fn().mockResolvedValue({ id: 'app-1' }),
-    logHoneypot: vi.fn(),
     ...overrides,
   }
 }
@@ -48,12 +46,15 @@ describe('submitPublicApply', () => {
     expect(d.createApplication).toHaveBeenCalled()
   })
 
-  it('fakes success on honeypot without write', async () => {
+  it('creates a spontaneous application without a listing id', async () => {
     const d = deps()
-    const result = await submitPublicApply(d, { ...baseInput, website: 'bot' })
-    expect(result).toMatchObject({ ok: true, fake: true })
-    expect(d.createApplication).not.toHaveBeenCalled()
-    expect(d.logHoneypot).toHaveBeenCalled()
+    const { boardListingId: _listing, ...spontaneous } = baseInput
+    const result = await submitPublicApply(d, spontaneous)
+    expect(result).toEqual({ ok: true, applicationId: 'app-1' })
+    expect(d.findOfferByListingId).not.toHaveBeenCalled()
+    expect(d.createApplication).toHaveBeenCalledWith(
+      expect.objectContaining({ jobOfferId: null, jobTitleId: null }),
+    )
   })
 
   it('rejects closed offer', async () => {

@@ -37,11 +37,11 @@ The declared AM/PM slots of an App-origin Candidate who is App-validated, on rea
 _Avoid_: Disponibilité (unqualified), planning (unqualified), Availability, planning Badakan, semaine type, heures précises, Calendly (as booking), 4 semaines à l’écran
 
 **Application**:
-An inbound candidacy tied to a specific JobOffer. Entry via board ingest (`ApplicationSource` board) or the CRM **Public apply page** (`public-apply`). Carries optional applicant `postalCode` (required on the public apply page; may be absent on board-ingested rows). Identified for board rows by `boardSubmissionId` (unique). Never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters. Distinct from a recipient applying to a Badakan mission (`SEARCH_APPLIED`).
+An inbound candidacy, usually tied to a JobOffer, or **spontaneous** (`jobOfferId` null, `ApplicationSource` spontaneous) via `/postuler`. Entry via board ingest (`ApplicationSource` board), the offer **Public apply page** (`public-apply`), or the spontaneous public page (`spontaneous`). Carries optional applicant `postalCode` (required on the public apply pages; may be absent on board-ingested rows). Identified for board rows by `boardSubmissionId` (unique). Never reopens one already accepted or refused. Processed in the "Candidatures reçues" inbox — not part of the CVthèque until accepted and converted to a Candidate. Duplicate detection alerts on existing Candidates but never merges two Applications together. Soft-deletable by recruiters. Distinct from a recipient applying to a Badakan mission (`SEARCH_APPLIED`).
 _Avoid_: Candidature (as a synonym for Candidate), candidat (when meaning the inbound form submission), lead, SEARCH_APPLIED
 
 **Application source**:
-How an Application entered the CRM: board ingest vs public-apply (CRM public apply page). Visible and filterable in the Applications inbox.
+How an Application entered the CRM: board ingest vs public-apply (offer page) vs spontaneous (unlinked `/postuler`). Visible and filterable in the Applications inbox.
 _Avoid_: origin (unqualified), canal (unqualified), ConsentSource (that's GDPR provenance)
 
 **Applicant postal code**:
@@ -49,7 +49,7 @@ The postal code declared by the applicant on an Application (`postalCode`). Requ
 _Avoid_: Code postal (unqualified), Candidate postalCode (that's the CVthèque profile)
 
 **Public apply page**:
-A public CRM page at `/postuler/[boardListingId]` (no login, `noindex`), opened from the job board « Postuler » button with the board listing id. Offer-linked only in V1. Shows JobOffer context read-only: title, métier, city, contract — only when **PUBLIEE**; otherwise unavailable (unknown id → 404). Applicant must submit first/last name, email, phone (FR), city, postal code, CV (PDF/DOC/DOCX · max 5 Mo · magic-byte check), mandatory unchecked consent (`ConsentSource` SITE + timestamp), optional message. Honeypot + IP rate limit (5/hour). Success → on-page thank-you (no email). Downstream inbox accept/refuse unchanged. Design matches the Weekly availability public page shell. Does not modify the Medijob job-board site or stop board ingest in code (ops cutover after Matthieu redirects buttons).
+A public CRM page at `/postuler/[boardListingId]` (offer) or `/postuler` (spontaneous, no login, `noindex`). Offer page opened from the job board « Postuler » button with the board listing id. Shows JobOffer context read-only: title, métier, city, contract — only when **PUBLIEE**; otherwise unavailable (unknown id → 404). Spontaneous page has no offer card. Applicant must submit first/last name, email, phone (FR), city, postal code, CV (PDF/DOC/DOCX · max 5 Mo · magic-byte check), mandatory unchecked consent (`ConsentSource` SITE + timestamp), optional message. IP rate limit (5/hour). Success → on-page thank-you (no email). Downstream inbox accept/refuse unchanged. Does not modify the Medijob job-board site or stop board ingest in code (ops cutover after Matthieu redirects buttons).
 _Avoid_: T4S apply, tzportal, formulaire site Supabase, page dispo (that's Weekly availability)
 
 **Interview**:
@@ -82,8 +82,8 @@ _Avoid_: RESULTAT, résultat d'appel (as entity), ActivityLog (that's the CRM no
 
 
 **Candidate origin**:
-How the Candidate entered the CVthèque. Origin App means created or linked from an App-validated Badakan recipient. Distinct from Candidate status and from AppProfile ACCEPTE.
-_Avoid_: vient de l'app (as a status), source (unqualified), InterimProfile (not a person entity)
+How the Candidate entered the CVthèque: CRM, App (from an App-validated Badakan recipient), or T4S (Tool4Staffing import). Distinct from Candidate status; matching a T4S row to an existing App Candidate does not change origin App.
+_Avoid_: vient de l'app (as a status), source (unqualified), import (as a status), InterimProfile
 
 
 **Hireflix invitation**:

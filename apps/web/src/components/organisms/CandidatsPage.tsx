@@ -21,6 +21,7 @@ export function CandidatsPage({
   serverFilters,
   filterConfig,
   initialTab = 'cvtheque',
+  spontaneousApplyUrl,
 }: CandidatsPageProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -76,6 +77,7 @@ export function CandidatsPage({
             serverFilters={serverFilters}
             filterConfig={filterConfig}
             onCountChange={setCvthequeCount}
+            spontaneousApplyUrl={spontaneousApplyUrl}
           />
         </motion.div>
       </AnimatePresence>

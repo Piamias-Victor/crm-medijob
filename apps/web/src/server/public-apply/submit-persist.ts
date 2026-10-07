@@ -14,7 +14,7 @@ type Form = z.infer<typeof publicApplyFormSchema>
 
 export async function persistPublicApply(
   deps: PublicApplySubmitDeps,
-  offer: PublicOfferCard,
+  offer: PublicOfferCard | null,
   form: Form,
   raw: PublicApplySubmitInput,
 ): Promise<SubmitResult> {
@@ -26,25 +26,30 @@ export async function persistPublicApply(
     bytes: new Uint8Array(body.buffer, body.byteOffset, Math.min(body.byteLength, 8)),
   })
   if (cvErr) return { ok: false, code: 'VALIDATION', message: cvErr }
-  const blob = await deps.uploadCv({
-    pathname: `application/public-apply/${offer.jobOfferId}/${filename}`,
-    body,
-    contentType: publicApplyCvMime(filename),
-  })
-  const consent = resolveConsentFields({ consentGiven: true, source: 'SITE', required: true })
-  const created = await deps.createApplication({
-    jobOfferId: offer.jobOfferId,
-    jobTitleId: offer.jobTitleId,
-    firstName: form.firstName,
-    lastName: form.lastName,
-    email: form.email,
-    phone: form.phone,
-    city: form.city,
-    postalCode: form.postalCode,
-    message: form.message?.trim() || null,
-    cvUrl: blob.url,
-    consentGivenAt: consent.consentGivenAt!,
-    consentSource: 'SITE',
-  })
-  return { ok: true, applicationId: created.id }
+  const folder = offer?.jobOfferId ?? 'spontaneous'
+  try {
+    const blob = await deps.uploadCv({
+      pathname: `application/public-apply/${folder}/${filename}`,
+      body,
+      contentType: publicApplyCvMime(filename),
+    })
+    const consent = resolveConsentFields({ consentGiven: true, source: 'SITE', required: true })
+    const created = await deps.createApplication({
+      jobOfferId: offer?.jobOfferId ?? null,
+      jobTitleId: offer?.jobTitleId ?? null,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone,
+      city: form.city,
+      postalCode: form.postalCode,
+      message: form.message?.trim() || null,
+      cvUrl: blob.url,
+      consentGivenAt: consent.consentGivenAt!,
+      consentSource: 'SITE',
+    })
+    return { ok: true, applicationId: created.id }
+  } catch {
+    return { ok: false, code: 'VALIDATION', message: 'Envoi impossible. Réessayez.' }
+  }
 }

@@ -17,6 +17,7 @@ describe('Interview JobTitle labels', () => {
       'Étudiant en pharmacie',
       'Conseiller parapharmacie',
       'Rayonniste',
+      'Apprenti préparateur',
       'Autre',
     ])
   })

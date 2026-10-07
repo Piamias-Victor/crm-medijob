@@ -16,6 +16,13 @@ export function buildPharmacyFilterConfig(refs: {
 }) {
   return [
     {
+      id: 'nom',
+      label: 'Nom',
+      type: 'text',
+      placeholder: 'Nom de pharmacie…',
+      wide: true,
+    },
+    {
       id: 'statut',
       label: 'Statut',
       type: 'multi-select',

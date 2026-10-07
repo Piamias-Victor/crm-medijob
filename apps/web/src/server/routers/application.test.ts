@@ -17,9 +17,18 @@ describe('applicationRouter', () => {
     expect(inbox[0]?.email).toBe('p@x.fr')
   })
 
+  it('lists Applications for a job offer', async () => {
+    const listByJobOffer = vi.fn().mockResolvedValue([{ email: 'p@x.fr' }])
+    const rows = await caller(makeApplicationRouterDeps({ listByJobOffer })).listByJobOffer({
+      id: 'o1',
+    })
+    expect(rows[0]?.email).toBe('p@x.fr')
+    expect(listByJobOffer).toHaveBeenCalledWith('o1')
+  })
+
   it('returns Application detail', async () => {
     const row = await caller(makeApplicationRouterDeps()).getById({ id: 'a1' })
-    expect(row.jobOffer.title).toBe('Offre')
+    expect(row.jobOffer?.title).toBe('Offre')
   })
 
   it('delegates duplicate detection to intake module', async () => {
