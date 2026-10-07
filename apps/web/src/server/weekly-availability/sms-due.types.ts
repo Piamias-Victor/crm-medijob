@@ -10,7 +10,7 @@ export type SmsDueRow = {
 }
 
 export type AvailabilitySmsContact = {
-  origin: 'APP' | 'CRM'
+  origin: 'APP' | 'CRM' | 'T4S'
   status: string
   firstName: string
   phone: string | null

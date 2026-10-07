@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { CANDIDATE_STATUSES } from '@/view-models/candidate-status'
+import { CANDIDATE_ORIGINS } from '@/lib/candidate-origin-options'
 
 export const candidateListFiltersSchema = z.object({
   q: z.string().trim().min(1).optional(),
@@ -12,7 +13,7 @@ export const candidateListFiltersSchema = z.object({
   profileIncomplete: z.boolean().nullable().optional(),
   activeMission: z.boolean().nullable().optional(),
   statuses: z.array(z.enum(CANDIDATE_STATUSES)).optional(),
-  origins: z.array(z.enum(['CRM', 'APP'])).optional(),
+  origins: z.array(z.enum(CANDIDATE_ORIGINS)).optional(),
   city: z.string().trim().min(1).optional(),
   maxMobilityKm: z.number().int().min(1).max(500).optional(),
   declaredAvailability: z.boolean().nullable().optional(),

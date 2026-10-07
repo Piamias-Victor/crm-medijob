@@ -40,6 +40,10 @@ describe('toCandidateListFilters', () => {
     expect(toCandidateListFilters({ ...defaults, origine: ['APP'] })).toEqual({ origins: ['APP'] })
   })
 
+  it('mappe origine T4S', () => {
+    expect(toCandidateListFilters({ ...defaults, origine: ['T4S'] })).toEqual({ origins: ['T4S'] })
+  })
+
   it('mappe validé Badakan', () => {
     expect(toCandidateListFilters({ ...defaults, valideBadakan: true })).toEqual({
       badakanValidated: true,

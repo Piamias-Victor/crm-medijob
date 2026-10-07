@@ -1,12 +1,12 @@
 import type { AvailabilitySlot, WeeklyAvailabilityStore } from './types'
 
 type TokenRow = { candidateId: string }
-type Seed = { token?: string; candidateId: string; origin?: 'APP' | 'CRM' }
+type Seed = { token?: string; candidateId: string; origin?: 'APP' | 'CRM' | 'T4S' }
 
 export function memoryAvailabilityStore(seed: Seed[] = []): WeeklyAvailabilityStore {
   const tokens = new Map<string, TokenRow>()
   const byCandidate = new Map<string, string>()
-  const origins = new Map<string, 'APP' | 'CRM'>()
+  const origins = new Map<string, 'APP' | 'CRM' | 'T4S'>()
   const weeks = new Map<string, AvailabilitySlot[]>()
   for (const row of seed) {
     origins.set(row.candidateId, row.origin ?? 'APP')

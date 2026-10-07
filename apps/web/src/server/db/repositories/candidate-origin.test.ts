@@ -6,7 +6,7 @@ const schema = readFileSync(resolve(__dirname, '../../../../prisma/schema.prisma
 
 describe('Candidate origin schema', () => {
   it('declares origin App and unique nullable badakanId', () => {
-    expect(schema).toContain('enum CandidateOrigin {\n  CRM\n  APP\n}')
+    expect(schema).toContain('enum CandidateOrigin {\n  CRM\n  APP\n  T4S\n}')
     expect(schema).toMatch(/origin\s+CandidateOrigin @default\(CRM\)/)
     expect(schema).toMatch(/badakanId\s+String\?\s+@unique/)
   })

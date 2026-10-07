@@ -45,4 +45,9 @@ describe('candidate origin App', () => {
       repo.create({ ...newCandidate('Clone'), badakanId: 'bk-marie' }),
     ).rejects.toMatchObject({ code: 'P2002' })
   })
+
+  it('stores origin T4S', async () => {
+    const row = await repo.create({ ...newCandidate('Ines'), origin: 'T4S' })
+    expect(row.origin).toBe('T4S')
+  })
 })
