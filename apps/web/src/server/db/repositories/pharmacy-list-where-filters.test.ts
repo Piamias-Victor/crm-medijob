@@ -57,6 +57,12 @@ describe('buildPharmacyListWhere filters', () => {
     })
   })
 
+  it('filtre nom en contains insensitive', () => {
+    expect(buildPharmacyListWhere({ name: 'Centrale' })).toEqual({
+      name: { contains: 'Centrale', mode: 'insensitive' },
+    })
+  })
+
   it('filtre région via départements (union avec départements explicites)', () => {
     const where = buildPharmacyListWhere({ regionIds: ['IDF'], departments: ['69'] })
     const or = (where as { OR: { postalCode: { startsWith: string } }[] }).OR

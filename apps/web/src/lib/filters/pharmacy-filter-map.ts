@@ -10,9 +10,11 @@ export function toPharmacyListFilters(values: PharmacyFilterValues): PharmacyLis
   const statuses = values.statut.filter((value): value is (typeof PHARMACY_STATUSES)[number] =>
     (PHARMACY_STATUSES as readonly string[]).includes(value),
   )
+  const name = values.nom.trim()
   const city = values.ville.trim()
 
   return {
+    name: name.length ? name : undefined,
     statuses: statuses.length ? statuses : undefined,
     departments: values.departement.length ? values.departement : undefined,
     regionIds: values.region.length ? values.region : undefined,
