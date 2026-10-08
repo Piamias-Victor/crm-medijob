@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/atoms/Button'
+import { applicationCvApiPath } from '@/lib/application-cv-url'
 import { applicationConvertPath } from '@/view-models/inbox-detail-href'
 import { candidatsPageHref } from '@/view-models/candidats-tab'
 import { useRouter } from 'next/navigation'
@@ -29,7 +30,11 @@ export function ApplicationDetailActions({
   return (
     <div className="flex flex-wrap gap-2">
       {cvUrl ? (
-        <Button type="button" variant="outline" onClick={() => window.open(cvUrl, '_blank')}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => window.open(applicationCvApiPath(applicationId), '_blank')}
+        >
           Voir le CV
         </Button>
       ) : null}
