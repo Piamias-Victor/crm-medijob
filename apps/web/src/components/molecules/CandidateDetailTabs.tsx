@@ -24,10 +24,9 @@ type Props = {
   active: CandidateDetailTab
   onChange: (tab: CandidateDetailTab) => void
   missionCount: number
-  activityCount: number
 }
 
-export function CandidateDetailTabs({ active, onChange, missionCount, activityCount }: Props) {
+export function CandidateDetailTabs({ active, onChange, missionCount }: Props) {
   return (
     <EntityDetailTabs
       ariaLabel="Sections fiche candidat"
@@ -35,8 +34,7 @@ export function CandidateDetailTabs({ active, onChange, missionCount, activityCo
       onChange={onChange}
       tabs={tabs.map((tab) => ({
         ...tab,
-        badge:
-          tab.id === 'missions' ? missionCount : tab.id === 'historique' ? activityCount : undefined,
+        badge: tab.id === 'missions' ? missionCount : undefined,
       }))}
     />
   )
