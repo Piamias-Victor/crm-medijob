@@ -5,7 +5,7 @@ import { CandidateDetailTabs } from '@/components/molecules/CandidateDetailTabs'
 describe('CandidateDetailTabs', () => {
   it('shows Dispos after Profil, then Entretiens between Missions and Documents', () => {
     render(
-      <CandidateDetailTabs active="profil" onChange={() => undefined} missionCount={0} activityCount={0} />,
+      <CandidateDetailTabs active="profil" onChange={() => undefined} missionCount={0} />,
     )
     const tabs = screen.getAllByRole('tab').map((tab) => tab.textContent)
     expect(tabs).toEqual([
