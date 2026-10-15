@@ -64,10 +64,15 @@ describe('candidate app origin repository', () => {
 
   it('links origin App without changing status', async () => {
     const update = vi.fn().mockResolvedValue({ id: 'c1', status: 'QUALIFIE' })
+    const updateMany = vi.fn().mockResolvedValue({ count: 0 })
     const repo = makeCandidateAppOriginRepository({
-      candidate: { update },
+      candidate: { update, updateMany },
     } as unknown as PrismaClient)
     await repo.linkAppOrigin('c1', 'bk-marie')
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { badakanId: 'bk-marie', id: { not: 'c1' } },
+      data: { badakanId: null },
+    })
     expect(update).toHaveBeenCalledWith({
       where: { id: 'c1' },
       data: { origin: 'APP', badakanId: 'bk-marie' },

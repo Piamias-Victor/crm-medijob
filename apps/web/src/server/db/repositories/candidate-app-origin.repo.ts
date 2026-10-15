@@ -26,12 +26,17 @@ export function makeCandidateAppOriginRepository(db: PrismaClient) {
         data: toAppOriginCreateData(data),
         select: { id: true },
       }),
-    linkAppOrigin: (id: string, badakanId: string) =>
-      db.candidate.update({
+    linkAppOrigin: async (id: string, badakanId: string) => {
+      await db.candidate.updateMany({
+        where: { badakanId, id: { not: id } },
+        data: { badakanId: null },
+      })
+      return db.candidate.update({
         where: { id },
         data: { origin: 'APP', badakanId },
         select: { id: true },
-      }),
+      })
+    },
     unlinkAppOrigin: (id: string) =>
       db.candidate.update({
         where: { id },

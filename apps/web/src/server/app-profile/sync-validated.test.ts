@@ -92,4 +92,5 @@ describe('syncAppValidated', () => {
     expect(deps.linkAppOrigin).not.toHaveBeenCalled()
     expect(deps.markAppValidated).toHaveBeenCalledWith('p1', 'c-existing')
   })
+
 })
