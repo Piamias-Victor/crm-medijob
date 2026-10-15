@@ -48,20 +48,26 @@ export function useCandidateCvReviewState(profile: CandidateProfilePayload, refe
     if (validationError) return setUploadError(validationError)
 
     if (preview?.url) URL.revokeObjectURL(preview.url)
-    setPreview({ url: URL.createObjectURL(file), mimeType, filename: file.name })
+    const nextPreview = { url: URL.createObjectURL(file), mimeType, filename: file.name }
+    setPreview(nextPreview)
 
-    const result = await extract.mutateAsync({
-      candidateId: profile.id,
-      filename: file.name,
-      mimeType,
-      size: file.size,
-      dataBase64: await fileToBase64(file),
-    })
-    setReview({
-      cvUrl: result.cvUrl,
-      extraction: result.extraction,
-      suggestedJobTitles: result.suggestedJobTitles,
-    })
+    try {
+      const result = await extract.mutateAsync({
+        candidateId: profile.id,
+        filename: file.name,
+        mimeType,
+        size: file.size,
+        dataBase64: await fileToBase64(file),
+      })
+      setReview({
+        cvUrl: result.cvUrl,
+        extraction: result.extraction,
+        suggestedJobTitles: result.suggestedJobTitles,
+      })
+    } catch {
+      URL.revokeObjectURL(nextPreview.url)
+      setPreview(null)
+    }
   }
 
   return {

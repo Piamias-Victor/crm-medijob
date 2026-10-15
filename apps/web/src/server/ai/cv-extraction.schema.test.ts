@@ -25,4 +25,24 @@ describe('parseCvExtraction', () => {
   it('throws AI_RESPONSE_NOT_JSON for non-JSON', () => {
     expect(() => parseCvExtraction('not json')).toThrow('AI_RESPONSE_NOT_JSON')
   })
+
+  it('accepts messy optionals without throwing schema error', () => {
+    expect(
+      parseCvExtraction(
+        JSON.stringify({
+          firstName: 'Camille',
+          lastName: 'Martin',
+          availableFrom: 'immédiat',
+          softwares: 'LGPI',
+          email: 'not-an-email',
+        }),
+      ),
+    ).toMatchObject({
+      firstName: 'Camille',
+      lastName: 'Martin',
+      availableFrom: undefined,
+      softwares: undefined,
+      email: undefined,
+    })
+  })
 })

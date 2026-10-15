@@ -55,7 +55,29 @@ describe('candidateRouter CV extraction', () => {
       }),
     ).rejects.toBeInstanceOf(TRPCError)
 
+    expect(deps.runCvExtraction).toHaveBeenCalledTimes(2)
     expect(deps.deleteCvBlob).toHaveBeenCalledWith('https://blob.example/cv.pdf')
+  })
+
+  it('retries extraction once after a transient failure', async () => {
+    const deps = makeCvDeps({
+      runCvExtraction: vi
+        .fn()
+        .mockRejectedValueOnce(new Error('OPENROUTER_REQUEST_FAILED'))
+        .mockResolvedValueOnce(mockExtraction),
+    })
+
+    const result = await caller(deps).extractCv({
+      candidateId: 'c1',
+      filename: 'cv.pdf',
+      mimeType: 'application/pdf',
+      size: 8,
+      dataBase64: pdfBase64,
+    })
+
+    expect(deps.runCvExtraction).toHaveBeenCalledTimes(2)
+    expect(deps.deleteCvBlob).not.toHaveBeenCalled()
+    expect(result.extraction).toEqual(mockExtraction)
   })
 
   it('confirms reviewed extraction and persists cvUrl + profile fields', async () => {
