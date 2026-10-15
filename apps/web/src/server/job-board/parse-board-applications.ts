@@ -16,8 +16,10 @@ export const boardApplicationSchema = z.object({
   created_at: optionalText,
 })
 
-export function parseBoardApplications(payload: unknown): BoardApplication[] {
-  return z.array(boardApplicationSchema).parse(payload).map((row) => ({
+function toBoardApplication(
+  row: z.infer<typeof boardApplicationSchema>,
+): BoardApplication {
+  return {
     id: row.id,
     offre_id: row.offre_id ?? null,
     prenom: row.prenom,
@@ -28,5 +30,19 @@ export function parseBoardApplications(payload: unknown): BoardApplication[] {
     cv_url: row.cv_url ?? null,
     message: row.message ?? null,
     created_at: row.created_at ?? undefined,
-  }))
+  }
+}
+
+export function parseBoardApplications(payload: unknown): BoardApplication[] {
+  if (!Array.isArray(payload)) return []
+  const rows: BoardApplication[] = []
+  for (const raw of payload) {
+    const parsed = boardApplicationSchema.safeParse(raw)
+    if (!parsed.success) {
+      console.warn('board candidature skipped', parsed.error.issues[0]?.path)
+      continue
+    }
+    rows.push(toBoardApplication(parsed.data))
+  }
+  return rows
 }
