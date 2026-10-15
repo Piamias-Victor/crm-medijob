@@ -18,7 +18,10 @@ describe('makeCandidateMergeRepository', () => {
 
     expect(result).toEqual({ id: 'kept' })
     expect(tx.candidate.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'absorbed' }, data: { deletedAt: expect.any(Date) } }),
+      expect.objectContaining({
+        where: { id: 'absorbed' },
+        data: { deletedAt: expect.any(Date), badakanId: null },
+      }),
     )
     expect(tx.missionCandidate.findUnique).not.toHaveBeenCalled()
   })
