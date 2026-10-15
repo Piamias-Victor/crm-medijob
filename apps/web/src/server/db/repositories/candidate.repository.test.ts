@@ -69,4 +69,14 @@ describe('makeCandidateRepository listForKanban', () => {
       }),
     )
   })
+
+  it('frees badakanId when soft-deleting so cron can relink', async () => {
+    const update = vi.fn().mockResolvedValue({ id: 'c1' })
+    const repo = makeCandidateRepository({ candidate: { update } } as unknown as PrismaClient)
+    await repo.softDelete('c1')
+    expect(update).toHaveBeenCalledWith({
+      where: { id: 'c1' },
+      data: { deletedAt: expect.any(Date), badakanId: null },
+    })
+  })
 })

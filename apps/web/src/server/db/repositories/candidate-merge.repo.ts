@@ -42,7 +42,10 @@ export function makeCandidateMergeRepository(db: PrismaClient) {
         await assertMergeCandidatesValid(tx, keptId, absorbedId)
         if (absorbedId) {
           await transferRelations(tx, keptId, absorbedId)
-          await tx.candidate.update({ where: { id: absorbedId }, data: { deletedAt: new Date() } })
+          await tx.candidate.update({
+            where: { id: absorbedId },
+            data: { deletedAt: new Date(), badakanId: null },
+          })
         }
         await tx.candidateSoftware.deleteMany({ where: { candidateId: keptId } })
         await tx.candidateContractPreference.deleteMany({ where: { candidateId: keptId } })
