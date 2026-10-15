@@ -16,11 +16,26 @@ function asOptionalEmail(value: unknown) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text) ? text.toLowerCase() : undefined
 }
 
+function toIsoDay(year: string, month: string, day: string) {
+  const iso = `${year}-${month}-${day}T00:00:00.000Z`
+  const parsed = Date.parse(iso)
+  if (Number.isNaN(parsed)) return undefined
+  return new Date(parsed).toISOString().startsWith(`${year}-${month}-${day}`) ? iso : undefined
+}
+
 function asIsoDateTime(value: unknown) {
   const text = asOptionalString(value)
   if (!text) return undefined
-  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return `${text}T00:00:00.000Z`
-  return text
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return toIsoDay(...(text.split('-') as [string, string, string]))
+  const fr = text.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/)
+  if (fr) {
+    const [, day, month, year] = fr
+    return toIsoDay(year, month.padStart(2, '0'), day.padStart(2, '0'))
+  }
+  if (/^\d{4}-\d{2}-\d{2}T/.test(text) && !Number.isNaN(Date.parse(text))) {
+    return new Date(text).toISOString()
+  }
+  return undefined
 }
 
 function filterContractTypes(value: unknown) {

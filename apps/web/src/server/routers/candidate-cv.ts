@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import type { CvExtraction } from '@/server/ai/cv-extraction.schema'
-import { matchJobTitles, type JobTitleOption } from '@/server/ai/job-title-match'
-import { mapAssistantChatError } from '@/server/ai/router-errors'
+import type { JobTitleOption } from '@/server/ai/job-title-match'
 import type { CandidateProfileUpdate } from '@/server/db/repositories/candidate-profile.repo'
 import type { candidateRepository } from '@/server/db/repositories/candidate.repository'
 import { toCandidateUpdateData } from '@/view-models/candidate-profile-map'
@@ -10,6 +9,7 @@ import type {
   ExtractCvInput,
   ConfirmCvExtractionInput,
 } from '@/server/routers/candidate-cv.schema'
+import { uploadAndExtractCv } from '@/server/routers/candidate-cv-extract'
 import { TRPCError } from '@trpc/server'
 
 type BlobInput = { pathname: string; body: Buffer; contentType: string }
@@ -28,35 +28,6 @@ export type CandidateCvDeps = {
   }) => Promise<CvExtraction>
   listJobTitles: () => Promise<JobTitleOption[]>
   confirmCvExtraction: (id: string, data: CandidateProfileUpdate & { cvUrl: string }) => Promise<unknown>
-}
-
-async function uploadAndExtractCv(
-  deps: Pick<CandidateCvDeps, 'uploadCvBlob' | 'deleteCvBlob' | 'runCvExtraction' | 'listJobTitles'>,
-  input: { pathname: string; filename: string; mimeType: string; dataBase64: string },
-) {
-  const body = Buffer.from(input.dataBase64, 'base64')
-  const blob = await deps.uploadCvBlob({
-    pathname: input.pathname,
-    body,
-    contentType: input.mimeType,
-  })
-
-  try {
-    const jobTitles = await deps.listJobTitles()
-    const extraction = await deps.runCvExtraction({
-      filename: input.filename,
-      mimeType: input.mimeType,
-      dataBase64: input.dataBase64,
-      jobTitles: jobTitles.map((title) => title.name),
-    })
-    const suggestedJobTitles = extraction.jobTitle
-      ? matchJobTitles(extraction.jobTitle, jobTitles)
-      : []
-    return { cvUrl: blob.url, extraction, suggestedJobTitles }
-  } catch (error) {
-    await deps.deleteCvBlob(blob.url).catch(() => undefined)
-    throw mapAssistantChatError(error)
-  }
 }
 
 export async function handleExtractCvDraft(
