@@ -27,10 +27,11 @@ export async function badakanGetRecipient(
   token: string,
   badakanId: string,
   fetchFn: typeof fetch = fetch,
-): Promise<unknown> {
+): Promise<unknown | null> {
   const res = await fetchFn(`${baseUrl}/services/v3/recipients/${badakanId}`, {
     headers: { security_token: token },
   })
+  if (res.status === 404) return null
   if (!res.ok) throw new Error(`Badakan recipient failed (${res.status})`)
   return res.json()
 }

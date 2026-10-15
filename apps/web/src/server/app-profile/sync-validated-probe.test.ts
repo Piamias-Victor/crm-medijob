@@ -31,4 +31,12 @@ describe('probeInactiveRecipients', () => {
     expect(rows).toEqual([])
     expect(calls.n).toBe(0)
   })
+
+  it('skips linked recipients deleted on Badakan (null get)', async () => {
+    const rows = await probeInactiveRecipients([], {
+      listLinked: async () => ['bk-gone', 'bk-marie'],
+      getRecipient: async (id) => (id === 'bk-marie' ? marieSuspended : null),
+    })
+    expect(rows).toEqual([marieSuspended])
+  })
 })
