@@ -33,4 +33,16 @@ describe('normalizeCvExtractionJson', () => {
       preferredContractTypes: ['CDI'],
     })
   })
+
+  it('converts FR dates and drops non-ISO availableFrom', () => {
+    expect(normalizeCvExtractionJson({ availableFrom: '15/08/2026' })).toMatchObject({
+      availableFrom: '2026-08-15T00:00:00.000Z',
+    })
+    expect(normalizeCvExtractionJson({ availableFrom: 'immédiat' })).toMatchObject({
+      availableFrom: undefined,
+    })
+    expect(normalizeCvExtractionJson({ availableFrom: 'ASAP' })).toMatchObject({
+      availableFrom: undefined,
+    })
+  })
 })

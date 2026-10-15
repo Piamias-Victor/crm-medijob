@@ -2,6 +2,7 @@
 
 import { CandidateCvReviewForm } from '@/components/molecules/CandidateCvReviewForm'
 import { CandidateCvActionsBar } from '@/components/molecules/CandidateCvActionsBar'
+import { CvImportAnalyzingModal } from '@/components/molecules/CvImportAnalyzingModal'
 import { AnonymizedDossierModal } from '@/components/organisms/AnonymizedDossierModal'
 import { useCandidateCvReviewState } from '@/lib/hooks/use-candidate-cv-review-state'
 import { useAnonymizedDossierModal } from '@/lib/hooks/use-anonymized-dossier-modal'
@@ -67,6 +68,7 @@ export function CandidateCvPanel({ profile, referentials, onPresentPharmacy, onP
       {flow.error && !flow.open ? <p className="text-sm text-error">{flow.error}</p> : null}
       {cv.uploadError ? <p className="text-sm text-error">{cv.uploadError}</p> : null}
       {cv.extractError ? <p className="text-sm text-error">{cv.extractError.message}</p> : null}
+      <CvImportAnalyzingModal open={cv.extractPending} />
       <AnonymizedDossierModal flow={flow} />
     </div>
   )
