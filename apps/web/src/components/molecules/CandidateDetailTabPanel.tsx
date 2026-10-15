@@ -3,28 +3,20 @@
 import { useMemo } from 'react'
 import type { CandidateDetailTab } from '@/components/molecules/CandidateDetailTabs'
 import { SectionCard } from '@/components/molecules/SectionCard'
-import { CandidateHistoryTab } from '@/components/molecules/CandidateHistoryTab'
+import { CandidateHistoryTabContainer } from '@/components/molecules/CandidateHistoryTabContainer'
 import { CandidateMissionsTab } from '@/components/organisms/CandidateMissionsTab'
-import { CandidateDocumentsTab } from '@/components/organisms/CandidateDocumentsTab'
+import { CandidateDocumentsTabContainer } from '@/components/organisms/CandidateDocumentsTabContainer'
 import { CandidateProfilTab } from '@/components/organisms/CandidateProfilTab'
-import { CandidateInterviewsTab } from '@/components/organisms/CandidateInterviewsTab'
+import { CandidateInterviewsTabContainer } from '@/components/organisms/CandidateInterviewsTabContainer'
 import { CandidateAvailabilityTab } from '@/components/organisms/CandidateAvailabilityTab'
 import { CANDIDATE_TAB_META } from '@/view-models/candidate-tab-meta'
-import type { ActivityLogRow } from '@/view-models/activity-log'
-import type { DocumentListRow } from '@/view-models/document-list'
-import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
-import type { BadakanCommentRow } from '@/view-models/badakan-comment'
 
 type Props = {
   tab: CandidateDetailTab
   profile: CandidateProfilePayload
   referentials: CandidateDetailReferentials
-  activities: ActivityLogRow[]
-  documents: DocumentListRow[]
-  interviews: InterviewListRow[]
-  comments: BadakanCommentRow[]
   onPresentPharmacy?: () => void
   onPresentRadius?: () => void
 }
@@ -33,10 +25,6 @@ export function CandidateDetailTabPanel({
   tab,
   profile,
   referentials,
-  activities,
-  documents,
-  interviews,
-  comments,
   onPresentPharmacy,
   onPresentRadius,
 }: Props) {
@@ -66,11 +54,9 @@ export function CandidateDetailTabPanel({
       ) : null}
       {tab === 'dispos' ? <CandidateAvailabilityTab candidateId={profile.id} /> : null}
       {tab === 'historique' ? (
-        <CandidateHistoryTab
-          scope={{ entityType: 'CANDIDATE', entityId: profile.id }}
-          initialLogs={activities}
+        <CandidateHistoryTabContainer
+          candidateId={profile.id}
           positionings={profile.historyPositionings}
-          comments={comments}
         />
       ) : null}
       {tab === 'missions' ? (
@@ -81,15 +67,9 @@ export function CandidateDetailTabPanel({
         />
       ) : null}
       {tab === 'entretiens' ? (
-        <CandidateInterviewsTab
-          candidateId={profile.id}
-          interviews={interviews}
-          documents={documents}
-        />
+        <CandidateInterviewsTabContainer candidateId={profile.id} />
       ) : null}
-      {tab === 'documents' ? (
-        <CandidateDocumentsTab profile={profile} documents={documents} />
-      ) : null}
+      {tab === 'documents' ? <CandidateDocumentsTabContainer profile={profile} /> : null}
     </SectionCard>
   )
 }

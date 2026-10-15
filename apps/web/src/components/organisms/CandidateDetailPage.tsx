@@ -10,20 +10,12 @@ import { CandidateDetailHeaderActions } from '@/components/molecules/CandidateDe
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
 import { candidateBlacklistHeaderChips } from '@/view-models/candidate-blacklist-header-chips'
 import type { ActivityLogPromptPayload } from '@/components/molecules/email-button/activity-log-prompt-payload'
-import type { ActivityLogRow } from '@/view-models/activity-log'
-import type { DocumentListRow } from '@/view-models/document-list'
-import type { InterviewListRow } from '@/view-models/interview-list'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
-import type { BadakanCommentRow } from '@/view-models/badakan-comment'
 
 type Props = {
   profile: CandidateProfilePayload
   referentials: CandidateDetailReferentials
-  activities: ActivityLogRow[]
-  documents: DocumentListRow[]
-  interviews: InterviewListRow[]
-  comments: BadakanCommentRow[]
   backHref?: string
   backLabel?: string
 }
@@ -31,10 +23,6 @@ type Props = {
 export function CandidateDetailPage({
   profile,
   referentials,
-  activities,
-  documents,
-  interviews,
-  comments,
   backHref = '/candidats',
   backLabel = 'CVthèque',
 }: Props) {
@@ -63,7 +51,6 @@ export function CandidateDetailPage({
           active={tab}
           onChange={setTab}
           missionCount={profile.missions.length}
-          activityCount={activities.length}
         />
       }
       tabKey={tab}
@@ -72,10 +59,6 @@ export function CandidateDetailPage({
         tab={tab}
         profile={profile}
         referentials={referentials}
-        activities={activities}
-        documents={documents}
-        interviews={interviews}
-        comments={comments}
         onPresentPharmacy={() => setPresentOpen(true)}
         onPresentRadius={() => setPresentRadiusOpen(true)}
       />
