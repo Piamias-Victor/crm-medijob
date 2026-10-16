@@ -41,6 +41,6 @@ export function toBoardListing(source: ListingSource): BoardListing {
     listing.id = source.boardListingId
     return listing
   }
-  listing.slug = boardListingSlug(titre, ville)
+  listing.slug = boardListingSlug(titre, ville, source.offerId)
   return listing
 }

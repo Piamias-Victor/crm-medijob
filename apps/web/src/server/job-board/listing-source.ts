@@ -1,6 +1,7 @@
 import type { ContractType } from '@prisma/client'
 
 export type ListingSource = {
+  offerId: string
   title: string
   content: string
   boardListingId: string | null
