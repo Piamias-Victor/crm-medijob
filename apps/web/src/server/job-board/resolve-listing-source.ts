@@ -2,6 +2,7 @@ import type { ContractType } from '@prisma/client'
 import type { ListingSource } from '@/server/job-board/listing-source'
 
 export type OfferPublishFields = {
+  id: string
   title: string
   content: string
   boardListingId: string | null
@@ -42,6 +43,7 @@ export function resolveListingSource(
 ): ListingSource {
   if (mission) {
     return {
+      offerId: offer.id,
       title: offer.title,
       content: offer.content,
       boardListingId: offer.boardListingId,
@@ -62,6 +64,7 @@ export function resolveListingSource(
     throw new Error('STANDALONE_OFFER_INCOMPLETE')
   }
   return {
+    offerId: offer.id,
     title: offer.title,
     content: offer.content,
     boardListingId: offer.boardListingId,

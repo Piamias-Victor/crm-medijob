@@ -21,11 +21,13 @@ export function boardDepartement(postalCode: string | null) {
   return digits.slice(0, 2)
 }
 
-export function boardListingSlug(title: string, city: string) {
-  return `${title} ${city}`
+export function boardListingSlug(title: string, city: string, offerId: string) {
+  const base = `${title} ${city}`
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+  const suffix = offerId.toLowerCase().replace(/[^a-z0-9]/g, '').slice(-6)
+  return suffix ? `${base}-${suffix}` : base
 }
