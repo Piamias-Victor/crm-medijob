@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { toBoardListing } from '@/server/job-board/listing-map'
 
 const source = {
+  offerId: 'offer0000aaaaaa',
   title: 'Pharmacien CDI Lyon',
   content: '<p>Poste en officine</p>',
   boardListingId: null as string | null,
@@ -70,10 +71,12 @@ describe('toBoardListing', () => {
     expect(noGeo.departement).toBe('69')
   })
 
-  it('sets slug on insert and reuses listing id on republish', () => {
+  it('sets a unique slug on insert and reuses listing id on republish', () => {
     const first = toBoardListing(source)
-    expect(first.slug).toBe('pharmacien-lyon')
+    expect(first.slug).toBe('pharmacien-lyon-aaaaaa')
     expect(first.id).toBeUndefined()
+    const other = toBoardListing({ ...source, offerId: 'offer0000bbbbbb' })
+    expect(other.slug).toBe('pharmacien-lyon-bbbbbb')
     const again = toBoardListing({ ...source, boardListingId: 'board-uuid' })
     expect(again.id).toBe('board-uuid')
     expect(again.slug).toBeUndefined()

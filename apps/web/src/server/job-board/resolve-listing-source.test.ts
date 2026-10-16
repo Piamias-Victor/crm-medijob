@@ -3,6 +3,7 @@ import { resolveListingSource } from '@/server/job-board/resolve-listing-source'
 import { toBoardListing } from '@/server/job-board/listing-map'
 
 const baseOffer = {
+  id: 'offer-lyon-1',
   title: 'Ignored for board titre',
   content: '<p>x</p>',
   boardListingId: null as string | null,
