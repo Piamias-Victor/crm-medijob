@@ -41,6 +41,7 @@ const baseProfile = {
   badakanValidatedAt: null,
   qualifiedAt: null,
   interimNeedSmsSentAt: null,
+  sponsorId: null,
   jobTitle: { id: 'jt1', name: 'Pharmacien' },
   referent: { id: 'u1', name: 'Bob Réf' },
   softwares: [],

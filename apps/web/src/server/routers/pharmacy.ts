@@ -13,6 +13,7 @@ import {
   pharmacyCreateMutation,
   pharmacyUpdateMutation,
 } from '@/server/routers/pharmacy-mutations'
+import { pharmacySponsorshipRoutes } from '@/server/routers/pharmacy-sponsorship-routes'
 
 export type { PharmacyDeps } from '@/server/routers/pharmacy.deps'
 
@@ -52,5 +53,6 @@ export function makePharmacyRouter(deps: PharmacyDeps) {
       .input(nameSchema)
       .mutation(async ({ input }) => deps.createSoftware(input.name)),
     ...pharmacyDuplicateRoutes(deps),
+    ...pharmacySponsorshipRoutes(),
   })
 }

@@ -373,6 +373,7 @@ model Candidate {
   consentGivenAt     DateTime?
   consentSource      ConsentSource?
   referentId         String?
+  sponsorId          String?
   badakanValidatedAt DateTime?
   qualifiedAt        DateTime?
   interimNeedSmsSentAt DateTime?
@@ -381,6 +382,8 @@ model Candidate {
   updatedAt          DateTime        @updatedAt
 
   referent                User?                         @relation("ReferentCandidates", fields: [referentId], references: [id], onDelete: SetNull)
+  sponsor                 Candidate?                    @relation("CandidateSponsorship", fields: [sponsorId], references: [id], onDelete: SetNull)
+  filleules               Candidate[]                   @relation("CandidateSponsorship")
   jobTitle                JobTitle                      @relation(fields: [jobTitleId], references: [id])
   softwares               CandidateSoftware[]
   contractPreferences     CandidateContractPreference[]
@@ -398,6 +401,7 @@ model Candidate {
   @@index([deletedAt])
   @@index([jobTitleId])
   @@index([referentId])
+  @@index([sponsorId])
   @@index([status])
   @@index([origin])
   @@index([badakanValidatedAt])
@@ -482,6 +486,7 @@ model Pharmacy {
   paymentConditions String?
   notes             String?
   referentId        String?
+  sponsorId         String?
   deletedAt         DateTime?
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
@@ -489,6 +494,8 @@ model Pharmacy {
   groupement   Groupement?   @relation(fields: [groupementId], references: [id])
   software     Software?     @relation(fields: [softwareId], references: [id])
   referent     User?         @relation("ReferentPharmacies", fields: [referentId], references: [id], onDelete: SetNull)
+  sponsor      Pharmacy?     @relation("PharmacySponsorship", fields: [sponsorId], references: [id], onDelete: SetNull)
+  filleules    Pharmacy[]    @relation("PharmacySponsorship")
   contacts     Contact[]
   missions     Mission[]
   financeLines FinanceLine[]
@@ -502,6 +509,7 @@ model Pharmacy {
   @@index([softwareId])
   @@index([postalCode])
   @@index([referentId])
+  @@index([sponsorId])
 }
 
 // ─── Contacts ─────────────────────────────────────────────────
