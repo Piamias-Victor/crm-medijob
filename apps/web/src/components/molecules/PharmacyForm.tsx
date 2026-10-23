@@ -16,11 +16,13 @@ import { PharmacyContactFields } from '@/components/molecules/PharmacyContactFie
 import { PharmacyProfileBanner } from '@/components/molecules/PharmacyProfileBanner'
 import { PharmacyFormReferentialsSection } from '@/components/molecules/PharmacyFormReferentialsSection'
 import { PharmacySiretSearchPanel } from '@/components/molecules/PharmacySiretSearchPanel'
+import { PharmacySponsorshipSection } from '@/components/molecules/PharmacySponsorshipSection'
 import { getMissingPharmacyFields } from '@/view-models/pharmacy-profile'
 
 type Ref = { id: string; name: string }
 
 type Props = {
+  pharmacyId?: string
   defaultValues?: Partial<PharmacyInput>
   groupements: Ref[]
   softwares: Ref[]
@@ -82,6 +84,11 @@ export function PharmacyForm(props: Props) {
           onCreateSoftware={refs.addSoftware(props.onCreateSoftware)}
         />
       </FormSection>
+      {props.pharmacyId ? (
+        <FormSection title="Parrainage">
+          <PharmacySponsorshipSection pharmacyId={props.pharmacyId} />
+        </FormSection>
+      ) : null}
       <div className="flex justify-end border-t border-border/50 pt-4">
         <Button type="submit" variant="accent" disabled={props.submitting} className="shadow-md shadow-accent/20">
           {props.submitting ? 'Enregistrement…' : 'Enregistrer'}

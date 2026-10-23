@@ -20,19 +20,21 @@ export function SponsorshipSection({ kind, entityId, hrefFor, renderBadge }: Pro
   const filleules = api.view?.filleules ?? []
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-border/80 p-4">
-      <h3 className="text-sm font-semibold text-fg">Parrainage</h3>
-
+    <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <p className="text-xs text-fg-muted">Marraine</p>
+        <p className="text-sm font-medium text-fg">Marraine</p>
+        <p className="text-xs text-fg-muted">Au plus une marraine.</p>
         {sponsor ? (
-          <SponsorshipPeerRow
-            href={hrefFor(sponsor.id)}
-            name={sponsor.name}
-            badge={renderBadge(sponsor.status)}
-            onRemove={() => void actions.clearMarraine()}
-            removing={api.unlink.isPending}
-          />
+          <ul className="flex flex-col gap-2">
+            <SponsorshipPeerRow
+              href={hrefFor(sponsor.id)}
+              name={sponsor.name}
+              badge={renderBadge(sponsor.status)}
+              onRemove={() => void actions.clearMarraine()}
+              removing={api.unlink.isPending}
+              removeLabel="Retirer la marraine"
+            />
+          </ul>
         ) : (
           <Combobox
             remoteSearch
@@ -46,19 +48,27 @@ export function SponsorshipSection({ kind, entityId, hrefFor, renderBadge }: Pro
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs text-fg-muted">Filleules</p>
-        <ul className="flex flex-col gap-1">
-          {filleules.map((f) => (
-            <SponsorshipPeerRow
-              key={f.id}
-              href={hrefFor(f.id)}
-              name={f.name}
-              badge={renderBadge(f.status)}
-              onRemove={() => void actions.removeFilleule(f.id)}
-              removing={api.unlink.isPending}
-            />
-          ))}
-        </ul>
+        <p className="text-sm font-medium text-fg">Filleules</p>
+        <p className="text-xs text-fg-muted">
+          {filleules.length === 0
+            ? 'Aucune filleule pour le moment.'
+            : `${filleules.length} filleule${filleules.length > 1 ? 's' : ''}.`}
+        </p>
+        {filleules.length > 0 ? (
+          <ul className="flex flex-col gap-2">
+            {filleules.map((f) => (
+              <SponsorshipPeerRow
+                key={f.id}
+                href={hrefFor(f.id)}
+                name={f.name}
+                badge={renderBadge(f.status)}
+                onRemove={() => void actions.removeFilleule(f.id)}
+                removing={api.unlink.isPending}
+                removeLabel="Retirer la filleule"
+              />
+            ))}
+          </ul>
+        ) : null}
         <Combobox
           remoteSearch
           options={api.options}
@@ -68,6 +78,6 @@ export function SponsorshipSection({ kind, entityId, hrefFor, renderBadge }: Pro
           aria-label="Ajouter une filleule"
         />
       </div>
-    </section>
+    </div>
   )
 }
