@@ -25,6 +25,7 @@ export function PharmacyInfoForm(props: Props) {
   return (
     <PharmacyForm
       key={pharmacy.id + pharmacy.updatedAt.toISOString()}
+      pharmacyId={pharmacy.id}
       defaultValues={toPharmacyFormValues(pharmacy.formSource)}
       groupements={props.groupements}
       softwares={props.softwares}

@@ -4,7 +4,6 @@ import { CandidateCvPanel } from '@/components/organisms/CandidateCvPanel'
 import { CandidateCvSummaryPanel } from '@/components/organisms/CandidateCvSummaryPanel'
 import { CandidateProfileDocsShortcuts } from '@/components/molecules/CandidateProfileDocsShortcuts'
 import { CandidateIdentityNumbers } from '@/components/molecules/CandidateIdentityNumbers'
-import { CandidateSponsorshipSection } from '@/components/molecules/CandidateSponsorshipSection'
 import type { CandidateProfilePayload } from '@/view-models/candidate-profile-payload'
 import type { CandidateDetailReferentials } from '@/view-models/candidate-detail-referentials'
 
@@ -30,7 +29,6 @@ export function CandidateProfilTab({
         onPresentRadius={onPresentRadius}
       />
       <CandidateProfileForm candidateId={profile.id} profile={profile} referentials={referentials} />
-      <CandidateSponsorshipSection candidateId={profile.id} />
       <CandidateIdentityNumbers nir={profile.nir} iban={profile.iban} />
       <CandidateCvSummaryPanel profile={profile} />
       <CandidateProfileDocsShortcuts />
