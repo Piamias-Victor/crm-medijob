@@ -8,6 +8,7 @@ import { CandidateStatusSalaryFields } from '@/components/molecules/CandidateSta
 import { CandidateStatusBadge } from '@/components/molecules/CandidateStatusBadge'
 import { CandidateProfileBanner } from '@/components/molecules/CandidateProfileBanner'
 import { FormSection } from '@/components/molecules/FormSection'
+import { CandidateProfileFormSponsorship } from '@/components/molecules/CandidateProfileFormSponsorship'
 import { useCandidateProfileMutations } from '@/lib/hooks/use-candidate-profile-mutations'
 import { useCandidateProfileSubmit } from '@/lib/hooks/use-candidate-profile-submit'
 import { useCandidateProfileForm } from '@/lib/hooks/use-candidate-profile-form'
@@ -87,6 +88,7 @@ export function CandidateProfileForm({ candidateId, profile, referentials }: Pro
           recruiters={toSelectOptions(referentials.recruiters)}
         />
       </FormSection>
+      <CandidateProfileFormSponsorship candidateId={candidateId} />
       <div className="flex justify-end border-t border-border/60 pt-4">
         <Button type="submit" variant="accent" disabled={update.isPending} className="shadow-md shadow-accent/20">
           {update.isPending ? 'Enregistrement…' : 'Enregistrer'}
