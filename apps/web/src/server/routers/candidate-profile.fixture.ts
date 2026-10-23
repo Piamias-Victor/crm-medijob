@@ -33,6 +33,7 @@ export const profileFixture = {
   badakanValidatedAt: null,
   qualifiedAt: null,
   interimNeedSmsSentAt: null,
+  sponsorId: null,
   createdAt: new Date('2026-01-15'),
   updatedAt: new Date('2026-01-15'),
   deletedAt: null,

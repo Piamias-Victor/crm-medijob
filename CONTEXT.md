@@ -230,6 +230,10 @@ _Avoid_: chiffre d'affaires (as free UI label without the CA token), rentabilit�
 An administrable pharmacy purchasing network or banner (e.g. Giphar, Alphega). Affiliation is expressed by `groupementId` on a Pharmacy — replaces a separate "groupe" pharmacy type.
 _Avoid_: Groupe (as PharmacyType), réseau (without qualifier), chaîne, enseigne
 
+**Sponsorship (parrainage)**:
+An optional self-link between two Pharmacies, or between two Candidates: one **marraine** (`sponsorId`) and zero or more **filleules**. At most one marraine per entity. Soft-deleted peers are out of the pool. Self-link and cycles (any depth) are refused. Moving a filleule that already has a marraine requires an explicit transfer confirm. Create / transfer / unlink writes an ActivityLog NOTE on both fiches. No free-text note on the link itself. Distinct from Groupement.
+_Avoid_: Groupe, Groupement, réseau (as synonym), referral program, affiliation commerciale
+
 **Software**:
 An administrable pharmacy management software (LGO) — e.g. Winpharma, Pharmagest. Declares the LGO used by a Pharmacy and the LGO skills of a Candidate.
 _Avoid_: Logiciel (without LGO qualifier), outil, application, programme

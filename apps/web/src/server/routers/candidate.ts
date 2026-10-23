@@ -29,6 +29,7 @@ import {
 } from '@/server/routers/candidate-mutations'
 import { createGdprEraseCandidateProcedure } from '@/server/routers/candidate-gdpr-erase.procedure'
 import { createListCandidateCommentsProcedure } from '@/server/routers/candidate-comments'
+import { candidateSponsorshipRoutes } from '@/server/routers/candidate-sponsorship-routes'
 
 export type { CandidateDeps } from '@/server/routers/candidate.deps'
 
@@ -90,5 +91,6 @@ export function makeCandidateRouter(deps: CandidateDeps) {
     presentInRadius: createPresentInRadiusProcedure(deps),
     gdprErase: createGdprEraseCandidateProcedure(deps.gdprErase),
     listComments: createListCandidateCommentsProcedure(deps),
+    ...candidateSponsorshipRoutes(),
   })
 }

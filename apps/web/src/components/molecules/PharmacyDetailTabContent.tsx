@@ -11,6 +11,7 @@ import { PharmacyInfoForm } from '@/components/molecules/PharmacyInfoForm'
 import { PharmacyContactsTab } from '@/components/molecules/PharmacyContactsTab'
 import { PharmacyBesoinsTab } from '@/components/molecules/PharmacyBesoinsTab'
 import { PharmacyHistoryTab } from '@/components/molecules/PharmacyHistoryTab'
+import { PharmacySponsorshipSection } from '@/components/molecules/PharmacySponsorshipSection'
 
 type Ref = { id: string; name: string }
 type MissionRefs = { jobTitles: Ref[]; recruiters: Ref[] }
@@ -37,18 +38,21 @@ export type PharmacyDetailTabContentProps = {
 export function PharmacyDetailTabContent(props: PharmacyDetailTabContentProps) {
   if (props.tab === 'infos') {
     return (
-      <PharmacyInfoForm
-        pharmacy={props.pharmacy}
-        groupements={props.groupements}
-        softwares={props.softwares}
-        recruiters={props.missionRefs.recruiters}
-        submitting={props.submittingInfo}
-        errorMessage={props.updateErrorMessage}
-        onSubmit={props.onUpdate}
-        onSearchSiret={props.onSearchSiret}
-        onCreateGroupement={props.onCreateGroupement}
-        onCreateSoftware={props.onCreateSoftware}
-      />
+      <div className="flex flex-col gap-6">
+        <PharmacySponsorshipSection pharmacyId={props.pharmacy.id} />
+        <PharmacyInfoForm
+          pharmacy={props.pharmacy}
+          groupements={props.groupements}
+          softwares={props.softwares}
+          recruiters={props.missionRefs.recruiters}
+          submitting={props.submittingInfo}
+          errorMessage={props.updateErrorMessage}
+          onSubmit={props.onUpdate}
+          onSearchSiret={props.onSearchSiret}
+          onCreateGroupement={props.onCreateGroupement}
+          onCreateSoftware={props.onCreateSoftware}
+        />
+      </div>
     )
   }
   if (props.tab === 'contacts') {
