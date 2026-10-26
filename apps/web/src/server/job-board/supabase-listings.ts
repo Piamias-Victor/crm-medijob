@@ -73,5 +73,14 @@ export function createSupabaseListingsPort(
       })
       if (!res.ok) await throwBoardError(res)
     },
+    async getMetier(id) {
+      const res = await fetchFn(`${offres}?id=eq.${id}&select=metier`, {
+        method: 'GET',
+        headers: auth,
+      })
+      if (!res.ok) await throwBoardError(res)
+      const rows = (await res.json()) as { metier: string }[]
+      return rows[0]?.metier ?? null
+    },
   }
 }

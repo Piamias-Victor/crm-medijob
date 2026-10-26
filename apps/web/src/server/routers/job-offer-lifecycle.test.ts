@@ -21,7 +21,7 @@ describe('jobOfferRouter lifecycle', () => {
     const upsert = vi.fn().mockResolvedValue({ id: 'board-uuid' })
     const deps = makeDeps({
       getById: vi.fn().mockResolvedValue(draftOffer),
-      board: { upsert, setPubliee: vi.fn() },
+      board: { upsert, setPubliee: vi.fn(), getMetier: vi.fn() },
     })
     await caller(deps).publish({ id: 'o1' })
     expect(upsert).toHaveBeenCalled()
@@ -41,6 +41,7 @@ describe('jobOfferRouter lifecycle', () => {
       board: {
         upsert: vi.fn().mockRejectedValue(new Error('board down')),
         setPubliee: vi.fn(),
+        getMetier: vi.fn(),
       },
     })
     await expect(caller(deps).publish({ id: 'o1' })).rejects.toMatchObject({
@@ -57,7 +58,7 @@ describe('jobOfferRouter lifecycle', () => {
         ...draftOffer,
         content: 'x'.repeat(120),
       }),
-      board: { upsert, setPubliee: vi.fn() },
+      board: { upsert, setPubliee: vi.fn(), getMetier: vi.fn() },
     })
     await caller(deps).publish({ id: 'o1' })
     expect(upsert).toHaveBeenCalled()
@@ -76,7 +77,7 @@ describe('jobOfferRouter lifecycle', () => {
         status: 'PUBLIEE',
         boardListingId: 'board-uuid',
       }),
-      board: { upsert, setPubliee },
+      board: { upsert, setPubliee, getMetier: vi.fn() },
     })
     await caller(deps).unpublish({ id: 'o1' })
     expect(setPubliee).toHaveBeenCalledWith('board-uuid', false)

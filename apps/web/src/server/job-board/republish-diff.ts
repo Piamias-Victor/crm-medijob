@@ -15,9 +15,11 @@ export function missingSectionTitles(content: string): string[] {
 export function listingRepublishReasons(
   currentContent: string,
   next: BoardListing,
+  currentMetier?: string | null,
 ): string[] {
   const reasons: string[] = []
   if (next.entreprise !== BOARD_ENTREPRISE) reasons.push('entreprise')
+  if (currentMetier != null && currentMetier !== next.metier) reasons.push('metier')
   const missing = missingSectionTitles(currentContent)
   if (missing.length) reasons.push(`sections:${missing.length}`)
   if (missingSectionTitles(next.description).length === 0 && missing.length) {

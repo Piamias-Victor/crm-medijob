@@ -26,6 +26,7 @@ async function main() {
     console.error('Job board env incomplete — abort')
     process.exit(1)
   }
+  const board = createSupabaseListingsPort({ url: config.url, secret: config.secret })
   const offers = await prisma.jobOffer.findMany({
     where: { status: 'PUBLIEE', boardListingId: { not: null }, ...NOT_DELETED },
     include: {
@@ -52,11 +53,11 @@ async function main() {
         }
       : null
     const listing = await buildListingForOffer(offer, mission, config.contactEmail, lookup)
-    const reasons = listingRepublishReasons(offer.content, listing)
+    const currentMetier = await board.getMetier(offer.boardListingId)
+    const reasons = listingRepublishReasons(offer.content, listing, currentMetier)
     const row = toRepublishCandidate(offer.id, offer.boardListingId, reasons)
     if (row) candidates.push(row)
     if (apply && row) {
-      const board = createSupabaseListingsPort({ url: config.url, secret: config.secret })
       await board.upsert({ ...listing, id: offer.boardListingId, publiee: true })
     }
   }
