@@ -1,4 +1,5 @@
 import type { BoardListing } from '@/server/job-board/port'
+import { boardMetierLabel } from '@/server/job-board/board-metier-label'
 import {
   BOARD_ENTREPRISE,
   formatBoardOfferCity,
@@ -19,7 +20,7 @@ export function toBoardListing(source: ListingSource): BoardListing {
   const ville = formatBoardOfferCity(source.pharmacy.city)
   const listing: BoardListing = {
     titre,
-    metier: source.mission.jobTitleName,
+    metier: boardMetierLabel(source.mission.jobTitleName),
     description: source.content,
     entreprise: BOARD_ENTREPRISE,
     ville,

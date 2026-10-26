@@ -6,19 +6,35 @@ import type { CandidateProfilePayload } from '@/view-models/candidate-profile-pa
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
 }))
-
 vi.mock('@/lib/hooks/use-candidate-profile-mutations', () => ({
   useCandidateProfileMutations: () => ({
     update: { mutate: vi.fn(), isPending: false },
     createJobTitle: { mutateAsync: vi.fn() },
   }),
 }))
-
 vi.mock('@/lib/hooks/use-candidate-duplicate-guard', () => ({
   useCandidateDuplicateGuard: () => vi.fn().mockResolvedValue(false),
 }))
+vi.mock('@/components/molecules/CandidateProfileFormSponsorship', () => ({
+  CandidateProfileFormSponsorship: () => null,
+}))
 
-const baseProfile: CandidateProfilePayload = {
+const formValues = {
+  firstName: 'Camille',
+  lastName: 'Durand',
+  city: 'Lyon',
+  postalCode: '69001',
+  jobTitleId: 'jt1',
+  referentId: 'u1',
+  status: 'NOUVEAU' as const,
+  salaryMin: null,
+  salaryMax: null,
+  mobilityRadiusKm: 30,
+  softwareIds: [] as string[],
+  contractTypes: [] as never[],
+}
+
+const baseProfile = {
   id: 'c1',
   firstName: 'Camille',
   lastName: 'Durand',
@@ -50,23 +66,10 @@ const baseProfile: CandidateProfilePayload = {
   contractTypes: [],
   missions: [],
   historyPositionings: [],
-  formValues: {
-    firstName: 'Camille',
-    lastName: 'Durand',
-    city: 'Lyon',
-    postalCode: '69001',
-    jobTitleId: 'jt1',
-    referentId: 'u1',
-    status: 'NOUVEAU',
-    salaryMin: null,
-    salaryMax: null,
-    mobilityRadiusKm: 30,
-    softwareIds: [],
-    contractTypes: [],
-  },
+  formValues,
   isProfileIncompleteForMatching: false,
   missingMatchingFields: [],
-}
+} as CandidateProfilePayload
 
 const referentials = {
   jobTitles: [{ id: 'jt1', name: 'Pharmacien' }],
@@ -80,19 +83,17 @@ describe('CandidateProfileForm', () => {
       <CandidateProfileForm candidateId="c1" profile={baseProfile} referentials={referentials} />,
     )
     expect(screen.getByLabelText('Nom')).toHaveValue('Durand')
-
     rerender(
       <CandidateProfileForm
         candidateId="c1"
         profile={{
           ...baseProfile,
           lastName: 'Martin',
-          formValues: { ...baseProfile.formValues, lastName: 'Martin' },
+          formValues: { ...formValues, lastName: 'Martin' },
         }}
         referentials={referentials}
       />,
     )
-
     expect(screen.getByLabelText('Nom')).toHaveValue('Martin')
   })
 })

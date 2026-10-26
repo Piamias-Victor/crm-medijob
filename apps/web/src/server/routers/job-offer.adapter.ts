@@ -19,7 +19,7 @@ export function makeLiveJobOfferLifecycleDeps(): LifecycleDeps {
   const config = readJobsBoardEnv()
   const board: JobBoardListingsPort = jobsBoardConfigured(config)
     ? createSupabaseListingsPort({ url: config.url, secret: config.secret })
-    : { upsert: failUnconfigured, setPubliee: failUnconfigured }
+    : { upsert: failUnconfigured, setPubliee: failUnconfigured, getMetier: failUnconfigured }
   const lookupGeo = createGeoQueryLookup()
   return {
     getById: (id) => jobOfferRepository.findById(id),

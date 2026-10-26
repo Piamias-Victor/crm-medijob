@@ -38,6 +38,22 @@ describe('createSupabaseListingsPort', () => {
     expect(body.description).toBe(listing.description)
   })
 
+  it('reads current metier for republish diff', async () => {
+    const fetchFn = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [{ metier: 'Préparateur' }],
+    })
+    const port = createSupabaseListingsPort(
+      { url: 'https://board.supabase.co', secret: 's' },
+      fetchFn,
+    )
+    await expect(port.getMetier('board-uuid')).resolves.toBe('Préparateur')
+    expect(fetchFn).toHaveBeenCalledWith(
+      'https://board.supabase.co/rest/v1/offres?id=eq.board-uuid&select=metier',
+      expect.objectContaining({ method: 'GET' }),
+    )
+  })
+
   it('hides a listing with PATCH and never DELETE', async () => {
     const fetchFn = vi.fn().mockResolvedValue({ ok: true, json: async () => [] })
     const port = createSupabaseListingsPort(
