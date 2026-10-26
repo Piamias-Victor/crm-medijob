@@ -18,6 +18,10 @@ vi.mock('@/lib/hooks/use-candidate-duplicate-guard', () => ({
   useCandidateDuplicateGuard: () => vi.fn().mockResolvedValue(false),
 }))
 
+vi.mock('@/components/molecules/CandidateProfileFormSponsorship', () => ({
+  CandidateProfileFormSponsorship: () => null,
+}))
+
 const baseProfile: CandidateProfilePayload = {
   id: 'c1',
   firstName: 'Camille',
