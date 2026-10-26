@@ -25,4 +25,5 @@ export type BoardListing = {
 export type JobBoardListingsPort = {
   upsert: (listing: BoardListing) => Promise<{ id: string }>
   setPubliee: (id: string, publiee: boolean) => Promise<void>
+  getMetier: (id: string) => Promise<string | null>
 }

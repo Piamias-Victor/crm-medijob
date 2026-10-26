@@ -40,7 +40,7 @@ describe('toBoardListing', () => {
     const listing = toBoardListing(source)
     expect(listing.titre).toBe('Pharmacien')
     expect(listing.ville).toBe('Lyon')
-    expect(listing.metier).toBe('Pharmacien')
+    expect(listing.metier).toBe('Pharmacien adjoint')
     expect(listing.description).toBe('<p>Poste en officine</p>')
     expect(listing.type_contrat).toBe('CDI')
     expect(listing.temps_travail).toBe('Temps plein')
