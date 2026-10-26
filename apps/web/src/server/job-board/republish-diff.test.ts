@@ -32,6 +32,11 @@ describe('republish-diff', () => {
     ).toBeNull()
   })
 
+  it('flags metier when board label differs from next listing', () => {
+    const reasons = listingRepublishReasons(SECTIONED_OFFER_HTML, next, 'Préparateur')
+    expect(reasons).toEqual(['metier'])
+  })
+
   it('summarizes dry-run without nominative fields', () => {
     const summary = formatDryRunSummary([
       { offerId: 'abcdefghij', boardListingId: 'b1', reasons: ['sections:4'] },
