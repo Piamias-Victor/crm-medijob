@@ -3,7 +3,7 @@ import { hasMatchingNewNeed } from './match'
 import { needSmsCandidate, needSmsNeed, noGeoLookup, PARIS } from './match.fixtures'
 
 describe('hasMatchingNewNeed', () => {
-  it('matches a need with the same JobTitle within 50 km created after last SMS', async () => {
+  it('matches a need with the same JobTitle within 40 km created after last SMS', async () => {
     expect(await hasMatchingNewNeed(needSmsCandidate(), [needSmsNeed()], noGeoLookup)).toBe(
       true,
     )
@@ -29,7 +29,7 @@ describe('hasMatchingNewNeed', () => {
     ).toBe(true)
   })
 
-  it('ignores a need farther than 50 km', async () => {
+  it('ignores a need farther than 40 km', async () => {
     expect(
       await hasMatchingNewNeed(
         needSmsCandidate(),
@@ -49,12 +49,12 @@ describe('hasMatchingNewNeed', () => {
     ).toBe(false)
   })
 
-  it('includes a need at exactly 50 km', async () => {
+  it('includes a need at exactly 40 km', async () => {
     const kmPerDeg = 111.32
     expect(
       await hasMatchingNewNeed(
         needSmsCandidate(),
-        [needSmsNeed({ latitude: PARIS.latitude - 50 / kmPerDeg, longitude: PARIS.longitude })],
+        [needSmsNeed({ latitude: PARIS.latitude - 40 / kmPerDeg, longitude: PARIS.longitude })],
         noGeoLookup,
       ),
     ).toBe(true)
