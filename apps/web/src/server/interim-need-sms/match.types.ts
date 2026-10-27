@@ -12,6 +12,7 @@ export type NeedSmsRow = NeedSmsCandidate & { phone: string | null }
 export type NeedSmsNeed = {
   jobTitleId: string | null
   createdAt: Date
+  startsAt: Date | null
   latitude: number | null
   longitude: number | null
   postalCode: string | null

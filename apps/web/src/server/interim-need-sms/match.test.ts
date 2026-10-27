@@ -81,4 +81,16 @@ describe('hasMatchingNewNeed', () => {
       ),
     ).toBe(false)
   })
+
+  it('ignores a need whose start is already past', async () => {
+    const now = new Date('2026-09-15T10:00:00.000Z')
+    expect(
+      await hasMatchingNewNeed(
+        needSmsCandidate(),
+        [needSmsNeed({ startsAt: new Date('2026-09-15T08:00:00.000Z') })],
+        noGeoLookup,
+        now,
+      ),
+    ).toBe(false)
+  })
 })

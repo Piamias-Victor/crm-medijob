@@ -19,6 +19,7 @@ export function needSmsNeed(overrides: Partial<NeedSmsNeed> = {}): NeedSmsNeed {
   return {
     jobTitleId: 'jt-prep',
     createdAt: new Date('2026-09-08T10:00:00.000Z'),
+    startsAt: new Date('2099-01-01T08:00:00.000Z'),
     postalCode: '75001',
     ...PARIS,
     ...overrides,

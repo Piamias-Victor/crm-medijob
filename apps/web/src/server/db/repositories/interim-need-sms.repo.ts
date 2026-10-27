@@ -1,6 +1,10 @@
 import type { PrismaClient } from '@prisma/client'
 import { NOT_DELETED } from './soft-delete'
 import { isOpenNeed } from '@/view-models/badakan-need'
+import {
+  firstPeriodStartAt,
+  parseBadakanMissionPeriods,
+} from '@/view-models/badakan-mission-periods'
 import type { NeedSmsNeed, NeedSmsRow } from '@/server/interim-need-sms/match.types'
 
 const candidateSelect = {
@@ -36,6 +40,7 @@ function toRow(row: {
 function toNeed(row: {
   jobTitleId: string | null
   createdAt: Date
+  periods: unknown
   latitude: number | null
   longitude: number | null
   postalCode: string | null
@@ -43,6 +48,7 @@ function toNeed(row: {
   return {
     jobTitleId: row.jobTitleId,
     createdAt: row.createdAt,
+    startsAt: firstPeriodStartAt(parseBadakanMissionPeriods(row.periods)),
     latitude: row.latitude,
     longitude: row.longitude,
     postalCode: row.postalCode,
@@ -72,6 +78,7 @@ export function makeInterimNeedSmsRepository(db: PrismaClient) {
         select: {
           jobTitleId: true,
           createdAt: true,
+          periods: true,
           latitude: true,
           longitude: true,
           postalCode: true,
