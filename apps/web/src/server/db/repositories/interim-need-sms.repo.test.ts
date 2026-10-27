@@ -44,6 +44,7 @@ describe('interimNeedSmsRepository listOpenNeeds', () => {
       select: {
         jobTitleId: true,
         createdAt: true,
+        periods: true,
         latitude: true,
         longitude: true,
         postalCode: true,
@@ -58,6 +59,7 @@ describe('interimNeedSmsRepository listOpenNeeds', () => {
       {
         jobTitleId: 'jt-prep',
         createdAt: new Date('2026-09-08'),
+        periods: [{ start: '2026-10-28T08:00:00.000Z', end: null }],
         latitude: 48.8,
         longitude: 2.3,
         expectedRecipients: 2,
@@ -66,6 +68,7 @@ describe('interimNeedSmsRepository listOpenNeeds', () => {
       {
         jobTitleId: 'jt-prep',
         createdAt: new Date('2026-09-08'),
+        periods: [],
         latitude: 48.8,
         longitude: 2.3,
         expectedRecipients: 1,
@@ -78,5 +81,6 @@ describe('interimNeedSmsRepository listOpenNeeds', () => {
     const rows = await repo.listOpenNeeds()
     expect(rows).toHaveLength(1)
     expect(rows[0]?.jobTitleId).toBe('jt-prep')
+    expect(rows[0]?.startsAt).toEqual(new Date('2026-10-28T08:00:00.000Z'))
   })
 })

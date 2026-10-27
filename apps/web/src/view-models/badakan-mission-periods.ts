@@ -30,6 +30,15 @@ export function parseBadakanMissionPeriods(value: unknown): PeriodLike[] {
   })
 }
 
+export function firstPeriodStartAt(periods: PeriodLike[]): Date | null {
+  for (const period of periods) {
+    if (!period.start) continue
+    const date = new Date(period.start)
+    if (!Number.isNaN(date.getTime())) return date
+  }
+  return null
+}
+
 export function badakanMissionPeriodLabel(periods: PeriodLike[]): string {
   const first = periods[0]
   if (!first) return '—'
