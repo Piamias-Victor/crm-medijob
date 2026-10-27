@@ -115,7 +115,7 @@ Transactional Brevo template when a recipient first appears at `SEARCH_APPLIED` 
 _Avoid_: Application (job board), Hireflix invite, interim need SMS
 
 **Interim need SMS**:
-Daily 12h45 Europe/Paris (Vercel cron `45 10 * * *` UTC = 12h45 CEST / 11h45 CET) transactional SMS (same Brevo port as the availability SMS) to App-origin App-validated Candidates who are not Inactif or Blacklisté. Sent when at least one open Badakan need (`CREATED` + staffing gap) has the same JobTitle and is within 80 km (stored coords or commune postal lookup like matching; not Mobility radius). If `interimNeedSmsSentAt` is set, only a need with `createdAt` after that stamp counts. `syncedAt` is ignored. One SMS per Candidate. `interimNeedSmsSentAt` is written only after a real send — never at App-validated or on a dry cron pass. Copy points to the Medijob app. Distinct from the weekly-availability SMS and from Mission matching.
+Daily 12h45 Europe/Paris (Vercel cron `45 10 * * *` UTC = 12h45 CEST / 11h45 CET) transactional SMS (same Brevo port as the availability SMS) to App-origin App-validated Candidates who are not Inactif or Blacklisté. Sent when at least one open Badakan need (`CREATED` + staffing gap) has the same JobTitle and is within 50 km (stored coords or commune postal lookup like matching; not Mobility radius). If `interimNeedSmsSentAt` is set, only a need with `createdAt` after that stamp counts. `syncedAt` is ignored. One SMS per Candidate. `interimNeedSmsSentAt` is written only after a real send — never at App-validated or on a dry cron pass. Copy points to the Medijob app. Distinct from the weekly-availability SMS and from Mission matching.
 _Avoid_: matching SMS, push, weekly availability SMS (that's the dispo link)
 
 **Badakan contract**:
