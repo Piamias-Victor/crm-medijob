@@ -2,6 +2,7 @@
 
 import { GlassModal } from '@/components/molecules/GlassModal'
 import { ProgressBar } from '@/components/atoms/ProgressBar'
+import { accentButtonClassName } from '@/lib/button-styles'
 import type { usePharmacyScrapeImport } from '@/lib/hooks/use-pharmacy-scrape-import'
 
 type State = ReturnType<typeof usePharmacyScrapeImport>
@@ -13,8 +14,8 @@ export function PharmacyScrapeImportModal({ state }: { state: State }) {
     state.phase === 'done'
       ? 'Import terminé'
       : state.phase === 'ready'
-        ? 'Prévisualisation EDITH'
-        : 'Import EDITH'
+        ? 'Prévisualisation du fichier'
+        : 'Import fichier'
 
   return (
     <GlassModal
@@ -61,11 +62,7 @@ export function PharmacyScrapeImportModal({ state }: { state: State }) {
         )}
         <div className="flex flex-wrap justify-end gap-2">
           {state.phase === 'done' ? (
-            <button
-              type="button"
-              className="rounded-md bg-fg px-3 py-1.5 text-sm text-bg"
-              onClick={state.cancel}
-            >
+            <button type="button" className={accentButtonClassName} onClick={state.cancel}>
               Fermer
             </button>
           ) : (
@@ -80,7 +77,7 @@ export function PharmacyScrapeImportModal({ state }: { state: State }) {
               </button>
               <button
                 type="button"
-                className="rounded-md bg-fg px-3 py-1.5 text-sm text-bg disabled:opacity-50"
+                className={accentButtonClassName}
                 disabled={!canConfirm || busy}
                 onClick={() => void state.confirm()}
               >
