@@ -38,6 +38,11 @@ export const pharmacyScrapeRouter = router({
     return rows.map((r) => r.provenance)
   }),
 
+  departments: protectedProcedure.query(async () => {
+    const rows = await pharmacyScrapeRepository.listDepartments()
+    return rows.map((r) => r.department).filter((d): d is string => Boolean(d))
+  }),
+
   previewImport: adminProcedure.input(pharmacyScrapeUploadSchema).mutation(async ({ input }) => {
     const parsed = await parseUpload(input.dataBase64)
     return buildPharmacyScrapePreview(parsed)

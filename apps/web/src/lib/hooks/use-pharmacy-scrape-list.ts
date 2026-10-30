@@ -10,12 +10,14 @@ export function usePharmacyScrapeList() {
   const [filters, setFilters] = useState<PharmacyScrapeListFilters>(EMPTY)
   const query = trpc.pharmacyScrape.list.useQuery(filters)
   const provenances = trpc.pharmacyScrape.provenances.useQuery()
+  const departments = trpc.pharmacyScrape.departments.useQuery()
   return {
     filters,
     setFilters,
     rows: query.data ?? [],
     isLoading: query.isLoading,
     provenances: provenances.data ?? [],
+    departments: departments.data ?? [],
     refetch: query.refetch,
   }
 }
