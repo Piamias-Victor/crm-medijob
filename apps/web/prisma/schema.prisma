@@ -512,6 +512,27 @@ model Pharmacy {
   @@index([sponsorId])
 }
 
+/// Consultation-only EDITH harvest — never FK to Pharmacy (ADR 0039).
+model PharmacyScrape {
+  id          String    @id @default(cuid())
+  provenance  String
+  email       String
+  name        String
+  department  String?
+  city        String?
+  scrapedAt   DateTime
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([email, provenance])
+  @@index([deletedAt])
+  @@index([department])
+  @@index([provenance])
+  @@index([email])
+  @@index([name])
+}
+
 // ─── Contacts ─────────────────────────────────────────────────
 
 model Contact {

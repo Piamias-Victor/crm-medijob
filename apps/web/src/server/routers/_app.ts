@@ -3,6 +3,7 @@ import { healthRouter } from '@/server/routers/health'
 import { authResetRouter } from '@/server/routers/auth-reset'
 import { adminRouter } from '@/server/routers/admin'
 import { pharmacyRouter } from '@/server/routers/pharmacy.adapter'
+import { pharmacyScrapeRouter } from '@/server/routers/pharmacy-scrape'
 import { contactRouter } from '@/server/routers/contact.adapter'
 import { assistantRouter } from '@/server/routers/assistant'
 import { candidateRouter } from '@/server/routers/candidate.adapter'
@@ -35,6 +36,7 @@ export const appRouter = router({
   search: searchRouter,
   admin: adminRouter,
   pharmacy: pharmacyRouter,
+  pharmacyScrape: pharmacyScrapeRouter,
   contact: contactRouter,
   assistant: assistantRouter,
   candidate: candidateRouter,
