@@ -53,7 +53,7 @@ export function usePharmacyScrapeImport(onDone: () => void) {
         const upload = { filename: file.name, size: file.size, dataBase64 }
         setPayload(upload)
         setPhase('analyzing')
-        setStatusLabel('Analyse EDITH…')
+        setStatusLabel('Analyse du fichier…')
         setProgress(45)
         setPreview(await previewMut.mutateAsync(upload))
         setProgress(100)
