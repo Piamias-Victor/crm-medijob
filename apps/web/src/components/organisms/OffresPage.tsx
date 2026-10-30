@@ -15,7 +15,7 @@ import type { JobOfferListRow } from '@/view-models/job-offer-list'
 import type { JobOfferListFilters } from '@/view-models/job-offer-list-filters.schema'
 import type { JobOfferFilterConfig } from '@/lib/filters/job-offer-filter-config'
 import { CREATE_OFFER_LABEL } from '@/view-models/mission-offer-picker'
-import { pharmacyViewOptions, type PharmacyView } from '@/components/molecules/ViewToggle'
+import { offerViewOptions, type OfferView } from '@/components/molecules/ViewToggle'
 
 type Props = {
   initialRows: JobOfferListRow[]
@@ -25,7 +25,7 @@ type Props = {
 
 export function OffresPage({ initialRows, serverFilters, filterConfig }: Props) {
   const [open, setOpen] = useState(false)
-  const [view, setView] = useState<PharmacyView>('list')
+  const [view, setView] = useState<OfferView>('list')
   const [sort, setSort] = useState<EntityTableSortState | null>(null)
   const [count, setCount] = useState(initialRows.length)
   const onCountChange = useCallback((next: number) => setCount(next), [])
@@ -62,7 +62,7 @@ export function OffresPage({ initialRows, serverFilters, filterConfig }: Props) 
         <EntityViewShell
           view={view}
           onViewChange={setView}
-          viewOptions={pharmacyViewOptions}
+          viewOptions={offerViewOptions}
           panels={{
             list: {
               title: 'Annonces',

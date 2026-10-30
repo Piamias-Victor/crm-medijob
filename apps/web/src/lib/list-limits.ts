@@ -10,5 +10,8 @@ export const CANDIDATE_LIST_LIMIT = 10_000
 /** FinanceLine list for Pilotage / Placements / Intérim (Excel import can exceed 500). */
 export const FINANCE_LINE_LIST_LIMIT = 5_000
 
+/** Pharmacy scrape (Base emails) — EDITH harvest can exceed 500. */
+export const PHARMACY_SCRAPE_LIST_LIMIT = 5_000
+
 /** Nested missions on pharmacy detail — prevents unbounded include on large accounts. */
 export const DETAIL_MISSIONS_LIMIT = 50

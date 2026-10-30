@@ -1,13 +1,17 @@
 'use client'
 
-import Link from 'next/link'
 import { useCallback, useState } from 'react'
-import { Building2, Plus, Upload } from 'lucide-react'
-import { accentButtonClassName } from '@/lib/button-styles'
+import { Building2 } from 'lucide-react'
 import { DashboardPage } from '@/components/molecules/DashboardPage'
 import { EntityViewShell } from '@/components/molecules/EntityViewShell'
 import { PharmacyTable } from '@/components/organisms/pharmacy-table/pharmacy-table'
 import { PharmacyMapView } from '@/components/organisms/PharmacyMapView'
+import { PharmacyScrapePanel } from '@/components/organisms/PharmacyScrapePanel'
+import { PharmaciesPageActions } from '@/components/organisms/pharmacies-page-actions'
+import {
+  PHARMACY_SCRAPE_DESCRIPTION,
+  PHARMACY_SCRAPE_TITLE,
+} from '@/lib/constants/pharmacy-scrape-copy'
 import type { EntityTableSortState } from '@/components/organisms/entity-table/entity-table-types'
 import { usePharmacyListQuery } from '@/lib/hooks/use-pharmacy-list-query'
 import type { PharmacyFilterConfig } from '@/lib/filters/pharmacy-filter-config'
@@ -38,21 +42,7 @@ export function PharmaciesPage({ initialRows, serverFilters, filterConfig }: Pro
       icon={<Building2 className="size-5" />}
       title="Pharmacies"
       description={`${count} officine(s) au portefeuille`}
-      actions={
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href="/pharmacies/import"
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface"
-          >
-            <Upload className="size-4" />
-            Importer CSV
-          </Link>
-          <Link href="/pharmacies/new" className={accentButtonClassName}>
-            <Plus className="size-4" />
-            Nouvelle pharmacie
-          </Link>
-        </div>
-      }
+      actions={<PharmaciesPageActions />}
     >
       <EntityViewShell
         view={view}
@@ -86,6 +76,11 @@ export function PharmaciesPage({ initialRows, serverFilters, filterConfig }: Pro
                 onReset={reset}
               />
             ),
+          },
+          emails: {
+            title: PHARMACY_SCRAPE_TITLE,
+            description: PHARMACY_SCRAPE_DESCRIPTION,
+            content: <PharmacyScrapePanel />,
           },
         }}
       />
