@@ -41,6 +41,13 @@ export function makePharmacyScrapeRepository(db: PrismaClient = defaultDb) {
         select: { provenance: true },
         orderBy: { provenance: 'asc' },
       }),
+    listDepartments: () =>
+      db.pharmacyScrape.findMany({
+        where: { ...NOT_DELETED, department: { not: null } },
+        distinct: ['department'],
+        select: { department: true },
+        orderBy: { department: 'asc' },
+      }),
   }
 }
 
