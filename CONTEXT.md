@@ -195,12 +195,16 @@ The positioning of a Candidate on a Mission at a given PipelineStage. A Candidat
 _Avoid_: Matching, affectation, liaison, Placement (that's the financial line)
 
 **Pharmacy**:
-The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person. A Badakan enterprise with a unique SIRET becomes a Pharmacy automatically (Prospect + primary Contact). Missing or already-used SIRET stays on Intérim officines for correction — never a second Pharmacy.
+The client organization Medijob recruits for — a pharmacy (officine), clinic, or grouped structure. Identified by SIRET, address, LGO, and commercial status. Never a person. A Badakan enterprise with a unique SIRET becomes a Pharmacy automatically (Prospect + primary Contact). Missing or already-used SIRET stays on Intérim officines for correction — never a second Pharmacy. Never created, updated, or linked from a Pharmacy scrape row.
 _Avoid_: Client (ambiguous with Contact), établissement (too generic), officine (too narrow — use when type is INDEPENDANTE)
 
 **Pharmacy status**:
 Commercial lifecycle of a Pharmacy: Client / Prospect / Inactif (CSV V1). Filterable across list views.
 _Avoid_: Actif (legacy label for Client), ACTIF (as user-facing label)
+
+**Pharmacy scrape**:
+A consultation-only email/name harvest from a fixed EDITH-shaped Excel (`Provenance`, `Date`, `Nom`, `CP`, `Ville`, `Mail` — other layouts refused): provenance, file scrape date (stored and shown), pharmacy label, city, email. The file column `CP` is treated as **department** in the UI (not Pharmacy `postalCode`); a rare 5-digit value yields department from its first two digits. Persisted and shared for the whole team in the Pharmacies UI tab **Base emails**. Consultation filters: text search on name / email / city, department, provenance, and a scrape-email-duplicate toggle. Re-import upserts on normalized **email + provenance** (same mail under Airtable vs Globale = two rows); rows absent from a newer file are **kept** (the scrape base can grow). A **scrape email duplicate** is the same email on more than one Pharmacy scrape row — the Base emails UI surfaces those; same name with several emails is normal, not a duplicate. All UserRoles may consult (copy email/name; no CRM mailto compose / ActivityLog). Only Direction and RH-Admin may import (upload → preview counts → confirm) or soft-delete scrape rows (single or selection). Soft-deleted scrape rows stay hidden until a later import upserts the same email+provenance — then they are **reactivated** (file wins over admin hide). Invalid rows (empty/unparseable email) are skipped and listed in preview; duplicate email+provenance pairs inside one file keep the last row. Never a Pharmacy, Contact, or CSV portfolio import — zero write or FK into the Pharmacy portefeuille.
+_Avoid_: Pharmacy, Contact, import CSV pharmacies, lead CRM, prospect (as Pharmacy status), doublon nom (multi-email), column mapping wizard, Scrapping (UI label), Scraping (UI label), EDITH (as tab name), Gmail compose (from scrape row), hard delete (as routine scrape delete)
 
 **Contact**:
 A person at a Pharmacy — the human interlocutor for staffing needs and commercial follow-up. Always belongs to exactly one Pharmacy. On Badakan pharmacy verification, the enterprise principal user is offered as a Contact (link by email then phone; no duplicate).
