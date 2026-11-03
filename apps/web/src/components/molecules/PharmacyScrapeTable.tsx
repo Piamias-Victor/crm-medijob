@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { PharmacyScrapeListRow } from '@/view-models/pharmacy-scrape-list-row'
 import { PHARMACY_SCRAPE_DEPT_LABEL, PHARMACY_SCRAPE_EMPTY } from '@/lib/constants/pharmacy-scrape-copy'
+import { PharmacyScrapeTableToolbar } from '@/components/molecules/PharmacyScrapeTableToolbar'
 import { useCan } from '@/lib/hooks/use-can'
 
 type Props = {
@@ -25,19 +26,16 @@ export function PharmacyScrapeTable({ rows, onSoftDelete, deletePending }: Props
 
   return (
     <div className="space-y-2">
-      {canAdmin && selected.size > 0 && (
-        <button
-          type="button"
-          disabled={deletePending}
-          className="rounded-md border border-border px-3 py-1.5 text-sm text-fg hover:bg-surface"
-          onClick={() => {
-            onSoftDelete([...selected])
-            setSelected(new Set())
-          }}
-        >
-          Supprimer ({selected.size})
-        </button>
-      )}
+      <PharmacyScrapeTableToolbar
+        rows={rows}
+        canAdmin={canAdmin}
+        selectedCount={selected.size}
+        deletePending={deletePending}
+        onSoftDelete={() => {
+          onSoftDelete([...selected])
+          setSelected(new Set())
+        }}
+      />
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead className="border-b border-border text-xs text-muted">
@@ -84,9 +82,7 @@ export function PharmacyScrapeTable({ rows, onSoftDelete, deletePending }: Props
                 <td className="py-2 pr-3">{row.city ?? '—'}</td>
                 <td className="py-2 pr-3">{row.department ?? '—'}</td>
                 <td className="py-2 pr-3">{row.provenance}</td>
-                <td className="py-2">
-                  {new Date(row.scrapedAt).toLocaleDateString('fr-FR')}
-                </td>
+                <td className="py-2">{new Date(row.scrapedAt).toLocaleDateString('fr-FR')}</td>
               </tr>
             ))}
           </tbody>
