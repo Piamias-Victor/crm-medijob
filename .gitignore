@@ -59,3 +59,7 @@ infra/.vercel-aws-credentials.env
 
 # Local Excel import sources (never commit real workbooks)
 data/import/
+
+# Local DB credentials for teammates (never commit)
+docs/secrets-*.txt
+
