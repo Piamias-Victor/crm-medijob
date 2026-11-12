@@ -22,13 +22,10 @@ export const pharmacyDuplicateDraftSchema = z.object({
 
 export type PharmacyDuplicateDraft = z.infer<typeof pharmacyDuplicateDraftSchema>
 
-export function savePharmacyDuplicateDraft(draft: PharmacyDuplicateDraft) {
-  sessionStorage.setItem(PHARMACY_DUPLICATE_DRAFT_KEY, JSON.stringify(draft))
-}
+let cachedRaw: string | null | undefined
+let cachedDraft: PharmacyDuplicateDraft | null = null
 
-export function readPharmacyDuplicateDraft(): PharmacyDuplicateDraft | null {
-  const raw = sessionStorage.getItem(PHARMACY_DUPLICATE_DRAFT_KEY)
-  if (!raw) return null
+function parseDraft(raw: string): PharmacyDuplicateDraft | null {
   try {
     const parsed = pharmacyDuplicateDraftSchema.safeParse(JSON.parse(raw))
     return parsed.success ? parsed.data : null
@@ -37,6 +34,23 @@ export function readPharmacyDuplicateDraft(): PharmacyDuplicateDraft | null {
   }
 }
 
+export function savePharmacyDuplicateDraft(draft: PharmacyDuplicateDraft) {
+  const raw = JSON.stringify(draft)
+  sessionStorage.setItem(PHARMACY_DUPLICATE_DRAFT_KEY, raw)
+  cachedRaw = raw
+  cachedDraft = draft
+}
+
+export function readPharmacyDuplicateDraft(): PharmacyDuplicateDraft | null {
+  const raw = sessionStorage.getItem(PHARMACY_DUPLICATE_DRAFT_KEY)
+  if (raw === cachedRaw) return cachedDraft
+  cachedRaw = raw
+  cachedDraft = raw ? parseDraft(raw) : null
+  return cachedDraft
+}
+
 export function clearPharmacyDuplicateDraft() {
   sessionStorage.removeItem(PHARMACY_DUPLICATE_DRAFT_KEY)
+  cachedRaw = null
+  cachedDraft = null
 }
