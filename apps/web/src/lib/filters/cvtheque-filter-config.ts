@@ -13,7 +13,6 @@ export const CVTHEQUE_ADVANCED_FILTER_IDS = [
   'origine',
   'incomplet',
   'missionActive',
-  'mobilite',
   'disposDeclarees',
   'valideBadakan',
 ] as const
@@ -33,6 +32,13 @@ export function buildCvthequeFilterConfig(refs: {
     },
     { id: 'statut', label: 'Statut', type: 'multi-select', unit: 'statuts', options: CANDIDATE_STATUS_OPTIONS },
     { id: 'ville', label: 'Ville', type: 'text', placeholder: 'Ville…' },
+    {
+      id: 'presDe',
+      label: 'Près de…',
+      type: 'text',
+      placeholder: 'Ville ou CP…',
+    },
+    { id: 'rayon', label: 'Rayon (km)', type: 'text', placeholder: '15' },
     {
       id: 'metier',
       label: 'Métier',
@@ -78,12 +84,6 @@ export function buildCvthequeFilterConfig(refs: {
     },
     { id: 'incomplet', label: 'Profil incomplet', type: 'boolean' },
     { id: 'missionActive', label: 'Mission active', type: 'boolean' },
-    {
-      id: 'mobilite',
-      label: 'Mobilité max (km)',
-      type: 'text',
-      placeholder: 'Ex. 30',
-    },
     { id: 'disposDeclarees', label: 'Dispos déclarées', type: 'boolean' },
     { id: 'valideBadakan', label: 'Validé Badakan', type: 'boolean' },
   ] as const satisfies readonly FilterConfig[]

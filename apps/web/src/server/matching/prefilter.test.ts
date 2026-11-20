@@ -42,18 +42,6 @@ describe('prefilterCandidates', () => {
     expect(result.excluded[0].reasons).toContain('geo')
   })
 
-  it('excludes candidates beyond mobility radius', async () => {
-    const farLookup = async (cp: string) =>
-      cp.startsWith('69') ? { lat: 45.75, lon: 4.85 } : { lat: 48.85, lon: 2.35 }
-    const result = await prefilterCandidates(
-      mission,
-      [baseCandidate({ id: 'far', postalCode: '75011', mobilityRadiusKm: 10 })],
-      scores,
-      farLookup,
-    )
-    expect(result.excluded[0].reasons).toContain('distance')
-  })
-
   it('excludes candidates whose contract preference does not include the mission', async () => {
     const result = await prefilterCandidates(
       mission,

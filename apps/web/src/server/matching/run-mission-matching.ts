@@ -20,7 +20,11 @@ export type MissionMatchingDeps = {
   lookupGeo?: GeoLookup
 }
 
-export async function runMissionMatching(missionId: string, deps: MissionMatchingDeps) {
+export async function runMissionMatching(
+  missionId: string,
+  deps: MissionMatchingDeps,
+  radiusKm?: number,
+) {
   const mission = await deps.findMission(missionId)
   if (!mission) return null
 
@@ -38,6 +42,7 @@ export async function runMissionMatching(missionId: string, deps: MissionMatchin
     candidates,
     compatScores,
     deps.lookupGeo ?? createGeoLookup(),
+    radiusKm,
   )
 
   const missionContext: MatchingMissionContext = {

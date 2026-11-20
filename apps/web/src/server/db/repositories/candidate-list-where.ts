@@ -36,9 +36,6 @@ export function buildCandidateListWhere(
   if (filters.origins?.length) clauses.push({ origin: { in: filters.origins } })
   if (filters.q) clauses.push(buildPersonSearchWhere(filters.q))
   if (filters.city) clauses.push({ city: { contains: filters.city, mode: 'insensitive' } })
-  if (filters.maxMobilityKm != null) {
-    clauses.push({ mobilityRadiusKm: { lte: filters.maxMobilityKm } })
-  }
   if (filters.declaredAvailability != null) {
     clauses.push(buildDeclaredAvailabilityWhere(filters.declaredAvailability, now))
   }
