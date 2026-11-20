@@ -23,6 +23,14 @@ export function buildMissionListWhere(filters: MissionListFilters = {}): Prisma.
   const clauses: Prisma.MissionWhereInput[] = []
   const pharmacyClauses: Prisma.PharmacyWhereInput[] = []
 
+  if (filters.q) {
+    clauses.push({
+      OR: [
+        { title: { contains: filters.q, mode: 'insensitive' } },
+        { pharmacy: { name: { contains: filters.q, mode: 'insensitive' } } },
+      ],
+    })
+  }
   if (filters.contractTypes?.length) {
     clauses.push({ contractType: { in: filters.contractTypes } })
   }

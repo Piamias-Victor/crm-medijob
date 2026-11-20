@@ -17,10 +17,12 @@ export function toMissionListFilters(values: MissionFilterValues): MissionListFi
       (MISSION_STATUS_ORDER as readonly string[]).includes(value),
   )
   const city = values.ville.trim()
+  const q = values.q.trim()
   const createdFrom = values.periode.from.trim()
   const createdTo = values.periode.to.trim()
 
   return {
+    q: q || undefined,
     contractTypes: contractTypes.length ? contractTypes : undefined,
     statuses: statuses.length ? statuses : undefined,
     jobTitleIds: values.metier.length ? values.metier : undefined,
