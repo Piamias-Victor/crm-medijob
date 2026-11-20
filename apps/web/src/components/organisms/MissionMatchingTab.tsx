@@ -46,7 +46,7 @@ export function MissionMatchingTab({
         jobTitleName={jobTitleName}
         pharmacyName={pharmacyName}
         pending={matching.isPending}
-        onLaunch={() => matching.mutate({ missionId })}
+        onLaunch={(radiusKm) => matching.mutate({ missionId, radiusKm })}
       />
       <MissionMatchingTabBody
         pending={matching.isPending}

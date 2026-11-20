@@ -1,7 +1,7 @@
 export const EXCLUSION_REASONS = {
   job_title: 'Métier incompatible avec la mission',
   geo: 'Localisation incomplète (ville ou code postal manquant)',
-  distance: 'Hors rayon de mobilité',
+  distance: 'Hors rayon de recherche',
   contract: 'Type de contrat non souhaité',
   availability: 'Indisponible avant le début de mission',
   not_scored: 'Non évalué par l’IA (limite de scoring atteinte)',

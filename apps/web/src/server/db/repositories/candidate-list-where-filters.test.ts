@@ -73,9 +73,4 @@ describe('buildCandidateListWhere filters', () => {
     })
   })
 
-  it('filtre mobilité max km', () => {
-    expect(buildCandidateListWhere({ maxMobilityKm: 30 })).toEqual({
-      mobilityRadiusKm: { lte: 30 },
-    })
-  })
 })
