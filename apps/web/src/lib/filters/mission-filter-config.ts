@@ -13,6 +13,13 @@ export function buildMissionFilterConfig(
 ) {
   return [
     {
+      id: 'q',
+      label: 'Recherche',
+      type: 'text',
+      placeholder: 'Titre, pharmacie…',
+      wide: true,
+    },
+    {
       id: 'contrat',
       label: 'Type de contrat',
       type: 'multi-select',

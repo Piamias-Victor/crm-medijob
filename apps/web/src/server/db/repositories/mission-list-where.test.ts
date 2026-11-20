@@ -63,4 +63,27 @@ describe('buildMissionListWhere', () => {
       },
     })
   })
+
+  it('filtre recherche titre ou nom pharmacie', () => {
+    expect(buildMissionListWhere({ q: 'Centre' })).toEqual({
+      OR: [
+        { title: { contains: 'Centre', mode: 'insensitive' } },
+        { pharmacy: { name: { contains: 'Centre', mode: 'insensitive' } } },
+      ],
+    })
+  })
+
+  it('combine recherche et statut en AND', () => {
+    expect(buildMissionListWhere({ q: 'Centre', statuses: ['EN_RECHERCHE'] })).toEqual({
+      AND: [
+        {
+          OR: [
+            { title: { contains: 'Centre', mode: 'insensitive' } },
+            { pharmacy: { name: { contains: 'Centre', mode: 'insensitive' } } },
+          ],
+        },
+        { status: { in: ['EN_RECHERCHE'] } },
+      ],
+    })
+  })
 })
