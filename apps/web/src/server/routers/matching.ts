@@ -18,7 +18,10 @@ import {
   type BadakanMatchingDeps,
 } from '@/server/matching/run-badakan-matching'
 
-const missionIdSchema = z.object({ missionId: z.string().min(1) })
+const matchingScoreInputSchema = z.object({
+  missionId: z.string().min(1),
+  radiusKm: z.number().int().min(1).max(500).optional(),
+})
 
 export type MatchingRouterDeps = MissionMatchingDeps & {
   findBadakanMission: BadakanMatchingDeps['findMission']
@@ -28,10 +31,10 @@ export type MatchingRouterDeps = MissionMatchingDeps & {
 export function makeMatchingRouter(deps: MatchingRouterDeps) {
   return router({
     scoreMissionCandidates: protectedProcedure
-      .input(missionIdSchema)
+      .input(matchingScoreInputSchema)
       .mutation(async ({ input }) => {
         try {
-          const result = await runMissionMatching(input.missionId, deps)
+          const result = await runMissionMatching(input.missionId, deps, input.radiusKm)
           if (!result) throw new TRPCError({ code: 'NOT_FOUND', message: 'Mission introuvable.' })
           return result
         } catch (error) {
@@ -39,16 +42,20 @@ export function makeMatchingRouter(deps: MatchingRouterDeps) {
         }
       }),
     scoreBadakanMissionCandidates: protectedProcedure
-      .input(missionIdSchema)
+      .input(matchingScoreInputSchema)
       .mutation(async ({ input }) => {
         try {
-          const result = await runBadakanMissionMatching(input.missionId, {
-            findMission: deps.findBadakanMission,
-            listCandidates: deps.listDeclaredCandidates,
-            listCompatibilities: deps.listCompatibilities,
-            provider: deps.provider,
-            lookupGeo: deps.lookupGeo,
-          })
+          const result = await runBadakanMissionMatching(
+            input.missionId,
+            {
+              findMission: deps.findBadakanMission,
+              listCandidates: deps.listDeclaredCandidates,
+              listCompatibilities: deps.listCompatibilities,
+              provider: deps.provider,
+              lookupGeo: deps.lookupGeo,
+            },
+            input.radiusKm,
+          )
           if (!result) {
             throw new TRPCError({
               code: 'NOT_FOUND',

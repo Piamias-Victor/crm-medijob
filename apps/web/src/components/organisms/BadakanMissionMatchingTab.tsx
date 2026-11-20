@@ -49,7 +49,7 @@ export function BadakanMissionMatchingTab({
         jobTitleName={jobTitleName}
         pharmacyName={pharmacyName}
         pending={matching.isPending}
-        onLaunch={() => matching.mutate({ missionId })}
+        onLaunch={(radiusKm) => matching.mutate({ missionId, radiusKm })}
       />
       {matching.isPending ? (
         <div className="flex items-center justify-center gap-3 rounded-2xl border border-dashed border-accent/30 bg-accent-muted/15 py-12">

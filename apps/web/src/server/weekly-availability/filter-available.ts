@@ -1,5 +1,6 @@
 import { DEFAULT_MOBILITY_RADIUS_KM } from '@/view-models/candidate-mobility'
-import { haversineKm, type GeoLookup } from '@/server/matching/distance'
+import type { GeoLookup } from '@/server/matching/distance'
+import { isWithinRadius } from '@/server/matching/within-radius'
 import type { WeeklyAvailabilityFilterInput } from '@/view-models/weekly-availability-filter.schema'
 import type {
   AvailabilityFilterPoolRow,
@@ -18,12 +19,7 @@ export async function withinRadius(
   radiusKm: number,
   lookupGeo: GeoLookup,
 ): Promise<boolean> {
-  const origin = await lookupGeo(city)
-  const destQuery = row.postalCode?.trim() || row.city?.trim()
-  if (!origin || !destQuery) return false
-  const dest = await lookupGeo(destQuery)
-  if (!dest) return false
-  return haversineKm(origin, dest) <= radiusKm
+  return isWithinRadius(row, city, radiusKm, lookupGeo)
 }
 
 export async function filterAvailable({

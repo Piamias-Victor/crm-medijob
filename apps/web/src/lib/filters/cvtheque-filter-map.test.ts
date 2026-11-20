@@ -36,6 +36,12 @@ describe('toCandidateListFilters', () => {
     expect(toCandidateListFilters({ ...defaults, q: '  Marie  ' })).toEqual({ q: 'Marie' })
   })
 
+  it('mappe près de + rayon', () => {
+    expect(
+      toCandidateListFilters({ ...defaults, presDe: '  Toulon  ', rayon: '15' }),
+    ).toEqual({ near: 'Toulon', radiusKm: 15 })
+  })
+
   it('mappe origine App', () => {
     expect(toCandidateListFilters({ ...defaults, origine: ['APP'] })).toEqual({ origins: ['APP'] })
   })

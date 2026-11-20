@@ -21,7 +21,11 @@ export type BadakanMatchingDeps = {
   lookupGeo?: GeoLookup
 }
 
-export async function runBadakanMissionMatching(missionId: string, deps: BadakanMatchingDeps) {
+export async function runBadakanMissionMatching(
+  missionId: string,
+  deps: BadakanMatchingDeps,
+  radiusKm?: number,
+) {
   const mission = await deps.findMission(missionId)
   if (!mission) return null
   const context = toMatchingMissionFromBadakan(mission)
@@ -41,6 +45,7 @@ export async function runBadakanMissionMatching(missionId: string, deps: Badakan
     candidates,
     compatScores,
     deps.lookupGeo ?? createGeoLookup(),
+    radiusKm,
   )
   const scores = await scoreMatchingCandidates(context, prefiltered.eligible, deps.provider)
   return toMissionMatchingPayload(new Map(rows.map((row) => [row.id, row])), prefiltered, scores)

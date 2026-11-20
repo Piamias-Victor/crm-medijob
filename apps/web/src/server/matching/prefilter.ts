@@ -33,6 +33,7 @@ export async function prefilterCandidates(
   candidates: MatchingCandidateInput[],
   compatScores: Map<string, number>,
   lookupGeo: GeoLookup,
+  radiusKm: number = DEFAULT_MOBILITY_RADIUS_KM,
 ): Promise<PrefilterResult> {
   const pharmacyGeoOk = hasGeo(mission.pharmacyCity, mission.pharmacyPostalCode)
   const pharmacyCoords = pharmacyGeoOk
@@ -57,10 +58,8 @@ export async function prefilterCandidates(
       const candidateCoords = await lookupGeo(candidate.postalCode!.trim())
       if (!candidateCoords) {
         reasons.push('geo')
-      } else {
-        const radius = candidate.mobilityRadiusKm ?? DEFAULT_MOBILITY_RADIUS_KM
-        const km = haversineKm(candidateCoords, pharmacyCoords)
-        if (km > radius) reasons.push('distance')
+      } else if (haversineKm(candidateCoords, pharmacyCoords) > radiusKm) {
+        reasons.push('distance')
       }
     }
 

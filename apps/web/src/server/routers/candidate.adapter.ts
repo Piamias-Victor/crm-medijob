@@ -16,18 +16,23 @@ import { createGeoLookup, createGeoQueryLookup } from '@/server/matching/distanc
 import { defaultLogLifecycle } from '@/server/activity-log/default-lifecycle'
 import { makeEraseCandidateGdprDeps } from '@/server/gdpr/erase-candidate.deps'
 import { makeCandidateRouter } from '@/server/routers/candidate'
+import { applyNearFilter } from '@/server/routers/candidate-list-near'
 import { listCandidateMapPins } from '@/server/db/repositories/map-pins.repo'
 import { prisma } from '@/server/db/repositories/client'
 import { badakanClientFromEnv } from '@/server/badakan/client'
+import { createAvailabilityFilterGeoLookup } from '@/server/weekly-availability/filter-geo-lookup'
 
 const cvProvider = createCvExtractionProvider()
 const documentsProvider = createAssistantProvider()
 const lookupPostal = createGeoLookup()
 const lookupQuery = createGeoQueryLookup()
+const lookupNear = createAvailabilityFilterGeoLookup()
 
 export const candidateRouter = makeCandidateRouter({
-  listForKanban: (filters) => candidateRepository.listForKanban(filters),
-  listForExport: (filters, columnIds) => candidateRepository.listForExport(filters, columnIds ?? []),
+  listForKanban: async (filters) =>
+    applyNearFilter(await candidateRepository.listForKanban(filters), filters, lookupNear),
+  listForExport: (filters, columnIds) =>
+    candidateRepository.listForExport(filters, columnIds ?? []),
   listStages: () => pipelineStageRepository.list(),
   listMapPins: () => listCandidateMapPins(prisma),
   search: (term, limit) => candidateRepository.search(term, limit),

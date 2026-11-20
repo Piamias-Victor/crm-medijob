@@ -12,7 +12,7 @@ export function normalizeCvthequeFilterValues(values: CvthequeFilterValues): Cvt
   return values.missionActive === true ? { ...values, missionActive: null } : values
 }
 
-function parseMaxMobilityKm(raw: string): number | undefined {
+function parseRadiusKm(raw: string): number | undefined {
   const trimmed = raw.trim()
   if (!trimmed) return undefined
   const value = Number(trimmed)
@@ -41,8 +41,9 @@ export function toCandidateListFilters(values: CvthequeFilterValues): CandidateL
       value === 'CDI' || value === 'CDD' || value === 'INTERIM',
   )
   const city = normalized.ville.trim()
+  const near = normalized.presDe.trim()
   const q = normalized.q.trim()
-  const maxMobilityKm = parseMaxMobilityKm(normalized.mobilite)
+  const radiusKm = parseRadiusKm(normalized.rayon)
 
   return {
     q: q || undefined,
@@ -57,7 +58,8 @@ export function toCandidateListFilters(values: CvthequeFilterValues): CandidateL
     statuses: toStatuses(normalized.statut),
     origins: toOrigins(normalized.origine),
     city: city || undefined,
-    maxMobilityKm,
+    near: near || undefined,
+    radiusKm: near ? radiusKm : undefined,
     declaredAvailability: normalized.disposDeclarees ?? undefined,
     badakanValidated: normalized.valideBadakan ?? undefined,
   }
