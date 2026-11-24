@@ -33,6 +33,34 @@ describe('job-offer-generate', () => {
     expect(prompt).not.toContain('Pharmacie du Parc')
   })
 
+  it('excludes mission internal notes from the offer prompt', () => {
+    const prompt = buildJobOfferPrompt({
+      ...mission,
+      notes: 'Titulaire Mme X — 06 12 34 56 78 — infos Teo confidentielles',
+    })
+    expect(prompt).not.toContain('06 12 34 56 78')
+    expect(prompt).not.toContain('Titulaire Mme X')
+    expect(prompt).not.toContain('confidentielles')
+  })
+
+  it('keeps public mission fields in the offer prompt when notes are set', () => {
+    const prompt = buildJobOfferPrompt({
+      ...mission,
+      notes: 'Titulaire Mme X — 06 12 34 56 78',
+      profilRecherche: 'BP préparateur, polyvalent',
+    })
+    expect(prompt).toContain('BP préparateur, polyvalent')
+    expect(prompt).toContain('Pharmacien')
+    expect(prompt).toContain('Lyon')
+    expect(prompt).toContain('Winpharma')
+  })
+
+  it('instructs the model to omit confidential and contact details', () => {
+    const prompt = buildJobOfferPrompt(mission)
+    expect(prompt).toMatch(/confidentiel|interne/i)
+    expect(prompt).toMatch(/t[ée]l[ée]phone|coordonn[ée]es/i)
+  })
+
   it('returns formatted title and sectioned HTML content', async () => {
     const offer = await runJobOfferGenerate(mockProvider, mission)
     expect(offer.title).toBe('Pharmacien')

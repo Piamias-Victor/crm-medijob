@@ -42,7 +42,6 @@ export function buildJobOfferPrompt(mission: MissionOfferContext): string {
     mission.pharmacy.software ? `Logiciel : ${mission.pharmacy.software.name}` : null,
     mission.profilRecherche ? `Profil recherché : ${mission.profilRecherche}` : null,
     mission.description ? `Description mission : ${mission.description}` : null,
-    mission.notes ? `Notes : ${mission.notes}` : null,
     `Début : ${String(mission.startDate)}`,
   ]
     .filter(Boolean)
@@ -51,7 +50,7 @@ export function buildJobOfferPrompt(mission: MissionOfferContext): string {
   return buildPrompt({
     kind: 'offer',
     instruction:
-      'Remplis resume (1 paragraphe), missions[], profil[], infos[] (contrat, horaires, rémunération). Pas de HTML.',
+      'Remplis resume (1 paragraphe), missions[], profil[], infos[] (contrat, horaires, rémunération). Pas de HTML. N’inclus aucune info confidentielle ou interne, ni téléphone ni coordonnées.',
     contextText: context,
   })
 }
