@@ -47,7 +47,20 @@ describe('toBoardListing', () => {
     expect(listing.salaire_min).toBe(3500)
     expect(listing.salaire_max).toBe(4200)
     expect(listing.date_debut).toBe('2026-09-01')
-    expect(listing.profil_recherche).toBe('Expérience officine')
+    expect(listing.profil_recherche).toBeNull()
+  })
+
+  it('never publishes mission profilRecherche on the board', () => {
+    const listing = toBoardListing({
+      ...source,
+      mission: {
+        ...source.mission,
+        profilRecherche:
+          'Contact titulaire : Mireille Bijek – SELARL DE L’UNION. Recrutements : 2 postes.',
+      },
+    })
+    expect(listing.profil_recherche).toBeNull()
+    expect(listing.description).toBe('<p>Poste en officine</p>')
   })
 
   it('maps INTERIM and part-time to board vocabulary', () => {
