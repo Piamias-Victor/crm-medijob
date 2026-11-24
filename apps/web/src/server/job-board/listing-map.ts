@@ -32,7 +32,7 @@ export function toBoardListing(source: ListingSource): BoardListing {
     temps_travail: boardHoursLabel(source.mission.tempsPlein),
     salaire_min: source.mission.salaireMin,
     salaire_max: source.mission.salaireMax,
-    profil_recherche: source.mission.profilRecherche,
+    profil_recherche: null,
     date_debut: source.mission.startDate.toISOString().slice(0, 10),
     contact_email: source.contactEmail,
     publiee: true,
